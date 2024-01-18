@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- home_page strings -->
+
+    <string name="app_name">Islam 24</string>
+    <string name="ek_img_content">ExportKit Image</string>
+    <string name="h_home_button_text_string">Home</string>
+    <string name="h_zakat_text_string">Zakat</string>
+    <string name="h_prayer_time_text_string">Prayer Time</string>
+    <string name="h_duas_text_string">Duas</string>
+    <string name="h_tasbih_text_string">Tasbih</string>
+    <string name="h_last_read_string">Have you read the Quran? last read</string>
+    <string name="h_surah_name_string">QS. AL-BAQARAH : Ayat 30</string>
+    <string name="h_salam_text_string">Assalamualaikum</string>
+    <string name="loaction_name_string">Loading</string>
+    <string name="salat_waqt_string">Salat Time</string>
+    <string name="h_salat_timer_string">15:06 </string>
+    <string name="your_location_string">Your Location</string>
+    <string name="prayer_time">Prayer Time</string>
+    <string name="prayer_time_img_content">ExportKit Image</string>
+    <string name="mon_string">MON</string>
+    <string name="_1_string">1</string>
+    <string name="_2_string">2</string>
+    <string name="_3_string">3</string>
+    <string name="_4_string">4</string>
+    <string name="_5_string">5</string>
+    <string name="_5_ek1_string">5</string>
+    <string name="_6_string">6</string>
+    <string name="_7_string">7</string>
+    <string name="tue_string">TUE</string>
+    <string name="wed_string">WED</string>
+    <string name="thu_string">THU</string>
+    <string name="fri_string">FRI</string>
+    <string name="sat_string">SAT</string>
+    <string name="sun_string">SUN</string>
+    <string name="p_salat_timer_text_string">Salat Time</string>
+    <string name="p_location_name_string">Location</string>
+    <string name="p_your_location_text_string">Your Location</string>
+    <string name="p_isha_time_text_string">Isha</string>
+    <string name="p_isha_time_timer_string">04:09</string>
+    <string name="p_maghrib_timer_string">18:01</string>
+    <string name="p_maghrib_text_string">Maghrib</string>
+    <string name="p_ashar_timer_string">15:05</string>
+    <string name="p_ashar_text_string">Ashar</string>
+    <string name="p_dhuhr_timer_string">12:10</string>
+    <string name="p_dhuhr_text_string">Dhuhr</string>
+    <string name="p_fajr_timer_string">04:09</string>
+    <string name="p_fajr_text_string">Fajr</string>
+    <string name="p_calender_button">p_calender_button</string>
+    <string name="p_salat_timer_icon">p_salat_timer_icon</string>
+    <string name="p_home_button">p_home_button</string>
+    <string name="h_zakat_icon">h_zakat_icon</string>
+    <string name="h_tasbih_box">h_tasbih_box</string>
+    <string name="h_tasbih_icon">h_tasbih_icon</string>
+    <string name="h_dua_icon">h_dua_icon</string>
+    <string name="h_half_moon_box">h_half_moon_box</string>
+    <string name="h_islam_moon">h_islam_moon</string>
+    <string name="h_mosque_bg">h_mosque_bg</string>
+    <string name="vector_1">vector_1</string>
+    <string name="location_icon">location_icon</string>
+    <string name="h_line_under_time_location">line_under_time_location</string>
+    <string name="h_home_button">h_home_button</string>
+    <string name="h_time_button">_h_time_button</string>
+    <string name="h_calender_button">Calendar</string>
+    <string name="h_profile_button">Profile</string>
+    <string name="h_live_above_menubar">h_live_above_menubar</string>
+    <string name="h_prayer_icon">h_prayer_icon</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="location_required_explanation" />
+    <string name="today_string">Today</string>
+    <string name="p_calendar_icon">Calendar Icon</string>
+</resources>

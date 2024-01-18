@@ -1,0 +1,408 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.Home">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="21dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/content_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/top_green_with_mosque"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <View
+                    android:id="@+id/rounded_rectangle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dim_262"
+                    android:background="@drawable/rounded_rectangle_shape" />
+
+                <ImageView
+                    android:layout_width="@dimen/dim_317"
+                    android:layout_height="@dimen/dim_160"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/h_mosque_bg"
+                    android:contentDescription="@string/h_mosque_bg" />
+
+                <TextView
+                    android:layout_width="@dimen/dim_160"
+                    android:layout_height="@dimen/dim_27"
+                    android:layout_marginStart="@dimen/dim_33"
+                    android:layout_marginTop="@dimen/dim_30"
+                    android:text="@string/h_salam_text_string"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_size_18"
+                    tools:ignore="TextSizeCheck"/>
+
+                <RelativeLayout
+                    android:id="@+id/time_location_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dim_134">
+
+                    <Button
+                        android:id="@+id/timelocationButton"
+                        android:layout_width="@dimen/dim_347"
+                        android:layout_height="@dimen/dim_87"
+                        android:background="@drawable/_bg__time_location_box_ek1_shape"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <View
+                        android:id="@+id/_time_location_white_box"
+                        android:layout_width="@dimen/dim_347"
+                        android:layout_height="@dimen/dim_87"
+                        android:background="@drawable/_time_location_white_box_shape" />
+
+                    <TextView
+                        android:id="@+id/location_name"
+                        android:layout_width="@dimen/dim_90"
+                        android:layout_height="@dimen/dim_23"
+                        android:layout_marginStart="@dimen/dim_223"
+                        android:layout_marginTop="@dimen/dim_43"
+                        android:text="@string/loaction_name_string"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_size_16"
+                        android:textStyle="bold"
+                        tools:ignore="TextSizeCheck"/>
+
+                    <TextView
+                        android:id="@+id/salat_waqt"
+                        android:layout_width="@dimen/dim_90"
+                        android:layout_height="@dimen/dim_22"
+                        android:layout_marginStart="@dimen/dim_47"
+                        android:layout_marginTop="@dimen/dim_20"
+                        android:text="@string/salat_waqt_string"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_size_15"
+                        tools:ignore="TextSizeCheck"/>
+
+                    <TextView
+                        android:id="@+id/h_salat_timer"
+                        android:layout_width="@dimen/dim_70"
+                        android:layout_height="@dimen/dim_23"
+                        android:layout_marginStart="@dimen/dim_47"
+                        android:layout_marginTop="@dimen/dim_43"
+                        android:text="@string/h_salat_timer_string"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_size_16"
+                        android:textStyle="bold"
+                        tools:ignore="TextSizeCheck" />
+
+                    <TextView
+                        android:id="@+id/your_location"
+                        android:layout_width="@dimen/dim_113"
+                        android:layout_height="@dimen/dim_22"
+                        android:layout_marginStart="@dimen/dim_223"
+                        android:layout_marginTop="@dimen/dim_20"
+                        android:text="@string/your_location_string"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_size_15"
+                        tools:ignore="TextSizeCheck"/>
+
+                    <ImageView
+                        android:id="@+id/line_under_time_location"
+                        android:layout_width="@dimen/dim_301"
+                        android:layout_height="2dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="74dp"
+                        android:contentDescription="@string/h_line_under_time_location"
+                        android:src="@drawable/line_under_time_location" />
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/h_surah_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dim_40">
+
+                <Button
+                    android:id="@+id/_bg__h_surah_box_ek1"
+                    android:layout_width="@dimen/dim_345"
+                    android:layout_height="@dimen/dim_100"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/_bg__h_surah_box_ek1_shape"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <View
+                    android:id="@+id/h_surah_box_green"
+                    android:layout_width="@dimen/dim_345"
+                    android:layout_height="@dimen/dim_96"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/h_surah_box_green_shape" />
+
+                <ImageView
+                    android:id="@+id/h_half_moon_box"
+                    android:layout_width="@dimen/dim_63"
+                    android:layout_height="@dimen/dim_63"
+                    android:layout_alignStart="@id/h_surah_box_green"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dim_12"
+                    android:contentDescription="@string/h_half_moon_box"
+                    android:src="@drawable/h_half_moon_box" />
+
+                <ImageView
+                    android:id="@+id/h_islam_moon"
+                    android:layout_width="@dimen/dim_45"
+                    android:layout_height="@dimen/dim_45"
+                    android:layout_alignStart="@+id/h_half_moon_box"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="@dimen/dim_10"
+                    android:layout_marginTop="@dimen/dim_25"
+                    android:contentDescription="@string/h_islam_moon"
+                    android:src="@drawable/h_islam_moon" />
+
+
+                <TextView
+                    android:id="@+id/h_last_read"
+                    android:layout_width="@dimen/dim_215"
+                    android:layout_height="@dimen/dim_19"
+                    android:layout_alignBaseline="@+id/h_half_moon_box"
+                    android:layout_alignTop="@+id/h_half_moon_box"
+                    android:layout_marginStart="@dimen/dim_8"
+                    android:layout_marginTop="@dimen/dim_25"
+                    android:layout_toEndOf="@+id/h_half_moon_box"
+                    android:text="@string/h_last_read_string"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_size_12"
+                    android:textStyle="bold"
+                    tools:ignore="TextSizeCheck"/>
+
+                <TextView
+                    android:id="@+id/h_surah_name"
+                    android:layout_width="@dimen/dim_201"
+                    android:layout_height="@dimen/dim_21"
+                    android:layout_alignBaseline="@+id/h_half_moon_box"
+                    android:layout_alignTop="@+id/h_half_moon_box"
+                    android:layout_marginStart="@dimen/dim_8"
+                    android:layout_marginTop="@dimen/dim_45"
+                    android:layout_toEndOf="@+id/h_half_moon_box"
+                    android:text="@string/h_surah_name_string"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_size_14"
+                    android:textStyle="bold"
+                    tools:ignore="TextSizeCheck"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/t_d_p_z_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dim_35"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:baselineAligned="false">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+
+                    <Button
+                        android:id="@+id/_h_tasbih_button_shape"
+                        android:layout_width="@dimen/dim_63"
+                        android:layout_height="@dimen/dim_70"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/_bg__h_tasbih_button_ek1_shape"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageView
+                        android:id="@+id/h_tasbih_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:contentDescription="@string/h_tasbih_box"
+                        android:src="@drawable/h_tasbih_box"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dim_14"
+                        android:src="@drawable/h_tasbih_icon"
+                        android:contentDescription="@string/h_tasbih_text_string"/>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dim_75"
+                        android:text="@string/h_tasbih_text_string"
+                        android:textColor="@color/ThemeText"
+                        android:textSize="@dimen/font_size_12"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+
+                    <Button
+                        android:id="@+id/_h_duas_button_shape"
+                        android:layout_width="@dimen/dim_63"
+                        android:layout_height="@dimen/dim_70"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/_bg__h_tasbih_button_ek1_shape"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageView
+                        android:id="@+id/h_duo_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/h_box"
+                        android:contentDescription="@string/h_duas_text_string"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src = "@drawable/h_dua_icon"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dim_14"
+                        android:contentDescription="@string/h_duas_text_string"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dim_75"
+                        android:text="@string/h_duas_text_string"
+                        android:textColor="@color/ThemeText"
+                        android:textSize="@dimen/font_size_12"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+
+                    <Button
+                        android:id="@+id/_h_prayer_time_button_shape"
+                        android:layout_width="@dimen/dim_63"
+                        android:layout_height="@dimen/dim_70"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/_bg__h_tasbih_button_ek1_shape"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageView
+                        android:id="@+id/h_prayer_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/h_box"
+                        android:contentDescription="@string/h_prayer_time_text_string"
+                        tools:ignore="ImageContrastCheck" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src = "@drawable/h_prayer_icon"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dim_10"
+                        android:contentDescription="@string/h_prayer_time_text_string"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dim_75"
+                        android:text="@string/h_prayer_time_text_string"
+                        android:textColor="@color/ThemeText"
+                        android:textSize="@dimen/font_size_12"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+
+                    <Button
+                        android:id="@+id/_h_zakat_button_shape"
+                        android:layout_width="@dimen/dim_63"
+                        android:layout_height="@dimen/dim_70"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/_bg__h_tasbih_button_ek1_shape"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <ImageView
+                        android:id="@+id/h_zakat_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/h_zakat_box"
+                        android:contentDescription="@string/h_zakat_text_string"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src = "@drawable/h_zakat_icon"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dim_14"
+                        android:contentDescription="@string/h_zakat_text_string"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dim_75"
+                        android:text="@string/h_zakat_text_string"
+                        android:textColor="@color/ThemeText"
+                        android:textSize="@dimen/font_size_12"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="434dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

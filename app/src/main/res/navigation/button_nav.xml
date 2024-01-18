@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button_nav"
+    app:startDestination="@id/home2">
+
+    <fragment
+        android:id="@+id/home2"
+        android:name="com.example.zakat_calculator.fragment.Home"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home2_to_prayertime"
+            app:destination="@id/prayertime" />
+        <action
+            android:id="@+id/action_home2_to_tasbih"
+            app:destination="@id/tasbih" />
+        <action
+            android:id="@+id/action_home2_to_duas"
+            app:destination="@id/duas" />
+        <action
+            android:id="@+id/action_home2_to_calender_page"
+            app:destination="@id/calender_page" />
+        <action
+            android:id="@+id/action_home2_to_zakat"
+            app:destination="@id/zakat" />
+    </fragment>
+    <fragment
+        android:id="@+id/calender_page"
+        android:name="com.example.zakat_calculator.fragment.CalenderPageFragment"
+        android:label="fragment_calender_page"
+        tools:layout="@layout/fragment_calender_page" />
+    <fragment
+        android:id="@+id/prayertime"
+        android:name="com.example.zakat_calculator.fragment.Prayertime"
+        android:label="Prayertime" />
+    <fragment
+        android:id="@+id/duas"
+        android:name="com.example.zakat_calculator.fragment.Duas"
+        android:label="fragment_duas"
+        tools:layout="@layout/fragment_duas" />
+    <fragment
+        android:id="@+id/tasbih"
+        android:name="com.example.zakat_calculator.fragment.Tasbih"
+        android:label="fragment_tasbih"
+        tools:layout="@layout/fragment_tasbih" >
+        <action
+            android:id="@+id/back_to_home_tasbih"
+            app:destination="@id/home2"
+            app:enterAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/zakat"
+        android:name="com.example.zakat_calculator.fragment.Zakat"
+        android:label="fragment_zakat"
+        tools:layout="@layout/fragment_zakat" />
+</navigation>
