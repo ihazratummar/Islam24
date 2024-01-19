@@ -1,6 +1,6 @@
-package com.example.zakat_calculator
+package com.example.islam24
 
-import com.example.zakat_calculator.utils.LocationStorage.setCurrentLocation
+import com.example.islam24.utils.LocationStorage.setCurrentLocation
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -15,11 +15,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.example.zakat_calculator.databinding.ActivityMainBinding
-import com.example.zakat_calculator.domain.model.PrayerTimeHandler
-import com.example.zakat_calculator.fragment.Home
-import com.example.zakat_calculator.fragment.Prayertime
-import com.example.zakat_calculator.fragment.CalenderPageFragment
+import com.example.islam24.databinding.ActivityMainBinding
+import com.example.islam24.domain.model.PrayerTimeHandler
+import com.example.islam24.fragment.Home
+import com.example.islam24.fragment.Prayertime
+import com.example.islam24.fragment.CalenderPageFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity(){
             when(it.itemId){
                 R.id.home -> replaceFragment(Home())
                 R.id.time -> replaceFragment(Prayertime())
-                R.id.calendar -> replaceFragment(CalenderPageFragment())
                 else ->{
 
                 }
@@ -98,7 +97,7 @@ class MainActivity : AppCompatActivity(){
                     }
                     else
                     {
-                       /// store location
+                        /// store location
                         setCurrentLocation(location.latitude, location.longitude)
                         val latitude = location.latitude
                         val longitude = location.longitude
@@ -131,9 +130,9 @@ class MainActivity : AppCompatActivity(){
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
-                this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION),
-                 PERMISSION_REQUEST_ACCESS_LOCATION
+            PERMISSION_REQUEST_ACCESS_LOCATION
         )
     }
 

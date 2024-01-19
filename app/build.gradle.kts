@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.zakat_calculator"
+    namespace = "com.example.islam24"
     compileSdk = 34
 
     defaultConfig {

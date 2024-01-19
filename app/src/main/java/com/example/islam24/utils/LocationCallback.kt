@@ -1,7 +1,7 @@
 //LocationCalback.kt
 
 
-package com.example.zakat_calculator.utils
+package com.example.islam24.utils
 
 import android.util.Log
 import kotlin.math.log

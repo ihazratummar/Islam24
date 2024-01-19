@@ -10,12 +10,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\hazra\.android\avd\Realme_6.avd" />
+                  <value value="C:\Users\hazra\.android\avd\Realme_6_API_30.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-17T16:51:56.379600300Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-01-19T12:53:57.739063200Z" />
         </State>
       </entry>
     </value>

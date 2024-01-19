@@ -1,4 +1,4 @@
-package com.example.zakat_calculator.fragment
+package com.example.islam24.fragment
 
 
 import android.annotation.SuppressLint
@@ -12,9 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import com.example.zakat_calculator.R
-import com.example.zakat_calculator.utils.LocationStorage
-import com.example.zakat_calculator.utils.LocationUtils
+import com.example.islam24.R
+import com.example.islam24.utils.LocationStorage
+import com.example.islam24.utils.LocationUtils
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone

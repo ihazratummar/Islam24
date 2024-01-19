@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Zakat-Calculator"
+rootProject.name = "Islam-24"
 include(":app")
  

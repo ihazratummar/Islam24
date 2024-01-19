@@ -1,7 +1,7 @@
 /////PrayerTimingsData.kt
 
 
-package com.example.zakat_calculator.domain.model
+package com.example.islam24.domain.model
 
 import android.util.Log
 

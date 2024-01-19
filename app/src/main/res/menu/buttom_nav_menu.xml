@@ -10,10 +10,6 @@
         android:icon="@drawable/_h_time_button"
         android:title="@string/h_prayer_time_text_string" />
     <item
-        android:id="@+id/calendar"
-        android:icon="@drawable/h_calender_button"
-        android:title="@string/h_calender_button" />
-    <item
         android:id="@+id/profile"
         android:icon="@drawable/h_profile_button"
         android:title="@string/h_profile_button" />

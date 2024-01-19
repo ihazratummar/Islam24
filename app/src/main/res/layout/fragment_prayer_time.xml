@@ -52,14 +52,20 @@
         app:layout_constraintEnd_toEndOf="@+id/relativeLayout"
         app:layout_constraintTop_toTopOf="@+id/relativeLayout">
 
+        <View
+            android:id="@+id/p_calendar_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_shape"/>
+
+
         <ImageView
             android:id="@+id/p_calendar"
             android:layout_width="@dimen/dim_28"
             android:layout_height="@dimen/dim_28"
             android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/tear_off_calendar"
-            android:contentDescription="@string/p_calendar_icon" />
+            android:contentDescription="@string/p_calendar_icon"
+            android:src="@drawable/tear_off_calendar" />
 
     </RelativeLayout>
 

@@ -1,4 +1,4 @@
-package com.example.zakat_calculator.domain.model
+package com.example.islam24.domain.model
 
 import android.content.Context
 import android.icu.util.Calendar
@@ -7,8 +7,8 @@ import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.zakat_calculator.domain.model.PrayerTimingsStorage.setCurrentPrayerTimings
-import com.example.zakat_calculator.utils.LocationStorage
+import com.example.islam24.domain.model.PrayerTimingsStorage.setCurrentPrayerTimings
+import com.example.islam24.utils.LocationStorage
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 

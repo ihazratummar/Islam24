@@ -1,4 +1,4 @@
-package com.example.zakat_calculator.utils
+package com.example.islam24.utils
 
 import android.content.Context
 import android.util.Log

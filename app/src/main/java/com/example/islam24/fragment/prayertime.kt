@@ -1,4 +1,4 @@
-package com.example.zakat_calculator.fragment
+package com.example.islam24.fragment
 
 import android.os.Bundle
 import android.os.Handler
@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import com.example.zakat_calculator.R
-import com.example.zakat_calculator.domain.model.PrayerTimingsData
-import com.example.zakat_calculator.domain.model.PrayerTimingsStorage
-import com.example.zakat_calculator.utils.LocationUtils
+import com.example.islam24.R
+import com.example.islam24.domain.model.PrayerTimingsData
+import com.example.islam24.domain.model.PrayerTimingsStorage
+import com.example.islam24.utils.LocationUtils
 
 
 class Prayertime : Fragment(){
@@ -24,6 +25,7 @@ class Prayertime : Fragment(){
     private lateinit var asharTimeTextView: TextView
     private lateinit var maghribTimeTextView: TextView
     private lateinit var ishaTimeTextView: TextView
+    private lateinit var calendarView: View
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,7 +46,41 @@ class Prayertime : Fragment(){
         asharTimeTextView= view.findViewById(R.id.p_ashar_timer)
         maghribTimeTextView= view.findViewById(R.id.p_maghrib_timer)
         ishaTimeTextView= view.findViewById(R.id.p_isha_timer)
+        calendarView = view.findViewById(R.id.p_calendar_button)
+
+
+        calendarView.setOnClickListener{
+            val fragment = CalenderPageFragment()
+            val transaction = fragmentManager?.beginTransaction()
+            transaction?.addToBackStack("Prayertime")
+            transaction?.replace(R.id.frame_layout, fragment)?.commit()
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         return view
+
+
+
+        calendarView.setOnClickListener{
+            val fragment = CalenderPageFragment()
+            val transaction = fragmentManager?.beginTransaction()
+            transaction?.addToBackStack("Prayertime")
+            transaction?.replace(R.id.frame_layout, fragment)?.commit()
+        }
+
+
+
+
     }
 
 

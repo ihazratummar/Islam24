@@ -1,4 +1,4 @@
-package com.example.zakat_calculator.fragment
+package com.example.islam24.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import com.example.zakat_calculator.MainActivity
-import com.example.zakat_calculator.R
+import com.example.islam24.MainActivity
+import com.example.islam24.R
 
-class Tasbih : Fragment() {
+
+class Zakat : Fragment() {
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -17,12 +19,11 @@ class Tasbih : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         setupOnBackPressed()
-        val view = inflater.inflate(R.layout.fragment_tasbih, container, false)
+        val view = inflater.inflate(R.layout.fragment_zakat, container, false)
 
         (activity as? MainActivity)?.hideBottomNavigationView()
 
     return view
-
     }
 
     override fun onDestroyView() {
@@ -30,19 +31,16 @@ class Tasbih : Fragment() {
         (activity as? MainActivity)?.showBottomNavigationView()
     }
 
-    private fun setupOnBackPressed(){
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true){
+    private fun setupOnBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(isEnabled){
+                if (isEnabled) {
 //                    Toast.makeText(requireContext(),"GoBack",Toast.LENGTH_SHORT).show()
-                    isEnabled =false
+                    isEnabled = false
                     requireActivity().onBackPressed()
                 }
             }
         })
-
-
     }
-
 
 }

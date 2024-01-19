@@ -20,9 +20,6 @@
             android:id="@+id/action_home2_to_duas"
             app:destination="@id/duas" />
         <action
-            android:id="@+id/action_home2_to_calender_page"
-            app:destination="@id/calender_page" />
-        <action
             android:id="@+id/action_home2_to_zakat"
             app:destination="@id/zakat" />
     </fragment>
@@ -30,16 +27,31 @@
         android:id="@+id/calender_page"
         android:name="com.example.zakat_calculator.fragment.CalenderPageFragment"
         android:label="fragment_calender_page"
-        tools:layout="@layout/fragment_calender_page" />
+        tools:layout="@layout/fragment_calender_page" >
+        <action
+            android:id="@+id/action_calender_page_to_prayertime"
+            app:destination="@id/prayertime" />
+    </fragment>
     <fragment
         android:id="@+id/prayertime"
         android:name="com.example.zakat_calculator.fragment.Prayertime"
-        android:label="Prayertime" />
+        android:label="Prayertime" >
+        <action
+            android:id="@+id/action_prayertime_to_home2"
+            app:destination="@id/home2" />
+        <action
+            android:id="@+id/action_prayertime_to_calender_page"
+            app:destination="@id/calender_page" />
+    </fragment>
     <fragment
         android:id="@+id/duas"
         android:name="com.example.zakat_calculator.fragment.Duas"
         android:label="fragment_duas"
-        tools:layout="@layout/fragment_duas" />
+        tools:layout="@layout/fragment_duas" >
+        <action
+            android:id="@+id/action_duas_to_home2"
+            app:destination="@id/home2" />
+    </fragment>
     <fragment
         android:id="@+id/tasbih"
         android:name="com.example.zakat_calculator.fragment.Tasbih"
@@ -54,5 +66,9 @@
         android:id="@+id/zakat"
         android:name="com.example.zakat_calculator.fragment.Zakat"
         android:label="fragment_zakat"
-        tools:layout="@layout/fragment_zakat" />
+        tools:layout="@layout/fragment_zakat" >
+        <action
+            android:id="@+id/action_zakat_to_home2"
+            app:destination="@id/home2" />
+    </fragment>
 </navigation>
