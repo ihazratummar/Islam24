@@ -8,14 +8,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.islam24"
+    namespace = "com.hazrat.islam24"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.zakat_calculator"
+        applicationId = "com.hazrat.islam24"
         minSdk = 26
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk= 34
+        versionCode = 3
+        versionName = "1.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

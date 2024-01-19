@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/home2"
-        android:name="com.example.zakat_calculator.fragment.Home"
+        android:name="com.hazrat.zakat_calculator.fragment.Home"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/calender_page"
-        android:name="com.example.zakat_calculator.fragment.CalenderPageFragment"
+        android:name="com.hazrat.zakat_calculator.fragment.CalenderPageFragment"
         android:label="fragment_calender_page"
         tools:layout="@layout/fragment_calender_page" >
         <action
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/prayertime"
-        android:name="com.example.zakat_calculator.fragment.Prayertime"
+        android:name="com.hazrat.zakat_calculator.fragment.Prayertime"
         android:label="Prayertime" >
         <action
             android:id="@+id/action_prayertime_to_home2"
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/duas"
-        android:name="com.example.zakat_calculator.fragment.Duas"
+        android:name="com.hazrat.zakat_calculator.fragment.Duas"
         android:label="fragment_duas"
         tools:layout="@layout/fragment_duas" >
         <action
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/tasbih"
-        android:name="com.example.zakat_calculator.fragment.Tasbih"
+        android:name="com.hazrat.zakat_calculator.fragment.Tasbih"
         android:label="fragment_tasbih"
         tools:layout="@layout/fragment_tasbih" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/zakat"
-        android:name="com.example.zakat_calculator.fragment.Zakat"
+        android:name="com.hazrat.zakat_calculator.fragment.Zakat"
         android:label="fragment_zakat"
         tools:layout="@layout/fragment_zakat" >
         <action
