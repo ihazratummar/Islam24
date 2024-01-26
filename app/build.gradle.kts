@@ -74,6 +74,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
+    //Splash Api
+    implementation ("androidx.core:core-splashscreen:1.0.1")
+
 }
 
 kapt {
