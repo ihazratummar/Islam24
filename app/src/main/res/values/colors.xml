@@ -5,25 +5,14 @@
 	<color name="colorPrimary">#008577</color>
 	<color name="colorPrimaryDark">#00574B</color>
 	<color name="colorAccent">#D81B60</color>
-	<color name="purple_200">#FFBB86FC</color>
-	<color name="purple_500">#FF6200EE</color>
-	<color name="purple_700">#FF3700B3</color>
-	<color name="teal_200">#FF03DAC5</color>
-	<color name="teal_700">#FF018786</color>
 	<color name="black">#FF000000</color>
 	<color name="white">#FFFFFFFF</color>
 	<color name="Theme">#0E6443</color>
 	<color name="ThemeText">#0E6443</color>
-	<color name="grey">#ACACAC</color>
 
 
-	<color name="mon_color">#626262</color>
-	<color name="p_salat_timer_text_color">#41966F</color>
-	<color name="p_your_location_text_color">#ACACAC</color>
 	<color name="p_top_green_color">#ffffff</color>
 
 	///prayer colors
-	<color name="p_isha_time_timer_color">#52BF95</color>
-	<color name="_bg__prayertimes_ek1_color">#000000</color>
 
 </resources>
