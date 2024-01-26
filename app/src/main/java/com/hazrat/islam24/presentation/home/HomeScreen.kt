@@ -1,4 +1,4 @@
-package com.hazrat.islam24.domain.repository.home
+package com.hazrat.islam24.presentation.home
 
 import androidx.compose.runtime.Composable
 
