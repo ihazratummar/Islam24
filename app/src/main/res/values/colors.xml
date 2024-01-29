@@ -7,12 +7,11 @@
 	<color name="colorAccent">#D81B60</color>
 	<color name="black">#FF000000</color>
 	<color name="white">#FFFFFFFF</color>
-	<color name="Theme">#0E6443</color>
 	<color name="ThemeText">#0E6443</color>
 
 
-	<color name="p_top_green_color">#ffffff</color>
-
 	///prayer colors
+	<color name="theme_color">#78F864</color>
+	<color name="background_color">#031600</color>
 
 </resources>

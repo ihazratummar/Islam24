@@ -16,21 +16,20 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.hazrat.islam24.ui.theme.Black
 import com.hazrat.islam24.ui.theme.DarkRed
 import com.hazrat.islam24.ui.theme.LightBlack
 import com.hazrat.islam24.ui.theme.LightRed
 
 private val DarkColorScheme = darkColorScheme(
-    background = Black,
-    primary = Blue,
+    background = DarkGreen,
+    primary = Green,
     error = DarkRed,
     surface = LightBlack
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Blue,
-    background = Color.White,
+    primary = Green,
+    background = DarkGreen,
     error = LightRed,
     surface = Color.White
 )
