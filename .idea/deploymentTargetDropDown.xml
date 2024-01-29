@@ -2,6 +2,12 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="HyperLinkTextPreview">
+        <State />
+      </entry>
+      <entry key="Preview">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
@@ -10,12 +16,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\hazra\.android\avd\Realme_6.avd" />
+                  <value value="C:\Users\hazra\.android\avd\Pixel_7_Pro_API_30.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-17T16:51:56.379600300Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-01-29T08:04:39.780195200Z" />
         </State>
       </entry>
     </value>
