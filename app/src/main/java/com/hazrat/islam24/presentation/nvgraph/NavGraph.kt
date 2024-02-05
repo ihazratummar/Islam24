@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.hazrat.islam24.presentation.navigator.AppNavigator
 import com.hazrat.islam24.presentation.onboarding.OnBoardingScreen
 import com.hazrat.islam24.presentation.onboarding.OnBoardingViewModel
 
@@ -34,7 +35,7 @@ fun NavGraph(
             composable(
                 route = Route.HomeNavigatorScreen.route
             ){
-                Text(text = "Hello welcome", color = Color.White)
+                AppNavigator()
             }
         }
     }

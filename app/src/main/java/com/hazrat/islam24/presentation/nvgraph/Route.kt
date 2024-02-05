@@ -16,4 +16,18 @@ sealed class Route (
     object HomeNavigation: Route(route = "homeNavigation")
     object HomeNavigatorScreen: Route(route = "homeNavigatorScreen")
 
+    object TasbihScreen:Route(route = "TasbihScreen")
+
+    object DuasPageScreen:Route(route = "DuasPageScreen")
+
+    object PrayerTimeScreen:Route(route = "PrayerTimeScreen")
+
+    object QuranPageScreen:Route(route = "QuranPageScreen")
+
+    object ProfileScreen:Route(route = "ProfileScreen")
+
+    object QiblaDirectionScreen:Route(route = "QiblaDirectionScreen")
+
+    object CalendarScreen:Route(route = "CalendarScreen")
+
 }

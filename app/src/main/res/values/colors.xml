@@ -13,5 +13,6 @@
 	///prayer colors
 	<color name="theme_color">#78F864</color>
 	<color name="background_color">#031600</color>
+	<color name="body">#4E4B66</color>
 
 </resources>

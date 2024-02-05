@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val readAppEntry: ReadAppEntry
+    private val readAppEntry: ReadAppEntry,
 ): ViewModel() {
 
     private val _splashCondition = mutableStateOf(true)
@@ -23,6 +23,7 @@ class MainViewModel @Inject constructor(
 
     private val _startDestination = mutableStateOf(Route.AppStartNavigation.route)
     val startDestination: State<String> = _startDestination
+
 
     init {
         readAppEntry().onEach { shouldStartFromHomeScreen ->
@@ -34,5 +35,6 @@ class MainViewModel @Inject constructor(
             delay(300)
             _splashCondition.value = false
         }.launchIn(viewModelScope)
+
     }
 }
