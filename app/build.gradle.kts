@@ -93,23 +93,23 @@ dependencies {
 
 
     //Kotlinx Serialization
-    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation ("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
 
     //Coil
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     //Datastore
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
     //Compose Foundation
-    implementation ("androidx.compose.foundation:foundation:1.5.4")
+    implementation ("androidx.compose.foundation:foundation:1.6.0")
 
     //Accompanist
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.31.4-beta")
 
     //paging3
-    implementation ("androidx.paging:paging-runtime:3.2.1")
+    implementation ("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation ("androidx.paging:paging-compose:3.2.1")
 
     //Room
@@ -118,6 +118,14 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+
+    //Observe
+    implementation ("androidx.activity:activity-compose:1.8.2")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.0")
+
 
 }
 

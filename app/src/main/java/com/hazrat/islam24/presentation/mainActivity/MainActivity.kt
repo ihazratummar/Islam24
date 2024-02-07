@@ -8,32 +8,34 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
-import com.hazrat.islam24.domain.usecases.app_entry.ReadAppEntry
+import androidx.core.view.WindowCompat
+import com.hazrat.islam24.data.LocationDataHolder
+import com.hazrat.islam24.util.LocationHandler
 import com.hazrat.islam24.presentation.nvgraph.NavGraph
-import com.hazrat.islam24.presentation.onboarding.OnBoardingScreen
-import com.hazrat.islam24.presentation.onboarding.OnBoardingViewModel
 import com.hazrat.islam24.ui.theme.DarkGreen
 import com.hazrat.islam24.ui.theme.Islam24Theme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+
+//MainActivity.kt
 
 @AndroidEntryPoint
 class MainActivity: ComponentActivity() {
+    private lateinit var locationHandler: LocationHandler
 
     private val viewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         installSplashScreen().apply {
             setKeepOnScreenCondition { viewModel.splashCondition.value }
         }
-
+        locationHandler = LocationHandler(this)
+        getCurrentLocation()
 
         setContent {
             Islam24Theme {
@@ -45,10 +47,24 @@ class MainActivity: ComponentActivity() {
                     NavGraph(startDestination = viewModel.startDestination.value)
                 }
             }
-//            locationRepository.getCurrentLocation()
-
-
         }
     }
 
+    private fun getCurrentLocation() {
+        locationHandler.getCurrentLocation(
+            onLocationReceived = { location ->
+                // Save the location
+                LocationDataHolder.saveLocation(location.latitude, location.longitude)
+
+                // Do something with the location
+                val latitude = location.latitude
+                val longitude = location.longitude
+                Log.d("MainActivity", "Location received: $latitude, $longitude")
+            },
+            onLocationError = {
+                // Handle location error
+                Log.e("MainActivity", "Error getting location")
+            }
+        )
+    }
 }
