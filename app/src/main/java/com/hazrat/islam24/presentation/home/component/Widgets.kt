@@ -45,14 +45,12 @@ fun LazyRowWithCards(navController: NavController) {
         R.drawable.allahname,
         R.drawable.tasbihicon,
         R.drawable.duaicon,
-        R.drawable.zakaticon,
         R.drawable.calendaricon,
-        R.drawable.hadithicon,
         R.drawable.athkar,
         R.drawable.quiz,)
 
     val names = listOf(
-        "Names", "Tasbih", "Dua", "Zakat", "Calendar", "Hadith", "Athkar", "Quiz"
+        "Names", "Tasbih", "Dua", "Calendar", "Athkar", "Quiz"
     )
 
     LazyRow{
@@ -64,14 +62,11 @@ fun LazyRowWithCards(navController: NavController) {
 
                 val cardModifier = when (index) {
                     0 -> Modifier.background(Color(0xFFE6C556))
-                    1 -> Modifier.background(Color(0xFF6AAEE9))
-                    2 -> Modifier.background(Color(0xFF64FFAA))
-                    3 -> Modifier.background(Color(0xffFBBC05))
-                    4 -> Modifier.background(Color(0xffEA4335))
-                    5 -> Modifier.background(Color(0xFF144BA7))
-                    6 -> Modifier.background(Color(0xffFBBC05))
-                    7 -> Modifier.background(Color(0xff34A853))
-                    8 -> Modifier.background(Color(0xffEA4335))
+                    1 -> Modifier.background(Color(0xFF7AFFFF))
+                    2 -> Modifier.background(Color(0xFFFFBFA6))
+                    3 -> Modifier.background(Color(0xFFFF958C))
+                    4 -> Modifier.background(Color(0xffFBBC05))
+                    5 -> Modifier.background(Color(0xff34A853))
                     else -> Modifier.background(Color.Gray)
                 }
                 Card(
@@ -81,8 +76,8 @@ fun LazyRowWithCards(navController: NavController) {
                         .padding(Size8)
                         .clickable {
                             when(index){
-                                0 -> navController.navigate("homeScreen")
-                                1 -> navController.navigate("PrayerTimeScreen")
+                                0 -> navController.navigate("NamesOfAllah")
+                                1 -> navController.navigate("TasbihScreen")
                             }
                         }
                         .clip(RoundedCornerShape(Size8))
