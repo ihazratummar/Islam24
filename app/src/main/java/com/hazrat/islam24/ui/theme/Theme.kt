@@ -25,13 +25,14 @@ private val DarkColorScheme = darkColorScheme(
     primary = Green,
     error = DarkRed,
     surface = LightBlack
+    
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Green,
     background = DarkGreen,
     error = LightRed,
-    surface = Color.White
+    surface = Color.White,
 )
 
 @Composable
@@ -47,15 +48,15 @@ fun Islam24Theme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+
+        else -> if (darkTheme) DarkColorScheme else LightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 

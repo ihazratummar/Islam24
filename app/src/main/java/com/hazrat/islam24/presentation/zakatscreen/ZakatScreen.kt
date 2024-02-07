@@ -1,9 +1,9 @@
-package com.hazrat.islam24.presentation.qiblapage
+package com.hazrat.islam24.presentation.zakatscreen
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun QiblaScreen(navController: NavController) {
+fun ZakatScreen(navController:NavController) {
     
 }

@@ -22,16 +22,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.presentation.Dimens.Size10
 import com.hazrat.islam24.presentation.Dimens.Size20
@@ -55,9 +64,10 @@ fun HomeScreen(navController: NavController) {
     ) {
         BackGroundCard()
         Column(
-            modifier = Modifier.statusBarsPadding()
+            modifier = Modifier
+                .statusBarsPadding()
                 .fillMaxSize()
-                .padding(Size20),
+                .padding(Size10),
             verticalArrangement = Arrangement.Top
         ) {
 
@@ -68,7 +78,10 @@ fun HomeScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(Size30))
 
-            Column (modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
                 LazyRowWithCards(navController)
             }
@@ -78,17 +91,25 @@ fun HomeScreen(navController: NavController) {
 }
 
 
-
-
 ////BACKGROUND CARD WITH MASJID ICON
+//@Preview
 @Composable
 private fun BackGroundCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(Size250),
+            .height(Size250)
+            .background(
+                brush = Brush.verticalGradient(
+                    listOf(
+                        Color(0xFF041602),
+                        Color(0xFF031600)
+                    ),
+
+                )
+            ),
         shape = RoundedCornerShape(bottomEnd = Size50, bottomStart = Size50),
-        colors = CardDefaults.cardColors(Color(0xFF7FD158))
+        colors = CardDefaults.cardColors(Color.Transparent)
     ) {
         Image(
             painter = painterResource(id = R.drawable.group),
@@ -97,6 +118,7 @@ private fun BackGroundCard() {
                 .fillMaxSize()
                 .clip(shape = RoundedCornerShape(bottomStart = Size50, bottomEnd = Size50))
                 .size(Size300)
+
         )
     }
 }
@@ -111,15 +133,16 @@ private fun TimeLocationCard() {
             .height(Size200)
             .background(
                 brush = Brush.verticalGradient(
-                    listOf(Color(0xCE031B05),
-//                        Color.Transparent,
-                        Color(0xF210F742),
+                    listOf(
+                        Color(0xC3040A04),
+                        Color(0xFF040A04),
+                        Color(0xFF00FF40),
                     )
                 ),
                 shape = RoundedCornerShape(28)
             )
             .clickable {
-                       /* TODO click to open prayer screen*/
+                /* TODO click to open prayer screen*/
             },
         colors = CardDefaults.cardColors(Color.Transparent),
     ) {
@@ -141,13 +164,17 @@ private fun TimeLocationCard() {
                     style = MaterialTheme.typography.displayMedium
                 )
                 Spacer(modifier = Modifier.height(Size8))
-                Text(text = "View Times", color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "View Times",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.5f)
-                    .padding(start = Size10, bottom = Size40, end = Size30),
+                    .padding(start = Size10, bottom = Size40, end = Size30, top = Size10),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End
             ) {

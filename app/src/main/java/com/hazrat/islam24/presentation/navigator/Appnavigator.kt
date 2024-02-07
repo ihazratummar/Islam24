@@ -10,12 +10,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.presentation.TasbihScreen
 import com.hazrat.islam24.presentation.home.HomeScreen
 import com.hazrat.islam24.presentation.navigator.component.AppBottomNavigation
 import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem
@@ -24,6 +26,9 @@ import com.hazrat.islam24.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.presentation.qiblapage.QiblaScreen
 import com.hazrat.islam24.presentation.quranpage.QuranScreen
 import com.hazrat.islam24.presentation.userprofile.ProfileScreen
+import com.hazrat.islam24.presentation.zakatscreen.ZakatScreen
+import com.hazrat.islam24.presentation.namesofallah.NamesOfAllahScreen
+import com.hazrat.islam24.presentation.namesofallah.NamesViewModel
 
 @Composable
 fun AppNavigator() {
@@ -31,7 +36,7 @@ fun AppNavigator() {
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.prayericon, text = "Time"),
-            BottomNavigationItem(icon = R.drawable.quranicon, text = "Quran"),
+            BottomNavigationItem(icon = R.drawable.zakaticon, text = "Zakat"),
             BottomNavigationItem(icon = R.drawable.qiblaicon, text = "Qibla"),
             BottomNavigationItem(icon = R.drawable.profileicon, text = "Profile"),
         )
@@ -46,7 +51,7 @@ fun AppNavigator() {
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.PrayerTimeScreen.route -> 1
-        Route.QuranPageScreen.route -> 2
+        Route.ZakatScreen.route -> 2
         Route.QiblaDirectionScreen.route -> 3
         Route.ProfileScreen.route -> 4
         else -> 0
@@ -56,7 +61,7 @@ fun AppNavigator() {
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HomeScreen.route ||
                 backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
-                backStackState?.destination?.route == Route.QuranPageScreen.route ||
+                backStackState?.destination?.route == Route.ZakatScreen.route ||
                 backStackState?.destination?.route == Route.QiblaDirectionScreen.route ||
                 backStackState?.destination?.route == Route.ProfileScreen.route
     }
@@ -79,7 +84,7 @@ fun AppNavigator() {
                             )
                             2 -> navigateToTab(
                                 navController = navController,
-                                route = Route.QuranPageScreen.route
+                                route = Route.ZakatScreen.route
                             )
                             3 -> navigateToTab(
                                 navController = navController,
@@ -103,21 +108,29 @@ fun AppNavigator() {
                 HomeScreen(navController)
             }
             composable(route = Route.PrayerTimeScreen.route){
-                PrayerTimeScreen()
+                PrayerTimeScreen(navController)
             }
             composable(route = Route.QuranPageScreen.route){
-                QuranScreen()
+                QuranScreen(navController)
             }
             composable(route = Route.QiblaDirectionScreen.route){
-                QiblaScreen()
+                QiblaScreen(navController)
             }
             composable(route = Route.ProfileScreen.route){
-                ProfileScreen()
+                ProfileScreen(navController)
+            }
+            composable(route = Route.ZakatScreen.route){
+                ZakatScreen(navController)
+            }
+            composable(route = Route.NamesOfAllah.route){
+                val viewModel:NamesViewModel = hiltViewModel()
+                NamesOfAllahScreen(viewModel, navController)
+            }
+            composable(route = Route.TasbihScreen.route){
+                TasbihScreen(navController)
             }
         }
-
     }
-
 }
 
 private fun navigateToTab(navController: NavController, route: String) {

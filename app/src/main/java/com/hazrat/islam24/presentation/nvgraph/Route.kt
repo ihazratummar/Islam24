@@ -30,4 +30,8 @@ sealed class Route (
 
     object CalendarScreen:Route(route = "CalendarScreen")
 
+    object ZakatScreen:Route(route = "ZakatScreen")
+
+    object NamesOfAllah:Route(route = "NamesOfAllah")
+
 }
