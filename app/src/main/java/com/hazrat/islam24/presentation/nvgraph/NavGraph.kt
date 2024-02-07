@@ -1,18 +1,13 @@
 package com.hazrat.islam24.presentation.nvgraph
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-<<<<<<< HEAD
 import com.hazrat.islam24.presentation.home.HomeScreen
-=======
 import com.hazrat.islam24.presentation.navigator.AppNavigator
->>>>>>> homescreen
 import com.hazrat.islam24.presentation.onboarding.OnBoardingScreen
 import com.hazrat.islam24.presentation.onboarding.OnBoardingViewModel
 
@@ -39,11 +34,8 @@ fun NavGraph(
             composable(
                 route = Route.HomeScreen.route
             ){
-<<<<<<< HEAD
                 HomeScreen()
-=======
                 AppNavigator()
->>>>>>> homescreen
             }
         }
     }

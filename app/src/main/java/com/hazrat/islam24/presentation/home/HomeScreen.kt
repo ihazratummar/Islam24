@@ -1,37 +1,26 @@
 package com.hazrat.islam24.presentation.home
 
-<<<<<<< HEAD
 import androidx.compose.foundation.background
-=======
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
->>>>>>> homescreen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-<<<<<<< HEAD
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-=======
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
->>>>>>> homescreen
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -65,14 +54,6 @@ import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
 import com.hazrat.islam24.ui.theme.Islam24Theme
 
 @Composable
-<<<<<<< HEAD
-fun HomeScreen() {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .statusBarsPadding()
-        .background(MaterialTheme.colorScheme.background)) {
-        Text(text = "hello", style = MaterialTheme.typography.headlineLarge, color = Color.White)
-=======
 fun HomeScreen(navController: NavController) {
 
     Surface(
@@ -104,7 +85,6 @@ fun HomeScreen(navController: NavController) {
             }
 
         }
->>>>>>> homescreen
     }
 }
 
