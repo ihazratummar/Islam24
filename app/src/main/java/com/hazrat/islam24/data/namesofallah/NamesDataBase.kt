@@ -6,7 +6,7 @@ import com.hazrat.islam24.data.namesofallah.NameDao
 import com.hazrat.islam24.data.namesofallah.NameEntity
 
 
-@Database(entities = [NameEntity::class], version = 1, exportSchema =false )
+@Database(entities = [NameEntity::class], version = 2, exportSchema =false )
 abstract class NamesDataBase : RoomDatabase() {
 
     abstract fun nameDao(): NameDao

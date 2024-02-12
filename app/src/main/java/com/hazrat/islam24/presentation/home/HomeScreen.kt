@@ -23,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -36,12 +37,15 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.data.prayertime.PrayerTimeEntity
 import com.hazrat.islam24.presentation.Dimens.Size10
 import com.hazrat.islam24.presentation.Dimens.Size20
 import com.hazrat.islam24.presentation.Dimens.Size200
@@ -53,10 +57,21 @@ import com.hazrat.islam24.presentation.Dimens.Size50
 import com.hazrat.islam24.presentation.Dimens.Size60
 import com.hazrat.islam24.presentation.Dimens.Size8
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
+import com.hazrat.islam24.presentation.nvgraph.Route
+import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
+import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
+import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerTime
 import com.hazrat.islam24.ui.theme.Islam24Theme
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    prayerTimeViewModel: PrayerTimeViewModel,
+    navigateToPrayerTime: () -> Unit,
+) {
+
+    val prayerTimesState = prayerTimeViewModel.prayerTimes.collectAsState()
+    val prayerTimes = prayerTimesState.value
 
     Surface(
         modifier = Modifier,
@@ -70,11 +85,15 @@ fun HomeScreen(navController: NavController) {
                 .padding(Size10),
             verticalArrangement = Arrangement.Top
         ) {
-
-            Text(text = "Assalamualaikum", style = MaterialTheme.typography.bodySmall)
+            Text(text = "", style = MaterialTheme.typography.bodySmall)
 //            Text(text = "Hazrat Ummar Shaikh", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(Size50))
-            TimeLocationCard()
+            Spacer(modifier = Modifier.height(Size60))
+            if (prayerTimes.isNotEmpty()) {
+                TimeLocationCard(prayerTimes.first(), navigateToPrayerTime)
+            } else {
+                // Handle the case where prayerTimes is empty
+                Text(text = "No prayer times available")
+            }
 
             Spacer(modifier = Modifier.height(Size30))
 
@@ -106,7 +125,7 @@ private fun BackGroundCard() {
                         Color(0xFF031600)
                     ),
 
-                )
+                    )
             ),
         shape = RoundedCornerShape(bottomEnd = Size50, bottomStart = Size50),
         colors = CardDefaults.cardColors(Color.Transparent)
@@ -126,7 +145,10 @@ private fun BackGroundCard() {
 
 /// TIME LOCATION CARD
 @Composable
-private fun TimeLocationCard() {
+private fun TimeLocationCard(
+    prayerTimeEntity: PrayerTimeEntity,
+    navigateToPrayerTime: () -> Unit,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -142,7 +164,7 @@ private fun TimeLocationCard() {
                 shape = RoundedCornerShape(28)
             )
             .clickable {
-                /* TODO click to open prayer screen*/
+                navigateToPrayerTime()
             },
         colors = CardDefaults.cardColors(Color.Transparent),
     ) {
@@ -158,11 +180,13 @@ private fun TimeLocationCard() {
                     .padding(start = Size10, bottom = Size30),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Text(
-                    text = "Maghrib",
-                    color = Color.White,
-                    style = MaterialTheme.typography.displayMedium
+                DisplayCurrentPrayerName(
+                    prayerTimeEntity, textStyle = TextStyle(
+                        fontSize = 35.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
+
                 Spacer(modifier = Modifier.height(Size8))
                 Text(
                     text = "View Times",
@@ -178,19 +202,16 @@ private fun TimeLocationCard() {
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End
             ) {
-                Text(text = "Ajagarpara", fontWeight = FontWeight.SemiBold, color = Color.White)
-                Text(text = "-0:55:18", fontWeight = FontWeight.SemiBold, color = Color.White)
+                Text(text = "Location", fontWeight = FontWeight.SemiBold, color = Color.White)
+                DisplayCurrentPrayerTime(
+                    prayerTimeEntity,
+                    textStyle = TextStyle(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
+                )
             }
         }
     }
 }
-
-
-@Preview
-@Composable
-fun HomeScreenPreview(navController: NavController = NavController(context = LocalContext.current)) {
-    Islam24Theme {
-        HomeScreen(navController = navController)
-    }
-}
-

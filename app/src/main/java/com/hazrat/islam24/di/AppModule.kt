@@ -6,7 +6,7 @@ import com.hazrat.islam24.data.namesofallah.NameDao
 import com.hazrat.islam24.data.namesofallah.NamesDataBase
 import com.hazrat.islam24.domain.repository.namesofallah.NamesRepository
 import com.hazrat.islam24.network.namesofallah.NamesApi
-import com.hazrat.islam24.util.Constants.BASE_URL
+import com.hazrat.islam24.util.Constants.BASE_URL_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,7 +29,7 @@ object AppModule {
     @Provides
     fun provideNamesApi(): NamesApi{
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BASE_URL_NAME)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(NamesApi::class.java)
@@ -42,7 +42,8 @@ object AppModule {
             context.applicationContext,
             NamesDataBase::class.java,
             "names_database"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Singleton

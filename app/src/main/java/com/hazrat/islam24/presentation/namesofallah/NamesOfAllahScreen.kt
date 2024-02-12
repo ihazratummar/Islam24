@@ -68,7 +68,7 @@ fun NamesOfAllahScreen(viewModel: NamesViewModel = hiltViewModel(), navControlle
                 containerColor = Color.Transparent,
                 navigationIconContentColor = Color(0xFFFDD017)
             ),
-                title = { Text(text = "99 Names Of Allah") },
+                title = { Text(text = "99 Names Of Allah", color = Color.White) },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,

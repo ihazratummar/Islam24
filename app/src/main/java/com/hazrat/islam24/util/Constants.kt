@@ -7,6 +7,10 @@ object Constants {
 
 
 
-    const val BASE_URL = "https://raw.githubusercontent.com/ihazratummar/99-Names-Of-Allah/main/"
+    const val BASE_URL_NAME = "https://raw.githubusercontent.com/ihazratummar/99-Names-Of-Allah/main/"
+
+    const val BASE_URL = "https://api.aladhan.com/v1/calendar/"
+
+    const val LOCATION_BASE_URL = "https://nominatim.openstreetmap.org"
 
 }

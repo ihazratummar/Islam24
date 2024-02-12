@@ -34,4 +34,6 @@ sealed class Route (
 
     object NamesOfAllah:Route(route = "NamesOfAllah")
 
+    object UserSettings:Route(route = "UserSettingScreen")
+
 }
