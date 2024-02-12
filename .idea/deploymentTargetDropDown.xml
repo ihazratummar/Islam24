@@ -16,18 +16,18 @@
       </entry>
       <entry key="app">
         <State>
-          <targetSelectedWithDropDown>
+          <runningDeviceTargetSelectedWithDropDown>
             <Target>
-              <type value="QUICK_BOOT_TARGET" />
+              <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\hazra\.android\avd\Pixel_7_Pro_API_30.avd" />
+                  <type value="SERIAL_NUMBER" />
+                  <value value="adb-S84TQ8L7EAHYKJNB-ogsq6z._adb-tls-connect._tcp" />
                 </Key>
               </deviceKey>
             </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-02-12T06:52:35.456539Z" />
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-02-12T14:34:34.551894400Z" />
         </State>
       </entry>
     </value>

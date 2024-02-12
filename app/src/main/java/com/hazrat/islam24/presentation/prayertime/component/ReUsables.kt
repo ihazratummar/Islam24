@@ -31,6 +31,9 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.presentation.Dimens.Size10
 import com.hazrat.islam24.presentation.Dimens.Size20
 import com.hazrat.islam24.presentation.Dimens.Size30
+import com.hazrat.islam24.presentation.Dimens.Size8
+import com.hazrat.islam24.presentation.Dimens.SpSize17
+import com.hazrat.islam24.presentation.Dimens.SpSize20
 import com.hazrat.islam24.ui.theme.Islam24Theme
 
 
@@ -45,24 +48,24 @@ fun PrayerTimeSettingCard(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(Size8)
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surface
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(Size8)
         ) {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = "Icon",
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(Size30)
             )
             Column(
-                modifier = Modifier.padding(horizontal = 10.dp)
+                modifier = Modifier.padding(horizontal = Size10)
             ) {
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(Size8))
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodyLarge
@@ -105,7 +108,7 @@ fun PrayerTimeCard(
                 Icon(
                     painter = painterResource(id = icon),
                     contentDescription = "Icon",
-                    tint = Color.Unspecified,
+                    tint = Color.Green.copy(0.5f),
                     modifier = Modifier.size(Size30)
                 )
             }
@@ -116,10 +119,10 @@ fun PrayerTimeCard(
                     text = text,
                     style = TextStyle(
                         color = Color.White,
-                        fontSize = 20.sp,
+                        fontSize = SpSize20,
                         fontWeight = FontWeight.SemiBold
                     ),
-                    modifier = Modifier.padding(start = 10.dp)
+                    modifier = Modifier.padding(start = Size10)
                 )
             }
             Column(
@@ -128,11 +131,11 @@ fun PrayerTimeCard(
                 Text(
                     text = time,
                     style = TextStyle(
-                        color = Color.White,
-                        fontSize = 20.sp,
+                        color = Color.Green,
+                        fontSize = SpSize20,
                         fontWeight = FontWeight.SemiBold
                     ),
-                    modifier = Modifier.padding(start = 10.dp)
+                    modifier = Modifier.padding(start = Size10)
                 )
             }
         }
@@ -164,12 +167,12 @@ fun PrayerDateCard(
                 Text(text = enDate,
                     style = TextStyle(
                         color = Color.White,
-                        fontSize = 20.sp,
+                        fontSize = SpSize20,
                         fontWeight = FontWeight.SemiBold))
                 Text(text = hrDate,
                     style = TextStyle(
-                        color = Color.White,
-                        fontSize = 17.sp))
+                        color = Color.Green,
+                        fontSize = SpSize17))
             }
         }
     }

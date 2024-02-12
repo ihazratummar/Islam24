@@ -59,7 +59,7 @@ fun ShowData(
         topBar = {
 
             TopAppBar(title = {
-                Text(text = "Prayer Times")
+                Text(text = "Prayer Times", color = Color.White)
             },
                 actions = {
                     Icon(imageVector = Icons.Default.Settings,
@@ -68,7 +68,9 @@ fun ShowData(
                             .clickable {
                                 navController.navigate(Route.UserSettings.route)
                             }
-                            .padding(end = Size20)
+                            .padding(end = Size20),
+                        tint = Color.White
+
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
@@ -129,31 +131,31 @@ fun PrayerTimesDay(data: PrayerTimeEntity) {
             hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear}"
         )
         PrayerTimeCard(
-            icon = R.drawable.prayericon,
+            icon = R.drawable.fajr,
             text = "Fajr",
             time = getTime(data.fajrTime),
             onClick = {}
         )
         PrayerTimeCard(
-            icon = R.drawable.prayericon,
+            icon = R.drawable.dhuhr,
             text = "Dhuhr",
             time = getTime(data.dhuhrTime),
             onClick = {}
         )
         PrayerTimeCard(
-            icon = R.drawable.prayericon,
+            icon = R.drawable.asr,
             text = "Asr",
             time = getTime(data.asrTime),
             onClick = {}
         )
         PrayerTimeCard(
-            icon = R.drawable.prayericon,
+            icon = R.drawable.maghrib,
             text = "Maghrib",
             time = getTime(data.maghribTime),
             onClick = {}
         )
         PrayerTimeCard(
-            icon = R.drawable.prayericon,
+            icon = R.drawable.isha,
             text = "Isha'a",
             time = getTime(data.ishaTime),
             onClick = {}

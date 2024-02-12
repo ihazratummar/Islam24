@@ -26,7 +26,6 @@ import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.presentation.qiblapage.QiblaScreen
-import com.hazrat.islam24.presentation.quranpage.QuranScreen
 import com.hazrat.islam24.presentation.userprofile.ProfileScreen
 import com.hazrat.islam24.presentation.zakatscreen.ZakatScreen
 import com.hazrat.islam24.presentation.namesofallah.NamesOfAllahScreen
@@ -126,9 +125,6 @@ fun AppNavigator() {
             composable(route = Route.PrayerTimeScreen.route) {
                 val viewModel: PrayerTimeViewModel = hiltViewModel()
                 PrayerTimeScreen(viewModel, navController)
-            }
-            composable(route = Route.QuranPageScreen.route) {
-                QuranScreen(navController)
             }
             composable(route = Route.QiblaDirectionScreen.route) {
                 QiblaScreen(navController)

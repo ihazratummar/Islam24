@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.data.prayertime.PrayerSettingEntity
+import com.hazrat.islam24.presentation.Dimens.SpSize25
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.MethodSelectionDialog
 import com.hazrat.islam24.presentation.prayertime.component.PrayerTimeSettingCard
@@ -172,7 +173,7 @@ private fun TopBarWithBack(navController: NavController) {
         ) {
             Text(
                 text = "Settings", style = TextStyle(
-                    fontSize = 25.sp,
+                    fontSize = SpSize25,
                     color = Color.White
                 )
             )

@@ -24,6 +24,10 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.SchoolDetails
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.schoolDetailsList
+import com.hazrat.islam24.presentation.Dimens.Size10
+import com.hazrat.islam24.presentation.Dimens.Size12
+import com.hazrat.islam24.presentation.Dimens.Size4
+import com.hazrat.islam24.presentation.Dimens.Size40
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -36,7 +40,7 @@ fun SchoolSelectionDialog(
         sheetContent = {
             Surface(
                 modifier = Modifier
-                    .padding(40.dp)
+                    .padding(Size40)
                     .nestedScroll(rememberNestedScrollInteropConnection()),
                 color = Color.Transparent
             ) {
@@ -46,7 +50,7 @@ fun SchoolSelectionDialog(
                         Card(
                             modifier = Modifier.
                             fillMaxWidth()
-                                .padding(4.dp)
+                                .padding(Size4)
                                 .clickable {
                                     onSchoolSelected(school)
                                     onDismiss()
@@ -54,14 +58,14 @@ fun SchoolSelectionDialog(
                         ) {
                             Row(modifier = Modifier
                                 .fillMaxSize()
-                                .padding(12.dp),
+                                .padding(Size12),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 Text(
                                     text = school.name,
                                     color = Color.White,
-                                    modifier = Modifier.padding(start = 10.dp)
+                                    modifier = Modifier.padding(start = Size10)
                                 )
                             }
                         }

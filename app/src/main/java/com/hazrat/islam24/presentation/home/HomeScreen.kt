@@ -56,6 +56,7 @@ import com.hazrat.islam24.presentation.Dimens.Size40
 import com.hazrat.islam24.presentation.Dimens.Size50
 import com.hazrat.islam24.presentation.Dimens.Size60
 import com.hazrat.islam24.presentation.Dimens.Size8
+import com.hazrat.islam24.presentation.Dimens.SpSize20
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
@@ -207,7 +208,7 @@ private fun TimeLocationCard(
                     prayerTimeEntity,
                     textStyle = TextStyle(
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp,
+                        fontSize = SpSize20,
                         color = Color.White
                     )
                 )

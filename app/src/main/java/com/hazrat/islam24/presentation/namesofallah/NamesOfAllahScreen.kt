@@ -45,12 +45,20 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.domain.model.namesofallah.Data
 import com.hazrat.islam24.domain.model.namesofallah.En
+import com.hazrat.islam24.presentation.Dimens.Size1
+import com.hazrat.islam24.presentation.Dimens.Size10
+import com.hazrat.islam24.presentation.Dimens.Size15
+import com.hazrat.islam24.presentation.Dimens.Size2
+import com.hazrat.islam24.presentation.Dimens.Size20
+import com.hazrat.islam24.presentation.Dimens.Size3
+import com.hazrat.islam24.presentation.Dimens.Size35
+import com.hazrat.islam24.presentation.Dimens.Size5
+import com.hazrat.islam24.presentation.Dimens.SpSize15
+import com.hazrat.islam24.presentation.Dimens.SpSize25
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +86,7 @@ fun NamesOfAllahScreen(viewModel: NamesViewModel = hiltViewModel(), navControlle
                                 navController.popBackStack()
 
                             }
-                            .padding(horizontal = 10.dp)
+                            .padding(horizontal = Size10)
                     )
                 },
                 scrollBehavior = scrollBehavior
@@ -117,8 +125,8 @@ fun NameCard(name: Data) {
             .clickable {
                 expanded = !expanded
             }
-            .padding(horizontal = 15.dp, vertical = 1.dp),
-        shape = RoundedCornerShape(10.dp),
+            .padding(horizontal = Size15, vertical = Size1),
+        shape = RoundedCornerShape(Size10),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
         Column() {
@@ -126,14 +134,14 @@ fun NameCard(name: Data) {
                 Column(
                     modifier = Modifier
                         .weight(0.1f)
-                        .padding(start = 5.dp, top = 20.dp),
+                        .padding(start = Size5, top = Size20),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = "${name.number}.", style = TextStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp,
+                            fontSize = SpSize15,
                             color = Color(0xffFDD017)
                         )
                     )
@@ -141,23 +149,23 @@ fun NameCard(name: Data) {
                 Column(
                     modifier = Modifier
                         .weight(0.6f)
-                        .padding(5.dp)
+                        .padding(Size5)
                 ) {
                     Text(
                         text = name.transliteration, style = TextStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 25.sp,
+                            fontSize = SpSize25,
                             color = Color(0xFFFFFFFF)
                         )
                     )
                     Text(
                         text = name.en.meaning, style = TextStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp,
+                            fontSize = SpSize15,
                             color = Color(0xC8FDD017)
                         )
                     )
-                    Spacer(modifier = Modifier.height(3.dp))
+                    Spacer(modifier = Modifier.height(Size3))
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Arrow"
@@ -166,7 +174,7 @@ fun NameCard(name: Data) {
                 Column(
                     modifier = Modifier
                         .weight(0.3f)
-                        .padding(5.dp),
+                        .padding(Size5),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -174,20 +182,20 @@ fun NameCard(name: Data) {
                         text = name.name,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 25.sp,
+                            fontSize = SpSize25,
                             color = Color(0xffFDD017)
                         )
                     )
                 }
             }
             AnimatedVisibility(visible = expanded) {
-                Divider(thickness = 2.dp, color = Color(0xffFDD017))
+                Divider(thickness =Size2, color = Color(0xffFDD017))
                 Column(
                     modifier = Modifier
-                        .padding(start = 35.dp, top = 20.dp, end = 10.dp)
+                        .padding(start = Size35, top = Size20, end = Size10)
                 ) {
                     Text(text = "Ayath: ${name.found}", color = Color.White)
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(Size5))
                     Text(text = name.en.desc, color = Color.White)
                 }
             }
