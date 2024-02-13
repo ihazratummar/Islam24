@@ -54,6 +54,7 @@ data class PrayerTimeEntity(
     val hijriMonthEn: String,
     val hijriMonthNumber:Int,
     val hijriYear: String,
+    val hijriab: String,
     val timezone: String,
     val methodId: Int,
     val methodName: String?,

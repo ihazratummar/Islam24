@@ -18,90 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-
-
-private fun parsePrayerTime(prayerTime: String): LocalTime? {
-    return try {
-        LocalTime.parse(prayerTime.substring(0, 5), DateTimeFormatter.ofPattern("HH:mm"))
-    } catch (e: Exception) {
-        null
-    }
-}
-
-private fun calculateTimeDifference(currentTime: LocalTime, nextPrayerTime: LocalTime): LocalTime {
-    return nextPrayerTime
-        .minusHours(currentTime.hour.toLong())
-        .minusMinutes(currentTime.minute.toLong())
-        .minusSeconds(currentTime.second.toLong())
-}
-
-
-
-private fun calculateTimeDifferences(currentTime: LocalTime, nextPrayerTime: LocalTime): Long {
-    val currentSeconds = currentTime.toSecondOfDay()
-    val nextSeconds = nextPrayerTime.toSecondOfDay()
-    return nextSeconds - currentSeconds.toLong()
-}
-@Composable
-fun DisplayCurrentPrayerTime(
-    data: PrayerTimeEntity,
-    textStyle: TextStyle = TextStyle()
-) {
-    var currentTime by remember { mutableStateOf(LocalTime.now()) }
-
-    DisposableEffect(Unit) {
-        val coroutineScope = CoroutineScope(Dispatchers.Default)
-
-        val job = coroutineScope.launch {
-            while (true) {
-                delay(1000) // Update every second
-                currentTime = LocalTime.now()
-            }
-        }
-
-        onDispose {
-            job.cancel()
-        }
-    }
-
-    val prayerTimes = listOf(
-        "Fajr" to data.fajrTime,
-        "Dhuhr" to data.dhuhrTime,
-        "Asr" to data.asrTime,
-        "Maghrib" to data.maghribTime,
-        "Isha" to data.ishaTime,
-    )
-
-    // Find the index of the current prayer time
-    val currentIndex = prayerTimes.indexOfFirst { (_, time) ->
-        val parsedTime = parsePrayerTime(time)
-        parsedTime != null && currentTime.isAfter(parsedTime.minusHours(1)) && currentTime.isBefore(parsedTime.plusHours(1))
-    }
-
-    if (currentIndex != -1) {
-        val (_, currentPrayerTime) = prayerTimes[currentIndex]
-        val parsedCurrentPrayerTime = parsePrayerTime(currentPrayerTime)!!
-        val prayerEndTime = parsedCurrentPrayerTime.plusHours(1) // End time for the current prayer
-
-        if (currentTime.isBefore(prayerEndTime)) {
-            // Within one hour after the end of the prayer time
-            Text(text = "Now", style = textStyle)
-        } else {
-            // After the current prayer time and more than one hour after its end
-            val nextPrayerIndex = (currentIndex + 1).coerceIn(0, prayerTimes.size - 1)
-            val (_, nextPrayerTime) = prayerTimes[nextPrayerIndex]
-            val parsedNextPrayerTime = parsePrayerTime(nextPrayerTime)!!
-            val timeUntilNextPrayer = calculateTimeDifferences(currentTime, parsedNextPrayerTime)
-            val hours = timeUntilNextPrayer / 3600
-            val minutes = (timeUntilNextPrayer % 3600) / 60
-            val seconds = timeUntilNextPrayer % 60
-            val formattedTimeUntilNextPrayer = String.format("-%02d:%02d:%02d", hours, minutes, seconds)
-            Text(text = formattedTimeUntilNextPrayer, style = textStyle)
-        }
-    }
-}
-
-
+import kotlin.math.abs
 
 @Composable
 fun DisplayCurrentPrayerName(
@@ -125,33 +42,30 @@ fun DisplayCurrentPrayerName(
         }
     }
 
-    val prayerTimes = listOf(
-        "Fajr" to data.fajrTime,
-        "Sunrise" to data.sunriseTime,
-        "Dhuhr" to data.dhuhrTime,
-        "Asr" to data.asrTime,
-        "Maghrib" to data.maghribTime,
-        "Isha" to data.ishaTime
+    // Define time ranges and their corresponding actions
+    val timeRanges = listOf(
+        "Fajr" to Pair(LocalTime.parse(data.imsakTime.split(" ")[0]), LocalTime.parse(data.sunriseTime.split(" ")[0])),
+        "Dhuhr" to Pair(LocalTime.parse(data.sunriseTime.split(" ")[0]), LocalTime.parse(data.asrTime.split(" ")[0])),
+        "Asr" to Pair(LocalTime.parse(data.asrTime.split(" ")[0]), LocalTime.parse(data.maghribTime.split(" ")[0])),
+        "Maghrib" to Pair(LocalTime.parse(data.maghribTime.split(" ")[0]), LocalTime.parse(data.ishaTime.split(" ")[0])),
+        "Isha's" to Pair(LocalTime.parse(data.ishaTime.split(" ")[0]), LocalTime.parse(data.firstThirdTime.split(" ")[0]))
     )
 
-    var currentPrayerName: String? = null
+    var currentPrayerAction: String? = null
 
-    // Iterate through the list of prayer times
-    for ((prayerName, prayerTime) in prayerTimes) {
-        val parsedPrayerTime = parsePrayerTime(prayerTime)
-
-        // Check if the current time is between the current and next prayer times
-        if (parsedPrayerTime != null && currentTime.isAfter(parsedPrayerTime)) {
-            currentPrayerName = prayerName
-        } else {
-            // If the current time is before the current prayer time, break the loop
+    // Find the action for the current time
+    for ((action, timeRange) in timeRanges) {
+        val (startTime, endTime) = timeRange
+        Log.d("PrayerTime", "$action: Start Time: $startTime, End Time: $endTime")
+        if (currentTime in startTime..endTime) {
+            currentPrayerAction = action
             break
         }
     }
 
-    currentPrayerName?.let { prayerName ->
+    currentPrayerAction?.let { action ->
         Text(
-            text = prayerName,
+            text = action,
             color = Color.White,
             style = textStyle
         )

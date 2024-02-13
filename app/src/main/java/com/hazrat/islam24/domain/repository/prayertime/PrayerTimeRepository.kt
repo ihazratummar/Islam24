@@ -81,6 +81,7 @@ class PrayerTimeRepository @Inject constructor(
             hijriMonthEn = date.hijri.month.en,
             hijriMonthNumber = date.hijri.month.number,
             hijriYear = date.hijri.year,
+            hijriab = date.hijri.designation.abbreviated,
             timezone = meta.timezone,
             methodId = meta.method.id,
             methodName = meta.method.name,

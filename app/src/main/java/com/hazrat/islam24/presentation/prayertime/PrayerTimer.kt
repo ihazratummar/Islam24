@@ -33,8 +33,6 @@ import com.hazrat.islam24.data.prayertime.PrayerTimeEntity
 import com.hazrat.islam24.presentation.Dimens.Size10
 import com.hazrat.islam24.presentation.Dimens.Size20
 import com.hazrat.islam24.presentation.nvgraph.Route
-import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
-import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerTime
 import com.hazrat.islam24.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.util.DateUtil
@@ -128,12 +126,18 @@ fun PrayerTimesDay(data: PrayerTimeEntity) {
     ) {
         PrayerDateCard(
             enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",
-            hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear}"
+            hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear} ${data.hijriab}"
         )
         PrayerTimeCard(
             icon = R.drawable.fajr,
             text = "Fajr",
             time = getTime(data.fajrTime),
+            onClick = {}
+        )
+        PrayerTimeCard(
+            icon = R.drawable.fajr,
+            text = "Sunrise",
+            time = getTime(data.sunriseTime),
             onClick = {}
         )
         PrayerTimeCard(

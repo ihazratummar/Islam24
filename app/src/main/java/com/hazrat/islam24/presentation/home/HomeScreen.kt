@@ -56,13 +56,9 @@ import com.hazrat.islam24.presentation.Dimens.Size40
 import com.hazrat.islam24.presentation.Dimens.Size50
 import com.hazrat.islam24.presentation.Dimens.Size60
 import com.hazrat.islam24.presentation.Dimens.Size8
-import com.hazrat.islam24.presentation.Dimens.SpSize20
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
-import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
-import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerTime
-import com.hazrat.islam24.ui.theme.Islam24Theme
 
 @Composable
 fun HomeScreen(
@@ -204,14 +200,7 @@ private fun TimeLocationCard(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(text = "Location", fontWeight = FontWeight.SemiBold, color = Color.White)
-                DisplayCurrentPrayerTime(
-                    prayerTimeEntity,
-                    textStyle = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = SpSize20,
-                        color = Color.White
-                    )
-                )
+
             }
         }
     }
