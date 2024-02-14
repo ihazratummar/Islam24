@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.data.location.locationdetails.LocationDetailsEntity
 import com.hazrat.islam24.data.prayertime.PrayerTimeEntity
 import com.hazrat.islam24.presentation.Dimens.Size10
 import com.hazrat.islam24.presentation.Dimens.Size20
@@ -56,6 +57,7 @@ import com.hazrat.islam24.presentation.Dimens.Size40
 import com.hazrat.islam24.presentation.Dimens.Size50
 import com.hazrat.islam24.presentation.Dimens.Size60
 import com.hazrat.islam24.presentation.Dimens.Size8
+import com.hazrat.islam24.presentation.common.LocationName
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
@@ -69,6 +71,8 @@ fun HomeScreen(
 
     val prayerTimesState = prayerTimeViewModel.prayerTimes.collectAsState()
     val prayerTimes = prayerTimesState.value
+    val locationNameState = prayerTimeViewModel.locationName.collectAsState()
+    val locationName = locationNameState.value
 
     Surface(
         modifier = Modifier,
@@ -85,11 +89,11 @@ fun HomeScreen(
             Text(text = "", style = MaterialTheme.typography.bodySmall)
 //            Text(text = "Hazrat Ummar Shaikh", style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(Size60))
-            if (prayerTimes.isNotEmpty()) {
-                TimeLocationCard(prayerTimes.first(), navigateToPrayerTime)
+            if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
+                TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
             } else {
                 // Handle the case where prayerTimes is empty
-                Text(text = "No prayer times available")
+                Text(text = "Salat Time")
             }
 
             Spacer(modifier = Modifier.height(Size30))
@@ -143,8 +147,9 @@ private fun BackGroundCard() {
 /// TIME LOCATION CARD
 @Composable
 private fun TimeLocationCard(
-    prayerTimeEntity: PrayerTimeEntity,
+    prayerTimeEntity: List<PrayerTimeEntity>,
     navigateToPrayerTime: () -> Unit,
+    locationDetailsEntity: LocationDetailsEntity
 ) {
     Card(
         modifier = Modifier
@@ -199,8 +204,7 @@ private fun TimeLocationCard(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End
             ) {
-                Text(text = "Location", fontWeight = FontWeight.SemiBold, color = Color.White)
-
+                LocationName(locationDetailsEntity)
             }
         }
     }

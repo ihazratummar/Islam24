@@ -135,7 +135,7 @@ fun PrayerTimesDay(data: PrayerTimeEntity) {
             onClick = {}
         )
         PrayerTimeCard(
-            icon = R.drawable.fajr,
+            icon = R.drawable.sunrise,
             text = "Sunrise",
             time = getTime(data.sunriseTime),
             onClick = {}

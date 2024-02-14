@@ -44,7 +44,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
 //            prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-//            locationNameRepository.getLocationName()
+            locationNameRepository.getLocationName()
 //            locationNameRepository.getLocationDetails()
         }
 
