@@ -7,8 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.hazrat.islam24.data.location.locationdetails.LocationDetailsEntity
-import com.hazrat.islam24.presentation.Dimens.SpSize10
+import com.hazrat.islam24.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.presentation.Dimens.SpSize20
 import com.hazrat.islam24.ui.theme.Islam24Theme
 
@@ -21,7 +20,8 @@ fun LocationName(locationDetailsEntity: LocationDetailsEntity) {
 
 @Composable
 fun Location(modifier: Modifier = Modifier,
-    locationDetailsEntity: LocationDetailsEntity) {
+    locationDetailsEntity: LocationDetailsEntity
+) {
     Text(text = locationDetailsEntity.city?: locationDetailsEntity.village?:"",
         modifier = modifier,
         style = TextStyle(

@@ -6,7 +6,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -18,8 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
-import com.hazrat.islam24.data.prayertime.PrayerTimeEntity
-import com.hazrat.islam24.presentation.TasbihScreen
+import com.hazrat.islam24.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.presentation.home.HomeScreen
 import com.hazrat.islam24.presentation.navigator.component.AppBottomNavigation
 import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem

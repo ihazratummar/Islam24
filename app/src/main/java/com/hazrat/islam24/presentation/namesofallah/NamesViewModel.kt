@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.domain.model.namesofallah.Data
-import com.hazrat.islam24.domain.repository.namesofallah.NamesRepository
+import com.hazrat.islam24.domain.repository.NamesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

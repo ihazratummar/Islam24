@@ -6,8 +6,8 @@ package com.hazrat.islam24.presentation.prayertime
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.islam24.data.prayertime.PrayerTimeEntity
-import com.hazrat.islam24.data.location.locationdetails.LocationDetailsEntity
+import com.hazrat.islam24.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.domain.repository.location.LocationNameRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,6 +73,5 @@ class PrayerTimeViewModel @Inject constructor(
             locationNameRepository.getLocationName()
             Log.d("GettingSomething", "${prayerTimes.value.size}")
         }
-
     }
 }

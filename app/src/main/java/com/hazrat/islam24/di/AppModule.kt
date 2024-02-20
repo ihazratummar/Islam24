@@ -2,10 +2,10 @@ package com.hazrat.islam24.di
 
 import android.content.Context
 import androidx.room.Room
-import com.hazrat.islam24.data.namesofallah.NameDao
-import com.hazrat.islam24.data.namesofallah.NamesDataBase
-import com.hazrat.islam24.domain.repository.namesofallah.NamesRepository
-import com.hazrat.islam24.network.namesofallah.NamesApi
+import com.hazrat.islam24.data.dao.NameDao
+import com.hazrat.islam24.data.database.NamesDataBase
+import com.hazrat.islam24.domain.repository.NamesRepository
+import com.hazrat.islam24.network.NamesApi
 import com.hazrat.islam24.util.Constants.BASE_URL_NAME
 import dagger.Module
 import dagger.Provides
@@ -27,7 +27,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideNamesApi(): NamesApi{
+    fun provideNamesApi(): NamesApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL_NAME)
             .addConverterFactory(GsonConverterFactory.create())
@@ -48,7 +48,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideNameDao(dataBase: NamesDataBase): NameDao{
+    fun provideNameDao(dataBase: NamesDataBase): NameDao {
         return dataBase.nameDao()
     }
 

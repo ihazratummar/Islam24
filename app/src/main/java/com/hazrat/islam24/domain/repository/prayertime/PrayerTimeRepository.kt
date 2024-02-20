@@ -4,11 +4,11 @@ package com.hazrat.islam24.domain.repository.prayertime
 
 
 import android.util.Log
-import com.hazrat.islam24.data.prayertime.PrayerTimeDao
-import com.hazrat.islam24.data.prayertime.PrayerTimeEntity
+import com.hazrat.islam24.data.dao.PrayerTimeDao
+import com.hazrat.islam24.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.network.PrayerTimeApi
 import com.hazrat.islam24.util.DateUtil
-import com.hazrat.islam24.data.location.coordinents.LocationEntity
+import com.hazrat.islam24.data.entity.LocationEntity
 import com.hazrat.islam24.domain.model.prayertime.prayertimemodel.ApiResponse
 import com.hazrat.islam24.domain.model.prayertime.prayertimemodel.Data
 import com.hazrat.islam24.domain.repository.location.LocationRepository

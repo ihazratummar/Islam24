@@ -1,21 +1,15 @@
 package com.hazrat.islam24.domain.repository.location
 
 import android.util.Log
-import com.hazrat.islam24.domain.repository.location.LocationRepository
 import com.hazrat.islam24.network.LocationNameApi
-import com.hazrat.islam24.data.location.coordinents.LocationEntity
-import com.hazrat.islam24.data.location.locationdetails.LocationDetailsEntity
-import com.hazrat.islam24.data.location.locationdetails.LocationNameDao
-import com.hazrat.islam24.domain.model.locationmodel.Address
+import com.hazrat.islam24.data.entity.LocationEntity
+import com.hazrat.islam24.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.data.dao.LocationNameDao
 import com.hazrat.islam24.domain.model.locationmodel.LocationNameFinder
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.HttpException
-import java.io.IOException
 import javax.inject.Inject
 
 class LocationNameRepository @Inject constructor(
@@ -25,7 +19,7 @@ class LocationNameRepository @Inject constructor(
 ) {
     suspend fun getLocationName(): LocationNameFinder {
 
-        val location:LocationEntity? =  locationRepository.getLocation()
+        val location: LocationEntity? =  locationRepository.getLocation()
         val lat = location?.latitude?: 24.628
         val lon = location?.longitude?: 88.011
         Log.d("getLocationName", "$lat $lon")
@@ -36,11 +30,12 @@ class LocationNameRepository @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val response = getLocationName()
-                val locationName = response.address.village ?: response.address.city
+                val locationName = response.address.village ?: response.address.city ?: response.address.town
 
                 val locationEntity = LocationDetailsEntity(
                     village = response.address.village,
-                    city = response.address.city
+                    city = response.address.city,
+                    town = response.address.town
                 )
                 saveLocation(locationEntity)
 

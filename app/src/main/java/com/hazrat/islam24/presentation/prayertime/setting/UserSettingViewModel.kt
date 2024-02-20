@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.islam24.data.prayertime.PrayerSettingEntity
+import com.hazrat.islam24.data.entity.PrayerSettingEntity
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.MethodDetails
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.SchoolDetails
 import com.hazrat.islam24.domain.repository.prayertime.PrayerSettingRepository
