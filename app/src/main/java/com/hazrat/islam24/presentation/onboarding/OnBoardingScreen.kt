@@ -23,6 +23,8 @@ import androidx.compose.ui.zIndex
 import com.hazrat.islam24.presentation.Dimens.Padding30
 import com.hazrat.islam24.presentation.Dimens.Padding50
 import com.hazrat.islam24.presentation.Dimens.Size10
+import com.hazrat.islam24.presentation.Dimens.Size30
+import com.hazrat.islam24.presentation.Dimens.Size50
 import com.hazrat.islam24.presentation.common.ContinueButton
 import com.hazrat.islam24.presentation.common.HyperLinkText
 import com.hazrat.islam24.presentation.onboarding.components.OnBoardingPage
@@ -43,7 +45,7 @@ fun OnBoardingScreen(
         Row(modifier = Modifier
             .fillMaxSize()
             .zIndex(2f)
-            .padding(start = Padding30, end = Padding30, bottom = Padding50)
+            .padding(start = Size30, end = Size30, bottom = Size50)
             .navigationBarsPadding(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom

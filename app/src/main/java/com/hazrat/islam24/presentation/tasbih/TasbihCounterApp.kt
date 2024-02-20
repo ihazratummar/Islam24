@@ -49,6 +49,22 @@ import com.hazrat.islam24.data.manager.TasbihRepositoryImpl
 import com.hazrat.islam24.domain.model.TasbihPhrase
 import com.hazrat.islam24.domain.model.tasbihPhraseList
 import com.hazrat.islam24.domain.repository.TasbihRepository
+import com.hazrat.islam24.presentation.Dimens.Size1
+import com.hazrat.islam24.presentation.Dimens.Size10
+import com.hazrat.islam24.presentation.Dimens.Size15
+import com.hazrat.islam24.presentation.Dimens.Size150
+import com.hazrat.islam24.presentation.Dimens.Size2
+import com.hazrat.islam24.presentation.Dimens.Size20
+import com.hazrat.islam24.presentation.Dimens.Size200
+import com.hazrat.islam24.presentation.Dimens.Size300
+import com.hazrat.islam24.presentation.Dimens.Size4
+import com.hazrat.islam24.presentation.Dimens.Size5
+import com.hazrat.islam24.presentation.Dimens.Size50
+import com.hazrat.islam24.presentation.Dimens.Size8
+import com.hazrat.islam24.presentation.Dimens.Size9
+import com.hazrat.islam24.presentation.Dimens.SpSize20
+import com.hazrat.islam24.presentation.Dimens.SpSize30
+import com.hazrat.islam24.presentation.Dimens.SpSize50
 import com.hazrat.islam24.presentation.tasbih.tasbihcomponent.RepeatCountDialog
 import com.hazrat.islam24.ui.theme.Hidayat
 import com.hazrat.islam24.ui.theme.Islam24Theme
@@ -81,7 +97,7 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(Size10))
         Column (modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -97,11 +113,11 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                 Card(
                     modifier = Modifier
                         .clickable { isDialogOpen = true }
-                        .width(150.dp)
-                        .height(50.dp)
-                        .padding(5.dp),
+                        .width(Size150)
+                        .height(Size50)
+                        .padding(Size5),
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(1.dp, color = Color.White),
+                    border = BorderStroke(Size1, color = Color.White),
                 ) {
                     Row(modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -109,7 +125,7 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                     ) {
                         Text(
                             "Set Count: $repeatCount", modifier = Modifier
-                                .padding(5.dp),
+                                .padding(Size5),
                             fontFamily = Hidayat
                         )
                     }
@@ -118,11 +134,11 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                 // Round Counter
                 Card(
                     modifier = Modifier
-                        .width(150.dp)
-                        .height(50.dp)
-                        .padding(5.dp),
+                        .width(Size150)
+                        .height(Size50)
+                        .padding(Size5),
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(1.dp, color = Color.White)
+                    border = BorderStroke(Size1, color = Color.White)
                 ) {
                     Row (modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -131,7 +147,7 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                         Text(
                             "Round: $roundCount",
                             modifier = Modifier
-                                .padding(5.dp),
+                                .padding(Size5),
                             fontFamily = Hidayat
                         )
                     }
@@ -177,10 +193,10 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                     vibrate(vibrator!!)
                 },
                 modifier = Modifier
-                    .size(300.dp)
-                    .padding(16.dp),
+                    .size(Size300)
+                    .padding(Size15),
                 shape = CircleShape,
-                border = BorderStroke(2.dp, Color.White),
+                border = BorderStroke(Size2, Color.White),
                 colors = ButtonDefaults.buttonColors(Color.Transparent)
             ) {
                 Column(
@@ -191,7 +207,7 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                         text = "${tasbih?.tasbihCount} / $repeatCount",
                         style = TextStyle(
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 50.sp,
+                            fontSize = SpSize50,
                             color = Color.White,
                             fontFamily = Hidayat
                         )
@@ -208,7 +224,7 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
 
 
         // Big Circle Counter
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(Size10))
 
         // Reset Button
         Button(
@@ -218,13 +234,14 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = Size10),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            border = BorderStroke(1.dp, color = Color(0xFFFFFFFF)),
-            shape = RoundedCornerShape(9.dp)
+            border = BorderStroke(Size1, color = Color(0xFFFFFFFF)),
+            shape = RoundedCornerShape(Size9)
         ) {
-            Text("Reset",fontFamily = Hidayat, color = Color.White, fontSize = 20.sp)
+            Text("Reset",fontFamily = Hidayat, color = Color.White, fontSize = SpSize20)
         }
+        Spacer(modifier = Modifier.height(Size10))
 
         // Dialog for Repeat Count Selection
         if (isDialogOpen) {
@@ -249,11 +266,11 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
 
         Card(
             modifier = Modifier
-                .width(150.dp)
-                .height(50.dp)
-                .padding(5.dp),
+                .width(Size200)
+                .height(Size50)
+                .padding(Size5),
             colors = CardDefaults.cardColors(Color.Transparent),
-            border = BorderStroke(1.dp, color = Color.White)
+            border = BorderStroke(Size1, color = Color.White)
         ) {
             Row(modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -263,7 +280,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
                     "Total Count: ${tasbih?.totalCount}",
                     color = Color.White,
                     modifier = Modifier
-                        .padding(5.dp),
+                        .padding(Size5),
                     fontFamily = Hidayat
                 )
             }
@@ -279,15 +296,15 @@ private fun TasbihHeader(
     val selectedPhrase = viewModel.selectedPhrase
     Card(
         modifier = Modifier
-            .padding(8.dp)
-            .width(300.dp)
-            .height(200.dp)
+            .padding(Size8)
+            .width(Size300)
+            .height(Size200)
             .clickable {
                 viewModel.selectedPhrase = phrase
                 viewModel.resetTasbihCount()
             },
-        border = BorderStroke(1.dp, color = Color(0xFFFFBF00)),
-        elevation = CardDefaults.cardElevation(4.dp),
+        border = BorderStroke(Size1, color = Color(0xFFFFFFFF)),
+        elevation = CardDefaults.cardElevation(Size4),
         colors = CardDefaults.cardColors(
             containerColor = if (phrase == selectedPhrase) Color(0xFF195710) else Color(0xFF042C15)
         )
@@ -295,7 +312,7 @@ private fun TasbihHeader(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 50.dp),
+                .padding(horizontal = Size20, vertical = Size50),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -303,7 +320,7 @@ private fun TasbihHeader(
                 phrase.arText, style =
                 TextStyle(fontWeight = FontWeight.Bold),
                 color = Color.Green,
-                fontSize = 30.sp,
+                fontSize = SpSize30,
                 textAlign = TextAlign.Center
             )
             Text(
@@ -313,7 +330,7 @@ private fun TasbihHeader(
                     color = Color.White,
                     fontFamily = Hidayat
                 ),
-                fontSize = 20.sp,
+                fontSize = SpSize20,
                 textAlign = TextAlign.Center
 
             )

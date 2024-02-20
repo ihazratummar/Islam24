@@ -15,13 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hazrat.islam24.ui.theme.Hidayat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasbihScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.padding(horizontal = 10.dp),
-        topBar = { TopAppBar(title = { Text(text = "Tasbih Count")},
+        topBar = { TopAppBar(title = { Text(text = "Tasbih Count",
+            fontFamily = Hidayat,
+            color = Color.White)},
             navigationIcon = {
                 Icon(imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Go Back",
