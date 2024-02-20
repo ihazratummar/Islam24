@@ -35,19 +35,11 @@ import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.presentation.Dimens.Size10
-import com.hazrat.islam24.presentation.Dimens.Size200
-import com.hazrat.islam24.presentation.Dimens.Size250
-import com.hazrat.islam24.presentation.Dimens.Size30
-import com.hazrat.islam24.presentation.Dimens.Size300
-import com.hazrat.islam24.presentation.Dimens.Size40
-import com.hazrat.islam24.presentation.Dimens.Size50
-import com.hazrat.islam24.presentation.Dimens.Size60
-import com.hazrat.islam24.presentation.Dimens.Size8
 import com.hazrat.islam24.presentation.common.LocationName
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
+import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
 fun HomeScreen(
@@ -70,12 +62,12 @@ fun HomeScreen(
             modifier = Modifier
                 .statusBarsPadding()
                 .fillMaxSize()
-                .padding(Size10),
+                .padding(MaterialTheme.dimens.size10),
             verticalArrangement = Arrangement.Top
         ) {
             Text(text = "", style = MaterialTheme.typography.bodySmall)
 //            Text(text = "Hazrat Ummar Shaikh", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(Size60))
+            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
             if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
                 TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
             } else {
@@ -83,7 +75,7 @@ fun HomeScreen(
                 Text(text = "Salat Time")
             }
 
-            Spacer(modifier = Modifier.height(Size30))
+            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size30))
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -105,7 +97,7 @@ private fun BackGroundCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(Size250)
+            .height(MaterialTheme.dimens.size250)
             .background(
                 brush = Brush.verticalGradient(
                     listOf(
@@ -115,7 +107,10 @@ private fun BackGroundCard() {
 
                     )
             ),
-        shape = RoundedCornerShape(bottomEnd = Size50, bottomStart = Size50),
+        shape = RoundedCornerShape(
+            bottomEnd = MaterialTheme.dimens.size50,
+            bottomStart = MaterialTheme.dimens.size50
+        ),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
         Image(
@@ -123,8 +118,13 @@ private fun BackGroundCard() {
             contentDescription = "masjidimage",
             modifier = Modifier
                 .fillMaxSize()
-                .clip(shape = RoundedCornerShape(bottomStart = Size50, bottomEnd = Size50))
-                .size(Size300)
+                .clip(
+                    shape = RoundedCornerShape(
+                        bottomStart = MaterialTheme.dimens.size50,
+                        bottomEnd = MaterialTheme.dimens.size50
+                    )
+                )
+                .size(MaterialTheme.dimens.size300)
 
         )
     }
@@ -141,7 +141,7 @@ private fun TimeLocationCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(Size200)
+            .height(MaterialTheme.dimens.size200)
             .background(
                 brush = Brush.verticalGradient(
                     listOf(
@@ -160,13 +160,16 @@ private fun TimeLocationCard(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(Size10)
+                .padding(MaterialTheme.dimens.size10)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.5f)
-                    .padding(start = Size10, bottom = Size30),
+                    .padding(
+                        start = MaterialTheme.dimens.size20,
+                        bottom = MaterialTheme.dimens.size30
+                    ),
                 verticalArrangement = Arrangement.Bottom
             ) {
                 DisplayCurrentPrayerName(
@@ -176,18 +179,23 @@ private fun TimeLocationCard(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(Size8))
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
                 Text(
                     text = "View Times",
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.5f)
-                    .padding(start = Size10, bottom = Size40, end = Size30, top = Size10),
+                    .padding(
+                        start = MaterialTheme.dimens.size10,
+                        bottom = MaterialTheme.dimens.size40,
+                        end = MaterialTheme.dimens.size40,
+                        top = MaterialTheme.dimens.size20
+                    ),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End
             ) {

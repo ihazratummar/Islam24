@@ -1,11 +1,13 @@
 package com.hazrat.islam24.presentation.tasbih
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -16,23 +18,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hazrat.islam24.ui.theme.Hidayat
+import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasbihScreen(navController: NavController) {
     Scaffold(
-        modifier = Modifier.padding(horizontal = 10.dp),
-        topBar = { TopAppBar(title = { Text(text = "Tasbih Count",
-            fontFamily = Hidayat,
-            color = Color.White)},
-            navigationIcon = {
-                Icon(imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Go Back",
-                    modifier = Modifier.clickable {
-                        navController.popBackStack()
-                    })
-            },
-            colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)) }
+        modifier = Modifier.padding(horizontal = MaterialTheme.dimens.size10),
+//            .navigationBarsPadding(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Tasbih Count",
+                        fontFamily = Hidayat,
+                        color = Color.White,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                },
+                navigationIcon = {
+                    Icon(imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Go Back",
+                        modifier = Modifier.clickable {
+                            navController.popBackStack()
+                        })
+                },
+                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
+            )
+        }
     ) {
         TasbihCounterApp(modifier = Modifier.padding(it))
     }

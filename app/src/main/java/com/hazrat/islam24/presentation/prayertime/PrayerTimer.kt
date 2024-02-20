@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -27,11 +28,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.presentation.Dimens.Size10
-import com.hazrat.islam24.presentation.Dimens.Size20
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.presentation.prayertime.component.PrayerTimeCard
+import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
 
 @Composable
@@ -63,7 +63,7 @@ fun ShowData(
                             .clickable {
                                 navController.navigate(Route.UserSettings.route)
                             }
-                            .padding(end = Size20),
+                            .padding(end = MaterialTheme.dimens.size20),
                         tint = Color.White
 
                     )
@@ -119,7 +119,7 @@ fun ViewPager(viewModel: PrayerTimeViewModel, prayerTimes: List<PrayerTimeEntity
 fun PrayerTimesDay(data: PrayerTimeEntity) {
 
     Column(
-        modifier = Modifier.padding(top = Size10)
+        modifier = Modifier.padding(top = MaterialTheme.dimens.size10)
     ) {
         PrayerDateCard(
             enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",

@@ -4,24 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,12 +24,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
-import com.hazrat.islam24.presentation.Dimens.Size8
-import com.hazrat.islam24.presentation.Dimens.Size80
-import com.hazrat.islam24.presentation.Dimens.Size90
+import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
 fun LazyRowWithCards(navController: NavController) {
@@ -71,16 +63,16 @@ fun LazyRowWithCards(navController: NavController) {
                 }
                 Card(
                     modifier = Modifier
-                        .width(Size80)
-                        .height(Size80)
-                        .padding(Size8)
+                        .width(MaterialTheme.dimens.size80)
+                        .height(MaterialTheme.dimens.size80)
+                        .padding(MaterialTheme.dimens.size8)
                         .clickable {
-                            when(index){
+                            when (index) {
                                 0 -> navController.navigate("NamesOfAllah")
                                 1 -> navController.navigate("TasbihScreen")
                             }
                         }
-                        .clip(RoundedCornerShape(Size8))
+                        .clip(RoundedCornerShape(MaterialTheme.dimens.size8))
                         .then(cardModifier),
                     colors = CardDefaults.cardColors(Color.Transparent)
                 ) {
@@ -88,11 +80,12 @@ fun LazyRowWithCards(navController: NavController) {
                         painter = painterResource(id = icons[index]),
                         contentDescription = null,
                         tint = Color.Unspecified,
-                        modifier = Modifier.size(Size80)
+                        modifier = Modifier.size(MaterialTheme.dimens.size100)
                     )
                 }
                 Text(names[index], color = Color.White)
             }
+            Spacer(modifier = Modifier.width(MaterialTheme.dimens.size10))
 
         }
     }

@@ -21,9 +21,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
-import com.hazrat.islam24.presentation.Dimens.IconSize
-import com.hazrat.islam24.presentation.Dimens.Size20
 import com.hazrat.islam24.ui.theme.Islam24Theme
+import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
 fun AppBottomNavigation(
@@ -49,7 +48,7 @@ fun AppBottomNavigation(
                         Icon(
                             painter = painterResource(id = item.icon),
                             contentDescription = null,
-                            modifier = Modifier.size(Size20 *1.5f)
+                            modifier = Modifier.size(MaterialTheme.dimens.size20 *1.5f)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         if (isSelected){

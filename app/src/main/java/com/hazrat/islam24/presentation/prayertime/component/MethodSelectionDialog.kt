@@ -26,14 +26,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import com.hazrat.islam24.ui.theme.Islam24Theme
+import androidx.compose.ui.unit.sp
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.MethodDetails
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.prayerMethods
-import com.hazrat.islam24.presentation.Dimens.Size10
-import com.hazrat.islam24.presentation.Dimens.Size20
-import com.hazrat.islam24.presentation.Dimens.Size30
-import com.hazrat.islam24.presentation.Dimens.Size5
-import com.hazrat.islam24.presentation.Dimens.SpSize10
+import com.hazrat.islam24.ui.theme.Islam24Theme
+import com.hazrat.islam24.ui.theme.dimens
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -47,7 +44,7 @@ fun MethodSelectionDialog(
         sheetContent = {
             Surface(
                 modifier = Modifier
-                    .padding(horizontal = Size20)
+                    .padding(horizontal = MaterialTheme.dimens.size20)
                     .nestedScroll(rememberNestedScrollInteropConnection()),
                 color = Color.Transparent
             ) {
@@ -55,9 +52,9 @@ fun MethodSelectionDialog(
                     item{
                         Text(
                             text = "PRAYER TIMES",
-                            style = TextStyle(fontSize = SpSize10),
+                            style = TextStyle(fontSize = 10.sp),
                             color = Color(0xFFFFFFFF),
-                            modifier = Modifier.padding(top = Size30)
+                            modifier = Modifier.padding(top = MaterialTheme.dimens.size30)
                         )
                     }
                     items(prayerMethods.size) { index ->
@@ -65,24 +62,24 @@ fun MethodSelectionDialog(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = Size5)
+                                .padding(vertical = MaterialTheme.dimens.size5)
                                 .clickable {
                                     onMethodSelected(method)
                                     onDismiss()
                                 },
                             colors = CardDefaults.cardColors(Color.Transparent),
-                            shape = RoundedCornerShape(Size10)
+                            shape = RoundedCornerShape(MaterialTheme.dimens.size10)
                         ) {
                             Row(modifier = Modifier
                                 .fillMaxSize()
-                                .padding(Size10),
+                                .padding(MaterialTheme.dimens.size10),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 Text(
                                     text = method.name,
                                     color = Color.White,
-                                    modifier = Modifier.padding(start = Size10)
+                                    modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                                 )
                             }
                         }

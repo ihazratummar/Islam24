@@ -21,13 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.SchoolDetails
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.schoolDetailsList
-import com.hazrat.islam24.presentation.Dimens.Size10
-import com.hazrat.islam24.presentation.Dimens.Size12
-import com.hazrat.islam24.presentation.Dimens.Size4
-import com.hazrat.islam24.presentation.Dimens.Size40
+import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -40,7 +36,7 @@ fun SchoolSelectionDialog(
         sheetContent = {
             Surface(
                 modifier = Modifier
-                    .padding(Size40)
+                    .padding(MaterialTheme.dimens.size40)
                     .nestedScroll(rememberNestedScrollInteropConnection()),
                 color = Color.Transparent
             ) {
@@ -50,7 +46,7 @@ fun SchoolSelectionDialog(
                         Card(
                             modifier = Modifier.
                             fillMaxWidth()
-                                .padding(Size4)
+                                .padding(MaterialTheme.dimens.size4)
                                 .clickable {
                                     onSchoolSelected(school)
                                     onDismiss()
@@ -58,14 +54,14 @@ fun SchoolSelectionDialog(
                         ) {
                             Row(modifier = Modifier
                                 .fillMaxSize()
-                                .padding(Size12),
+                                .padding(MaterialTheme.dimens.size12),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 Text(
                                     text = school.name,
                                     color = Color.White,
-                                    modifier = Modifier.padding(start = Size10)
+                                    modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                                 )
                             }
                         }
