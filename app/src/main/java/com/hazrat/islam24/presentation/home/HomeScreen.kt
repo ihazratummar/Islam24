@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,40 +56,48 @@ fun HomeScreen(
     val locationNameState = prayerTimeViewModel.locationName.collectAsState()
     val locationName = locationNameState.value
 
-    Surface(
-        modifier = Modifier,
-        color = MaterialTheme.colorScheme.background
+
+    LazyColumn(
+        modifier = Modifier
     ) {
-        BackGroundCard()
-        Column(
-            modifier = Modifier
-                .statusBarsPadding()
-                .fillMaxSize()
-                .padding(MaterialTheme.dimens.size10),
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(text = "", style = MaterialTheme.typography.bodySmall)
-//            Text(text = "Hazrat Ummar Shaikh", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
-            if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
-                TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
-            } else {
-                // Handle the case where prayerTimes is empty
-                Text(text = "Salat Time")
+        item {
+            Surface(modifier = Modifier.padding(MaterialTheme.dimens.size5),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                BackGroundCard()
+                Column(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .fillMaxSize()
+                        .padding(MaterialTheme.dimens.size10),
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Text(text = "", style = MaterialTheme.typography.bodySmall)
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
+                    if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
+                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
+                    } else {
+                        // Handle the case where prayerTimes is empty
+                        Text(text = "Salat Time")
+                    }
+                }
             }
-
-            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size30))
-
+        }
+        item {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(MaterialTheme.dimens.size10),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 LazyRowWithCards(navController)
             }
-
+        }
+        items(101){
+            Text(text = "$it This is just a text for testing", modifier = Modifier.fillMaxWidth())
         }
     }
+
 }
 
 

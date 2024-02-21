@@ -48,11 +48,11 @@ fun AppBottomNavigation(
                         Icon(
                             painter = painterResource(id = item.icon),
                             contentDescription = null,
-                            modifier = Modifier.size(MaterialTheme.dimens.size20 *1.5f)
+                            modifier = Modifier.size(MaterialTheme.dimens.size20 *2f)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         if (isSelected){
-                            Text(text = item.text, style = MaterialTheme.typography.labelSmall)
+                            Text(text = item.text, style = MaterialTheme.typography.labelMedium)
                         }else {
 
                         }
