@@ -55,7 +55,8 @@ fun PrayerTimeSettingCard(
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = "Icon",
-                modifier = Modifier.size(MaterialTheme.dimens.size30)
+                modifier = Modifier.size(MaterialTheme.dimens.size30),
+                tint = Color.White
             )
             Column(
                 modifier = Modifier.padding(horizontal = MaterialTheme.dimens.size10)
@@ -63,7 +64,8 @@ fun PrayerTimeSettingCard(
                 Spacer(modifier = Modifier.width(MaterialTheme.dimens.size8))
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.displaySmall
+                    style = MaterialTheme.typography.displaySmall,
+                    color = Color.White
                 )
                 if (subText != null) {
                     Text(

@@ -111,7 +111,8 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                         Text(
                             "Set Count: $repeatCount", modifier = Modifier
                                 .padding(MaterialTheme.dimens.size5),
-                            fontFamily = Hidayat
+                            fontFamily = Hidayat,
+                            color = Color.White
                         )
                     }
                 }
@@ -134,7 +135,8 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                             "Round: $roundCount",
                             modifier = Modifier
                                 .padding(MaterialTheme.dimens.size5),
-                            fontFamily = Hidayat
+                            fontFamily = Hidayat,
+                            color = Color.White
                         )
                     }
                 }
@@ -312,7 +314,8 @@ private fun TasbihHeader(
                 phrase.enText, style = MaterialTheme.typography.headlineMedium,
                 fontFamily = Hidayat,
                 fontSize = 20.sp,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = Color.White
 
             )
         }

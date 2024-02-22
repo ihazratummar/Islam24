@@ -41,7 +41,8 @@ fun TasbihScreen(navController: NavController) {
                         contentDescription = "Go Back",
                         modifier = Modifier.clickable {
                             navController.popBackStack()
-                        })
+                        },
+                        tint = Color.White)
                 },
                 colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
             )

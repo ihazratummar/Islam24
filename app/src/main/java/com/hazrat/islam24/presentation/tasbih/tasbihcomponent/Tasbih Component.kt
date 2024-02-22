@@ -57,13 +57,15 @@ fun RepeatCountDialog(
                     text = "Set Tasbih Count",
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.padding(bottom = MaterialTheme.dimens.size15),
-                    fontFamily = Hidayat
+                    fontFamily = Hidayat,
+                    color = Color.White
                 )
                 // Display the selected value
                 Text(
                     text = selectedRepeatCount.toString(),
                     style = MaterialTheme.typography.bodyLarge,
-                    fontFamily = Hidayat
+                    fontFamily = Hidayat,
+                    color = Color.White
                 )
 
                 Slider(

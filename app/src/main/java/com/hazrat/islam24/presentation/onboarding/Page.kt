@@ -16,7 +16,7 @@ val pages = listOf(
         image = R.drawable.onboarding1,
     ),
     Page(
-        text1 = "AL QUR'AN",
+        text1 = "ZIKIR",
         text2 = "& DUA",
         image = R.drawable.onboarding2,
     ),
