@@ -93,9 +93,9 @@ fun HomeScreen(
                 LazyRowWithCards(navController)
             }
         }
-        items(101){
-            Text(text = "$it This is just a text for testing", modifier = Modifier.fillMaxWidth())
-        }
+//        items(101){
+//            Text(text = "$it This is just a text for testing", modifier = Modifier.fillMaxWidth())
+//        }
     }
 
 }
