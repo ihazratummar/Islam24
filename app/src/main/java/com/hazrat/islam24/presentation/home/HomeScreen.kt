@@ -200,9 +200,9 @@ private fun TimeLocationCard(
                     .fillMaxHeight()
                     .weight(0.5f)
                     .padding(
-                        start = MaterialTheme.dimens.size10,
+                        start = MaterialTheme.dimens.size5,
                         bottom = MaterialTheme.dimens.size40,
-                        end = MaterialTheme.dimens.size40,
+                        end = MaterialTheme.dimens.size10,
                         top = MaterialTheme.dimens.size20
                     ),
                 verticalArrangement = Arrangement.SpaceBetween,

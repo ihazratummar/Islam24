@@ -1,6 +1,7 @@
 package com.hazrat.islam24.presentation.prayertime.component
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,8 @@ fun PrayerTimeSettingCard(
             .padding(MaterialTheme.dimens.size8)
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface
+        color = Color.Green.copy(0.1f),
+        border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Green)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -61,12 +63,12 @@ fun PrayerTimeSettingCard(
                 Spacer(modifier = Modifier.width(MaterialTheme.dimens.size8))
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.displaySmall
                 )
                 if (subText != null) {
                     Text(
                         text = subText,
-                        style = MaterialTheme.typography.labelSmall,
+                        style = MaterialTheme.typography.labelMedium,
                         color = Color.LightGray
                     )
                 }
@@ -171,26 +173,26 @@ fun PrayerDateCard(
     }
 }
 
-@Preview
-@Composable
-fun PrayerDateCardPreview() {
-    Islam24Theme {
-        PrayerDateCard(enDate = "Monday, 12 February", hrDate = "2 Sha'ban 1445")
-    }
-}
-
-@Preview
-@Composable
-fun PrayerTimeCardPreview() {
-    Islam24Theme {
-        PrayerTimeCard(icon = R.drawable.athkar,
-            text = "Fajr",
-            time = "04:59",
-            onClick = {}
-        )
-    }
-
-}
+//@Preview
+//@Composable
+//fun PrayerDateCardPreview() {
+//    Islam24Theme {
+//        PrayerDateCard(enDate = "Monday, 12 February", hrDate = "2 Sha'ban 1445")
+//    }
+//}
+//
+//@Preview
+//@Composable
+//fun PrayerTimeCardPreview() {
+//    Islam24Theme {
+//        PrayerTimeCard(icon = R.drawable.athkar,
+//            text = "Fajr",
+//            time = "04:59",
+//            onClick = {}
+//        )
+//    }
+//
+//}
 
 
 @Preview

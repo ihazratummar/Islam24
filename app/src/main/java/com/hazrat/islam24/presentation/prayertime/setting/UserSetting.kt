@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,8 +15,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +39,7 @@ import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.MethodSelectionDialog
 import com.hazrat.islam24.presentation.prayertime.component.PrayerTimeSettingCard
 import com.hazrat.islam24.presentation.prayertime.component.SchoolSelectionDialog
+import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,64 +52,103 @@ fun UserSetting(
     fun openMethodSelectionDialog() {
         settingViewModel.openMethodSelectionDialog()
     }
+
     val methodList = settingViewModel.methodList.collectAsState()
 
     val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
     val prayerTimeEntities = prayerTimes.getOrNull(0)
 
-    LazyColumn(
-        modifier = Modifier.statusBarsPadding()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "PRAYER SETTING",
+                        style = MaterialTheme.typography.displaySmall,
+                        modifier = Modifier.padding(MaterialTheme.dimens.size5)
+                    )
+                },
+                colors = TopAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    navigationIconContentColor = Color.White,
+                    titleContentColor = Color.White,
+                    actionIconContentColor = Color.White
+                ),
+                navigationIcon = {
+                    Icon(imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .clickable {
+                                navController.popBackStack()
+                            }
+                            .padding(MaterialTheme.dimens.size5)
+                    )
+                }
+            )
+        }
     ) {
-        item {
-            TopBarWithBack(navController)
-        }
-        item {
-            Divider()
-        }
-        item {
-            val methodName = prayerTimeEntities?.methodName
-            if (methodName != null) {
-                PrayerTimeSettingCard(
-                    icon = R.drawable.athkar,
-                    text = "Prayer Method",
-                    subText = methodName,
-                    onClick = {
-                        openMethodSelectionDialog()
-                    }
-                )
-            }else{
-                PrayerTimeSettingCard(
-                    icon = R.drawable.athkar,
-                    text = "Prayer Method",
-                    subText = null,
-                    onClick = {
-                        openMethodSelectionDialog()
-                    }
+        LazyColumn(
+            modifier = Modifier
+                .padding(it)
+        ) {
+            item {
+                HorizontalDivider(
+                    thickness = MaterialTheme.dimens.size1,
+                    color = Color.Green
                 )
             }
-        }
-        item {
-            val school = prayerTimeEntities?.school
-            if (school != null){
-                PrayerTimeSettingCard(
-                    icon = R.drawable.duaicon,
-                    text = "Select Madhab",
-                    subText = school,
-                    onClick = {
-                        settingViewModel.showSchoolSelectionDialog = true
-                    }
-                )
-            }else{
-                PrayerTimeSettingCard(
-                    icon = R.drawable.duaicon,
-                    text = "Select Madhab",
-                    subText = null,
-                    onClick = {
-                        settingViewModel.showSchoolSelectionDialog = true
-                    }
-                )
+            item {
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size20))
             }
+            item {
+                val methodName = prayerTimeEntities?.methodName
+                if (methodName != null) {
+                    PrayerTimeSettingCard(
+                        icon = R.drawable.athkar,
+                        text = "Prayer Method",
+                        subText = methodName,
+                        onClick = {
+                            openMethodSelectionDialog()
+                        }
+                    )
+                } else {
+                    PrayerTimeSettingCard(
+                        icon = R.drawable.athkar,
+                        text = "Prayer Method",
+                        subText = null,
+                        onClick = {
+                            openMethodSelectionDialog()
+                        }
+                    )
+                }
+            }
+            item {
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size20))
+            }
+            item {
+                val school = prayerTimeEntities?.school
+                if (school != null) {
+                    PrayerTimeSettingCard(
+                        icon = R.drawable.duaicon,
+                        text = "Select Madhab",
+                        subText = school,
+                        onClick = {
+                            settingViewModel.showSchoolSelectionDialog = true
+                        }
+                    )
+                } else {
+                    PrayerTimeSettingCard(
+                        icon = R.drawable.duaicon,
+                        text = "Select Madhab",
+                        subText = null,
+                        onClick = {
+                            settingViewModel.showSchoolSelectionDialog = true
+                        }
+                    )
+                }
 
+            }
         }
     }
 
@@ -135,47 +181,5 @@ fun UserSetting(
             },
             onDismiss = { settingViewModel.showSchoolSelectionDialog = false }
         )
-    }
-}
-
-@Composable
-private fun TopBarWithBack(navController: NavController) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .padding(top = 10.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(0.5f)
-                .padding(10.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                modifier = Modifier
-                    .clickable {
-                        navController.popBackStack()
-                    }
-                    .size(30.dp),
-            )
-        }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(10.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "Settings", style = TextStyle(
-                    fontSize = 25.sp,
-                    color = Color.White
-                )
-            )
-        }
     }
 }
