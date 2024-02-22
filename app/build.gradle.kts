@@ -90,7 +90,7 @@ dependencies {
 //    implementation("com.google.dagger:hilt-android:2.50")
     implementation("com.google.dagger:hilt-android:2.50")
     kapt("com.google.dagger:hilt-android-compiler:2.50")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     //Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -129,7 +129,7 @@ dependencies {
     //Observe
     implementation ("androidx.activity:activity-compose:1.8.2")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.2")
 
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
