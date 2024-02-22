@@ -42,7 +42,6 @@ import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.ui.theme.dimens
 
-
 @Composable
 fun HomeScreen(
     navController: NavController,
