@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
@@ -20,13 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.zIndex
-import com.hazrat.islam24.presentation.Dimens.Padding30
-import com.hazrat.islam24.presentation.Dimens.Padding50
-import com.hazrat.islam24.presentation.Dimens.Size10
 import com.hazrat.islam24.presentation.common.ContinueButton
 import com.hazrat.islam24.presentation.common.HyperLinkText
 import com.hazrat.islam24.presentation.onboarding.components.OnBoardingPage
 import com.hazrat.islam24.ui.theme.Islam24Theme
+import com.hazrat.islam24.ui.theme.dimens
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -43,12 +42,12 @@ fun OnBoardingScreen(
         Row(modifier = Modifier
             .fillMaxSize()
             .zIndex(2f)
-            .padding(start = Padding30, end = Padding30, bottom = Padding50)
+            .padding(start = MaterialTheme.dimens.size30, end = MaterialTheme.dimens.size30, bottom = MaterialTheme.dimens.size50)
             .navigationBarsPadding(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom
         ) {
-            Column() {
+            Column {
                 val buttonState = remember {
                     derivedStateOf {
                         when(pagerState.currentPage){
@@ -73,7 +72,7 @@ fun OnBoardingScreen(
                             }
                         }
                     )
-                    Spacer(modifier = Modifier.height(Size10))
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size10))
                     HyperLinkText(fullText = "By tapping 'Continue' you agree to our Terms and  Conditions and Privacy Policy",
                         linkText = listOf("Terms and  Conditions", "Privacy Policy"),
                         hyperlinks = listOf("https:www.google.com", "https:www.google.com") )
@@ -86,7 +85,7 @@ fun OnBoardingScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Preview
 @Composable
 fun OnBoardingScreenPreview(){

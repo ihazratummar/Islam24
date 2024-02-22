@@ -1,7 +1,7 @@
 package com.hazrat.islam24.presentation.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,11 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,71 +22,81 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.hazrat.islam24.R
-import com.hazrat.islam24.presentation.Dimens.Size10
-import com.hazrat.islam24.presentation.Dimens.Size20
-import com.hazrat.islam24.presentation.Dimens.Size200
-import com.hazrat.islam24.presentation.Dimens.Size250
-import com.hazrat.islam24.presentation.Dimens.Size30
-import com.hazrat.islam24.presentation.Dimens.Size300
-import com.hazrat.islam24.presentation.Dimens.Size40
-import com.hazrat.islam24.presentation.Dimens.Size50
-import com.hazrat.islam24.presentation.Dimens.Size60
-import com.hazrat.islam24.presentation.Dimens.Size8
+import com.hazrat.islam24.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.presentation.common.LocationName
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
-import com.hazrat.islam24.ui.theme.Islam24Theme
+import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
+import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
+import com.hazrat.islam24.ui.theme.dimens
+
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    prayerTimeViewModel: PrayerTimeViewModel,
+    navigateToPrayerTime: () -> Unit,
+) {
 
-    Surface(
-        modifier = Modifier,
-        color = MaterialTheme.colorScheme.background
+    val prayerTimesState = prayerTimeViewModel.prayerTimes.collectAsState()
+    val prayerTimes = prayerTimesState.value
+    val locationNameState = prayerTimeViewModel.locationName.collectAsState()
+    val locationName = locationNameState.value
+
+
+    LazyColumn(
+        modifier = Modifier
     ) {
-        BackGroundCard()
-        Column(
-            modifier = Modifier
-                .statusBarsPadding()
-                .fillMaxSize()
-                .padding(Size10),
-            verticalArrangement = Arrangement.Top
-        ) {
-
-            Text(text = "Assalamualaikum", style = MaterialTheme.typography.bodySmall)
-//            Text(text = "Hazrat Ummar Shaikh", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(Size50))
-            TimeLocationCard()
-
-            Spacer(modifier = Modifier.height(Size30))
-
+        item {
+            Surface(modifier = Modifier.padding(MaterialTheme.dimens.size5),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                BackGroundCard()
+                Column(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .fillMaxSize()
+                        .padding(MaterialTheme.dimens.size10),
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Text(text = "", style = MaterialTheme.typography.bodySmall)
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
+                    if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
+                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
+                    } else {
+                        // Handle the case where prayerTimes is empty
+                        Text(text = "Salat Time")
+                    }
+                }
+            }
+        }
+        item {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(MaterialTheme.dimens.size10),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 LazyRowWithCards(navController)
             }
-
         }
+//        items(101){
+//            Text(text = "$it This is just a text for testing", modifier = Modifier.fillMaxWidth())
+//        }
     }
+
 }
 
 
@@ -96,7 +107,7 @@ private fun BackGroundCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(Size250)
+            .height(MaterialTheme.dimens.size250)
             .background(
                 brush = Brush.verticalGradient(
                     listOf(
@@ -104,9 +115,12 @@ private fun BackGroundCard() {
                         Color(0xFF031600)
                     ),
 
-                )
+                    )
             ),
-        shape = RoundedCornerShape(bottomEnd = Size50, bottomStart = Size50),
+        shape = RoundedCornerShape(
+            bottomEnd = MaterialTheme.dimens.size50,
+            bottomStart = MaterialTheme.dimens.size50
+        ),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
         Image(
@@ -114,8 +128,13 @@ private fun BackGroundCard() {
             contentDescription = "masjidimage",
             modifier = Modifier
                 .fillMaxSize()
-                .clip(shape = RoundedCornerShape(bottomStart = Size50, bottomEnd = Size50))
-                .size(Size300)
+                .clip(
+                    shape = RoundedCornerShape(
+                        bottomStart = MaterialTheme.dimens.size50,
+                        bottomEnd = MaterialTheme.dimens.size50
+                    )
+                )
+                .size(MaterialTheme.dimens.size300)
 
         )
     }
@@ -124,11 +143,15 @@ private fun BackGroundCard() {
 
 /// TIME LOCATION CARD
 @Composable
-private fun TimeLocationCard() {
+private fun TimeLocationCard(
+    prayerTimeEntity: List<PrayerTimeEntity>,
+    navigateToPrayerTime: () -> Unit,
+    locationDetailsEntity: LocationDetailsEntity
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(Size200)
+            .height(MaterialTheme.dimens.size200)
             .background(
                 brush = Brush.verticalGradient(
                     listOf(
@@ -140,55 +163,54 @@ private fun TimeLocationCard() {
                 shape = RoundedCornerShape(28)
             )
             .clickable {
-                /* TODO click to open prayer screen*/
+                navigateToPrayerTime()
             },
         colors = CardDefaults.cardColors(Color.Transparent),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(Size10)
+                .padding(MaterialTheme.dimens.size10)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.5f)
-                    .padding(start = Size10, bottom = Size30),
+                    .padding(
+                        start = MaterialTheme.dimens.size20,
+                        bottom = MaterialTheme.dimens.size30
+                    ),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Text(
-                    text = "Maghrib",
-                    color = Color.White,
-                    style = MaterialTheme.typography.displayMedium
+                DisplayCurrentPrayerName(
+                    prayerTimeEntity, textStyle = TextStyle(
+                        fontSize = 35.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-                Spacer(modifier = Modifier.height(Size8))
+
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
                 Text(
                     text = "View Times",
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.5f)
-                    .padding(start = Size10, bottom = Size40, end = Size30, top = Size10),
+                    .padding(
+                        start = MaterialTheme.dimens.size10,
+                        bottom = MaterialTheme.dimens.size40,
+                        end = MaterialTheme.dimens.size40,
+                        top = MaterialTheme.dimens.size20
+                    ),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End
             ) {
-                Text(text = "Ajagarpara", fontWeight = FontWeight.SemiBold, color = Color.White)
-                Text(text = "-0:55:18", fontWeight = FontWeight.SemiBold, color = Color.White)
+                LocationName(locationDetailsEntity)
             }
         }
     }
 }
-
-
-@Preview
-@Composable
-fun HomeScreenPreview(navController: NavController = NavController(context = LocalContext.current)) {
-    Islam24Theme {
-        HomeScreen(navController = navController)
-    }
-}
-

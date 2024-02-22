@@ -4,18 +4,24 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.islam24.domain.repository.location.LocationNameRepository
+import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.domain.usecases.app_entry.ReadAppEntry
 import com.hazrat.islam24.presentation.nvgraph.Route
+import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val readAppEntry: ReadAppEntry,
+    prayerTimeRepository: PrayerTimeRepository,
+    locationNameRepository: LocationNameRepository
 ): ViewModel() {
 
     private val _splashCondition = mutableStateOf(true)
@@ -35,6 +41,13 @@ class MainViewModel @Inject constructor(
             delay(300)
             _splashCondition.value = false
         }.launchIn(viewModelScope)
+        viewModelScope.launch {
+            prayerTimeRepository.getAllPrayer()
+//            prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
+            locationNameRepository.getLocationName()
+//            locationNameRepository.getLocationDetails()
+        }
 
     }
+
 }

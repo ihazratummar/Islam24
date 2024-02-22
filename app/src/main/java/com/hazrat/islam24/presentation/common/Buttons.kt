@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.hazrat.islam24.presentation.Dimens.Size6
 import com.hazrat.islam24.ui.theme.Islam24Theme
+import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
 fun ContinueButton(
@@ -20,7 +20,7 @@ fun ContinueButton(
 ) {
     OutlinedButton(modifier = Modifier.fillMaxWidth(),
         onClick = onClick,
-        shape = RoundedCornerShape(size = Size6)
+        shape = RoundedCornerShape(size =MaterialTheme.dimens.size6)
     ) {
         Text(text = buttonText,
             style = MaterialTheme.typography.labelMedium,

@@ -1,6 +1,5 @@
 package com.hazrat.islam24.presentation.namesofallah
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,13 +22,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -38,19 +36,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.domain.model.namesofallah.Data
 import com.hazrat.islam24.domain.model.namesofallah.En
+import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,7 +65,7 @@ fun NamesOfAllahScreen(viewModel: NamesViewModel = hiltViewModel(), navControlle
                 containerColor = Color.Transparent,
                 navigationIconContentColor = Color(0xFFFDD017)
             ),
-                title = { Text(text = "99 Names Of Allah") },
+                title = { Text(text = "99 Names Of Allah", color = Color.White) },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
@@ -78,7 +75,7 @@ fun NamesOfAllahScreen(viewModel: NamesViewModel = hiltViewModel(), navControlle
                                 navController.popBackStack()
 
                             }
-                            .padding(horizontal = 10.dp)
+                            .padding(horizontal = MaterialTheme.dimens.size10)
                     )
                 },
                 scrollBehavior = scrollBehavior
@@ -117,8 +114,8 @@ fun NameCard(name: Data) {
             .clickable {
                 expanded = !expanded
             }
-            .padding(horizontal = 15.dp, vertical = 1.dp),
-        shape = RoundedCornerShape(10.dp),
+            .padding(horizontal = MaterialTheme.dimens.size15, vertical = MaterialTheme.dimens.size1),
+        shape = RoundedCornerShape(MaterialTheme.dimens.size10),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
         Column() {
@@ -126,7 +123,7 @@ fun NameCard(name: Data) {
                 Column(
                     modifier = Modifier
                         .weight(0.1f)
-                        .padding(start = 5.dp, top = 20.dp),
+                        .padding(start = MaterialTheme.dimens.size5, top = MaterialTheme.dimens.size20),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -141,7 +138,7 @@ fun NameCard(name: Data) {
                 Column(
                     modifier = Modifier
                         .weight(0.6f)
-                        .padding(5.dp)
+                        .padding(MaterialTheme.dimens.size5)
                 ) {
                     Text(
                         text = name.transliteration, style = TextStyle(
@@ -157,7 +154,7 @@ fun NameCard(name: Data) {
                             color = Color(0xC8FDD017)
                         )
                     )
-                    Spacer(modifier = Modifier.height(3.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Arrow"
@@ -166,7 +163,7 @@ fun NameCard(name: Data) {
                 Column(
                     modifier = Modifier
                         .weight(0.3f)
-                        .padding(5.dp),
+                        .padding(MaterialTheme.dimens.size5),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -181,13 +178,13 @@ fun NameCard(name: Data) {
                 }
             }
             AnimatedVisibility(visible = expanded) {
-                Divider(thickness = 2.dp, color = Color(0xffFDD017))
+                Divider(thickness = MaterialTheme.dimens.size2, color = Color(0xffFDD017))
                 Column(
                     modifier = Modifier
-                        .padding(start = 35.dp, top = 20.dp, end = 10.dp)
+                        .padding(start = MaterialTheme.dimens.size35, top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10)
                 ) {
                     Text(text = "Ayath: ${name.found}", color = Color.White)
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size5))
                     Text(text = name.en.desc, color = Color.White)
                 }
             }

@@ -22,8 +22,6 @@ sealed class Route (
 
     object PrayerTimeScreen:Route(route = "PrayerTimeScreen")
 
-    object QuranPageScreen:Route(route = "QuranPageScreen")
-
     object ProfileScreen:Route(route = "ProfileScreen")
 
     object QiblaDirectionScreen:Route(route = "QiblaDirectionScreen")
@@ -33,5 +31,7 @@ sealed class Route (
     object ZakatScreen:Route(route = "ZakatScreen")
 
     object NamesOfAllah:Route(route = "NamesOfAllah")
+
+    object UserSettings:Route(route = "UserSettingScreen")
 
 }

@@ -16,8 +16,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = 7
+        versionName = "1.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -61,8 +61,9 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -74,12 +75,16 @@ dependencies {
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.material:material-android:1.6.1")
+
+    //window size
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
 
     //Splash Api
     implementation ("androidx.core:core-splashscreen:1.0.1")
 
     //Compose Navigation
-    implementation ("androidx.navigation:navigation-compose:2.7.6")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
 
     //Dagger Hilt
 //    implementation("com.google.dagger:hilt-android:2.50")
@@ -103,7 +108,7 @@ dependencies {
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
     //Compose Foundation
-    implementation ("androidx.compose.foundation:foundation:1.6.0")
+    implementation ("androidx.compose.foundation:foundation:1.6.1")
 
     //Accompanist
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.31.4-beta")
@@ -124,7 +129,15 @@ dependencies {
     //Observe
     implementation ("androidx.activity:activity-compose:1.8.2")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.0")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.1")
+
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+
+    implementation ("androidx.compose.runtime:runtime:x.y.z")
+    implementation ("androidx.compose.ui:ui:x.y.z")
+    implementation ("androidx.compose.animation:animation-core:x.y.z")
+    implementation ("androidx.compose.foundation:foundation:x.y.z")
 
 
 }
