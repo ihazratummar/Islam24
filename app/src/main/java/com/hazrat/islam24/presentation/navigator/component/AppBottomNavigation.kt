@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +34,7 @@ fun AppBottomNavigation(
     NavigationBar(
         modifier = Modifier
             .fillMaxWidth(),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = Color.Transparent,
         tonalElevation = 10.dp
     ) {
         items.forEachIndexed { index, item ->
@@ -63,7 +64,7 @@ fun AppBottomNavigation(
                     selectedTextColor = MaterialTheme.colorScheme.primary,
                     unselectedIconColor = colorResource(id = R.color.white),
                     unselectedTextColor = colorResource(id = R.color.white),
-                    indicatorColor = MaterialTheme.colorScheme.background
+                    indicatorColor = Color.Transparent
                 ),
             )
         }

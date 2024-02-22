@@ -34,7 +34,7 @@ private val DarkColorScheme = darkColorScheme(
     background = DarkGreen,
     primary = Green,
     error = DarkRed,
-    surface = LightBlack
+    surface = DarkGreen
     
 )
 
@@ -42,7 +42,7 @@ private val LightColorScheme = lightColorScheme(
     primary = Green,
     background = DarkGreen,
     error = LightRed,
-    surface = Color.White,
+    surface = DarkGreen,
 )
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)

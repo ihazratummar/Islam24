@@ -1,5 +1,6 @@
 package com.hazrat.islam24.presentation.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -106,16 +107,7 @@ private fun BackGroundCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(MaterialTheme.dimens.size250)
-            .background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        Color(0xFF041602),
-                        Color(0xFF031600)
-                    ),
-
-                    )
-            ),
+            .height(MaterialTheme.dimens.size250),
         shape = RoundedCornerShape(
             bottomEnd = MaterialTheme.dimens.size50,
             bottomStart = MaterialTheme.dimens.size50
@@ -154,12 +146,12 @@ private fun TimeLocationCard(
             .background(
                 brush = Brush.verticalGradient(
                     listOf(
-                        Color(0xC3040A04),
-                        Color(0xFF040A04),
-                        Color(0xFF00FF40),
+                        Color(0xC31F581F),
+                        Color(0xFF054105),
+                        Color(0xFF45D307),
                     )
                 ),
-                shape = RoundedCornerShape(28)
+                shape = RoundedCornerShape(MaterialTheme.dimens.size30)
             )
             .clickable {
                 navigateToPrayerTime()
