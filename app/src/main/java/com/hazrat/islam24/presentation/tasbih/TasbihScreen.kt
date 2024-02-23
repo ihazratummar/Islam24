@@ -25,7 +25,6 @@ import com.hazrat.islam24.ui.theme.dimens
 fun TasbihScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.padding(horizontal = MaterialTheme.dimens.size10),
-//            .navigationBarsPadding(),
         topBar = {
             TopAppBar(
                 title = {

@@ -7,21 +7,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -48,6 +49,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.domain.model.namesofallah.Data
 import com.hazrat.islam24.domain.model.namesofallah.En
+import com.hazrat.islam24.ui.theme.Arabic
+import com.hazrat.islam24.ui.theme.Poppins
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,14 +65,15 @@ fun NamesOfAllahScreen(viewModel: NamesViewModel = hiltViewModel(), navControlle
 //        .statusBarsPadding()
         .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                navigationIconContentColor = Color(0xFFFDD017)
-            ),
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    navigationIconContentColor = Color(0xFFFDD017)
+                ),
                 title = { Text(text = "99 Names Of Allah", color = Color.White) },
                 navigationIcon = {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "back",
                         modifier = Modifier
                             .clickable {
@@ -91,7 +95,6 @@ fun NamesOfAllahScreen(viewModel: NamesViewModel = hiltViewModel(), navControlle
             }
         }
     }
-
 }
 
 
@@ -115,30 +118,37 @@ fun NameCard(name: Data) {
             .clickable {
                 expanded = !expanded
             }
-            .padding(horizontal = MaterialTheme.dimens.size15, vertical = MaterialTheme.dimens.size1),
+            .padding(
+                horizontal = MaterialTheme.dimens.size15,
+                vertical = MaterialTheme.dimens.size1
+            ),
         shape = RoundedCornerShape(MaterialTheme.dimens.size10),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
-        Column() {
-            Row(modifier = Modifier) {
+        Column {
+            Row(modifier = Modifier
+                .fillMaxSize()
+            ) {
                 Column(
                     modifier = Modifier
-                        .weight(0.1f)
-                        .padding(start = MaterialTheme.dimens.size5, top = MaterialTheme.dimens.size20),
+                        .fillMaxHeight()
+                        .weight(0.2f)
+                        .padding(
+                            start = MaterialTheme.dimens.size5,
+                            top = MaterialTheme.dimens.size20
+                        ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "${name.number}.", style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp,
-                            color = Color(0xffFDD017)
-                        )
+                        text = "${name.number}.", style = MaterialTheme.typography.displaySmall,
+                        color = Color.White
                     )
                 }
                 Column(
                     modifier = Modifier
-                        .weight(0.6f)
+                        .fillMaxHeight()
+                        .weight(1f)
                         .padding(MaterialTheme.dimens.size5)
                 ) {
                     Text(
@@ -152,39 +162,41 @@ fun NameCard(name: Data) {
                         text = name.en.meaning, style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
-                            color = Color(0xC8FDD017)
+                            color = Color(0xC8FDD017).copy(0.6f)
                         )
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Arrow"
+                        contentDescription = "Arrow",
+                        tint = Color(0xC8FDD017)
                     )
                 }
                 Column(
                     modifier = Modifier
-                        .weight(0.3f)
+                        .fillMaxHeight()
+                        .weight(0.8f)
                         .padding(MaterialTheme.dimens.size5),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = name.name,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 25.sp,
-                            color = Color(0xffFDD017)
-                        )
+                        style = MaterialTheme.typography.displayMedium,
+                        color = Color(0xffFDD017)
                     )
                 }
             }
             AnimatedVisibility(visible = expanded) {
-                Divider(thickness = MaterialTheme.dimens.size2, color = Color(0xffFDD017))
+                HorizontalDivider(thickness = MaterialTheme.dimens.size2, color = Color(0xffFDD017))
                 Column(
                     modifier = Modifier
-                        .padding(start = MaterialTheme.dimens.size35, top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10)
+                        .padding(
+                            start = MaterialTheme.dimens.size35,
+                            top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10
+                        )
                 ) {
-                    Text(text = "Ayath: ${name.found}", color = Color.White)
+                    Text(text = "Ayat: ${name.found}", color = Color.White)
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size5))
                     Text(text = name.en.desc, color = Color.White)
                 }
@@ -206,5 +218,18 @@ fun NameCardPreview() {
         number = 1,
         transliteration = "Ar-Rahman"
     )
-    NameCard(name = sampleName)
+    val sampleName2 = Data(
+        en = En(
+            desc = "Description of Al-Rahman",
+            meaning = "Meaning of Al-Rahman"
+        ),
+        name = "الرَّحْمَنُ",
+        found = "Yes",
+        number = 2,
+        transliteration = "Ar-Rahman"
+    )
+    Column {
+        NameCard(name = sampleName)
+        NameCard(name = sampleName2)
+    }
 }

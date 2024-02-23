@@ -101,7 +101,7 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                         .height(MaterialTheme.dimens.size50)
                         .padding(MaterialTheme.dimens.size5),
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(MaterialTheme.dimens.size1, color = Color.White),
+                    border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary),
                 ) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
@@ -109,9 +109,7 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            "Set Count: $repeatCount", modifier = Modifier
-                                .padding(MaterialTheme.dimens.size5),
-                            fontFamily = Hidayat,
+                            "Count: $repeatCount", modifier = Modifier,
                             color = Color.White
                         )
                     }
@@ -135,7 +133,6 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                             "Round: $roundCount",
                             modifier = Modifier
                                 .padding(MaterialTheme.dimens.size5),
-                            fontFamily = Hidayat,
                             color = Color.White
                         )
                     }
@@ -194,8 +191,7 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                     Text(
                         text = "${tasbih?.tasbihCount} / $repeatCount",
                         style = MaterialTheme.typography.headlineMedium,
-                        color = Color.White,
-                        fontFamily = Hidayat
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     if (tasbih?.tasbihCount == 0) Text(
@@ -221,11 +217,11 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                 .fillMaxWidth()
                 .padding(horizontal = MaterialTheme.dimens.size10),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            border = BorderStroke(MaterialTheme.dimens.size1, color = Color(0xFFFFFFFF)),
+            border = BorderStroke(MaterialTheme.dimens.size1, color =MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(MaterialTheme.dimens.size9)
         ) {
             Text(
-                "Reset", fontFamily = Hidayat, color = Color.White,
+                "Reset",color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.displaySmall
             )
         }
@@ -269,8 +265,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
                     "Total Count: ${tasbih?.totalCount}",
                     color = Color.White,
                     modifier = Modifier
-                        .padding(MaterialTheme.dimens.size5),
-                    fontFamily = Hidayat
+                        .padding(MaterialTheme.dimens.size5)
                 )
             }
         }
@@ -292,22 +287,22 @@ private fun TasbihHeader(
                 viewModel.selectedPhrase = phrase
                 viewModel.resetTasbihCount()
             },
-        border = BorderStroke(MaterialTheme.dimens.size1, color = Color(0xFFFFFFFF)),
         elevation = CardDefaults.cardElevation(MaterialTheme.dimens.size4),
         colors = CardDefaults.cardColors(
-            containerColor = if (phrase == selectedPhrase) Color(0xFF195710) else Color(0xFF042C15)
+            containerColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.primary.copy(0.6f)
+            else MaterialTheme.colorScheme.primary.copy(0.1f)
         )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = MaterialTheme.dimens.size20),
+                .padding(horizontal = MaterialTheme.dimens.size10),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 phrase.arText, style = MaterialTheme.typography.headlineMedium,
-                color = Color.Green,
+                color = Color.White,
                 textAlign = TextAlign.Center
             )
             Text(

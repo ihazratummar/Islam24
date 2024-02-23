@@ -70,6 +70,10 @@ fun LazyRowWithCards(navController: NavController) {
                             when (index) {
                                 0 -> navController.navigate("NamesOfAllah")
                                 1 -> navController.navigate("TasbihScreen")
+                                2 -> navController.navigate("DuasPageScreen")
+                                3 -> navController.navigate("CalendarScreen")
+                                4 -> navController.navigate("AthkarScreen")
+                                5 -> navController.navigate("QuizScreen")
                             }
                         }
                         .clip(RoundedCornerShape(MaterialTheme.dimens.size8))

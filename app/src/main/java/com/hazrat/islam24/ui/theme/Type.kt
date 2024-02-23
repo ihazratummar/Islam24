@@ -23,6 +23,12 @@ val Hidayat = FontFamily(
     )
 )
 
+val Arabic = FontFamily(
+    fonts = listOf(
+        Font(R.font.arabicislamic)
+    )
+)
+
 
 // Set of Material typography styles to start with
 val CompactTypography = Typography(

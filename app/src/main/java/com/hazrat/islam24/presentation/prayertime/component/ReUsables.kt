@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -105,7 +107,7 @@ fun PrayerTimeCard(
                 Icon(
                     painter = painterResource(id = icon),
                     contentDescription = "Icon",
-                    tint = Color.Green.copy(0.5f),
+                    tint = MaterialTheme.colorScheme.primary.copy(0.8f),
                     modifier = Modifier.size(MaterialTheme.dimens.size30)
                 )
             }
@@ -114,11 +116,7 @@ fun PrayerTimeCard(
             ) {
                 Text(
                     text = text,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
+                    style = MaterialTheme.typography.displaySmall,color = Color.White,
                     modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                 )
             }
@@ -127,11 +125,7 @@ fun PrayerTimeCard(
             ) {
                 Text(
                     text = time,
-                    style = TextStyle(
-                        color = Color.Green,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
+                    style = MaterialTheme.typography.displaySmall,color = Color.White,
                     modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                 )
             }
@@ -165,11 +159,14 @@ fun PrayerDateCard(
                     style = TextStyle(
                         color = Color.White,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold))
+                        fontWeight = FontWeight.SemiBold)
+                )
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
                 Text(text = hrDate,
                     style = TextStyle(
-                        color = Color.Green,
-                        fontSize = 17.sp))
+                        color = Color.White,
+                        fontSize = 17.sp)
+                )
             }
         }
     }
@@ -182,32 +179,32 @@ fun PrayerDateCard(
 //        PrayerDateCard(enDate = "Monday, 12 February", hrDate = "2 Sha'ban 1445")
 //    }
 //}
-//
-//@Preview
-//@Composable
-//fun PrayerTimeCardPreview() {
-//    Islam24Theme {
-//        PrayerTimeCard(icon = R.drawable.athkar,
-//            text = "Fajr",
-//            time = "04:59",
-//            onClick = {}
-//        )
-//    }
-//
-//}
-
 
 @Preview
 @Composable
-fun ClickableCardPreview() {
+fun PrayerTimeCardPreview() {
     Islam24Theme {
-        PrayerTimeSettingCard(
-            icon = R.drawable.athkar,
-            text = "Go Back",
-            subText = "Prayermethod",
-            onClick = {
-                // Handle onClick action here
-            }
+        PrayerTimeCard(icon = R.drawable.athkar,
+            text = "Fajr",
+            time = "04:59",
+            onClick = {}
         )
     }
+
 }
+
+
+//@Preview
+//@Composable
+//fun ClickableCardPreview() {
+//    Islam24Theme {
+//        PrayerTimeSettingCard(
+//            icon = R.drawable.athkar,
+//            text = "Go Back",
+//            subText = "Prayermethod",
+//            onClick = {
+//                // Handle onClick action here
+//            }
+//        )
+//    }
+//}

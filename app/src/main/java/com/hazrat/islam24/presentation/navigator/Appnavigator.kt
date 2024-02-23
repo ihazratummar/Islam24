@@ -17,6 +17,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.presentation.athkar.AthkarScreen
+import com.hazrat.islam24.presentation.calendar.CalendarScreen
+import com.hazrat.islam24.presentation.dua.DuaScreen
 import com.hazrat.islam24.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.presentation.home.HomeScreen
 import com.hazrat.islam24.presentation.navigator.component.AppBottomNavigation
@@ -31,6 +34,7 @@ import com.hazrat.islam24.presentation.namesofallah.NamesViewModel
 import com.hazrat.islam24.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.presentation.prayertime.setting.UserSettingViewModel
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
+import com.hazrat.islam24.presentation.quiz.QuizScreen
 
 @Composable
 fun AppNavigator() {
@@ -144,6 +148,19 @@ fun AppNavigator() {
                 val viewModel: UserSettingViewModel = hiltViewModel()
                 UserSetting(navController = navController, viewModel)
             }
+            composable(route = Route.CalendarScreen.route){
+                CalendarScreen()
+            }
+            composable(route = Route.DuasPageScreen.route){
+                DuaScreen()
+            }
+            composable(route = Route.AthkarScreen.route){
+                AthkarScreen()
+            }
+            composable(route = Route.QuizScreen.route){
+                QuizScreen()
+            }
+
 
         }
     }

@@ -47,15 +47,15 @@ fun ShowData(
     navController: NavController
 ) {
     val prayerTimes by viewModel.prayerTimes.collectAsState()
-//    val locationName by viewModel.locationName.collectAsState()
 
     Scaffold(
         modifier = Modifier,
         topBar = {
 
-            TopAppBar(title = {
-                Text(text = "Prayer Times", color = Color.White)
-            },
+            TopAppBar(
+                title = {
+                    Text(text = "Prayer Times", color = Color.White)
+                },
                 actions = {
                     Icon(imageVector = Icons.Default.Settings,
                         contentDescription = "Setting Icon",
@@ -76,14 +76,18 @@ fun ShowData(
         Column(
             modifier = Modifier.padding(it)
         ) {
-            ViewPager(viewModel, prayerTimes = prayerTimes)
+            ViewPager(viewModel, prayerTimes = prayerTimes, navController)
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ViewPager(viewModel: PrayerTimeViewModel, prayerTimes: List<PrayerTimeEntity>) {
+fun ViewPager(
+    viewModel: PrayerTimeViewModel,
+    prayerTimes: List<PrayerTimeEntity>,
+    navController: NavController
+) {
 
     val todayDay = DateUtil.getCurrentDay()
     val todayIndex = prayerTimes.indexOfFirst { data ->
@@ -110,20 +114,24 @@ fun ViewPager(viewModel: PrayerTimeViewModel, prayerTimes: List<PrayerTimeEntity
     HorizontalPager(
         state = pagerState,
     ) { page ->
-        PrayerTimesDay(prayerTimes[page])
+        PrayerTimesDay(prayerTimes[page], navController)
     }
 }
 
 
 @Composable
-fun PrayerTimesDay(data: PrayerTimeEntity) {
+fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
 
     Column(
         modifier = Modifier.padding(top = MaterialTheme.dimens.size10)
     ) {
         PrayerDateCard(
+            modifier = Modifier.clickable {
+                navController.navigate(route = Route.CalendarScreen.route)
+            },
             enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",
             hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear} ${data.hijriab}"
+
         )
         PrayerTimeCard(
             icon = R.drawable.fajr,
