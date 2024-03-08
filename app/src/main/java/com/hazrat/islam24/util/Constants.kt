@@ -13,4 +13,7 @@ object Constants {
 
     const val LOCATION_BASE_URL = "https://nominatim.openstreetmap.org"
 
+    const val GTH_BASE_URL = "https://api.aladhan.com/"
+    const val HIJRI_CALENDAR_URL = "https://api.aladhan.com/"
+
 }

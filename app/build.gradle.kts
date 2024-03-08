@@ -75,7 +75,7 @@ dependencies {
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
-    implementation("androidx.compose.material:material-android:1.6.1")
+    implementation("androidx.compose.material:material-android:1.6.2")
 
     //window size
     implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
@@ -108,7 +108,7 @@ dependencies {
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
     //Compose Foundation
-    implementation ("androidx.compose.foundation:foundation:1.6.1")
+    implementation ("androidx.compose.foundation:foundation:1.6.2")
 
     //Accompanist
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.31.4-beta")

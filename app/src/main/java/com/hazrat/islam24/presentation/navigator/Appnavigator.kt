@@ -149,7 +149,7 @@ fun AppNavigator() {
                 UserSetting(navController = navController, viewModel)
             }
             composable(route = Route.CalendarScreen.route){
-                CalendarScreen()
+                CalendarScreen(navController)
             }
             composable(route = Route.DuasPageScreen.route){
                 DuaScreen()
