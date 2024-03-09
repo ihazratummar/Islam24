@@ -13,19 +13,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Hijri Calendar",style = MaterialTheme.typography.bodyLarge)}, navigationIcon = {
+        topBar = { TopAppBar(title = { Text(text = "Hijri Calendar",style = MaterialTheme.typography.bodyLarge, color = Color.White)},
+            navigationIcon = {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier.clickable {
                     navController.popBackStack()
-                }
+                },
+                tint = Color.White
             )
         }) }
     ) {

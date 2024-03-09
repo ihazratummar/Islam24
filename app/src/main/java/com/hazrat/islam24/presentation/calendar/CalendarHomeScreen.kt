@@ -77,7 +77,8 @@ fun CalendarHomeScreen(viewModel: CalendarScreenViewModel = hiltViewModel()) {
     ) {
         if (calendar != null) {
             if (hijriDayNew != null) {
-                Text(text = "${hijriDayNew.day} ${hijriDayNew.monthEn} ${hijriDayNew.year}${calendar.hijriAbbreviated}")
+                Text(text = "${hijriDayNew.day} ${hijriDayNew.monthEn} ${hijriDayNew.year}${calendar.hijriAbbreviated}",
+                    color = Color.White)
             }
         }
         WeekNamesRow(weekNames)
@@ -120,7 +121,8 @@ fun WeekNamesRow(weekNames: List<String>) {
                 text = weekName,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
             )
         }
     }

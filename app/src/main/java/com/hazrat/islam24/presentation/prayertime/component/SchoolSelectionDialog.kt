@@ -58,7 +58,7 @@ fun SchoolSelectionDialog(
                             Box(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(text = "Select School of thought for changing the Asr Time")
+                                Text(text = "Select School of thought for changing the Asr Time", color = Color.White)
                             }
                         }
                     }
