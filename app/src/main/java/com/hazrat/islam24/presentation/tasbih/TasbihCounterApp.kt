@@ -188,8 +188,9 @@ fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Mod
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val countText = "${tasbih?.tasbihCount ?: "0"} / $repeatCount"
                     Text(
-                        text = "${tasbih?.tasbihCount} / $repeatCount",
+                        text = countText,
                         style = MaterialTheme.typography.headlineMedium,
                         color = Color.White
                     )
@@ -261,8 +262,9 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
+                val countText = tasbih?.totalCount ?: "0"
                 Text(
-                    "Total Count: ${tasbih?.totalCount}",
+                    "Total Count: $countText",
                     color = Color.White,
                     modifier = Modifier
                         .padding(MaterialTheme.dimens.size5)

@@ -105,7 +105,8 @@ fun AppNavigator() {
                                 route = Route.ProfileScreen.route
                             )
                         }
-                    })
+                    }
+                )
             }
         }
     ) {

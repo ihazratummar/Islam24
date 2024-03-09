@@ -14,7 +14,6 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -26,9 +25,6 @@ import com.hazrat.islam24.presentation.CompactSmallDimens
 import com.hazrat.islam24.presentation.ExpandedDimens
 import com.hazrat.islam24.presentation.MediumDimens
 import com.hazrat.islam24.presentation.mainActivity.MainActivity
-import com.hazrat.islam24.ui.theme.DarkRed
-import com.hazrat.islam24.ui.theme.LightBlack
-import com.hazrat.islam24.ui.theme.LightRed
 
 private val DarkColorScheme = darkColorScheme(
     background = DarkGreen,

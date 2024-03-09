@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,7 +37,7 @@ fun TasbihScreen(navController: NavController) {
                     )
                 },
                 navigationIcon = {
-                    Icon(imageVector = Icons.Default.ArrowBack,
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Go Back",
                         modifier = Modifier.clickable {
                             navController.popBackStack()

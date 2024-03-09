@@ -41,6 +41,7 @@ class MainActivity: ComponentActivity() {
                 Color.Transparent.hashCode(), Color.Transparent.hashCode()
             )
         )
+        actionBar?.hide()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen().apply {
             setKeepOnScreenCondition { viewModel.splashCondition.value }
