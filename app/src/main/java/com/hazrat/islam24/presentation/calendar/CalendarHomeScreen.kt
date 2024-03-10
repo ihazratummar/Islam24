@@ -173,8 +173,8 @@ fun DayItem(
     }
     Box(
         modifier = Modifier
-            .padding(horizontal = MaterialTheme.dimens.size8, vertical = MaterialTheme.dimens.size6)
-            .width(MaterialTheme.dimens.size48)
+            .padding(horizontal = MaterialTheme.dimens.size10, vertical = MaterialTheme.dimens.size6)
+            .width(MaterialTheme.dimens.size40)
             .clickable {
                 onDaySelected(day)
             }
