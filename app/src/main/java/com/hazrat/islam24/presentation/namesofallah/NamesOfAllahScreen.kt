@@ -49,8 +49,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.domain.model.namesofallah.Data
 import com.hazrat.islam24.domain.model.namesofallah.En
-import com.hazrat.islam24.ui.theme.Arabic
-import com.hazrat.islam24.ui.theme.Poppins
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,7 +160,7 @@ fun NameCard(name: Data) {
                         text = name.en.meaning, style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
-                            color = Color(0xC8FDD017).copy(0.6f)
+                            color = Color(0xFFFDD017).copy(0.6f)
                         )
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))

@@ -187,6 +187,7 @@ fun DayItem(
         ) {
             Text(
                 text = day.hijriDay.toString(),
+                color = Color.White,
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(

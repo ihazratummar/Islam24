@@ -148,7 +148,7 @@ val MediumDimens = Dimens( // = 56% scale
     size40 = 62.4.dp,
     size42 = 65.52.dp,
     size45 = 70.dp,
-    size48 = 76.88.dp,
+    size48 = 76.88 .dp,
     size50 = 78.dp,
     size52 = 81.12.dp,
     size55 = 85.8.dp,
