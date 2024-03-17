@@ -38,11 +38,10 @@ fun LazyRowWithCards(navController: NavController) {
         R.drawable.tasbihicon,
         R.drawable.duaicon,
         R.drawable.calendaricon,
-        R.drawable.athkar,
-        R.drawable.quiz,)
+        R.drawable.athkar,)
 
     val names = listOf(
-        "Names", "Tasbih", "Dua", "Calendar", "Athkar", "Quiz"
+        "Names", "Tasbih", "Dua", "Calendar", "Athkar"
     )
 
     LazyRow{
@@ -58,7 +57,6 @@ fun LazyRowWithCards(navController: NavController) {
                     2 -> Modifier.background(Color(0xFFFFBFA6))
                     3 -> Modifier.background(Color(0xFFFF958C))
                     4 -> Modifier.background(Color(0xffFBBC05))
-                    5 -> Modifier.background(Color(0xff34A853))
                     else -> Modifier.background(Color.Gray)
                 }
                 Card(
@@ -73,7 +71,6 @@ fun LazyRowWithCards(navController: NavController) {
                                 2 -> navController.navigate("DuasPageScreen")
                                 3 -> navController.navigate("CalendarScreen")
                                 4 -> navController.navigate("AthkarScreen")
-                                5 -> navController.navigate("QuizScreen")
                             }
                         }
                         .clip(RoundedCornerShape(MaterialTheme.dimens.size8))
