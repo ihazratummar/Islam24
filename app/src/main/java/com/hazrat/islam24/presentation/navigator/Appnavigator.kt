@@ -27,14 +27,12 @@ import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.presentation.qiblapage.QiblaScreen
-import com.hazrat.islam24.presentation.userprofile.ProfileScreen
 import com.hazrat.islam24.presentation.zakatscreen.ZakatScreen
 import com.hazrat.islam24.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.presentation.namesofallah.NamesViewModel
 import com.hazrat.islam24.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.presentation.prayertime.setting.UserSettingViewModel
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
-import com.hazrat.islam24.presentation.quiz.QuizScreen
 
 @Composable
 fun AppNavigator() {
@@ -43,8 +41,7 @@ fun AppNavigator() {
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.prayericon, text = "Time"),
             BottomNavigationItem(icon = R.drawable.zakaticon, text = "Zakat"),
-            BottomNavigationItem(icon = R.drawable.qiblaicon, text = "Qibla"),
-            BottomNavigationItem(icon = R.drawable.profileicon, text = "Profile"),
+            BottomNavigationItem(icon = R.drawable.qiblaicon, text = "Qibla")
         )
     }
 
@@ -59,7 +56,6 @@ fun AppNavigator() {
         Route.PrayerTimeScreen.route -> 1
         Route.ZakatScreen.route -> 2
         Route.QiblaDirectionScreen.route -> 3
-        Route.ProfileScreen.route -> 4
         else -> 0
     }
 
@@ -68,8 +64,7 @@ fun AppNavigator() {
         backStackState?.destination?.route == Route.HomeScreen.route ||
                 backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
                 backStackState?.destination?.route == Route.ZakatScreen.route ||
-                backStackState?.destination?.route == Route.QiblaDirectionScreen.route ||
-                backStackState?.destination?.route == Route.ProfileScreen.route
+                backStackState?.destination?.route == Route.QiblaDirectionScreen.route
     }
 
     Scaffold(
@@ -99,11 +94,6 @@ fun AppNavigator() {
                                 navController = navController,
                                 route = Route.QiblaDirectionScreen.route
                             )
-
-                            4 -> navigateToTab(
-                                navController = navController,
-                                route = Route.ProfileScreen.route
-                            )
                         }
                     }
                 )
@@ -132,9 +122,6 @@ fun AppNavigator() {
             composable(route = Route.QiblaDirectionScreen.route) {
                 QiblaScreen(navController)
             }
-            composable(route = Route.ProfileScreen.route) {
-                ProfileScreen(navController)
-            }
             composable(route = Route.ZakatScreen.route) {
                 ZakatScreen(navController)
             }
@@ -158,19 +145,14 @@ fun AppNavigator() {
             composable(route = Route.AthkarScreen.route){
                 AthkarScreen(navController)
             }
-            composable(route = Route.QuizScreen.route){
-                QuizScreen()
-            }
-
-
         }
     }
 }
 
 private fun navigateToTab(navController: NavController, route: String) {
     navController.navigate(route) {
-        navController.graph.startDestinationRoute?.let { screen_route ->
-            popUpTo(screen_route) {
+        navController.graph.startDestinationRoute?.let { screenRoute ->
+            popUpTo(screenRoute) {
                 saveState = true
             }
         }
