@@ -20,6 +20,7 @@ data class Dimens (
     val size35:Dp = 0.dp,
     val size40:Dp =0.dp,
     val size42:Dp =0.dp,
+    val size43:Dp = 0.dp,
     val size45:Dp =0.dp,
     val size48:Dp =0.dp,
     val size50:Dp = 0.dp,
@@ -41,7 +42,9 @@ data class Dimens (
 //    val SpSize25 = 25.sp
 //    val SpSize30 = 30.sp
 //    val SpSize50 = 50.sp
-)
+) {
+
+}
 
 val CompactSmallDimens = Dimens( // = 22% DownScale
 
@@ -148,7 +151,7 @@ val MediumDimens = Dimens( // = 56% scale
     size40 = 62.4.dp,
     size42 = 65.52.dp,
     size45 = 70.dp,
-    size48 = 76.88 .dp,
+    size48 = 76.88.dp,
     size50 = 78.dp,
     size52 = 81.12.dp,
     size55 = 85.8.dp,
