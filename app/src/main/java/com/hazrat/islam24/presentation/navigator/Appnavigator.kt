@@ -156,7 +156,7 @@ fun AppNavigator() {
                 DuaScreen()
             }
             composable(route = Route.AthkarScreen.route){
-                AthkarScreen()
+                AthkarScreen(navController)
             }
             composable(route = Route.QuizScreen.route){
                 QuizScreen()
