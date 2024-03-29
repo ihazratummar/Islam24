@@ -40,8 +40,8 @@ fun AppNavigator() {
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.prayericon, text = "Time"),
-            BottomNavigationItem(icon = R.drawable.zakaticon, text = "Zakat"),
-            BottomNavigationItem(icon = R.drawable.qiblaicon, text = "Qibla")
+//            BottomNavigationItem(icon = R.drawable.zakaticon, text = "Zakat"),
+//            BottomNavigationItem(icon = R.drawable.qiblaicon, text = "Qibla")
         )
     }
 
@@ -54,17 +54,17 @@ fun AppNavigator() {
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.PrayerTimeScreen.route -> 1
-        Route.ZakatScreen.route -> 2
-        Route.QiblaDirectionScreen.route -> 3
+//        Route.ZakatScreen.route -> 2
+//        Route.QiblaDirectionScreen.route -> 3
         else -> 0
     }
 
     //Hide the bottom navigation when the user is in the details screen
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
-                backStackState?.destination?.route == Route.ZakatScreen.route ||
-                backStackState?.destination?.route == Route.QiblaDirectionScreen.route
+                backStackState?.destination?.route == Route.PrayerTimeScreen.route
+//                backStackState?.destination?.route == Route.ZakatScreen.route ||
+//                backStackState?.destination?.route == Route.QiblaDirectionScreen.route
     }
 
     Scaffold(
@@ -85,15 +85,15 @@ fun AppNavigator() {
                                 route = Route.PrayerTimeScreen.route
                             )
 
-                            2 -> navigateToTab(
-                                navController = navController,
-                                route = Route.ZakatScreen.route
-                            )
-
-                            3 -> navigateToTab(
-                                navController = navController,
-                                route = Route.QiblaDirectionScreen.route
-                            )
+//                            2 -> navigateToTab(
+//                                navController = navController,
+//                                route = Route.ZakatScreen.route
+//                            )
+//
+//                            3 -> navigateToTab(
+//                                navController = navController,
+//                                route = Route.QiblaDirectionScreen.route
+//                            )
                         }
                     }
                 )
@@ -119,12 +119,12 @@ fun AppNavigator() {
                 val viewModel: PrayerTimeViewModel = hiltViewModel()
                 PrayerTimeScreen(viewModel, navController)
             }
-            composable(route = Route.QiblaDirectionScreen.route) {
-                QiblaScreen(navController)
-            }
-            composable(route = Route.ZakatScreen.route) {
-                ZakatScreen(navController)
-            }
+//            composable(route = Route.QiblaDirectionScreen.route) {
+//                QiblaScreen(navController)
+//            }
+//            composable(route = Route.ZakatScreen.route) {
+//                ZakatScreen(navController)
+//            }
             composable(route = Route.NamesOfAllah.route) {
                 val viewModel: NamesViewModel = hiltViewModel()
                 NamesOfAllahScreen(viewModel, navController)
@@ -139,9 +139,9 @@ fun AppNavigator() {
             composable(route = Route.CalendarScreen.route){
                 CalendarScreen(navController)
             }
-            composable(route = Route.DuasPageScreen.route){
-                DuaScreen()
-            }
+//            composable(route = Route.DuasPageScreen.route){
+//                DuaScreen()
+//            }
             composable(route = Route.AthkarScreen.route){
                 AthkarScreen(navController)
             }
