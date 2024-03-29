@@ -36,12 +36,12 @@ fun LazyRowWithCards(navController: NavController) {
     val icons = listOf(
         R.drawable.allahname,
         R.drawable.tasbihicon,
-        R.drawable.duaicon,
+//        R.drawable.duaicon,
         R.drawable.calendaricon,
         R.drawable.athkar,)
 
     val names = listOf(
-        "Names", "Tasbih", "Dua", "Calendar", "Athkar"
+        "Names", "Tasbih", "Calendar", "Athkar"
     )
 
     LazyRow{
@@ -54,9 +54,9 @@ fun LazyRowWithCards(navController: NavController) {
                 val cardModifier = when (index) {
                     0 -> Modifier.background(Color(0xFFE6C556))
                     1 -> Modifier.background(Color(0xFF7AFFFF))
-                    2 -> Modifier.background(Color(0xFFFFBFA6))
-                    3 -> Modifier.background(Color(0xFFFF958C))
-                    4 -> Modifier.background(Color(0xffFBBC05))
+//                    2 -> Modifier.background(Color(0xFFFFBFA6))
+                    2 -> Modifier.background(Color(0xFFFF958C))
+                    3 -> Modifier.background(Color(0xffFBBC05))
                     else -> Modifier.background(Color.Gray)
                 }
                 Card(
@@ -68,9 +68,9 @@ fun LazyRowWithCards(navController: NavController) {
                             when (index) {
                                 0 -> navController.navigate("NamesOfAllah")
                                 1 -> navController.navigate("TasbihScreen")
-                                2 -> navController.navigate("DuasPageScreen")
-                                3 -> navController.navigate("CalendarScreen")
-                                4 -> navController.navigate("AthkarScreen")
+//                                2 -> navController.navigate("DuasPageScreen")
+                                2 -> navController.navigate("CalendarScreen")
+                                3 -> navController.navigate("AthkarScreen")
                             }
                         }
                         .clip(RoundedCornerShape(MaterialTheme.dimens.size8))

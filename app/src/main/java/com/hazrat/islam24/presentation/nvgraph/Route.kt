@@ -3,7 +3,6 @@ package com.hazrat.islam24.presentation.nvgraph
 sealed class Route (
     val route: String
 ){
-
     object OnBoardingScreen: Route(route = "onBoardingScreen")
 
     object HomeScreen: Route(route = "homeScreen")
@@ -29,5 +28,4 @@ sealed class Route (
     object UserSettings:Route(route = "UserSettingScreen")
 
     object AthkarScreen:Route(route = "AthkarScreen")
-
 }
