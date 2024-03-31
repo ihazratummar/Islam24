@@ -1,6 +1,5 @@
 package com.hazrat.islam24.util
 
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 
