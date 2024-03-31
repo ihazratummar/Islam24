@@ -1,6 +1,6 @@
 package com.hazrat.islam24.data.manager
 
-import com.hazrat.hijricaneldar.data.dao.GregorianToHijriDao
+import com.hazrat.islam24.data.dao.GregorianToHijriDao
 import com.hazrat.hijricaneldar.data.dao.HijriCalendarDao
 import com.hazrat.hijricaneldar.domain.model.hijricalendar.Data
 import com.hazrat.hijricaneldar.domain.model.hijricalendar.HijriCalendarResponse

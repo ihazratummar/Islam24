@@ -1,4 +1,4 @@
-package com.hazrat.hijricaneldar.data.dao
+package com.hazrat.islam24.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

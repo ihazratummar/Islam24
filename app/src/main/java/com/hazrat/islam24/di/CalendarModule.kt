@@ -3,7 +3,7 @@ package com.hazrat.islam24.di
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import com.hazrat.hijricaneldar.data.dao.GregorianToHijriDao
+import com.hazrat.islam24.data.dao.GregorianToHijriDao
 import com.hazrat.hijricaneldar.data.dao.HijriCalendarDao
 import com.hazrat.islam24.data.manager.HijriCalendarRepositoryImpl
 import com.hazrat.islam24.domain.repository.GregorianToHijriRepository
@@ -29,7 +29,7 @@ object CalendarModule {
 
     @Singleton
     @Provides
-    fun provideGtoHManager(api: GregorianToHijriApi, gregorianToHijriDao: GregorianToHijriDao ): GregorianToHijriRepository {
+    fun provideGtoHManager(api: GregorianToHijriApi, gregorianToHijriDao: GregorianToHijriDao): GregorianToHijriRepository {
         return GregorianToHijriRepositoryImpl(api,gregorianToHijriDao)
     }
 
@@ -59,7 +59,7 @@ object CalendarModule {
 
     @Singleton
     @Provides
-    fun provideGregorianToHijriDao(appDatabase: CalendarDatabase): GregorianToHijriDao{
+    fun provideGregorianToHijriDao(appDatabase: CalendarDatabase): GregorianToHijriDao {
         return appDatabase.gregorianToHijriDao()
     }
 
