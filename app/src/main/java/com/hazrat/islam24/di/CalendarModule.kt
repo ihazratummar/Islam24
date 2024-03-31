@@ -4,14 +4,14 @@ import android.content.Context
 import android.util.Log
 import androidx.room.Room
 import com.hazrat.islam24.data.dao.GregorianToHijriDao
-import com.hazrat.hijricaneldar.data.dao.HijriCalendarDao
+import com.hazrat.islam24.data.dao.HijriCalendarDao
+import com.hazrat.islam24.data.database.CalendarDatabase
+import com.hazrat.islam24.data.manager.GregorianToHijriRepositoryImpl
 import com.hazrat.islam24.data.manager.HijriCalendarRepositoryImpl
 import com.hazrat.islam24.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.network.GregorianToHijriApi
 import com.hazrat.islam24.network.HijriCalendarApi
-import com.hazrat.islam24.data.database.CalendarDatabase
-import com.hazrat.islam24.data.manager.GregorianToHijriRepositoryImpl
 import com.hazrat.islam24.util.Constants.GTH_BASE_URL
 import com.hazrat.islam24.util.Constants.HIJRI_CALENDAR_URL
 import dagger.Module
@@ -65,7 +65,7 @@ object CalendarModule {
 
     @Singleton
     @Provides
-    fun provideHijriCalenderDao(appDatabase: CalendarDatabase): HijriCalendarDao{
+    fun provideHijriCalenderDao(appDatabase: CalendarDatabase): HijriCalendarDao {
         return appDatabase.hijriCalendarDao()
     }
 

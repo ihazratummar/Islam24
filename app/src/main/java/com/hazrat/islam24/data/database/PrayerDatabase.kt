@@ -9,7 +9,18 @@ import com.hazrat.islam24.data.entity.PrayerTimeEntity
 
 @Database(entities = [PrayerTimeEntity::class, PrayerSettingEntity::class], version = 2)
 abstract class PrayerDatabase : RoomDatabase() {
+
+    /**
+     * Retrieves the Data Access Object (DAO) for accessing prayer time data.
+     *
+     * @return The PrayerTimeDao instance.
+     */
     abstract fun prayerTimeDao(): PrayerTimeDao
 
+    /**
+     * Retrieves the Data Access Object (DAO) for accessing prayer setting data.
+     *
+     * @return The PrayerSettingDao instance.
+     */
     abstract fun prayerSetting(): PrayerSettingDao
 }
