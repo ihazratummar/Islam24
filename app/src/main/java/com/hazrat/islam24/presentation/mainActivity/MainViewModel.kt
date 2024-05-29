@@ -9,6 +9,8 @@ import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.domain.usecases.app_entry.ReadAppEntry
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
+import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.util.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -20,8 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val readAppEntry: ReadAppEntry,
-    prayerTimeRepository: PrayerTimeRepository,
-    locationNameRepository: LocationNameRepository
+    private val prayerTimeRepository: PrayerTimeRepository,
+    private val locationNameRepository: LocationNameRepository,
+    private val connectivityObserver: ConnectivityObserver
 ): ViewModel() {
 
     private val _splashCondition = mutableStateOf(true)
@@ -30,6 +33,8 @@ class MainViewModel @Inject constructor(
     private val _startDestination = mutableStateOf(Route.AppStartNavigation.route)
     val startDestination: State<String> = _startDestination
 
+    private val _networkStatus = mutableStateOf(ConnectivityObserver.Status.Unavailable)
+    val networkStatus : State<ConnectivityObserver.Status> = _networkStatus
 
     init {
         readAppEntry().onEach { shouldStartFromHomeScreen ->
@@ -41,13 +46,24 @@ class MainViewModel @Inject constructor(
             delay(300)
             _splashCondition.value = false
         }.launchIn(viewModelScope)
-        viewModelScope.launch {
-            prayerTimeRepository.getAllPrayer()
-//            prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-            locationNameRepository.getLocationName()
-//            locationNameRepository.getLocationDetails()
-        }
-
+        observeNetworkStatus()
     }
 
+    private fun observeNetworkStatus(){
+        connectivityObserver.observer().onEach { status ->
+            _networkStatus.value = status
+            if (status == ConnectivityObserver.Status.Available){
+                fetchInitialData()
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun fetchInitialData() {
+        viewModelScope.launch {
+            prayerTimeRepository.getAllPrayer()
+            // prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
+            locationNameRepository.getLocationName()
+            // locationNameRepository.getLocationDetails()
+        }
+    }
 }

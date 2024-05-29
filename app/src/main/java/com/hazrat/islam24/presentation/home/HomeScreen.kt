@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,71 +34,108 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.presentation.common.LocationName
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.presentation.navigator.component.NoInternet
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.ConnectivityObserver
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     prayerTimeViewModel: PrayerTimeViewModel,
     navigateToPrayerTime: () -> Unit,
+    viewModel: MainViewModel = hiltViewModel()
 ) {
 
     val prayerTimesState = prayerTimeViewModel.prayerTimes.collectAsState()
     val prayerTimes = prayerTimesState.value
     val locationNameState = prayerTimeViewModel.locationName.collectAsState()
     val locationName = locationNameState.value
+    val networkStatus by viewModel.networkStatus
 
-
-    LazyColumn(
-        modifier = Modifier
-    ) {
-        item {
-            Surface(modifier = Modifier.padding(MaterialTheme.dimens.size5),
-                color = MaterialTheme.colorScheme.background
+    when(networkStatus){
+        ConnectivityObserver.Status.Available -> {
+            LazyColumn(
+                modifier = Modifier
             ) {
-                BackGroundCard()
-                Column(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .fillMaxSize()
-                        .padding(MaterialTheme.dimens.size10),
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    Text(text = "", style = MaterialTheme.typography.bodySmall)
-                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
-                    if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
-                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
-                    } else {
-                        // Handle the case where prayerTimes is empty
-                        Text(text = "Salat Time")
+
+                item {
+                    Surface(
+                        modifier = Modifier.padding(MaterialTheme.dimens.size5),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        BackGroundCard()
+                        Column(
+                            modifier = Modifier
+                                .statusBarsPadding()
+                                .fillMaxSize()
+                                .padding(MaterialTheme.dimens.size10),
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Text(text = "", style = MaterialTheme.typography.bodySmall)
+                            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
+                            if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
+                                TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
+                            } else {
+                                // Handle the case where prayerTimes is empty
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(MaterialTheme.dimens.size200)
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                listOf(
+                                                    Color(0xC31F581F),
+                                                    Color(0xFF054105),
+                                                    Color(0xFF45D307),
+                                                )
+                                            ),
+                                            shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+                                        )
+                                        .clickable {
+                                            navigateToPrayerTime()
+                                        },
+                                    colors = CardDefaults.cardColors(Color.Transparent),
+                                ){
+                                    Text(text = "Salat Time Loading ")
+                                }
+                            }
+                        }
+                    }
+                }
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(MaterialTheme.dimens.size10),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        LazyRowWithCards(navController)
                     }
                 }
             }
         }
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(MaterialTheme.dimens.size10),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LazyRowWithCards(navController)
-            }
+        ConnectivityObserver.Status.Unavailable,
+        ConnectivityObserver.Status.Losing,
+        ConnectivityObserver.Status.Lost -> {
+            NoInternet(navController)
         }
-//        items(101){
-//            Text(text = "$it This is just a text for testing", modifier = Modifier.fillMaxWidth())
-//        }
+        else -> {
+            Text(text = "Unknown Network Status", color = MaterialTheme.colorScheme.error)
+        }
     }
-
 }
+
+
 
 
 ////BACKGROUND CARD WITH MASJID ICON

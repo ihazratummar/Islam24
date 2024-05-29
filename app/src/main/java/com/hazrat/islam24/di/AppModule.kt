@@ -6,7 +6,9 @@ import com.hazrat.islam24.data.dao.NameDao
 import com.hazrat.islam24.data.database.NamesDataBase
 import com.hazrat.islam24.domain.repository.NamesRepository
 import com.hazrat.islam24.network.NamesApi
+import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Constants.BASE_URL_NAME
+import com.hazrat.islam24.util.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,6 +52,15 @@ object AppModule {
     @Provides
     fun provideNameDao(dataBase: NamesDataBase): NameDao {
         return dataBase.nameDao()
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideNetworkConnectivityObserver(
+        @ApplicationContext context: Context
+    ): ConnectivityObserver {
+        return NetworkConnectivityObserver(context)
     }
 
 }

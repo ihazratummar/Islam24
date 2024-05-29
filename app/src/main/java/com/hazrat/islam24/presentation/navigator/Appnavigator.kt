@@ -1,8 +1,11 @@
 package com.hazrat.islam24.presentation.navigator
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -12,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -19,23 +23,23 @@ import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.presentation.calendar.CalendarScreen
-import com.hazrat.islam24.presentation.dua.DuaScreen
-import com.hazrat.islam24.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.presentation.home.HomeScreen
-import com.hazrat.islam24.presentation.navigator.component.AppBottomNavigation
-import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem
-import com.hazrat.islam24.presentation.nvgraph.Route
-import com.hazrat.islam24.presentation.prayertime.PrayerTimeScreen
-import com.hazrat.islam24.presentation.qiblapage.QiblaScreen
-import com.hazrat.islam24.presentation.zakatscreen.ZakatScreen
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.presentation.namesofallah.NamesViewModel
+import com.hazrat.islam24.presentation.navigator.component.AppBottomNavigation
+import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem
+import com.hazrat.islam24.presentation.navigator.component.NoInternet
+import com.hazrat.islam24.presentation.nvgraph.Route
+import com.hazrat.islam24.presentation.prayertime.PrayerTimeScreen
+import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.presentation.prayertime.setting.UserSettingViewModel
-import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
+import com.hazrat.islam24.presentation.tasbih.TasbihScreen
+import com.hazrat.islam24.util.ConnectivityObserver
 
 @Composable
-fun AppNavigator() {
+fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
     val bottomNavigationItem = remember {
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
@@ -66,7 +70,37 @@ fun AppNavigator() {
 //                backStackState?.destination?.route == Route.ZakatScreen.route ||
 //                backStackState?.destination?.route == Route.QiblaDirectionScreen.route
     }
+    val networkStatus by mainViewModel.networkStatus
+    when (networkStatus) {
+        ConnectivityObserver.Status.Available -> {
+            TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController)
+        }
 
+        ConnectivityObserver.Status.Unavailable,
+        ConnectivityObserver.Status.Losing,
+        ConnectivityObserver.Status.Lost -> {
+            NoInternet(navController = navController)
+        }
+        else -> {
+            Text(text = "Unknown Network Status", color = MaterialTheme.colorScheme.error)
+        }
+    }
+}
+
+@Composable
+fun NoInternetContent(
+    navController: NavController
+){
+    NoInternet(navController = navController)
+}
+
+@Composable
+private fun TotalContent(
+    isBottomBarVisible: Boolean,
+    bottomNavigationItem: List<BottomNavigationItem>,
+    selectedItem: Int,
+    navController: NavHostController
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -136,13 +170,13 @@ fun AppNavigator() {
                 val viewModel: UserSettingViewModel = hiltViewModel()
                 UserSetting(navController = navController, viewModel)
             }
-            composable(route = Route.CalendarScreen.route){
+            composable(route = Route.CalendarScreen.route) {
                 CalendarScreen(navController)
             }
 //            composable(route = Route.DuasPageScreen.route){
 //                DuaScreen()
 //            }
-            composable(route = Route.AthkarScreen.route){
+            composable(route = Route.AthkarScreen.route) {
                 AthkarScreen(navController)
             }
         }

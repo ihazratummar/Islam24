@@ -28,4 +28,6 @@ sealed class Route (
     object UserSettings:Route(route = "UserSettingScreen")
 
     object AthkarScreen:Route(route = "AthkarScreen")
+
+    object NoInternetScreen: Route(route = "NoInternetScreen")
 }
