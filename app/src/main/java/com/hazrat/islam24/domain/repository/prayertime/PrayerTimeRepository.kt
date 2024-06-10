@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 class PrayerTimeRepository @Inject constructor(
@@ -29,23 +31,36 @@ class PrayerTimeRepository @Inject constructor(
 
 
 
-    private suspend fun getApiParameterForMonth(): ApiResponse {
-        val location: LocationEntity? = locationRepository.getLocation()
-        val latitude = location?.latitude?: 24.628
-        val longitude = location?.longitude?: 88.011
-        val methodList = prayerSettingRepository.getMethod().firstOrNull() ?: emptyList()
-        val methodValue = methodList.firstOrNull()?.method?:1 // Default value is 1 if methodList or method is null
-        val schoolValue = methodList.firstOrNull()?.school?:0
-        Log.d("ChekingApi","$latitude $longitude $methodValue $schoolValue")
-        val year = DateUtil.getCurrentYear()
-        val month = DateUtil.getCurrentMonth()
-        val apiResponse = api.getPrayerTimes(year, month, "$latitude", "$longitude", methodValue, schoolValue)
-        apiResponse.data.forEach { apiDataForDay ->
-            val prayerTimeEntity = convertApiResponseToEntity(apiDataForDay)
-            updatePrayerTime(prayerTimeEntity)
+    private suspend fun getApiParameterForMonth(): ApiResponse? {
+        return try {
+            val location: LocationEntity? = locationRepository.getLocation()
+            val latitude = location?.latitude ?: 24.628
+            val longitude = location?.longitude ?: 88.011
+            val methodList = prayerSettingRepository.getMethod().firstOrNull() ?: emptyList()
+            val methodValue = methodList.firstOrNull()?.method ?: 1 // Default value is 1 if methodList or method is null
+            val schoolValue = methodList.firstOrNull()?.school ?: 0
+            Log.d("ChekingApi", "$latitude $longitude $methodValue $schoolValue")
+
+            val year = DateUtil.getCurrentYear()
+            val month = DateUtil.getCurrentMonth()
+
+            val apiResponse = api.getPrayerTimes(year, month, "$latitude", "$longitude", methodValue, schoolValue)
+            apiResponse.data.forEach { apiDataForDay ->
+                val prayerTimeEntity = convertApiResponseToEntity(apiDataForDay)
+                updatePrayerTime(prayerTimeEntity)
+            }
+            Log.d("PrayerTimeRepository", "API response: $apiResponse")
+            apiResponse
+        } catch (e: HttpException) {
+            Log.e("ApiError", "HTTP error: ${e.code()}", e)
+            null
+        } catch (e: IOException) {
+            Log.e("ApiError", "Network error", e)
+            null
+        } catch (e: Exception) {
+            Log.e("ApiError", "Unknown error", e)
+            null
         }
-        Log.d("PrayerTimeRepository", "API response: $apiResponse")
-        return apiResponse
     }
 
 
@@ -100,19 +115,21 @@ class PrayerTimeRepository @Inject constructor(
     suspend fun fetchAndSavePrayerTimesForMonth(): List<PrayerTimeEntity> {
         val apiResponse = getApiParameterForMonth()
         val prayerTimesList = mutableListOf<PrayerTimeEntity>()
-        for (apiDataForDay in apiResponse.data) {
-            val prayerTimeEntity = convertApiResponseToEntity(apiDataForDay)
+        if (apiResponse != null) {
+            for (apiDataForDay in apiResponse.data) {
+                val prayerTimeEntity = convertApiResponseToEntity(apiDataForDay)
 
-            // Check if the entity for this day already exists in the database
-            val existingEntity = prayerTimeDao.getPrayerTimeByDay(prayerTimeEntity.day)
-            if (existingEntity == null) {
-                // If it doesn't exist, insert the entity into the database
-                prayerTimeDao.insertAllPrayerTimes(listOf(prayerTimeEntity))
-                Log.d("Insertion", "Inserting prayer time entity: $prayerTimeEntity")
-                prayerTimesList.add(prayerTimeEntity)
-            } else {
-                // If it already exists, you may want to handle this case accordingly
-                Log.d("Insertion", "Prayer time entity for day ${prayerTimeEntity.day} already exists")
+                // Check if the entity for this day already exists in the database
+                val existingEntity = prayerTimeDao.getPrayerTimeByDay(prayerTimeEntity.day)
+                if (existingEntity == null) {
+                    // If it doesn't exist, insert the entity into the database
+                    prayerTimeDao.insertAllPrayerTimes(listOf(prayerTimeEntity))
+                    Log.d("Insertion", "Inserting prayer time entity: $prayerTimeEntity")
+                    prayerTimesList.add(prayerTimeEntity)
+                } else {
+                    // If it already exists, you may want to handle this case accordingly
+                    Log.d("Insertion", "Prayer time entity for day ${prayerTimeEntity.day} already exists")
+                }
             }
         }
         Log.d("Insertion", "Prayer time entities inserted successfully")

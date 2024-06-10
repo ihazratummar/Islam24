@@ -29,5 +29,9 @@ val tasbihPhraseList = listOf(
     TasbihPhrase(
         arText = "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِالله",
         enText = "La hawla wa la quwwata illa billah "
+    ),
+    TasbihPhrase(
+        arText = "سُبْحَانَ ٱللَّهِ خَالِقِ كُلِّ شَيْءٍ" ,
+        enText = "subhana allahi khaliqi kulli shay'in"
     )
 )

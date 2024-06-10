@@ -91,7 +91,7 @@ dependencies {
     //Dagger Hilt
 //    implementation("com.google.dagger:hilt-android:2.50")
     implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.50")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     //Retrofit

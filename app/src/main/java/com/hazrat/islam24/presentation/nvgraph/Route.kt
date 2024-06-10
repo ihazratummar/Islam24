@@ -3,11 +3,8 @@ package com.hazrat.islam24.presentation.nvgraph
 sealed class Route (
     val route: String
 ){
-    object OnBoardingScreen: Route(route = "onBoardingScreen")
 
     object HomeScreen: Route(route = "homeScreen")
-
-    object AppStartNavigation : Route(route = "appStartNavigation")
 
     object HomeNavigation: Route(route = "homeNavigation")
 

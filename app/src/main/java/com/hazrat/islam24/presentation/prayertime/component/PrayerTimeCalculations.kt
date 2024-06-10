@@ -26,6 +26,7 @@ fun DisplayCurrentPrayerName(
 ) {
     var currentTime by remember { mutableStateOf(LocalTime.now()) }
     val currentDate = LocalDate.now()
+    var previousPrayerName by remember { mutableStateOf<String?>(null) }
 
     DisposableEffect(Unit) {
         val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -45,69 +46,26 @@ fun DisplayCurrentPrayerName(
     // Filter prayer times for the current day
     val currentDayPrayer = data.firstOrNull { it.day == currentDate.dayOfMonth }
 
-    // Define time ranges and their corresponding actions
-
     val fajrTime = currentDayPrayer?.fajrTime?.let {
-        if (it.isNotBlank()) {
-            LocalTime.parse(it.split(" ")[0])
-        } else {
-            // Handle the case where fajrTime is blank
-            null
-        }
+        if (it.isNotBlank()) LocalTime.parse(it.split(" ")[0]) else null
     }
-
     val sunriseTime = currentDayPrayer?.sunriseTime?.let {
-        if (it.isNotBlank()) {
-            LocalTime.parse(it.split(" ")[0])
-        } else {
-            // Handle the case where sunriseTime is blank
-            null
-        }
+        if (it.isNotBlank()) LocalTime.parse(it.split(" ")[0]) else null
     }
-
     val dhuhrTime = currentDayPrayer?.dhuhrTime?.let {
-        if (it.isNotBlank()) {
-            LocalTime.parse(it.split(" ")[0])
-        } else {
-            // Handle the case where dhuhrTime is blank
-            null
-        }
+        if (it.isNotBlank()) LocalTime.parse(it.split(" ")[0]) else null
     }
-
     val asrTime = currentDayPrayer?.asrTime?.let {
-        if (it.isNotBlank()) {
-            LocalTime.parse(it.split(" ")[0])
-        } else {
-            // Handle the case where asrTime is blank
-            null
-        }
+        if (it.isNotBlank()) LocalTime.parse(it.split(" ")[0]) else null
     }
-
     val maghribTime = currentDayPrayer?.maghribTime?.let {
-        if (it.isNotBlank()) {
-            LocalTime.parse(it.split(" ")[0])
-        } else {
-            // Handle the case where maghribTime is blank
-            null
-        }
+        if (it.isNotBlank()) LocalTime.parse(it.split(" ")[0]) else null
     }
-
     val ishaTime = currentDayPrayer?.ishaTime?.let {
-        if (it.isNotBlank()) {
-            LocalTime.parse(it.split(" ")[0])
-        } else {
-            // Handle the case where ishaTime is blank
-            null
-        }
+        if (it.isNotBlank()) LocalTime.parse(it.split(" ")[0]) else null
     }
-
     val midnightTime = currentDayPrayer?.midnightTime?.let {
-        if (it.isNotBlank()) {
-            LocalTime.parse(it.split(" ")[0])
-        } else {
-            // Handle the case where midnightTime is blank
-            null
-        }
+        if (it.isNotBlank()) LocalTime.parse(it.split(" ")[0]) else null
     }
 
     val timeRanges = mapOf(
@@ -120,10 +78,8 @@ fun DisplayCurrentPrayerName(
 
     var currentPrayerName: String? = null
 
-    // Find the prayer for the current time
     for ((prayerName, timeRange) in timeRanges) {
         val (startTime, endTime) = timeRange
-        Log.d("PrayerTime", " Start Time: $startTime, End Time: $endTime")
         if (startTime != null && endTime != null) {
             if (currentTime in startTime..endTime) {
                 currentPrayerName = prayerName
@@ -131,8 +87,12 @@ fun DisplayCurrentPrayerName(
             }
         } else {
             // Handle the case where startTime or endTime is null
-            // For example, log an error message or provide a default behavior
         }
+    }
+
+    if (currentPrayerName != previousPrayerName) {
+        previousPrayerName = currentPrayerName
+        Log.d("PrayerTime", "Current Prayer: $currentPrayerName")
     }
 
     currentPrayerName?.let { prayerName ->

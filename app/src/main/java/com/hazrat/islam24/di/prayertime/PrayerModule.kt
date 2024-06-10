@@ -26,8 +26,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -66,13 +68,18 @@ object PrayerModule {
         return appDatabase.prayerTimeDao()
     }
 
-
+    private val okHttpClient = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build()
     //Prayer Time Api
     @Singleton
     @Provides
     fun providePrayerApi(): PrayerTimeApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(PrayerTimeApi::class.java)
@@ -85,6 +92,7 @@ object PrayerModule {
     fun provideLocationNameApi(): LocationNameApi {
         return Retrofit.Builder()
             .baseUrl(LOCATION_BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(LocationNameApi::class.java)

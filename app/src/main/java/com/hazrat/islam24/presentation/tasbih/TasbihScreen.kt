@@ -31,7 +31,6 @@ fun TasbihScreen(navController: NavController) {
                 title = {
                     Text(
                         text = "Tasbih Count",
-                        fontFamily = Hidayat,
                         color = Color.White,
                         style = MaterialTheme.typography.headlineSmall
                     )

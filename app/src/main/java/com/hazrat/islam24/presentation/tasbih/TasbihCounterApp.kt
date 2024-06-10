@@ -305,12 +305,12 @@ private fun TasbihHeader(
             Text(
                 phrase.arText, style = MaterialTheme.typography.headlineMedium,
                 color = Color.White,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontSize = 15.sp,
             )
             Text(
                 phrase.enText, style = MaterialTheme.typography.headlineMedium,
-                fontFamily = Hidayat,
-                fontSize = 20.sp,
+                fontSize = 15.sp,
                 textAlign = TextAlign.Center,
                 color = Color.White
 

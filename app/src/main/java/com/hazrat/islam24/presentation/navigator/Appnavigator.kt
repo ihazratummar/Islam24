@@ -1,6 +1,5 @@
 package com.hazrat.islam24.presentation.navigator
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -79,7 +78,7 @@ fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
         ConnectivityObserver.Status.Unavailable,
         ConnectivityObserver.Status.Losing,
         ConnectivityObserver.Status.Lost -> {
-            NoInternet(navController = navController)
+            NoInternetContent(navController = navController)
         }
         else -> {
             Text(text = "Unknown Network Status", color = MaterialTheme.colorScheme.error)

@@ -42,6 +42,7 @@ import com.hazrat.islam24.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.presentation.common.LocationName
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.presentation.navigator.NoInternetContent
 import com.hazrat.islam24.presentation.navigator.component.NoInternet
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
@@ -81,7 +82,7 @@ fun HomeScreen(
                                 .padding(MaterialTheme.dimens.size10),
                             verticalArrangement = Arrangement.Top
                         ) {
-                            Text(text = "", style = MaterialTheme.typography.bodySmall)
+                            Text(text = "Salam", style = MaterialTheme.typography.bodySmall)
                             Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
                             if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
                                 TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
@@ -127,7 +128,8 @@ fun HomeScreen(
         ConnectivityObserver.Status.Unavailable,
         ConnectivityObserver.Status.Losing,
         ConnectivityObserver.Status.Lost -> {
-            NoInternet(navController)
+            NoInternetContent(navController)
+
         }
         else -> {
             Text(text = "Unknown Network Status", color = MaterialTheme.colorScheme.error)
@@ -141,7 +143,7 @@ fun HomeScreen(
 ////BACKGROUND CARD WITH MASJID ICON
 //@Preview
 @Composable
-private fun BackGroundCard() {
+fun BackGroundCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
