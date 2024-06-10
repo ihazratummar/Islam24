@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.PrayerSettingEntity
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.MethodSelectionDialog
 import com.hazrat.islam24.presentation.prayertime.component.PrayerTimeSettingCard
@@ -46,7 +47,7 @@ import com.hazrat.islam24.ui.theme.dimens
 fun UserSetting(
     navController: NavController,
     settingViewModel: UserSettingViewModel = hiltViewModel(),
-    prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
+    prayerTimeViewModel: MainViewModel = hiltViewModel()
 ) {
 
     fun openMethodSelectionDialog() {

@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,8 +31,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,12 +43,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.hazrat.islam24.domain.model.namesofallah.Data
-import com.hazrat.islam24.domain.model.namesofallah.En
+import com.hazrat.islam24.data.entity.NameEntity
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
@@ -58,7 +54,7 @@ import com.hazrat.islam24.ui.theme.dimens
 @Composable
 fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController: NavController) {
 
-    val names = viewModel.names.observeAsState()
+    val names = viewModel.names.collectAsState()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -92,7 +88,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
         LazyColumn(
             modifier = Modifier.padding(padding)
         ) {
-            items(names.value ?: emptyList()) { name ->
+            items(names.value) { name ->
                 NameCard(name = name)
             }
         }
@@ -101,7 +97,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
 
 
 @Composable
-fun NameCard(name: Data) {
+fun NameCard(name: NameEntity) {
 
     var expanded by remember {
         mutableStateOf(false)
@@ -161,7 +157,7 @@ fun NameCard(name: Data) {
                         )
                     )
                     Text(
-                        text = name.en.meaning, style = TextStyle(
+                        text = name.meaning, style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
                             color = MaterialTheme.colorScheme.secondary
@@ -200,38 +196,9 @@ fun NameCard(name: Data) {
                 ) {
                     Text(text = "Ayat: ${name.found}", color = Color.White)
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size5))
-                    Text(text = name.en.desc, color = Color.White)
+                    Text(text = name.enDec, color = Color.White)
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun NameCardPreview() {
-    val sampleName = Data(
-        en = En(
-            desc = "Description of Al-Rahman",
-            meaning = "Meaning of Al-Rahman"
-        ),
-        name = "الرَّحْمَنُ",
-        found = "Yes",
-        number = 1,
-        transliteration = "Ar-Rahman"
-    )
-    val sampleName2 = Data(
-        en = En(
-            desc = "Description of Al-Rahman",
-            meaning = "Meaning of Al-Rahman"
-        ),
-        name = "الرَّحْمَنُ",
-        found = "Yes",
-        number = 2,
-        transliteration = "Ar-Rahman"
-    )
-    Column {
-        NameCard(name = sampleName)
-        NameCard(name = sampleName2)
     }
 }

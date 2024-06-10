@@ -79,7 +79,7 @@ fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
         ConnectivityObserver.Status.Unavailable,
         ConnectivityObserver.Status.Losing,
         ConnectivityObserver.Status.Lost -> {
-            NoInternetContent(navController = navController)
+            TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController)
         }
         else -> {
             Text(text = "Unknown Network Status", color = MaterialTheme.colorScheme.error)
@@ -141,8 +141,8 @@ private fun TotalContent(
             modifier = Modifier.padding(bottom = bottomPadding)
         ) {
             composable(route = Route.HomeScreen.route) {
-                val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
-                HomeScreen(navController, prayerTimeViewModel, navigateToPrayerTime = {
+                val prayerTimeViewModel: MainViewModel = hiltViewModel()
+                HomeScreen(navController,  navigateToPrayerTime = {
                     navigateToTab(
                         navController = navController,
                         route = Route.PrayerTimeScreen.route
@@ -150,7 +150,7 @@ private fun TotalContent(
                 })
             }
             composable(route = Route.PrayerTimeScreen.route) {
-                val viewModel: PrayerTimeViewModel = hiltViewModel()
+                val viewModel: MainViewModel = hiltViewModel()
                 PrayerTimeScreen(viewModel, navController)
             }
 //            composable(route = Route.QiblaDirectionScreen.route) {

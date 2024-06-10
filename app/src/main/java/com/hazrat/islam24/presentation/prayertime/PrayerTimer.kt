@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.presentation.prayertime.component.PrayerTimeCard
@@ -35,7 +36,7 @@ import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
 
 @Composable
-fun PrayerTimer(viewModel: PrayerTimeViewModel = hiltViewModel(), navController: NavController) {
+fun PrayerTimer(viewModel: MainViewModel = hiltViewModel(), navController: NavController) {
     ShowData(viewModel, navController)
 
 }
@@ -43,7 +44,7 @@ fun PrayerTimer(viewModel: PrayerTimeViewModel = hiltViewModel(), navController:
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowData(
-    viewModel: PrayerTimeViewModel = hiltViewModel(),
+    viewModel: MainViewModel = hiltViewModel(),
     navController: NavController
 ) {
     val prayerTimes by viewModel.prayerTimes.collectAsState()
@@ -84,7 +85,7 @@ fun ShowData(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ViewPager(
-    viewModel: PrayerTimeViewModel,
+    viewModel: MainViewModel,
     prayerTimes: List<PrayerTimeEntity>,
     navController: NavController
 ) {

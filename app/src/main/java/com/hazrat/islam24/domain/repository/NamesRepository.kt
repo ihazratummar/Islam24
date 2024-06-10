@@ -4,10 +4,12 @@ package com.hazrat.islam24.domain.repository
 import android.util.Log
 import com.hazrat.islam24.data.dao.NameDao
 import com.hazrat.islam24.data.entity.NameEntity
+import com.hazrat.islam24.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.domain.model.namesofallah.Data
 import com.hazrat.islam24.domain.model.namesofallah.En
 import com.hazrat.islam24.network.NamesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -59,6 +61,10 @@ class NamesRepository @Inject constructor(
             number = entity.number,
             transliteration = entity.transliteration
         )
+    }
+
+suspend fun getAllahNames(): List<NameEntity> {
+        return nameDao.getAllNames()
     }
 
 }

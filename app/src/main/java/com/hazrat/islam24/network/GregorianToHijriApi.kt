@@ -1,6 +1,6 @@
 package com.hazrat.islam24.network
 
-import com.hazrat.hijricaneldar.domain.model.gregoriantohijri.GregorianToHijriResponse
+import com.hazrat.islam24.domain.model.gregoriantohijri.GregorianToHijriResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import javax.inject.Singleton

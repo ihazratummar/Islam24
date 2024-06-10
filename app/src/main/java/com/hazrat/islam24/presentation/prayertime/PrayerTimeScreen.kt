@@ -6,10 +6,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 
 
 @Composable
-fun PrayerTimeScreen(viewModel: PrayerTimeViewModel, navController:NavController) {
+fun PrayerTimeScreen(viewModel: MainViewModel, navController:NavController) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),

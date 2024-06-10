@@ -5,14 +5,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.data.entity.HijriCalendarEntity
+import com.hazrat.islam24.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.data.entity.NameEntity
+import com.hazrat.islam24.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.data.entity.TasbihCounterEntity
-import com.hazrat.islam24.domain.model.namesofallah.Data
 import com.hazrat.islam24.domain.model.tasbihPhraseList
 import com.hazrat.islam24.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.domain.repository.HijriCalendarRepository
@@ -23,6 +23,7 @@ import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,6 +59,12 @@ class MainViewModel @Inject constructor(
     val startDestination: State<String> = _startDestination
 
     /**
+     * prayer time
+     */
+    private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
+    val prayerTimes = _prayerTimes.asStateFlow()
+
+    /**
      * network check
      */
     private val _networkStatus = mutableStateOf(ConnectivityObserver.Status.Unavailable)
@@ -66,8 +73,8 @@ class MainViewModel @Inject constructor(
     /**
      * allah' names
      */
-    private val _names = MutableLiveData<List<Data>>()
-    val names: LiveData<List<Data>> get() = _names
+    private val _names = MutableStateFlow<List<NameEntity>>(emptyList())
+    val names = _names.asStateFlow()
 
     /**
      * calenar
@@ -84,15 +91,32 @@ class MainViewModel @Inject constructor(
     val tasbihCounter: Flow<List<TasbihCounterEntity?>> = tasbihRepository.getTasbih()
     var selectedPhrase by mutableStateOf(tasbihPhraseList[0])
 
+    /**
+     * Location name
+     */
+    private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
+    val locationName = _locationName.asStateFlow()
+
     init {
-        // Removed the readAppEntry logic since it's not needed anymore.
         _startDestination.value = Route.HomeNavigation.route
         viewModelScope.launch {
             delay(300)
             _splashCondition.value = false
+            fetchDataFromDB()
         }
         observeNetworkStatus()
+    }
 
+    private fun fetchDataFromDB() {
+        viewModelScope.launch {
+            fetchHijriDate()
+            fetchHijriCalendar()
+            getAllPrayerTimes()
+            locationNAme()
+            locationNameRepository.getLocationDetails()
+            _names.value = namesRepository.getAllahNames()
+
+        }
     }
 
     private fun observeNetworkStatus() {
@@ -100,11 +124,7 @@ class MainViewModel @Inject constructor(
             _networkStatus.value = status
             if (status == ConnectivityObserver.Status.Available) {
                 fetchInitialData()
-                fetchHijriDate()
-                fetchHijriCalendar()
-                _names.value = namesRepository.getAllNames()
-                gregorianToHijriRepository.getGregorianToHijriDate()
-                hijriCalendarRepository.getHijriCalendarFromApi()
+
             }
         }.launchIn(viewModelScope)
     }
@@ -114,7 +134,11 @@ class MainViewModel @Inject constructor(
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
             locationNameRepository.getLocationName()
-            locationNameRepository.getLocationDetails()
+            locationNameRepository.fetchLocationName()
+            namesRepository.getAllNames()
+            gregorianToHijriRepository.getGregorianToHijriDate()
+            hijriCalendarRepository.getHijriCalendarFromApi()
+
         }
     }
 
@@ -126,15 +150,14 @@ class MainViewModel @Inject constructor(
             tasbihRepository.insertTasbih(tasbihCounterEntity)
         }
     }
-
-    fun resetTasbihCount(){
+    fun resetTasbihCount() {
         viewModelScope.launch {
             tasbihRepository.resetTasbihCount()
         }
     }
 
     /**
-     * calendar function
+     * calendar function from db
      */
     private fun fetchHijriDate() {
         viewModelScope.launch {
@@ -163,4 +186,36 @@ class MainViewModel @Inject constructor(
         }
     }
     //--------/////
+
+    /**
+     *  Prayer Time from db
+     */
+    private fun getAllPrayerTimes() {
+        viewModelScope.launch(Dispatchers.IO) {
+            prayerTimeRepository.getAllPrayer().distinctUntilChanged()
+                .collectLatest { prayerList: List<PrayerTimeEntity> ->
+                    if (prayerList.isEmpty()) {
+                        Log.d("testing", ": Empty list ")
+                    } else {
+                        _prayerTimes.value = prayerList
+                    }
+                }
+        }
+    }
+
+    /**
+     *  Location Name from db
+     */
+    private fun locationNAme() {
+        viewModelScope.launch(Dispatchers.IO) {
+            locationNameRepository.getLocationDetails().distinctUntilChanged()
+                .collectLatest { locationName: List<LocationDetailsEntity> ->
+                    if (locationName.isEmpty()) {
+                        Log.d("LocationNameStatus", "Location list empty")
+                    } else {
+                        _locationName.value = locationName
+                    }
+                }
+        }
+    }
 }

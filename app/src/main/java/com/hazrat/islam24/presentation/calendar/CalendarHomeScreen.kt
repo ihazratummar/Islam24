@@ -37,12 +37,9 @@ import java.time.LocalDate
 fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
     val hijriCalendar by viewModel.hijriCalendar.collectAsState()
     val calendar = hijriCalendar.firstOrNull()
-
     val startingDay = hijriCalendar.firstOrNull()?.gregorianWeekDayEn
     val weekNames = startingDay?.let { getWeekNames(it) } ?: listOf()
-
     val firstDayOfMonthIndex = weekNames.indexOf(startingDay)
-
     val daysWithOffset = mutableListOf<HijriCalendarEntity?>()
     if (firstDayOfMonthIndex != -1) {
         repeat(firstDayOfMonthIndex) {

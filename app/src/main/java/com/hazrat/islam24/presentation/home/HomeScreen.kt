@@ -54,101 +54,84 @@ import com.hazrat.islam24.util.ConnectivityObserver
 @Composable
 fun HomeScreen(
     navController: NavController,
-    prayerTimeViewModel: PrayerTimeViewModel,
     navigateToPrayerTime: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
 
-    val prayerTimesState = prayerTimeViewModel.prayerTimes.collectAsState()
-    val prayerTimes = prayerTimesState.value
-    val locationNameState = prayerTimeViewModel.locationName.collectAsState()
-    val locationName = locationNameState.value
-    val networkStatus by viewModel.networkStatus
+    val prayerTimes = viewModel.prayerTimes.collectAsState().value
+    val locationName = viewModel.locationName.collectAsState().value
 
-    when(networkStatus){
-        ConnectivityObserver.Status.Available -> {
-            LazyColumn(
-                modifier = Modifier
+    LazyColumn(
+        modifier = Modifier
+    ) {
+
+        item {
+            Surface(
+                modifier = Modifier.padding(MaterialTheme.dimens.size5),
+                color = MaterialTheme.colorScheme.background
             ) {
-
-                item {
-                    Surface(
-                        modifier = Modifier.padding(MaterialTheme.dimens.size5),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        BackGroundCard()
-                        Column(
-                            modifier = Modifier
-                                .statusBarsPadding()
-                                .fillMaxSize()
-                                .padding(MaterialTheme.dimens.size10),
-                            verticalArrangement = Arrangement.Top
-                        ) {
+                BackGroundCard()
+                Column(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .fillMaxSize()
+                        .padding(MaterialTheme.dimens.size10),
+                    verticalArrangement = Arrangement.Top
+                ) {
 //                            Text(text = "Salam", style = MaterialTheme.typography.bodySmall)
-                            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size100))
-                            if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
-                                TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
-                            } else {
-                                // Handle the case where prayerTimes is empty
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(MaterialTheme.dimens.size200)
-                                        .background(
-                                            brush = Brush.verticalGradient(
-                                                listOf(
-                                                    Color(0xC31F581F),
-                                                    Color(0xFF054105),
-                                                    Color(0xFF45D307),
-                                                )
-                                            ),
-                                            shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size100))
+                    if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
+                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
+                    } else {
+                        // Handle the case where prayerTimes is empty
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(MaterialTheme.dimens.size200)
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        listOf(
+                                            Color(0xC31F581F),
+                                            Color(0xFF054105),
+                                            Color(0xFF45D307),
                                         )
-                                        .clickable {
-                                            navigateToPrayerTime()
-                                        },
-                                    colors = CardDefaults.cardColors(Color.Transparent),
-                                ){
-                                    Column(
-                                        modifier = Modifier.fillMaxSize(),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            text = "Salat Time Loading ",
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Spacer(modifier = Modifier.size(MaterialTheme.dimens.size50))
-                                        CircularProgressIndicator(
-                                            modifier = Modifier.size(MaterialTheme.dimens.size60)
-                                        )
-                                    }
-                                }
+                                    ),
+                                    shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+                                )
+                                .clickable {
+                                    navigateToPrayerTime()
+                                },
+                            colors = CardDefaults.cardColors(Color.Transparent),
+                        ){
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Salat Time Loading ",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.size(MaterialTheme.dimens.size50))
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(MaterialTheme.dimens.size60)
+                                )
                             }
                         }
                     }
                 }
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(MaterialTheme.dimens.size10),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        LazyRowWithCards(navController)
-                    }
-                }
             }
         }
-        ConnectivityObserver.Status.Unavailable,
-        ConnectivityObserver.Status.Losing,
-        ConnectivityObserver.Status.Lost -> {
-            NoInternetContent(navController)
-
-        }
-        else -> {
-            Text(text = "Unknown Network Status", color = MaterialTheme.colorScheme.error)
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(MaterialTheme.dimens.size10),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                LazyRowWithCards(navController)
+            }
         }
     }
 }
