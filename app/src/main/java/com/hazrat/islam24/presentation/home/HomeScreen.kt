@@ -229,11 +229,6 @@ private fun TimeLocationCard(
                     ),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Text(
-                    text = "NOW",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodySmall
-                )
                 DisplayCurrentPrayerName(
                     prayerTimeEntity, textStyle = TextStyle(
                         fontSize = 35.sp,

@@ -90,13 +90,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             delay(300)
             _splashCondition.value = false
-            _names.value = namesRepository.getAllNames()
-            gregorianToHijriRepository.getGregorianToHijriDate()
-            hijriCalendarRepository.getHijriCalendarFromApi()
         }
         observeNetworkStatus()
-        fetchHijriDate()
-        fetchHijriCalendar()
+
     }
 
     private fun observeNetworkStatus() {
@@ -104,6 +100,11 @@ class MainViewModel @Inject constructor(
             _networkStatus.value = status
             if (status == ConnectivityObserver.Status.Available) {
                 fetchInitialData()
+                fetchHijriDate()
+                fetchHijriCalendar()
+                _names.value = namesRepository.getAllNames()
+                gregorianToHijriRepository.getGregorianToHijriDate()
+                hijriCalendarRepository.getHijriCalendarFromApi()
             }
         }.launchIn(viewModelScope)
     }
