@@ -49,11 +49,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.domain.model.namesofallah.Data
 import com.hazrat.islam24.domain.model.namesofallah.En
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NamesOfAllahScreen(viewModel: NamesViewModel = hiltViewModel(), navController: NavController) {
+fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController: NavController) {
 
     val names = viewModel.names.observeAsState()
 

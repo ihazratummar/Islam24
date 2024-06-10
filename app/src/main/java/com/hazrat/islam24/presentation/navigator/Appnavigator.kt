@@ -25,7 +25,6 @@ import com.hazrat.islam24.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.presentation.home.HomeScreen
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.namesofallah.NamesOfAllahScreen
-import com.hazrat.islam24.presentation.namesofallah.NamesViewModel
 import com.hazrat.islam24.presentation.navigator.component.AppBottomNavigation
 import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem
 import com.hazrat.islam24.presentation.navigator.component.NoInternet
@@ -159,7 +158,7 @@ private fun TotalContent(
 //                ZakatScreen(navController)
 //            }
             composable(route = Route.NamesOfAllah.route) {
-                val viewModel: NamesViewModel = hiltViewModel()
+                val viewModel: MainViewModel = hiltViewModel()
                 NamesOfAllahScreen(viewModel, navController)
             }
             composable(route = Route.TasbihScreen.route) {

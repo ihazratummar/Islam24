@@ -29,11 +29,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.data.entity.HijriCalendarEntity
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 import java.time.LocalDate
 
 @Composable
-fun CalendarHomeScreen(viewModel: CalendarScreenViewModel = hiltViewModel()) {
+fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
     val hijriCalendar by viewModel.hijriCalendar.collectAsState()
     val calendar = hijriCalendar.firstOrNull()
 

@@ -88,7 +88,6 @@ fun NoInternet(navController: NavController, viewModel: MainViewModel = hiltView
                                     style = MaterialTheme.typography.bodyLarge,
                                     fontWeight = FontWeight.Bold
                                 )
-
                             }
                         }
 
