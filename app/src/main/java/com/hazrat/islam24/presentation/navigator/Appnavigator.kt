@@ -2,9 +2,7 @@ package com.hazrat.islam24.presentation.navigator
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -12,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -28,15 +25,11 @@ import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.presentation.navigator.component.AppBottomNavigation
 import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem
-import com.hazrat.islam24.presentation.navigator.component.NoInternet
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeScreen
-import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.presentation.prayertime.setting.UserSettingViewModel
 import com.hazrat.islam24.presentation.tasbih.TasbihScreen
-import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.ConnectivityObserver
 
 @Composable
 fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
@@ -70,28 +63,8 @@ fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
 //                backStackState?.destination?.route == Route.ZakatScreen.route ||
 //                backStackState?.destination?.route == Route.QiblaDirectionScreen.route
     }
-    val networkStatus by mainViewModel.networkStatus
-    when (networkStatus) {
-        ConnectivityObserver.Status.Available -> {
-            TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController)
-        }
+    TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController)
 
-        ConnectivityObserver.Status.Unavailable,
-        ConnectivityObserver.Status.Losing,
-        ConnectivityObserver.Status.Lost -> {
-            TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController)
-        }
-        else -> {
-            Text(text = "Unknown Network Status", color = MaterialTheme.colorScheme.error)
-        }
-    }
-}
-
-@Composable
-fun NoInternetContent(
-    navController: NavController
-){
-    NoInternet(navController = navController)
 }
 
 @Composable

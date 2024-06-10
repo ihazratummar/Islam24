@@ -1,6 +1,5 @@
 package com.hazrat.islam24.presentation.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,7 +24,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,13 +41,9 @@ import com.hazrat.islam24.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.presentation.common.LocationName
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
-import com.hazrat.islam24.presentation.navigator.NoInternetContent
-import com.hazrat.islam24.presentation.navigator.component.NoInternet
-import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerTime
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.ConnectivityObserver
 
 @Composable
 fun HomeScreen(
