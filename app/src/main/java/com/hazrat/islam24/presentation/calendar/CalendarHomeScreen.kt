@@ -194,9 +194,7 @@ fun DayItem(
             Text(
                 text = day.gregorianDay.toString(),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(
-                    0xFFFFAB00
-                )
+                color = MaterialTheme.colorScheme.primary
             )
             if (currentDay == day.gregorianDay) {
                 Box(

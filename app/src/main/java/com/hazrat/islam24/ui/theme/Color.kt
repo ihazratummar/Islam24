@@ -3,7 +3,7 @@ package com.hazrat.islam24.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val DarkGreen = Color(0xFF031600) //Dark Background
-val Green = Color(0xFF53B94D) //Primary
+val Green = Color(0xFF86FF7F) //Primary
 
 val DarkRed = Color(0xFFC30052) //Dark Error
 val LightRed = Color(0xFFFF84B7)

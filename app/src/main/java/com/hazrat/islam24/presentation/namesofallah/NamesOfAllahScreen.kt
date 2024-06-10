@@ -70,7 +70,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     scrolledContainerColor = Color.Transparent,
-                    navigationIconContentColor = Color(0xFFFDD017)
+                    navigationIconContentColor = MaterialTheme.colorScheme.primary
                 ),
                 title = { Text(text = "Names Of Allah", color = Color.White) },
                 navigationIcon = {
@@ -164,14 +164,14 @@ fun NameCard(name: Data) {
                         text = name.en.meaning, style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
-                            color = Color(0xFFFDD017).copy(0.6f)
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Arrow",
-                        tint = Color(0xC8FDD017)
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
                 Column(
@@ -185,12 +185,12 @@ fun NameCard(name: Data) {
                     Text(
                         text = name.name,
                         style = MaterialTheme.typography.displayMedium,
-                        color = Color(0xffFDD017)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
             AnimatedVisibility(visible = expanded) {
-                HorizontalDivider(thickness = MaterialTheme.dimens.size2, color = Color(0xffFDD017))
+                HorizontalDivider(thickness = MaterialTheme.dimens.size2, color = MaterialTheme.colorScheme.primary)
                 Column(
                     modifier = Modifier
                         .padding(

@@ -60,7 +60,7 @@ fun AdhkarEveningCard(adhkars: EveningAkhtarData) {
             },
         colors = CardDefaults.cardColors(Color.Green.copy(0.1f)),
         elevation = CardDefaults.outlinedCardElevation(MaterialTheme.dimens.size2),
-        border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Yellow)
+        border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -87,7 +87,7 @@ fun AdhkarEveningCard(adhkars: EveningAkhtarData) {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = MaterialTheme.dimens.size1,
-                    color = Color.Yellow
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = adhkars.translation,
@@ -104,7 +104,7 @@ fun AdhkarEveningCard(adhkars: EveningAkhtarData) {
                 Card(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Yellow),
+                    border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary),
                     modifier = Modifier
                         .size(MaterialTheme.dimens.size80)
                         .padding(bottom = MaterialTheme.dimens.size10),
