@@ -1,4 +1,4 @@
-![Logo](https://media.discordapp.net/attachments/1244897208453693461/1244944971375706145/feature_graphics.jpg?ex=6656f4db&is=6655a35b&hm=4b1b1bf31ecf4e302e5d6219b174a52295e8dbe835ab4bbe400f77601af77dc7&=&format=webp)
+![Logo](https://media.discordapp.net/attachments/1244897208453693461/1244897266188161064/mosque.png?ex=6667432d&is=6665f1ad&hm=657e0c5506aa731992b10294b1b8a828033c9bc40c628299c5b50c0af9aaa482&=&format=webp&quality=lossless)
 # Islamic 24 Application
 
 A simple easy to use Islamic app without any ads popup and distraction. Focused on Salat time specially.
@@ -6,4 +6,4 @@ A simple easy to use Islamic app without any ads popup and distraction. Focused 
 
 ## Screenshots
 
-![App Screenshot](https://media.discordapp.net/attachments/1244897208453693461/1244948138041671740/screenshots.png?ex=6656f7ce&is=6655a64e&hm=7e95f5fa5aa98565ff81487599f4022e38a462379e2118a6a0a77033dbabaedb&=&format=webp&quality=lossless&width=1400&height=1080) 
+![App Screenshot](https://media.discordapp.net/attachments/1244897208453693461/1244948138041671740/screenshots.png?ex=6667728e&is=6666210e&hm=bae0486598efdb0788e198d857e2fe95651ab7a6a06f3252b8e7efdbe248eb0e&=&format=webp&quality=lossless&width=909&height=701) 
