@@ -22,10 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.hazrat.islam24.presentation.tasbih.TasbihViewModel
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.Hidayat
 import com.hazrat.islam24.ui.theme.dimens
 
@@ -33,7 +32,7 @@ import com.hazrat.islam24.ui.theme.dimens
 fun RepeatCountDialog(
     onDismiss: () -> Unit,
     onRepeatCountSelected: (Int) -> Unit,
-    viewModel: TasbihViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     var selectedRepeatCount by remember { mutableIntStateOf(33) }
 

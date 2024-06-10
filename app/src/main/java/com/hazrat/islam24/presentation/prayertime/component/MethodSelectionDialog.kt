@@ -68,7 +68,7 @@ fun MethodSelectionDialog(
                                     onDismiss()
                                 },
                             colors = CardDefaults.cardColors(Color.Transparent),
-                            shape = RoundedCornerShape(MaterialTheme.dimens.size10)
+                            shape = RoundedCornerShape(MaterialTheme.dimens.size30)
                         ) {
                             Row(modifier = Modifier
                                 .fillMaxSize()

@@ -141,7 +141,7 @@ dependencies {
     implementation ("androidx.compose.animation:animation-core:x.y.z")
     implementation ("androidx.compose.foundation:foundation:x.y.z")
 
-
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
 
 kapt {

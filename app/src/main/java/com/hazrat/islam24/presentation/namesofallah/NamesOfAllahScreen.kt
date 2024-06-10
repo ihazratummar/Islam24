@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,7 +60,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
 
     val names = viewModel.names.observeAsState()
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(modifier = Modifier
 //        .statusBarsPadding()
@@ -66,10 +68,11 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = Color.Transparent,
                     navigationIconContentColor = Color(0xFFFDD017)
                 ),
-                title = { Text(text = "99 Names Of Allah", color = Color.White) },
+                title = { Text(text = "Names Of Allah", color = Color.White) },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -79,7 +82,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                                 navController.popBackStack()
 
                             }
-                            .padding(horizontal = MaterialTheme.dimens.size10)
+                            .padding(top = MaterialTheme.dimens.size10)
                     )
                 },
                 scrollBehavior = scrollBehavior

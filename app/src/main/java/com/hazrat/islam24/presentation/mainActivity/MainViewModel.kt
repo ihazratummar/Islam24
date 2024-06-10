@@ -2,23 +2,29 @@ package com.hazrat.islam24.presentation.mainActivity
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.data.entity.HijriCalendarEntity
+import com.hazrat.islam24.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.domain.model.namesofallah.Data
+import com.hazrat.islam24.domain.model.tasbihPhraseList
 import com.hazrat.islam24.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.domain.repository.NamesRepository
+import com.hazrat.islam24.domain.repository.TasbihRepository
 import com.hazrat.islam24.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -36,7 +42,8 @@ class MainViewModel @Inject constructor(
     private val connectivityObserver: ConnectivityObserver,
     private val namesRepository: NamesRepository,
     private val gregorianToHijriRepository: GregorianToHijriRepository,
-    private val hijriCalendarRepository: HijriCalendarRepository
+    private val hijriCalendarRepository: HijriCalendarRepository,
+    private val tasbihRepository: TasbihRepository,
 ) : ViewModel() {
     /**
      * splash screen condition
@@ -71,6 +78,12 @@ class MainViewModel @Inject constructor(
     private val _hijriCalendar = MutableStateFlow<List<HijriCalendarEntity>>(emptyList())
     val hijriCalendar = _hijriCalendar.asStateFlow()
 
+    /**
+     * tasbih
+     */
+    val tasbihCounter: Flow<List<TasbihCounterEntity?>> = tasbihRepository.getTasbih()
+    var selectedPhrase by mutableStateOf(tasbihPhraseList[0])
+
     init {
         // Removed the readAppEntry logic since it's not needed anymore.
         _startDestination.value = Route.HomeNavigation.route
@@ -104,6 +117,20 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * tasbih
+     */
+    fun insertTasbih(tasbihCounterEntity: TasbihCounterEntity) {
+        viewModelScope.launch {
+            tasbihRepository.insertTasbih(tasbihCounterEntity)
+        }
+    }
+
+    fun resetTasbihCount(){
+        viewModelScope.launch {
+            tasbihRepository.resetTasbihCount()
+        }
+    }
 
     /**
      * calendar function

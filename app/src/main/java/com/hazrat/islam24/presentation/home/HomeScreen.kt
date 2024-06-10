@@ -47,6 +47,7 @@ import com.hazrat.islam24.presentation.navigator.NoInternetContent
 import com.hazrat.islam24.presentation.navigator.component.NoInternet
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
+import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerTime
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.ConnectivityObserver
 
@@ -83,8 +84,8 @@ fun HomeScreen(
                                 .padding(MaterialTheme.dimens.size10),
                             verticalArrangement = Arrangement.Top
                         ) {
-                            Text(text = "Salam", style = MaterialTheme.typography.bodySmall)
-                            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
+//                            Text(text = "Salam", style = MaterialTheme.typography.bodySmall)
+                            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size100))
                             if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
                                 TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
                             } else {
@@ -224,10 +225,15 @@ private fun TimeLocationCard(
                     .weight(0.5f)
                     .padding(
                         start = MaterialTheme.dimens.size20,
-                        bottom = MaterialTheme.dimens.size30
+                        bottom = MaterialTheme.dimens.size15
                     ),
                 verticalArrangement = Arrangement.Bottom
             ) {
+                Text(
+                    text = "NOW",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodySmall
+                )
                 DisplayCurrentPrayerName(
                     prayerTimeEntity, textStyle = TextStyle(
                         fontSize = 35.sp,
@@ -235,7 +241,6 @@ private fun TimeLocationCard(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
                 Text(
                     text = "View Times",
                     color = Color.White,
@@ -248,7 +253,7 @@ private fun TimeLocationCard(
                     .weight(0.5f)
                     .padding(
                         start = MaterialTheme.dimens.size5,
-                        bottom = MaterialTheme.dimens.size40,
+                        bottom = MaterialTheme.dimens.size15,
                         end = MaterialTheme.dimens.size10,
                         top = MaterialTheme.dimens.size20
                     ),
@@ -256,6 +261,8 @@ private fun TimeLocationCard(
                 horizontalAlignment = Alignment.End
             ) {
                 LocationName(locationDetailsEntity)
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
+                DisplayCurrentPrayerTime(prayerTimeEntity)
             }
         }
     }

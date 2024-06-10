@@ -17,6 +17,7 @@ import com.hazrat.islam24.util.Constants.LOCATION_BASE_URL
 import com.hazrat.islam24.data.dao.LocationDao
 import com.hazrat.islam24.data.database.LocationDatabase
 import com.hazrat.islam24.data.dao.LocationNameDao
+import com.hazrat.islam24.di.AppModule
 import com.hazrat.islam24.domain.repository.location.LocationRepository
 import com.hazrat.islam24.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
@@ -27,10 +28,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.internal.platform.android.AndroidLogHandler.setLevel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import okhttp3.logging.HttpLoggingInterceptor
 
 
 @Module
@@ -67,11 +70,14 @@ object PrayerModule {
     fun providePrayerTimeDao(appDatabase: PrayerDatabase): PrayerTimeDao {
         return appDatabase.prayerTimeDao()
     }
-
+    private val logging = HttpLoggingInterceptor().apply {
+        setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
     private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
+        .addInterceptor(logging)
+        .connectTimeout(5, TimeUnit.MINUTES)
+        .writeTimeout(5, TimeUnit.MINUTES)
+        .readTimeout(5, TimeUnit.MINUTES)
         .build()
     //Prayer Time Api
     @Singleton

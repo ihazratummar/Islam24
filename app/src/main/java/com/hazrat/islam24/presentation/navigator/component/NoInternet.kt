@@ -58,8 +58,8 @@ fun NoInternet(navController: NavController, viewModel: MainViewModel = hiltView
                             .padding(MaterialTheme.dimens.size10),
                         verticalArrangement = Arrangement.Top
                     ) {
-                        Text(text = "Salam", style = MaterialTheme.typography.bodySmall)
-                        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size60))
+//                        Text(text = "Salam", style = MaterialTheme.typography.bodySmall)
+                        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size100))
                         // Handle the case where prayerTimes is empty
                         Card(
                             modifier = Modifier

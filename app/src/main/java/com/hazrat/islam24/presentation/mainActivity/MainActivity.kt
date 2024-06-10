@@ -39,14 +39,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(
-                Color.Transparent.hashCode(), Color.Transparent.hashCode()
-            ),
-            navigationBarStyle = SystemBarStyle.light(
-                Color.Transparent.hashCode(), Color.Transparent.hashCode()
-            )
-        )
+        enableEdgeToEdge()
         actionBar?.hide()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen().apply {

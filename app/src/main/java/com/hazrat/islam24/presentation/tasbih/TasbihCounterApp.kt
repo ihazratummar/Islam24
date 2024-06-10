@@ -46,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.domain.model.TasbihPhrase
 import com.hazrat.islam24.domain.model.tasbihPhraseList
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.tasbih.tasbihcomponent.RepeatCountDialog
 import com.hazrat.islam24.ui.theme.Hidayat
 import com.hazrat.islam24.ui.theme.Islam24Theme
@@ -53,7 +54,7 @@ import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.vibrate
 
 @Composable
-fun TasbihCounterApp(viewModel: TasbihViewModel = hiltViewModel(), modifier: Modifier = Modifier) {
+fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modifier = Modifier) {
     val myTasbihCounter by viewModel.tasbihCounter.collectAsState(initial = emptyList())
     val tasbih = myTasbihCounter.firstOrNull()
 
@@ -277,7 +278,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
 @Composable
 private fun TasbihHeader(
     phrase: TasbihPhrase,
-    viewModel: TasbihViewModel
+    viewModel: MainViewModel
 ) {
     val selectedPhrase = viewModel.selectedPhrase
     Card(
