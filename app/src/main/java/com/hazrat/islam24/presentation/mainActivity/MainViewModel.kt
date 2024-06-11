@@ -1,5 +1,6 @@
 package com.hazrat.islam24.presentation.mainActivity
 
+import android.icu.util.LocaleData
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -22,6 +23,7 @@ import com.hazrat.islam24.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.presentation.nvgraph.Route
 import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,6 +35,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 
@@ -184,6 +188,17 @@ class MainViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun getHijriDay(): String{
+        val currentGregorianDay = getCurrentDay()
+
+        val hijriDateEntity = _prayerTimes.value.find {
+            it.day == currentGregorianDay
+        }
+        val hijriDay = hijriDateEntity?.hijriDay ?: "NO"
+        Log.d("HijriDay", "Gregorian Date: $currentGregorianDay, Hijri Day: $hijriDay")
+        return hijriDay
     }
     //--------/////
 

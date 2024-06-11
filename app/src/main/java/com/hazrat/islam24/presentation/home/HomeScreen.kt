@@ -44,6 +44,7 @@ import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerTime
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.DateUtil.getCurrentDay
 
 @Composable
 fun HomeScreen(
@@ -171,7 +172,8 @@ fun BackGroundCard() {
 private fun TimeLocationCard(
     prayerTimeEntity: List<PrayerTimeEntity>,
     navigateToPrayerTime: () -> Unit,
-    locationDetailsEntity: LocationDetailsEntity
+    locationDetailsEntity: LocationDetailsEntity,
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     Card(
         modifier = Modifier
@@ -235,7 +237,9 @@ private fun TimeLocationCard(
             ) {
                 LocationName(locationDetailsEntity)
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
-                DisplayCurrentPrayerTime(prayerTimeEntity)
+                val grday = getCurrentDay()
+                val hijriday = viewModel.getHijriDay()
+                DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
             }
         }
     }

@@ -112,7 +112,9 @@ fun DisplayCurrentPrayerName(
 
 @Composable
 fun DisplayCurrentPrayerTime(
-    data: List<PrayerTimeEntity>
+    data: List<PrayerTimeEntity>,
+    gregorianDay: Int,
+    hijriDay: String
 ) {
     var currentTime by remember { mutableStateOf(LocalTime.now()) }
     var currentPrayerIndex by remember { mutableIntStateOf(-1) }
@@ -132,13 +134,16 @@ fun DisplayCurrentPrayerTime(
         }
     }
 
+    // Find the prayer times for the current day
+    val currentDayPrayerTimes = data.find { it.gregorianDay == gregorianDay.toString() && it.hijriDay == hijriDay }
+
     // Define the prayer times
     val timeRanges = listOf(
-        "Fajr" to LocalTime.parse(data.firstOrNull()?.fajrTime?.split(" ")?.get(0) ?: ""),
-        "Dhuhr" to LocalTime.parse(data.firstOrNull()?.dhuhrTime?.split(" ")?.get(0) ?: ""),
-        "Asr" to LocalTime.parse(data.firstOrNull()?.asrTime?.split(" ")?.get(0) ?: ""),
-        "Maghrib" to LocalTime.parse(data.firstOrNull()?.maghribTime?.split(" ")?.get(0) ?: ""),
-        "Isha" to LocalTime.parse(data.firstOrNull()?.ishaTime?.split(" ")?.get(0) ?: "")
+        "Fajr" to LocalTime.parse(currentDayPrayerTimes?.fajrTime?.split(" ")?.get(0) ?: "00:00"),
+        "Dhuhr" to LocalTime.parse(currentDayPrayerTimes?.dhuhrTime?.split(" ")?.get(0) ?: "00:00"),
+        "Asr" to LocalTime.parse(currentDayPrayerTimes?.asrTime?.split(" ")?.get(0) ?: "00:00"),
+        "Maghrib" to LocalTime.parse(currentDayPrayerTimes?.maghribTime?.split(" ")?.get(0) ?: "00:00"),
+        "Isha" to LocalTime.parse(currentDayPrayerTimes?.ishaTime?.split(" ")?.get(0) ?: "00:00")
     )
 
     // Find the current prayer index
