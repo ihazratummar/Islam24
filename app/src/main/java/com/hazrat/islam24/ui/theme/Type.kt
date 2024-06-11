@@ -61,7 +61,7 @@ val CompactTypography = Typography(
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
         lineHeight = 19.sp,
-    ),
+    )
 )
 val CompactMediumTypography  = Typography(
     displaySmall = TextStyle(

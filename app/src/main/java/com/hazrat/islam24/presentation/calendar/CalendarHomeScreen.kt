@@ -1,3 +1,4 @@
+
 package com.hazrat.islam24.presentation.calendar
 
 import android.util.Log
@@ -39,26 +40,28 @@ fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
     val calendar = hijriCalendar.firstOrNull()
     val startingDay = hijriCalendar.firstOrNull()?.gregorianWeekDayEn
     val weekNames = startingDay?.let { getWeekNames(it) } ?: listOf()
+    // Calculate the index of the first day of the month in the week
     val firstDayOfMonthIndex = weekNames.indexOf(startingDay)
     val daysWithOffset = mutableListOf<HijriCalendarEntity?>()
-    if (firstDayOfMonthIndex != -1) {
-        repeat(firstDayOfMonthIndex) {
-            daysWithOffset.add(null)
-        }
+    // Add empty days before the first day of the month
+    repeat(firstDayOfMonthIndex) {
+        daysWithOffset.add(null)
     }
+    // Add the actual days of the month
     daysWithOffset.addAll(hijriCalendar)
 
     val selectedDays = remember { mutableStateOf<List<HijriCalendarEntity>>(emptyList()) }
 
-    val paddedDays = if (daysWithOffset.size % 7 != 0) {
-        val remainingDays = 7 - (daysWithOffset.size % 7)
-        repeat(remainingDays) {
-            daysWithOffset.add(null)
-        }
-        daysWithOffset.chunked(7)
-    } else {
-        daysWithOffset.chunked(7)
+    // Calculate the padding for the last row
+    val lastWeek = daysWithOffset.takeLast(7).filterNotNull()
+    val remainingDays = 7 - lastWeek.size
+
+    // Add padding days at the end
+    repeat(remainingDays) {
+        daysWithOffset.add(null)
     }
+
+    val paddedDays = daysWithOffset.chunked(7)
 
     val hijriDay by viewModel.hijriDate.collectAsState()
     val hijriDayNew = hijriDay.firstOrNull()
@@ -80,13 +83,15 @@ fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
             }
         }
         WeekNamesRow(weekNames)
-        paddedDays.forEach { week ->
+        // Display the calendar grid
+        paddedDays.forEachIndexed { index, week ->
             WeekItem(
                 week = week.filterNotNull(),
                 selectedDays = selectedDays,
                 onDaySelected = { day ->
                     selectedDays.value = listOf(day)
-                }
+                },
+                isLastRow = index == paddedDays.lastIndex // Determine if it's the last row
             )
         }
     }
@@ -130,15 +135,17 @@ fun WeekNamesRow(weekNames: List<String>) {
 fun WeekItem(
     week: List<HijriCalendarEntity>,
     selectedDays: MutableState<List<HijriCalendarEntity>>,
-    onDaySelected: (HijriCalendarEntity) -> Unit
+    onDaySelected: (HijriCalendarEntity) -> Unit,
+    isLastRow: Boolean // New parameter to indicate if this is the last row
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = if (isLastRow) Arrangement.Start else Arrangement.SpaceBetween // Conditional arrangement
     ) {
         week.forEach { day ->
             DayItem(
                 day = day,
-                isSelected = selectedDays.value.contains(day), // Check if the day is selected
+                isSelected = selectedDays.value.contains(day),
                 onDaySelected = {
                     val updatedSelectedDays = if (selectedDays.value.contains(it)) {
                         selectedDays.value.filterNot { selectedDay -> selectedDay == it }
@@ -146,7 +153,7 @@ fun WeekItem(
                         selectedDays.value + it
                     }
                     selectedDays.value = updatedSelectedDays
-                    onDaySelected(it) // Call the provided callback
+                    onDaySelected(it)
                 }
             )
         }

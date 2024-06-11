@@ -68,7 +68,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                     scrolledContainerColor = Color.Transparent,
                     navigationIconContentColor = MaterialTheme.colorScheme.primary
                 ),
-                title = { Text(text = "Names Of Allah", color = Color.White) },
+                title = { Text(text = "Names Of Allah", color = Color.White, style =  MaterialTheme.typography.displaySmall) },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -105,14 +105,7 @@ fun NameCard(name: NameEntity) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        Color(0xff011403),
-                        Color(0xff011403),
-                    )
-                )
-            )
+            .background(MaterialTheme.colorScheme.background)
             .clickable {
                 expanded = !expanded
             }
@@ -158,9 +151,9 @@ fun NameCard(name: NameEntity) {
                     )
                     Text(
                         text = name.meaning, style = TextStyle(
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = Color.White
                         )
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))

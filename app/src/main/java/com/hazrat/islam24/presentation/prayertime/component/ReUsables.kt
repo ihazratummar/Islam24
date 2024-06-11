@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -90,45 +89,39 @@ fun PrayerTimeCard(
     time: String,
     onClick: () -> Unit
 ) {
-    Surface(
-        modifier = modifier
-            .fillMaxWidth(),
-        color = Color.Transparent,
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(MaterialTheme.dimens.size20),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(MaterialTheme.dimens.size20),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.weight(0.2f)
         ) {
-            Column(
-                modifier = Modifier.weight(0.2f)
-            ) {
-                Icon(
-                    painter = painterResource(id = icon),
-                    contentDescription = "Icon",
-                    tint = MaterialTheme.colorScheme.primary.copy(0.8f),
-                    modifier = Modifier.size(MaterialTheme.dimens.size30)
-                )
-            }
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.displaySmall,color = Color.White,
-                    modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
-                )
-            }
-            Column(
-                modifier = Modifier.weight(0.7f)
-            ) {
-                Text(
-                    text = time,
-                    style = MaterialTheme.typography.displaySmall,color = Color.White,
-                    modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
-                )
-            }
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = "Icon",
+                tint = MaterialTheme.colorScheme.primary.copy(0.8f),
+                modifier = Modifier.size(MaterialTheme.dimens.size30)
+            )
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.displaySmall,color = Color.White,
+                modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
+            )
+        }
+        Column(
+            modifier = Modifier.weight(0.7f)
+        ) {
+            Text(
+                text = time,
+                style = MaterialTheme.typography.displaySmall,color = Color.White,
+                modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
+            )
         }
     }
 }
@@ -156,16 +149,15 @@ fun PrayerDateCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = enDate,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold)
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
                 Text(text = hrDate,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 17.sp)
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }

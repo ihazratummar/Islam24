@@ -32,7 +32,7 @@ fun TasbihScreen(navController: NavController) {
                     Text(
                         text = "Tasbih Count",
                         color = Color.White,
-                        style = MaterialTheme.typography.headlineSmall
+                        style =  MaterialTheme.typography.displaySmall
                     )
                 },
                 navigationIcon = {

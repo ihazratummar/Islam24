@@ -50,6 +50,7 @@ fun SchoolSelectionDialog(
                         Row (
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .height(MaterialTheme.dimens.size60)
                                 .padding(
                                     horizontal = MaterialTheme.dimens.size10,
                                     vertical = MaterialTheme.dimens.size10

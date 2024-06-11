@@ -161,7 +161,8 @@ fun DisplayCurrentPrayerTime(
         if (currentTime.isBefore(currentPrayerTime.plusHours(1))) {
             Text(text = "Next $currentPrayerTime",
                 style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.SemiBold)
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White)
         } else {
             val formattedTimeUntilNextPrayer = formatTimeDifference(timeUntilNextPrayer)
             Text(text = formattedTimeUntilNextPrayer,

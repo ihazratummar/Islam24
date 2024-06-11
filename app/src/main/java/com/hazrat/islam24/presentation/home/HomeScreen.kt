@@ -87,7 +87,7 @@ fun HomeScreen(
                                         listOf(
                                             Color(0xC31F581F),
                                             Color(0xFF054105),
-                                            Color(0xFF45D307),
+                                            Color(0xFF266B08),
                                         )
                                     ),
                                     shape = RoundedCornerShape(MaterialTheme.dimens.size30)
@@ -105,7 +105,8 @@ fun HomeScreen(
                                 Text(
                                     text = "Salat Time Loading ",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
                                 )
                                 Spacer(modifier = Modifier.size(MaterialTheme.dimens.size50))
                                 CircularProgressIndicator(
@@ -179,9 +180,9 @@ private fun TimeLocationCard(
             .background(
                 brush = Brush.verticalGradient(
                     listOf(
-                        Color(0xC31F581F),
+                        Color(0xD71F581F),
                         Color(0xFF054105),
-                        Color(0xFF45D307),
+                        Color(0xFA277006),
                     )
                 ),
                 shape = RoundedCornerShape(MaterialTheme.dimens.size30)

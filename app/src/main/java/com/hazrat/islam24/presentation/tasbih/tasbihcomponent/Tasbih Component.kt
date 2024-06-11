@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
@@ -42,7 +43,7 @@ fun RepeatCountDialog(
                 .padding(MaterialTheme.dimens.size15)
                 .width(MaterialTheme.dimens.size300),
             shape = RoundedCornerShape(MaterialTheme.dimens.size20),
-            color = Color(0xFF0B220E),
+            color = MaterialTheme.colorScheme.background,
             border = BorderStroke(MaterialTheme.dimens.size1,
                 color = Color.Green.copy(0.5f))
         ) {
@@ -54,16 +55,15 @@ fun RepeatCountDialog(
             ) {
                 Text(
                     text = "Set Tasbih Count",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = MaterialTheme.dimens.size15),
-                    fontFamily = Hidayat,
                     color = Color.White
                 )
                 // Display the selected value
                 Text(
                     text = selectedRepeatCount.toString(),
                     style = MaterialTheme.typography.bodyLarge,
-                    fontFamily = Hidayat,
                     color = Color.White
                 )
 
@@ -91,7 +91,7 @@ fun RepeatCountDialog(
                         ),
                         border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Green)
                     ) {
-                        Text("Cancel", fontFamily = Hidayat)
+                        Text("Cancel", style = MaterialTheme.typography.labelMedium)
                     }
                     Spacer(modifier = Modifier.width(MaterialTheme.dimens.size10))
                     Button(
@@ -111,7 +111,7 @@ fun RepeatCountDialog(
                         ),
                         border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Green)
                     ) {
-                        Text("Select", fontFamily = Hidayat)
+                        Text("Select", style = MaterialTheme.typography.labelMedium)
                     }
                 }
             }

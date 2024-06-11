@@ -59,7 +59,7 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
             .clickable {
                 expanded = !expanded
             },
-        colors = CardDefaults.cardColors(Color.Green.copy(0.1f)),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
         elevation = CardDefaults.outlinedCardElevation(MaterialTheme.dimens.size2),
         border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary)
     ) {

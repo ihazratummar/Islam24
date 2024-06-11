@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 @Composable
 fun CalendarScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Hijri Calendar",style = MaterialTheme.typography.bodyLarge, color = Color.White)},
+        topBar = { TopAppBar(title = { Text(text = "Hijri Calendar",style = MaterialTheme.typography.displaySmall, color = Color.White)},
             navigationIcon = {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
