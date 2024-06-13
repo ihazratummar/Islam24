@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class NetworkConnectivityObserver @Inject constructor(
-    private val context: Context
+    context: Context
 ) : ConnectivityObserver{
 
     private val connectivityManager =

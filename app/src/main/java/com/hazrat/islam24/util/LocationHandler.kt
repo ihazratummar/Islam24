@@ -33,7 +33,7 @@ class LocationHandler(
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     }
 
-    fun getCurrentLocation(onLocationReceived: (Location) -> Unit, onLocationError: () -> Unit) {
+    private fun getCurrentLocation(onLocationReceived: (Location) -> Unit, onLocationError: () -> Unit) {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 if (ActivityCompat.checkSelfPermission(
