@@ -26,8 +26,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.adhkarscreen.model.morningAthkars
+import com.hazrat.islam24.R
 import com.hazrat.islam24.domain.model.athkar.EveningAkhtarData
 import com.hazrat.islam24.domain.model.athkar.eveningAkhtar
 import com.hazrat.islam24.ui.theme.dimens
@@ -58,9 +60,9 @@ fun AdhkarEveningCard(adhkars: EveningAkhtarData) {
             .clickable {
                 expanded = !expanded
             },
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
+        colors = CardDefaults.cardColors(colorResource(id = R.color.background_color)),
         elevation = CardDefaults.outlinedCardElevation(MaterialTheme.dimens.size2),
-        border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary)
+        border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.primary))
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -73,27 +75,27 @@ fun AdhkarEveningCard(adhkars: EveningAkhtarData) {
                 Text(
                     text = "${adhkars.number}-${morningAthkars.size - 1}",
                     modifier = Modifier.padding(top = MaterialTheme.dimens.size20),
-                    style = MaterialTheme.typography.titleMedium, color = Color.White
+                    style = MaterialTheme.typography.titleMedium, color = colorResource(id = R.color.text)
                 )
             }
             Text(
                 text = adhkars.transliteration,
                 modifier = Modifier.padding(MaterialTheme.dimens.size10),
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White
+                color = colorResource(id = R.color.text)
             )
 
             AnimatedVisibility(visible = expanded) {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = MaterialTheme.dimens.size1,
-                    color = MaterialTheme.colorScheme.primary
+                    color = colorResource(id = R.color.primary)
                 )
                 Text(
                     text = adhkars.translation,
                     modifier = Modifier.padding(MaterialTheme.dimens.size10),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
+                    color =colorResource(id = R.color.text)
                 )
             }
             Row(
@@ -104,7 +106,7 @@ fun AdhkarEveningCard(adhkars: EveningAkhtarData) {
                 Card(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.primary)),
                     modifier = Modifier
                         .size(MaterialTheme.dimens.size80)
                         .padding(bottom = MaterialTheme.dimens.size10),
@@ -118,7 +120,7 @@ fun AdhkarEveningCard(adhkars: EveningAkhtarData) {
                             text = "X${adhkars.count}",
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = colorResource(id = R.color.text)
                         )
                     }
                 }

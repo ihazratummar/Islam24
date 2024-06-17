@@ -16,8 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,7 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
+import com.hazrat.islam24.R
 import com.hazrat.islam24.domain.model.athkar.tabItems
 import com.hazrat.islam24.presentation.athkar.components.EveningContent
 import com.hazrat.islam24.presentation.athkar.components.MorningContent
@@ -52,16 +56,28 @@ fun AthkarScreen(navController: NavController) {
 
     Scaffold(modifier = Modifier.statusBarsPadding(),
         topBar = {
-            TopAppBar(title = { Text(text = "Dhikr & Athkar", style = MaterialTheme.typography.displaySmall, color = Color.White) }, navigationIcon = {
+            TopAppBar(title = {
+                Text(
+                    text = "Dhikr & Athkar",
+                    style = MaterialTheme.typography.displaySmall,
+                    color = colorResource(id = R.color.text)
+                )
+            }, navigationIcon = {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    modifier = Modifier.clickable {
-                        navController.popBackStack()
-                    }.padding(start = MaterialTheme.dimens.size10),
-                    tint = Color.White
+                    modifier = Modifier
+                        .clickable {
+                            navController.popBackStack()
+                        }
+                        .padding(start = MaterialTheme.dimens.size10),
+                    tint = colorResource(id = R.color.text)
                 )
-            })
+            },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    Color.Transparent
+                )
+            )
         }
     ) {
         Column(
@@ -69,12 +85,16 @@ fun AthkarScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            TabRow(selectedTabIndex = selectedTabIndex) {
+            TabRow(selectedTabIndex = selectedTabIndex,
+                containerColor = Color.Transparent
+            ) {
                 tabItems.forEachIndexed { index, item ->
                     Tab(selected = index == selectedTabIndex,
                         onClick = { selectedTabIndex = index },
                         text = {
-                            Text(text = item.title)
+                            Text(
+                                text = item.title, color = colorResource(id = R.color.primary)
+                            )
                         }
                     )
                 }

@@ -60,10 +60,10 @@ fun AppBottomNavigation(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = colorResource(id = R.color.white),
-                    unselectedTextColor = colorResource(id = R.color.white),
+                    selectedIconColor = colorResource(id = R.color.primary),
+                    selectedTextColor = colorResource(id = R.color.primary),
+                    unselectedIconColor = colorResource(id = R.color.primary).copy(0.5f),
+                    unselectedTextColor = colorResource(id = R.color.primary).copy(0.5f),
                     indicatorColor = Color.Transparent
                 ),
             )

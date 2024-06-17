@@ -41,11 +41,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.NameEntity
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
@@ -68,7 +70,14 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                     scrolledContainerColor = Color.Transparent,
                     navigationIconContentColor = MaterialTheme.colorScheme.primary
                 ),
-                title = { Text(text = "Names Of Allah", color = Color.White, style =  MaterialTheme.typography.displaySmall) },
+                title =
+                {
+                    Text(
+                        text = "Names Of Allah",
+                        color = colorResource(id = R.color.text),
+                        style = MaterialTheme.typography.displaySmall
+                    )
+                },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -77,8 +86,8 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                             .clickable {
                                 navController.popBackStack()
 
-                            }
-                            .padding(top = MaterialTheme.dimens.size10)
+                            },
+                        tint = colorResource(id = R.color.primary)
                     )
                 },
                 scrollBehavior = scrollBehavior
@@ -117,8 +126,9 @@ fun NameCard(name: NameEntity) {
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
         Column {
-            Row(modifier = Modifier
-                .fillMaxSize()
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
                 Column(
                     modifier = Modifier
@@ -133,7 +143,7 @@ fun NameCard(name: NameEntity) {
                 ) {
                     Text(
                         text = "${name.number}.", style = MaterialTheme.typography.displaySmall,
-                        color = Color.White
+                        color = colorResource(id = R.color.text)
                     )
                 }
                 Column(
@@ -146,21 +156,21 @@ fun NameCard(name: NameEntity) {
                         text = name.transliteration, style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 25.sp,
-                            color = Color(0xFFFFFFFF)
+                            color = colorResource(id = R.color.text)
                         )
                     )
                     Text(
                         text = name.meaning, style = TextStyle(
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 15.sp,
-                            color = Color.White
+                            color = colorResource(id = R.color.text)
                         )
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Arrow",
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = colorResource(id = R.color.primary)
                     )
                 }
                 Column(
@@ -174,12 +184,15 @@ fun NameCard(name: NameEntity) {
                     Text(
                         text = name.name,
                         style = MaterialTheme.typography.displayMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = colorResource(id = R.color.primary)
                     )
                 }
             }
             AnimatedVisibility(visible = expanded) {
-                HorizontalDivider(thickness = MaterialTheme.dimens.size2, color = MaterialTheme.colorScheme.primary)
+                HorizontalDivider(
+                    thickness = MaterialTheme.dimens.size2,
+                    color = colorResource(id = R.color.text)
+                )
                 Column(
                     modifier = Modifier
                         .padding(
@@ -187,9 +200,9 @@ fun NameCard(name: NameEntity) {
                             top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10
                         )
                 ) {
-                    Text(text = "Ayat: ${name.found}", color = Color.White)
+                    Text(text = "Ayat: ${name.found}", color = colorResource(id = R.color.text))
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size5))
-                    Text(text = name.enDec, color = Color.White)
+                    Text(text = name.enDec, color = colorResource(id = R.color.text))
                 }
             }
         }

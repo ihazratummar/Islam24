@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -218,7 +219,7 @@ private fun TimeLocationCard(
 
                 Text(
                     text = "View Times",
-                    color = Color.White,
+                    color = colorResource(id = R.color.white),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }

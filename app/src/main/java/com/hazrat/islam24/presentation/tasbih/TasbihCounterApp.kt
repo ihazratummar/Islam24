@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.domain.model.TasbihPhrase
 import com.hazrat.islam24.domain.model.tasbihPhraseList
@@ -105,7 +107,7 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                     colors = CardDefaults.cardColors(Color.Transparent),
                     border = BorderStroke(
                         MaterialTheme.dimens.size1,
-                        color = Color.White
+                        color = colorResource(id = R.color.text)
                     ),
                 ) {
                     Row(
@@ -115,7 +117,7 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                     ) {
                         Text(
                             "Count: $repeatCount", modifier = Modifier,
-                            color = Color.White
+                            color = colorResource(id = R.color.text)
                         )
                     }
                 }
@@ -127,7 +129,7 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                         .height(MaterialTheme.dimens.size50)
                         .padding(MaterialTheme.dimens.size5),
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(MaterialTheme.dimens.size1, color = Color.White)
+                    border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.text))
                 ) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
@@ -138,7 +140,7 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                             "Round: $roundCount",
                             modifier = Modifier
                                 .padding(MaterialTheme.dimens.size5),
-                            color = Color.White
+                            color = colorResource(id = R.color.text)
                         )
                     }
                 }
@@ -186,7 +188,7 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                         .size(MaterialTheme.dimens.size300)
                         .padding(MaterialTheme.dimens.size15),
                     shape = CircleShape,
-                    border = BorderStroke(MaterialTheme.dimens.size2, Color.White),
+                    border = BorderStroke(MaterialTheme.dimens.size2, colorResource(id = R.color.text)),
                     colors = ButtonDefaults.buttonColors(Color.Transparent)
                 ) {
                     Column(
@@ -197,10 +199,10 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                         Text(
                             text = countText,
                             style = MaterialTheme.typography.headlineMedium,
-                            color = Color.White
+                            color = colorResource(id = R.color.text)
                         )
                         if (tasbih?.tasbihCount == 0) Text(
-                            "Click to Start", color = Color.White,
+                            "Click to Start", color = colorResource(id = R.color.text),
                             style = MaterialTheme.typography.labelLarge,
                         )
                     }
@@ -218,12 +220,12 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     border = BorderStroke(
                         MaterialTheme.dimens.size1,
-                        color = Color.White
+                        color = colorResource(id = R.color.text)
                     ),
                     shape = RoundedCornerShape(MaterialTheme.dimens.size20)
                 ) {
                     Text(
-                        "Reset", color = MaterialTheme.colorScheme.primary,
+                        "Reset", color = colorResource(id = R.color.primary),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -259,7 +261,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
                 .height(MaterialTheme.dimens.size50)
                 .padding(MaterialTheme.dimens.size5),
             colors = CardDefaults.cardColors(Color.Transparent),
-            border = BorderStroke(MaterialTheme.dimens.size1, color = Color.White)
+            border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.text))
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),
@@ -269,7 +271,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
                 val countText = tasbih?.totalCount ?: "0"
                 Text(
                     "Total Count: $countText",
-                    color = Color.White,
+                    color = colorResource(id = R.color.text),
                     modifier = Modifier
                         .padding(MaterialTheme.dimens.size5)
                 )
@@ -295,10 +297,8 @@ private fun TasbihHeader(
             },
         elevation = CardDefaults.cardElevation(MaterialTheme.dimens.size4),
         colors = CardDefaults.cardColors(
-            containerColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.primary.copy(
-                0.3f
-            )
-            else MaterialTheme.colorScheme.primary.copy(0.1f)
+            containerColor = if (phrase == selectedPhrase) colorResource(id = R.color.primary).copy(0.7f)
+            else colorResource(id = R.color.primary).copy(0.3f)
         )
     ) {
         Column(
@@ -310,7 +310,7 @@ private fun TasbihHeader(
         ) {
             Text(
                 phrase.arText, style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
+                color = colorResource(id = R.color.text),
                 textAlign = TextAlign.Center,
                 fontSize = 15.sp,
             )
@@ -318,7 +318,7 @@ private fun TasbihHeader(
                 phrase.enText, style = MaterialTheme.typography.headlineMedium,
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = colorResource(id = R.color.text)
 
             )
         }

@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -101,7 +102,7 @@ fun PrayerTimeCard(
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = "Icon",
-                tint = MaterialTheme.colorScheme.primary.copy(0.8f),
+                tint = colorResource(id = R.color.primary),
                 modifier = Modifier.size(MaterialTheme.dimens.size30)
             )
         }
@@ -110,7 +111,7 @@ fun PrayerTimeCard(
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.displaySmall,color = Color.White,
+                style = MaterialTheme.typography.displaySmall,color = colorResource(id = R.color.text),
                 modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
             )
         }
@@ -119,7 +120,7 @@ fun PrayerTimeCard(
         ) {
             Text(
                 text = time,
-                style = MaterialTheme.typography.displaySmall,color = Color.White,
+                style = MaterialTheme.typography.displaySmall,color = colorResource(id = R.color.text),
                 modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
             )
         }
@@ -150,13 +151,13 @@ fun PrayerDateCard(
             ) {
                 Text(text = enDate,
                     style = MaterialTheme.typography.labelLarge,
-                    color = Color.White,
+                    color = colorResource(id = R.color.text),
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
                 Text(text = hrDate,
                     style = MaterialTheme.typography.labelLarge,
-                    color = Color.White,
+                    color = colorResource(id = R.color.text),
                     fontWeight = FontWeight.SemiBold
                 )
             }

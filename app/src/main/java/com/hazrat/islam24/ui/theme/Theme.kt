@@ -36,9 +36,19 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = Green,
-    background = DarkGreen,
+    background = LightGreen,
     error = LightRed,
     surface = DarkGreen,
+
+    /* Other default colors to override
+    background = Color(0xFFFFFBFE),
+    surface = Color(0xFFFFFBFE),
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color.White,
+    onBackground = Color(0xFF1C1B1F),
+    onSurface = Color(0xFF1C1B1F),
+    */
 )
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -46,7 +56,7 @@ private val LightColorScheme = lightColorScheme(
 fun Islam24Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
+    dynamicColor: Boolean = true,
     activity: Activity = LocalContext.current as MainActivity,
     content: @Composable () -> Unit
 ) {
@@ -56,17 +66,10 @@ fun Islam24Theme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
 
-        else -> if (darkTheme) DarkColorScheme else LightColorScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = Color.Transparent.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-        }
-    }
     val window = calculateWindowSizeClass(activity = activity)
     val config  = LocalConfiguration.current
 

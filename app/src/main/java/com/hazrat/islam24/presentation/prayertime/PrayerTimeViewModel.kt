@@ -34,8 +34,8 @@ class PrayerTimeViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
 
-    private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
-    val locationName = _locationName.asStateFlow()
+//    private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
+//    val locationName = _locationName.asStateFlow()
 
 
     private fun getAllPrayerTimes() {
@@ -51,26 +51,26 @@ class PrayerTimeViewModel @Inject constructor(
         }
     }
 
-    private fun locationNAme(){
-        viewModelScope.launch(Dispatchers.IO) {
-            locationNameRepository.getLocationDetails().distinctUntilChanged()
-                .collectLatest { locationName : List<LocationDetailsEntity> ->
-                    if (locationName.isEmpty()){
-                        Log.d("LocationNameStatus" , "Location list empty")
-                    }else{
-                        _locationName.value = locationName
-                    }
-                }
-        }
-    }
+//    private fun locationNAme(){
+//        viewModelScope.launch(Dispatchers.IO) {
+//            locationNameRepository.getLocationDetails().distinctUntilChanged()
+//                .collectLatest { locationName : List<LocationDetailsEntity> ->
+//                    if (locationName.isEmpty()){
+//                        Log.d("LocationNameStatus" , "Location list empty")
+//                    }else{
+//                        _locationName.value = locationName
+//                    }
+//                }
+//        }
+//    }
 
     init {
         viewModelScope.launch {
             getAllPrayerTimes()
-            locationNAme()
+//            locationNAme()
             repository.fetchAndSavePrayerTimesForMonth()
-            locationNameRepository.fetchLocationName()
-            locationNameRepository.getLocationName()
+//            locationNameRepository.fetchLocationName()
+//            locationNameRepository.getLocationName()
             Log.d("GettingSomething", "${prayerTimes.value.size}")
         }
     }

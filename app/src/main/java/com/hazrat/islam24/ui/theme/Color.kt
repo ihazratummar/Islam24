@@ -16,3 +16,6 @@ val WhiteGray = Color(0xFFB0B3B8)
 
 val PrayerTimeBackground = Color(0xFF54A781)
 
+///Light Theme Color
+
+val LightGreen = Color(0xFFDCF7CE)

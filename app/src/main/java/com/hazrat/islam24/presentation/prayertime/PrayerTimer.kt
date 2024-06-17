@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
@@ -55,7 +56,7 @@ fun ShowData(
 
             TopAppBar(
                 title = {
-                    Text(text = "Prayer Times", color = Color.White)
+                    Text(text = "Prayer Times", color = colorResource(id = R.color.text))
                 },
                 actions = {
                     Icon(imageVector = Icons.Default.Settings,
@@ -65,7 +66,7 @@ fun ShowData(
                                 navController.navigate(Route.UserSettings.route)
                             }
                             .padding(end = MaterialTheme.dimens.size20),
-                        tint = Color.White
+                        tint = colorResource(id = R.color.text)
 
                     )
                 },

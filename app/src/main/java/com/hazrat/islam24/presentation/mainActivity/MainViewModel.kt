@@ -128,7 +128,6 @@ class MainViewModel @Inject constructor(
             _networkStatus.value = status
             if (status == ConnectivityObserver.Status.Available) {
                 fetchInitialData()
-
             }
         }.launchIn(viewModelScope)
     }

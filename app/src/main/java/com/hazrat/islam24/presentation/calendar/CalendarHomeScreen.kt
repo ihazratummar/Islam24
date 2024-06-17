@@ -27,8 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.HijriCalendarEntity
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
@@ -79,7 +81,7 @@ fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
         if (calendar != null) {
             if (hijriDayNew != null) {
                 Text(text = "${hijriDayNew.day} ${hijriDayNew.monthEn} ${hijriDayNew.year}${calendar.hijriAbbreviated}",
-                    color = Color.White)
+                    color = colorResource(id = R.color.text))
             }
         }
         WeekNamesRow(weekNames)
@@ -125,7 +127,7 @@ fun WeekNamesRow(weekNames: List<String>) {
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = colorResource(id = R.color.text)
             )
         }
     }
@@ -192,13 +194,13 @@ fun DayItem(
         ) {
             Text(
                 text = day.hijriDay.toString(),
-                color = Color.White,
+                color = colorResource(id = R.color.text),
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(
                 text = day.gregorianDay.toString(),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = colorResource(id = R.color.primary)
             )
             if (currentDay == day.gregorianDay) {
                 Box(
