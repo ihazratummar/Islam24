@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,9 +73,9 @@ fun UserSetting(
                 colors = TopAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = Color.Transparent,
-                    navigationIconContentColor = Color.White,
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White
+                    navigationIconContentColor = colorResource(id = R.color.text),
+                    titleContentColor = colorResource(id = R.color.text),
+                    actionIconContentColor = colorResource(id = R.color.text)
                 ),
                 navigationIcon = {
                     Icon(imageVector = Icons.Default.ArrowBack,
@@ -96,7 +97,7 @@ fun UserSetting(
             item {
                 HorizontalDivider(
                     thickness = MaterialTheme.dimens.size1,
-                    color = Color.Green
+                    color = colorResource(id = R.color.primary)
                 )
             }
             item {

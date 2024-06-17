@@ -63,8 +63,7 @@ fun HomeScreen(
 
         item {
             Surface(
-                modifier = Modifier.padding(MaterialTheme.dimens.size5),
-                color = MaterialTheme.colorScheme.background
+                modifier = Modifier.padding(MaterialTheme.dimens.size5)
             ) {
                 BackGroundCard()
                 Column(

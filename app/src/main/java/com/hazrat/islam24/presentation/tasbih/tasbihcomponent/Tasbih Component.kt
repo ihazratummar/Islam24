@@ -22,9 +22,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hazrat.islam24.R
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.Hidayat
 import com.hazrat.islam24.ui.theme.dimens
@@ -58,13 +60,13 @@ fun RepeatCountDialog(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = MaterialTheme.dimens.size15),
-                    color = Color.White
+                    color = colorResource(id = R.color.text)
                 )
                 // Display the selected value
                 Text(
                     text = selectedRepeatCount.toString(),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White
+                    color = colorResource(id = R.color.text)
                 )
 
                 Slider(
@@ -85,9 +87,9 @@ fun RepeatCountDialog(
                         shape = RoundedCornerShape(topStart = MaterialTheme.dimens.size10, bottomEnd = MaterialTheme.dimens.size10),
                         colors = ButtonColors(
                             containerColor = Color.Transparent,
-                            contentColor = Color.White,
+                            contentColor = colorResource(id = R.color.text),
                             disabledContainerColor = Color.Transparent,
-                            disabledContentColor = Color.Black
+                            disabledContentColor = colorResource(id = R.color.text).copy(0.1f)
                         ),
                         border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Green)
                     ) {
@@ -105,11 +107,11 @@ fun RepeatCountDialog(
                         shape = RoundedCornerShape(topStart = MaterialTheme.dimens.size10, bottomEnd = MaterialTheme.dimens.size10),
                         colors = ButtonColors(
                             containerColor = Color.Transparent,
-                            contentColor = Color.White,
+                            contentColor = colorResource(id = R.color.text),
                             disabledContainerColor = Color.Transparent,
-                            disabledContentColor = Color.Black
+                            disabledContentColor = colorResource(id = R.color.text).copy(0.1f)
                         ),
-                        border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Green)
+                        border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.primary))
                     ) {
                         Text("Select", style = MaterialTheme.typography.labelMedium)
                     }

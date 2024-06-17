@@ -43,7 +43,7 @@ fun SchoolSelectionDialog(
                 modifier = Modifier
                     .padding(MaterialTheme.dimens.size20)
                     .nestedScroll(rememberNestedScrollInteropConnection()),
-                color = MaterialTheme.colorScheme.background
+                color = Color.Transparent
             ) {
                 LazyColumn {
                     item { 
@@ -73,7 +73,7 @@ fun SchoolSelectionDialog(
                                     onSchoolSelected(school)
                                     onDismiss()
                                 },
-                            colors = CardDefaults.cardColors(Color.Green.copy(0.1f)),
+                            colors = CardDefaults.cardColors(Color.Transparent),
                             border = BorderStroke(MaterialTheme.dimens.size1, Color.Green)
                         ) {
                             Row(modifier = Modifier
@@ -97,7 +97,7 @@ fun SchoolSelectionDialog(
             initialValue = if (showSchoolSelectionDialog) ModalBottomSheetValue.Expanded else ModalBottomSheetValue.Hidden
         ),
         sheetShape = MaterialTheme.shapes.large,
-        sheetBackgroundColor = MaterialTheme.colorScheme.background,
+        sheetBackgroundColor = Color(0xff031600),
     ) {
 
     }

@@ -47,7 +47,7 @@ fun PrayerTimeSettingCard(
             .padding(MaterialTheme.dimens.size8)
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
-        color = Color.Green.copy(0.1f),
+        color = colorResource(id = R.color.primary).copy(0.6f),
         border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Green)
     ) {
         Row(
@@ -58,7 +58,7 @@ fun PrayerTimeSettingCard(
                 painter = painterResource(id = icon),
                 contentDescription = "Icon",
                 modifier = Modifier.size(MaterialTheme.dimens.size30),
-                tint = Color.White
+                tint = colorResource(id = R.color.text)
             )
             Column(
                 modifier = Modifier.padding(horizontal = MaterialTheme.dimens.size10)
@@ -67,13 +67,13 @@ fun PrayerTimeSettingCard(
                 Text(
                     text = text,
                     style = MaterialTheme.typography.displaySmall,
-                    color = Color.White
+                    color = colorResource(id = R.color.text)
                 )
                 if (subText != null) {
                     Text(
                         text = subText,
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.LightGray
+                        color = colorResource(id = R.color.background_color)
                     )
                 }
             }
