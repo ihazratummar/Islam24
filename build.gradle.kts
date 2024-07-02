@@ -6,3 +6,10 @@ plugins {
     id ("com.google.dagger.hilt.android") version "2.51.1" apply false
     id ("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
 }
+
+buildscript {
+    dependencies {
+        classpath("com.google.gms:google-services:4.4.2")
+        classpath("gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.10, 0.99.99]")
+    }
+}

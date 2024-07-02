@@ -28,4 +28,6 @@ object Constants {
 
     /** Base URL for retrieving Hijri calendar data */
     const val HIJRI_CALENDAR_URL = "https://api.aladhan.com/"
+    /** oneSignal key */
+    const val ONESIGNAL_APP_ID = "43011754-fa2a-4dbd-af0b-de8d96f6e8d4"
 }

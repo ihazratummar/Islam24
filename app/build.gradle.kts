@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.kapt")
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 
 }
 
@@ -142,10 +143,12 @@ dependencies {
     implementation ("androidx.compose.foundation:foundation:x.y.z")
 
     implementation ("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
 }
 
 kapt {
     correctErrorTypes = true
 }
+
 
 
