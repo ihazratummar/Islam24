@@ -1,11 +1,11 @@
-package com.hazrat.islam24.presentation.nvgraph
+package com.hazrat.islam24.presentation.navigation.nvgraph
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.hazrat.islam24.presentation.navigator.AppNavigator
+import com.hazrat.islam24.presentation.navigation.AppNavigator
 
 @Composable
 fun NavGraph(

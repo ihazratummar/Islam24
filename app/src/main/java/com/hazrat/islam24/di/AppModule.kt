@@ -25,9 +25,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
     private val logging = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
     }
+
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(logging)
         .connectTimeout(5, TimeUnit.MINUTES)

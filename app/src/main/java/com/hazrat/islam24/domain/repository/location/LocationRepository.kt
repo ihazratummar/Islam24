@@ -56,7 +56,7 @@ class LocationRepository @Inject constructor(
         }
     }
 
-    suspend fun checkAndUpdateLocation() {
+    private suspend fun checkAndUpdateLocation() {
         val location: LocationEntity? = locationDao.getLocation()
         if (location == null) {
             startLocationUpdates()

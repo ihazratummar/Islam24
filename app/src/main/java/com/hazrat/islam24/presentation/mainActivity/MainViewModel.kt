@@ -21,7 +21,7 @@ import com.hazrat.islam24.domain.repository.NamesRepository
 import com.hazrat.islam24.domain.repository.TasbihRepository
 import com.hazrat.islam24.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.presentation.nvgraph.Route
+import com.hazrat.islam24.presentation.navigation.nvgraph.Route
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel

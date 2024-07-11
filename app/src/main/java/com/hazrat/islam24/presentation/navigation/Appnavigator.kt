@@ -1,8 +1,7 @@
-package com.hazrat.islam24.presentation.navigator
+package com.hazrat.islam24.presentation.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,9 +23,9 @@ import com.hazrat.islam24.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.presentation.home.HomeScreen
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.namesofallah.NamesOfAllahScreen
-import com.hazrat.islam24.presentation.navigator.component.AppBottomNavigation
-import com.hazrat.islam24.presentation.navigator.component.BottomNavigationItem
-import com.hazrat.islam24.presentation.nvgraph.Route
+import com.hazrat.islam24.presentation.navigation.component.AppBottomNavigation
+import com.hazrat.islam24.presentation.navigation.component.BottomNavigationItem
+import com.hazrat.islam24.presentation.navigation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.presentation.prayertime.setting.UserSettingViewModel

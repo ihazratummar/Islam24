@@ -1,4 +1,4 @@
-package com.hazrat.islam24.presentation.navigator.component
+package com.hazrat.islam24.presentation.navigation.component
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
