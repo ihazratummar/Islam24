@@ -114,7 +114,6 @@ private fun TotalContent(
             modifier = Modifier.padding(bottom = bottomPadding)
         ) {
             composable(route = Route.HomeScreen.route) {
-                val prayerTimeViewModel: MainViewModel = hiltViewModel()
                 HomeScreen(navController,  navigateToPrayerTime = {
                     navigateToTab(
                         navController = navController,

@@ -1,15 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.5.0" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.0" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.jetbrains.kotlin.android) apply false
     id ("com.android.library") version "8.0.2" apply false
-    id ("com.google.dagger.hilt.android") version "2.51.1" apply false
-    id ("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
+    id ("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
+    alias(libs.plugins.android.room) apply false
+    alias(libs.plugins.google.devtools.ksp) apply false
 }
 
 buildscript {
     dependencies {
-        classpath("com.google.gms:google-services:4.4.2")
-        classpath("gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.10, 0.99.99]")
+        classpath(libs.google.services)
+        classpath(libs.onesignal.gradle.plugin)
+        classpath(libs.compose.compiler.gradle.plugin)
+        classpath(libs.hilt.android.gradle.plugin)
     }
 }

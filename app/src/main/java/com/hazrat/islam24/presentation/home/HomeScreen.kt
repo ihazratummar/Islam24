@@ -29,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -41,6 +43,7 @@ import com.hazrat.islam24.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.presentation.common.LocationName
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
+import com.hazrat.islam24.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.presentation.prayertime.component.DisplayCurrentPrayerTime
@@ -82,38 +85,16 @@ fun HomeScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(MaterialTheme.dimens.size200)
-                                .background(
-                                    brush = Brush.verticalGradient(
-                                        listOf(
-                                            Color(0xC31F581F),
-                                            Color(0xFF054105),
-                                            Color(0xFF266B08),
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(MaterialTheme.dimens.size30)
-                                )
+                                .height(MaterialTheme.dimens.size200).shimmerEffect()
                                 .clickable {
                                     navigateToPrayerTime()
                                 },
-                            colors = CardDefaults.cardColors(Color.Transparent),
+                            shape = RoundedCornerShape(MaterialTheme.dimens.size30),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            ),
                         ){
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = "Salat Time Loading ",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                )
-                                Spacer(modifier = Modifier.size(MaterialTheme.dimens.size50))
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(MaterialTheme.dimens.size60)
-                                )
-                            }
+
                         }
                     }
                 }
@@ -160,7 +141,8 @@ fun BackGroundCard() {
                         bottomEnd = MaterialTheme.dimens.size50
                     )
                 )
-                .size(MaterialTheme.dimens.size300)
+                .size(MaterialTheme.dimens.size300),
+            colorFilter = ColorFilter.colorMatrix(colorMatrix = ColorMatrix())
 
         )
     }
@@ -187,12 +169,14 @@ private fun TimeLocationCard(
                         Color(0xFA277006),
                     )
                 ),
-                shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+                shape = RoundedCornerShape(MaterialTheme.dimens.size30),
+
             )
             .clickable {
                 navigateToPrayerTime()
             },
         colors = CardDefaults.cardColors(Color.Transparent),
+
     ) {
         Row(
             modifier = Modifier

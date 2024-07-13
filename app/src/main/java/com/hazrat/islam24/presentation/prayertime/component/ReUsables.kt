@@ -102,7 +102,7 @@ fun PrayerTimeCard(
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = "Icon",
-                tint = colorResource(id = R.color.primary),
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(MaterialTheme.dimens.size30)
             )
         }
@@ -111,7 +111,8 @@ fun PrayerTimeCard(
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.displaySmall,color = colorResource(id = R.color.text),
+                style = MaterialTheme.typography.displaySmall,
+                color = colorResource(id = R.color.text),
                 modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
             )
         }
@@ -120,7 +121,8 @@ fun PrayerTimeCard(
         ) {
             Text(
                 text = time,
-                style = MaterialTheme.typography.displaySmall,color = colorResource(id = R.color.text),
+                style = MaterialTheme.typography.displaySmall,
+                color = colorResource(id = R.color.text),
                 modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
             )
         }
@@ -137,7 +139,7 @@ fun PrayerDateCard(
     Surface(
         modifier = modifier
             .fillMaxWidth(),
-        color =  Color.Transparent,
+        color = Color.Transparent,
     ) {
         Card(
             modifier = Modifier
@@ -149,13 +151,15 @@ fun PrayerDateCard(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = enDate,
+                Text(
+                    text = enDate,
                     style = MaterialTheme.typography.labelLarge,
                     color = colorResource(id = R.color.text),
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
-                Text(text = hrDate,
+                Text(
+                    text = hrDate,
                     style = MaterialTheme.typography.labelLarge,
                     color = colorResource(id = R.color.text),
                     fontWeight = FontWeight.SemiBold

@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,10 +59,10 @@ fun AppBottomNavigation(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorResource(id = R.color.primary),
-                    selectedTextColor = colorResource(id = R.color.primary),
-                    unselectedIconColor = colorResource(id = R.color.primary).copy(0.5f),
-                    unselectedTextColor = colorResource(id = R.color.primary).copy(0.5f),
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.outline,
+                    unselectedTextColor = MaterialTheme.colorScheme.outline,
                     indicatorColor = Color.Transparent
                 ),
             )
@@ -75,19 +74,4 @@ data class BottomNavigationItem(
     @DrawableRes val icon: Int,
     val text: String
 )
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun NewsBottomNavigationPreview() {
-    Islam24Theme(dynamicColor = false) {
-        AppBottomNavigation(items = listOf(
-            BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
-            BottomNavigationItem(icon = R.drawable.naviconhome, text = "Prayer Time"),
-            BottomNavigationItem(icon = R.drawable.naviconhome, text = "Quran"),
-            BottomNavigationItem(icon = R.drawable.naviconhome, text = "Qibla"),
-            BottomNavigationItem(icon = R.drawable.naviconhome, text = "Setting"),
-        ), selectedItem = 0, onItemClick = {})
-    }
-}
 

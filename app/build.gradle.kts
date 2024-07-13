@@ -1,10 +1,11 @@
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.devtools.ksp)
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
 
 }
@@ -17,8 +18,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 24
-        versionName = "1.2.3"
+        versionCode = 26
+        versionName = "1.2.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -44,7 +45,7 @@ android {
         jvmTarget = "1.8"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     buildFeatures{
         compose = true
@@ -60,94 +61,90 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    implementation("androidx.compose.material:material-android:1.6.7")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v281)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom.v20240500))
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material3)
+    implementation(libs.play.services.location)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit.v115)
+    androidTestImplementation(libs.androidx.espresso.core.v351)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    implementation(libs.androidx.material.android)
 
-    implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
+    implementation(libs.androidx.material.icons.extended.android)
 
     //window size
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
 
     //Splash Api
-    implementation ("androidx.core:core-splashscreen:1.0.1")
+    implementation (libs.androidx.core.splashscreen)
 
     //Compose Navigation
-    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation (libs.androidx.navigation.compose)
 
     //Dagger Hilt
 //    implementation("com.google.dagger:hilt-android:2.50")
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     //Retrofit
-    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation (libs.retrofit)
+    implementation(libs.converter.gson)
 
 
     //Kotlinx Serialization
-    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    implementation ("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation (libs.kotlinx.serialization.json)
+    implementation (libs.retrofit2.kotlinx.serialization.converter)
 
     //Coil
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation(libs.coil.compose)
 
     //Datastore
-    implementation ("androidx.datastore:datastore-preferences:1.1.1")
+    implementation (libs.androidx.datastore.preferences)
 
     //Compose Foundation
-    implementation ("androidx.compose.foundation:foundation:1.6.7")
+    implementation (libs.androidx.foundation)
 
     //Accompanist
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.31.4-beta")
+    implementation (libs.accompanist.systemuicontroller)
 
     //paging3
-    implementation ("androidx.paging:paging-runtime-ktx:3.3.0")
-    implementation ("androidx.paging:paging-compose:3.3.0")
+    implementation (libs.androidx.paging.runtime.ktx)
+    implementation (libs.androidx.paging.compose)
 
     //Room
 
-    implementation("androidx.room:room-common:2.6.1")
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+    implementation (libs.accompanist.systemuicontroller.v0270)
 
     //Observe
-    implementation ("androidx.activity:activity-compose:1.9.0")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation (libs.androidx.activity.compose)
+    implementation (libs.androidx.lifecycle.viewmodel.compose.v281)
+    implementation (libs.androidx.runtime.livedata)
 
-    implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation(libs.androidx.viewpager2)
 
 
-    implementation ("androidx.compose.runtime:runtime:x.y.z")
-    implementation ("androidx.compose.ui:ui:x.y.z")
-    implementation ("androidx.compose.animation:animation-core:x.y.z")
-    implementation ("androidx.compose.foundation:foundation:x.y.z")
+    implementation (libs.androidx.runtime)
+    implementation (libs.androidx.compose.ui.ui)
+    implementation (libs.androidx.animation.core)
+    implementation (libs.androidx.foundation.vxyz)
 
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
-}
-
-kapt {
-    correctErrorTypes = true
+    implementation (libs.logging.interceptor)
+    implementation(libs.onesignal)
 }
 
 

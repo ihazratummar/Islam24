@@ -129,7 +129,10 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                         .height(MaterialTheme.dimens.size50)
                         .padding(MaterialTheme.dimens.size5),
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.text))
+                    border = BorderStroke(
+                        MaterialTheme.dimens.size1,
+                        color = colorResource(id = R.color.text)
+                    )
                 ) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
@@ -188,7 +191,10 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                         .size(MaterialTheme.dimens.size300)
                         .padding(MaterialTheme.dimens.size15),
                     shape = CircleShape,
-                    border = BorderStroke(MaterialTheme.dimens.size2, colorResource(id = R.color.text)),
+                    border = BorderStroke(
+                        MaterialTheme.dimens.size2,
+                        colorResource(id = R.color.text)
+                    ),
                     colors = ButtonDefaults.buttonColors(Color.Transparent)
                 ) {
                     Column(
@@ -261,7 +267,10 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
                 .height(MaterialTheme.dimens.size50)
                 .padding(MaterialTheme.dimens.size5),
             colors = CardDefaults.cardColors(Color.Transparent),
-            border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.text))
+            border = BorderStroke(
+                MaterialTheme.dimens.size1,
+                color = colorResource(id = R.color.text)
+            )
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),
@@ -297,8 +306,10 @@ private fun TasbihHeader(
             },
         elevation = CardDefaults.cardElevation(MaterialTheme.dimens.size4),
         colors = CardDefaults.cardColors(
-            containerColor = if (phrase == selectedPhrase) colorResource(id = R.color.primary).copy(0.7f)
-            else colorResource(id = R.color.primary).copy(0.3f)
+            containerColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.onPrimaryContainer
+            else MaterialTheme.colorScheme.onSecondaryContainer
         )
     ) {
         Column(

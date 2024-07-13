@@ -61,7 +61,6 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(modifier = Modifier
-//        .statusBarsPadding()
         .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
