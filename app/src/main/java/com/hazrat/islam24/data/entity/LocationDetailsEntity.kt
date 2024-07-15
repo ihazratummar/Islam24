@@ -8,5 +8,6 @@ data class LocationDetailsEntity(
     @PrimaryKey val id: Long = 1,
     val village: String?,
     val city: String?,
-    val town: String?
+    val town: String?,
+    val suburb: String?
 )

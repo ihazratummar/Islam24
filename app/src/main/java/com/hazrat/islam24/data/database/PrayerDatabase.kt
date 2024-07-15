@@ -7,7 +7,7 @@ import com.hazrat.islam24.data.entity.PrayerSettingEntity
 import com.hazrat.islam24.data.dao.PrayerTimeDao
 import com.hazrat.islam24.data.entity.PrayerTimeEntity
 
-@Database(entities = [PrayerTimeEntity::class, PrayerSettingEntity::class], version = 4)
+@Database(entities = [PrayerTimeEntity::class, PrayerSettingEntity::class], version = 5, exportSchema = false)
 abstract class PrayerDatabase : RoomDatabase() {
 
     /**

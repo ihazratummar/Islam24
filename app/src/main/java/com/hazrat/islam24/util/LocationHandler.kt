@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
-import com.hazrat.islam24.domain.repository.location.LocationRepository
+import com.hazrat.islam24.domain.repository.location.LocationRepositoryImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 class LocationHandler(
     private val context: Context,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepositoryImpl
 ) {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient

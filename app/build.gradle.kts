@@ -25,6 +25,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        configurations.all {
+            resolutionStrategy { force ("androidx.work:work-runtime:2.9.0") }
+        }
     }
 
     buildTypes {
@@ -91,7 +94,6 @@ dependencies {
     implementation (libs.androidx.navigation.compose)
 
     //Dagger Hilt
-//    implementation("com.google.dagger:hilt-android:2.50")
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -128,7 +130,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    implementation (libs.accompanist.systemuicontroller.v0270)
+//    implementation (libs.accompanist.systemuicontroller.v0270)
 
     //Observe
     implementation (libs.androidx.activity.compose)

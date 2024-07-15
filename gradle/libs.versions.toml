@@ -1,14 +1,13 @@
 [versions]
 accompanistSystemuicontroller = "0.31.4-beta"
-accompanistSystemuicontrollerVersion = "0.27.0"
 agp = "8.5.1"
-androidxJunit = "1.1.5"
+androidxJunit = "1.2.1"
 animationCore = "x.y.z"
-composeBomVersion = "2024.05.00"
+composeBomVersion = "2024.06.00"
 converterGson = "2.11.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.1"
-espressoCoreVersion = "3.5.1"
+espressoCoreVersion = "3.6.1"
 foundation = "1.6.8"
 foundationVersion = "x.y.z"
 googleServices = "4.4.2"
@@ -45,7 +44,6 @@ viewpager2 = "1.1.0"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
-accompanist-systemuicontroller-v0270 = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontrollerVersion" }
 androidx-animation-core = { module = "androidx.compose.animation:animation-core", version.ref = "animationCore" }
 androidx-compose-bom-v20240500 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 androidx-compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }

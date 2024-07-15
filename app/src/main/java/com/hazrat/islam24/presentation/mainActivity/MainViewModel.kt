@@ -1,6 +1,5 @@
 package com.hazrat.islam24.presentation.mainActivity
 
-import android.icu.util.LocaleData
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -17,9 +16,9 @@ import com.hazrat.islam24.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.domain.model.tasbihPhraseList
 import com.hazrat.islam24.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.domain.repository.HijriCalendarRepository
-import com.hazrat.islam24.domain.repository.NamesRepository
+import com.hazrat.islam24.data.manager.NamesRepositoryImpl
 import com.hazrat.islam24.domain.repository.TasbihRepository
-import com.hazrat.islam24.domain.repository.location.LocationNameRepository
+import com.hazrat.islam24.data.manager.LocationNameRepositoryImpl
 import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.presentation.navigation.nvgraph.Route
 import com.hazrat.islam24.util.ConnectivityObserver
@@ -35,17 +34,15 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val prayerTimeRepository: PrayerTimeRepository,
-    private val locationNameRepository: LocationNameRepository,
+    private val locationNameRepository: LocationNameRepositoryImpl,
     private val connectivityObserver: ConnectivityObserver,
-    private val namesRepository: NamesRepository,
+    private val namesRepository: NamesRepositoryImpl,
     private val gregorianToHijriRepository: GregorianToHijriRepository,
     private val hijriCalendarRepository: HijriCalendarRepository,
     private val tasbihRepository: TasbihRepository,
@@ -92,7 +89,9 @@ class MainViewModel @Inject constructor(
     /**
      * tasbih
      */
-    val tasbihCounter: Flow<List<TasbihCounterEntity?>> = tasbihRepository.getTasbih()
+    private val _tasbihCounter = MutableStateFlow<List<TasbihCounterEntity?>>(emptyList())
+    val tasbihCounter = _tasbihCounter.asStateFlow()
+
     var selectedPhrase by mutableStateOf(tasbihPhraseList[0])
 
     /**
@@ -119,7 +118,11 @@ class MainViewModel @Inject constructor(
             locationNAme()
             locationNameRepository.getLocationDetails()
             _names.value = namesRepository.getAllahNames()
-
+            tasbihRepository.getTasbih()
+                .distinctUntilChanged()
+                .collectLatest { tasbihList ->
+                    _tasbihCounter.value = tasbihList
+                }
         }
     }
 
@@ -136,7 +139,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-            locationNameRepository.getLocationName()
+//            locationNameRepository.getLocationName()
             locationNameRepository.fetchLocationName()
             namesRepository.getAllNames()
             gregorianToHijriRepository.getGregorianToHijriDate()
@@ -153,6 +156,7 @@ class MainViewModel @Inject constructor(
             tasbihRepository.insertTasbih(tasbihCounterEntity)
         }
     }
+
     fun resetTasbihCount() {
         viewModelScope.launch {
             tasbihRepository.resetTasbihCount()
@@ -189,7 +193,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getHijriDay(): String{
+    fun getHijriDay(): String {
         val currentGregorianDay = getCurrentDay()
 
         val hijriDateEntity = _prayerTimes.value.find {

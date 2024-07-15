@@ -7,7 +7,7 @@ import com.hazrat.islam24.data.dao.HijriCalendarDao
 import com.hazrat.islam24.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.data.entity.HijriCalendarEntity
 
-@Database(entities = [GregorianToHijriEntity::class, HijriCalendarEntity::class], version = 1)
+@Database(entities = [GregorianToHijriEntity::class, HijriCalendarEntity::class], version = 4, exportSchema = false)
 abstract class CalendarDatabase: RoomDatabase() {
 
     /**

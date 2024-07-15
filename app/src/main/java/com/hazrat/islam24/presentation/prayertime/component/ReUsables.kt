@@ -16,7 +16,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,12 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.hazrat.islam24.R
-import com.hazrat.islam24.ui.theme.Islam24Theme
 import com.hazrat.islam24.ui.theme.dimens
 
 
@@ -88,43 +83,83 @@ fun PrayerTimeCard(
     @DrawableRes icon: Int,
     text: String,
     time: String,
-    onClick: () -> Unit
+    countDownText: String,
+    isPrayerTime : Boolean,
+    isNow: String
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(MaterialTheme.dimens.size20),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier.weight(0.2f)
-        ) {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = "Icon",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(MaterialTheme.dimens.size30)
+
+    Card (modifier = Modifier
+        .padding(MaterialTheme.dimens.size4 ),
+        colors =  if (isPrayerTime) {
+            CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        }else{
+            CardDefaults.cardColors(
+                containerColor = Color.Transparent
             )
         }
-        Column(
-            modifier = Modifier.weight(1f),
+    ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MaterialTheme.dimens.size20),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.displaySmall,
-                color = colorResource(id = R.color.text),
-                modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
-            )
-        }
-        Column(
-            modifier = Modifier.weight(0.7f)
-        ) {
-            Text(
-                text = time,
-                style = MaterialTheme.typography.displaySmall,
-                color = colorResource(id = R.color.text),
-                modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
-            )
+            Column (
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.End
+            ){
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Icon(
+                        painter = painterResource(id = icon),
+                        contentDescription = "Icon",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(MaterialTheme.dimens.size30)
+                    )
+                    Spacer(modifier = Modifier.width(MaterialTheme.dimens.size10))
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
+                    )
+                }
+                Text(
+                    text = isNow,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
+                )
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Text(
+                        text = countDownText,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
+                    )
+                    Spacer(modifier = Modifier.width(MaterialTheme.dimens.size40))
+                    Text(
+                        text = time,
+                        style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
+                    )
+                }
+            }
         }
     }
 }
@@ -149,54 +184,31 @@ fun PrayerDateCard(
             Text(
                 text = enDate,
                 style = MaterialTheme.typography.labelLarge,
-                color = colorResource(id = R.color.text),
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
             Text(
                 text = hrDate,
                 style = MaterialTheme.typography.labelLarge,
-                color = colorResource(id = R.color.text),
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.SemiBold
             )
         }
     }
-
-}
-
-//@Preview
-//@Composable
-//fun PrayerDateCardPreview() {
-//    Islam24Theme {
-//        PrayerDateCard(enDate = "Monday, 12 February", hrDate = "2 Sha'ban 1445")
-//    }
-//}
-
-@Preview
-@Composable
-fun PrayerTimeCardPreview() {
-    Islam24Theme {
-        PrayerTimeCard(icon = R.drawable.athkar,
-            text = "Fajr",
-            time = "04:59",
-            onClick = {}
-        )
-    }
-
 }
 
 
 //@Preview
 //@Composable
-//fun ClickableCardPreview() {
+//fun PrayerTimeCardPreview() {
 //    Islam24Theme {
-//        PrayerTimeSettingCard(
-//            icon = R.drawable.athkar,
-//            text = "Go Back",
-//            subText = "Prayermethod",
-//            onClick = {
-//                // Handle onClick action here
-//            }
+//        PrayerTimeCard(icon = R.drawable.athkar,
+//            text = "Fajr",
+//            time = "04:59",
+//            onClick = {}
 //        )
 //    }
+//
 //}
+

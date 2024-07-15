@@ -8,7 +8,7 @@ import com.hazrat.islam24.data.dao.LocationNameDao
 import com.hazrat.islam24.data.entity.LocationEntity
 
 
-@Database(entities = [LocationEntity::class , LocationDetailsEntity::class], version = 3, exportSchema = false)
+@Database(entities = [LocationEntity::class , LocationDetailsEntity::class], version = 4, exportSchema = false)
 abstract class LocationDatabase : RoomDatabase() {
 
     /**

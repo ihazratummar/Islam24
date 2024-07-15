@@ -33,6 +33,9 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
@@ -42,6 +45,8 @@ import com.hazrat.islam24.presentation.common.LocationName
 import com.hazrat.islam24.presentation.home.component.LazyRowWithCards
 import com.hazrat.islam24.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.presentation.home.component.DisplayCurrentPrayerName
+import com.hazrat.islam24.presentation.home.component.DisplayCurrentPrayerTime
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 
@@ -189,12 +194,12 @@ private fun TimeLocationCard(
                     ),
                 verticalArrangement = Arrangement.Bottom
             ) {
-//                DisplayCurrentPrayerName(
-//                    prayerTimeEntity, textStyle = TextStyle(
-//                        fontSize = 35.sp,
-//                        fontWeight = FontWeight.Bold
-//                    )
-//                )
+                DisplayCurrentPrayerName(
+                    prayerTimeEntity, textStyle = TextStyle(
+                        fontSize = 35.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
 
                 Text(
                     text = stringResource(R.string.view_salat_times),
@@ -219,7 +224,7 @@ private fun TimeLocationCard(
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
                 val grday = getCurrentDay()
                 val hijriday = viewModel.getHijriDay()
-//                DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
+                DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
             }
         }
     }

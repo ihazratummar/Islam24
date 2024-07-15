@@ -1,5 +1,8 @@
 package com.hazrat.islam24.domain.model.athkar
 
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
+
 data class EveningAkhtarData(
     val number: Int,
     val transliteration: String,

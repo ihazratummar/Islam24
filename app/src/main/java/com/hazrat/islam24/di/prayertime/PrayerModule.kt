@@ -7,33 +7,34 @@ import android.util.Log
 import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.hazrat.islam24.data.database.PrayerDatabase
+import com.hazrat.islam24.data.dao.LocationDao
+import com.hazrat.islam24.data.dao.LocationNameDao
 import com.hazrat.islam24.data.dao.PrayerSettingDao
 import com.hazrat.islam24.data.dao.PrayerTimeDao
+import com.hazrat.islam24.data.database.LocationDatabase
+import com.hazrat.islam24.data.database.PrayerDatabase
+import com.hazrat.islam24.data.manager.LocationNameRepositoryImpl
+import com.hazrat.islam24.data.manager.PrayerTimeRepositoryImpl
+import com.hazrat.islam24.domain.repository.location.LocationNameRepository
+import com.hazrat.islam24.domain.repository.location.LocationRepository
+import com.hazrat.islam24.domain.repository.location.LocationRepositoryImpl
+import com.hazrat.islam24.domain.repository.prayertime.PrayerSettingRepository
+import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.network.LocationNameApi
 import com.hazrat.islam24.network.PrayerTimeApi
 import com.hazrat.islam24.util.Constants.BASE_URL
 import com.hazrat.islam24.util.Constants.LOCATION_BASE_URL
-import com.hazrat.islam24.data.dao.LocationDao
-import com.hazrat.islam24.data.database.LocationDatabase
-import com.hazrat.islam24.data.dao.LocationNameDao
-import com.hazrat.islam24.di.AppModule
-import com.hazrat.islam24.domain.repository.location.LocationRepository
-import com.hazrat.islam24.domain.repository.prayertime.PrayerSettingRepository
-import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.domain.repository.location.LocationNameRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import okhttp3.internal.platform.android.AndroidLogHandler.setLevel
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import okhttp3.logging.HttpLoggingInterceptor
 
 
 @Module
@@ -46,11 +47,10 @@ object PrayerModule {
     @Provides
     fun providePrayerTimeRepository(
         api: PrayerTimeApi,
-        locationRepository: LocationRepository,
+        locationRepository: LocationRepositoryImpl,
         prayerSettingRepository: PrayerSettingRepository,
         prayerTimeDao: PrayerTimeDao
-    ) =
-        PrayerTimeRepository(api, locationRepository, prayerSettingRepository, prayerTimeDao)
+    ) : PrayerTimeRepository = PrayerTimeRepositoryImpl(api, locationRepository, prayerSettingRepository, prayerTimeDao)
 
 
 //    /prayer time database
@@ -110,11 +110,9 @@ object PrayerModule {
     @Singleton
     fun provideLocationNameRepository(
         api: LocationNameApi,
-        locationRepository: LocationRepository,
+        locationRepository: LocationRepositoryImpl,
         locationNameDao: LocationNameDao
-    ): LocationNameRepository {
-        return LocationNameRepository(api, locationRepository, locationNameDao)
-    }
+    ): LocationNameRepository = LocationNameRepositoryImpl(api, locationRepository, locationNameDao)
 
     @Singleton
     @Provides
@@ -165,11 +163,10 @@ object PrayerModule {
 
     @Provides
     fun provideLocationRepository(
-        @ApplicationContext context: Context,
         fusedLocationProviderClient: FusedLocationProviderClient,
         locationDao: LocationDao
     ): LocationRepository {
-        return LocationRepository(context, fusedLocationProviderClient, locationDao)
+        return LocationRepositoryImpl(fusedLocationProviderClient, locationDao)
     }
 
 }

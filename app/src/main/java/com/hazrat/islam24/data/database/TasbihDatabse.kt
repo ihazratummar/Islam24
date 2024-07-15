@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.hazrat.islam24.data.dao.TasbihCounterDao
 import com.hazrat.islam24.data.entity.TasbihCounterEntity
 
-@Database(entities = [TasbihCounterEntity::class], version = 1)
+@Database(entities = [TasbihCounterEntity::class], version = 2, exportSchema = false)
 abstract class TasbihDatabase: RoomDatabase() {
 
     /**

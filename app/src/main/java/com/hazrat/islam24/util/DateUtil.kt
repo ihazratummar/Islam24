@@ -1,6 +1,11 @@
 package com.hazrat.islam24.util
 
+import androidx.compose.runtime.Composable
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -75,5 +80,37 @@ object DateUtil {
         val formatter =SimpleDateFormat(format, Locale.getDefault())
         val date = Date(dateLong)
         return formatter.format(date)
+    }
+
+
+    fun getCountdownText(targetTimeMillis: Long): String {
+        val currentTimeMillis = System.currentTimeMillis()
+
+        // Calculate the difference in milliseconds
+        val diffMillis = targetTimeMillis - currentTimeMillis
+
+        if (diffMillis <= 0) {
+            return ""
+        }
+
+        // Convert milliseconds to hours, minutes, and seconds
+        val seconds = diffMillis / 1000
+        val minutes = seconds / 60
+        val hours = minutes / 60
+
+        // Format the remaining time into a countdown text
+        val hoursLeft = hours % 24
+        val minutesLeft = minutes % 60
+        val secondsLeft = seconds % 60
+
+        return String.format("%02d:%02d:%02d", hoursLeft, minutesLeft, secondsLeft)
+    }
+
+
+    fun formatLocalTime(time: LocalTime?): String? {
+        return time?.let {
+            val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault())
+            it.format(formatter)
+        }
     }
 }

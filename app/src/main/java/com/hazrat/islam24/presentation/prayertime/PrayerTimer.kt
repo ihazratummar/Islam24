@@ -1,7 +1,9 @@
 package com.hazrat.islam24.presentation.prayertime
 
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,13 +42,18 @@ import com.hazrat.islam24.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
+import com.hazrat.islam24.util.DateUtil.getCountdownText
+import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import kotlinx.coroutines.delay
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun PrayerTimer(viewModel: MainViewModel = hiltViewModel(), navController: NavController) {
     ShowData(viewModel, navController)
 
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowData(
@@ -85,6 +95,7 @@ fun ShowData(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ViewPager(
@@ -123,8 +134,42 @@ fun ViewPager(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
+    val gregorianDay = data.gregorianDay.toInt()
+    val hijriDay = data.hijriDay
+
+    val prayerTime = gregorianDay == getCurrentDay()
+
+    // Define state for countdown times
+    var fajrCountDown by remember { mutableStateOf(getCountdownText(data.fajrTime)) }
+    var sunriseCountDown by remember { mutableStateOf(getCountdownText(data.sunriseTime)) }
+    var dhuhrCountDown by remember { mutableStateOf(getCountdownText(data.dhuhrTime)) }
+    var asrCountDown by remember { mutableStateOf(getCountdownText(data.asrTime)) }
+    var maghribCountDown by remember { mutableStateOf(getCountdownText(data.maghribTime)) }
+    var ishaCountDown by remember { mutableStateOf(getCountdownText(data.ishaTime)) }
+
+    // Update countdown times periodically
+    LaunchedEffect(Unit) {
+        while (true) {
+            fajrCountDown = getCountdownText(data.fajrTime)
+            sunriseCountDown = getCountdownText(data.sunriseTime)
+            dhuhrCountDown = getCountdownText(data.dhuhrTime)
+            asrCountDown = getCountdownText(data.asrTime)
+            maghribCountDown = getCountdownText(data.maghribTime)
+            ishaCountDown = getCountdownText(data.ishaTime)
+            delay(1000) // Update every second
+        }
+    }
+
+    val currentTime = System.currentTimeMillis()
+    val isFajrTime = currentTime in (data.fajrTime + 1)..(data.sunriseTime)
+    val isSunriseTime = currentTime in (data.sunriseTime + 1)..(data.sunriseTime + 1800000)
+    val isDhuhrTime = currentTime in (data.dhuhrTime + 1)..(data.dhuhrTime + 1800000)
+    val isAsrTime = currentTime in (data.asrTime + 1)..(data.asrTime + 1800000)
+    val isMaghribTime = currentTime in (data.maghribTime + 1)..(data.maghribTime + 1800000)
+    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.ishaTime + 1800000)
 
     Column(
         modifier = Modifier.padding(top = MaterialTheme.dimens.size10)
@@ -141,37 +186,50 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
             icon = R.drawable.fajr,
             text = stringResource(R.string.fajr),
             time = dateLongToString(data.fajrTime),
-            onClick = {}
+            countDownText = if (prayerTime) fajrCountDown else "",
+            isPrayerTime = isFajrTime,
+            isNow = if (isFajrTime) "NOW" else ""
+
         )
         PrayerTimeCard(
             icon = R.drawable.sunrise,
             text = stringResource(R.string.sunrise),
             time = dateLongToString(data.sunriseTime),
-            onClick = {}
+            countDownText = if (prayerTime) sunriseCountDown else "",
+            isPrayerTime = isSunriseTime,
+            isNow = ""
         )
         PrayerTimeCard(
             icon = R.drawable.dhuhr,
             text = stringResource(R.string.dhuhr),
             time = dateLongToString(data.dhuhrTime),
-            onClick = {}
+            countDownText = if (prayerTime) dhuhrCountDown else "",
+            isPrayerTime = isDhuhrTime,
+            isNow = if (isDhuhrTime) "NOW" else ""
         )
         PrayerTimeCard(
             icon = R.drawable.asr,
             text = stringResource(R.string.asr),
             time = dateLongToString(data.asrTime),
-            onClick = {}
+            countDownText = if (prayerTime) asrCountDown else "",
+            isPrayerTime = isAsrTime,
+            isNow = if (isAsrTime) "NOW" else ""
         )
         PrayerTimeCard(
             icon = R.drawable.maghrib,
             text = stringResource(R.string.maghrib),
             time = dateLongToString(data.maghribTime),
-            onClick = {}
+            countDownText = if (prayerTime) maghribCountDown else "",
+            isPrayerTime = isMaghribTime,
+            isNow = if (isMaghribTime) "NOW" else ""
         )
         PrayerTimeCard(
             icon = R.drawable.isha,
             text = stringResource(R.string.isha_a),
             time = dateLongToString(data.ishaTime),
-            onClick = {}
+            countDownText = if (prayerTime) ishaCountDown else "",
+            isPrayerTime = isIshaTime,
+            isNow = if (isIshaTime) "NOW" else ""
         )
     }
 }

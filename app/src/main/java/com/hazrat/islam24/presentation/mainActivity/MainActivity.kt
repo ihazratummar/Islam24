@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import com.hazrat.islam24.domain.repository.location.LocationRepository
+import com.hazrat.islam24.domain.repository.location.LocationRepositoryImpl
 import com.hazrat.islam24.presentation.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.ui.theme.Islam24Theme
 import com.hazrat.islam24.util.LocationHandler
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit var locationRepository: LocationRepository
+    lateinit var locationRepository: LocationRepositoryImpl
     private lateinit var locationHandler: LocationHandler
     private val viewModel by viewModels<MainViewModel>()
 

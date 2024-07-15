@@ -1,5 +1,7 @@
 package com.hazrat.islam24.presentation.prayertime
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -9,6 +11,7 @@ import androidx.navigation.NavController
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun PrayerTimeScreen(viewModel: MainViewModel, navController:NavController) {
     Surface(

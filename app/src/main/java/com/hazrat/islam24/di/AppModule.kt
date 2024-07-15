@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.hazrat.islam24.data.dao.NameDao
 import com.hazrat.islam24.data.database.NamesDataBase
+import com.hazrat.islam24.data.manager.NamesRepositoryImpl
 import com.hazrat.islam24.domain.repository.NamesRepository
 import com.hazrat.islam24.network.NamesApi
 import com.hazrat.islam24.util.ConnectivityObserver
@@ -39,7 +40,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideNamesRepository(api: NamesApi, nameDao: NameDao) = NamesRepository(api, nameDao)
+    fun provideNamesRepository(api: NamesApi, nameDao: NameDao): NamesRepository =
+        NamesRepositoryImpl(api, nameDao)
 
     @Singleton
     @Provides
