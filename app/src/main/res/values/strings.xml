@@ -2,6 +2,30 @@
 <resources>
     <!-- home_page strings -->
 
-    <string name="app_name">Islam 24</string>
+    <string name="app_name" translatable="true">Islam 24</string>
+    <string name="view_salat_times">View Times</string>
+    <string name="names">Names</string>
+    <string name="tasbih">Tasbih</string>
+    <string name="calendar">Calendar</string>
+    <string name="athkar">Zikir</string>
+    <string name="next_prayer" translatable="true">Next %1$s</string>
+    <string name="total_count">Total Count: %1$s</string>
+    <string name="round">Round: %1$s</string>
+    <string name="tasbihTarget">Target : %1$s</string>
+    <string name="set_tasbih_count">Set Tasbih Count</string>
+    <string name="cancel">Cancel</string>
+    <string name="select">Select</string>
+    <string name="click_to_start">Click to Start</string>
+    <string name="reset">Reset</string>
+    <string name="prayer_times">Prayer Times</string>
+    <string name="fajr">Fajr</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="dhuhr">Dhuhr</string>
+    <string name="asr">Asr</string>
+    <string name="maghrib">Maghrib</string>
+    <string name="isha_a">Isha\'a</string>
+    <string name="prayer_setting">PRAYER SETTING</string>
+    <string name="prayer_method">Prayer Time Method</string>
+    <string name="juristic_method">Prayer Method</string>
 
 </resources>

@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +66,7 @@ fun UserSetting(
             TopAppBar(
                 title = {
                     Text(
-                        text = "PRAYER SETTING",
+                        text = stringResource(R.string.prayer_setting),
                         style = MaterialTheme.typography.displaySmall,
                         modifier = Modifier.padding(MaterialTheme.dimens.size5)
                     )
@@ -108,7 +109,7 @@ fun UserSetting(
                 if (methodName != null) {
                     PrayerTimeSettingCard(
                         icon = R.drawable.athkar,
-                        text = "Prayer Method",
+                        text = stringResource(R.string.prayer_method),
                         subText = methodName,
                         onClick = {
                             openMethodSelectionDialog()
@@ -117,7 +118,7 @@ fun UserSetting(
                 } else {
                     PrayerTimeSettingCard(
                         icon = R.drawable.athkar,
-                        text = "Prayer Method",
+                        text = stringResource(R.string.juristic_method),
                         subText = null,
                         onClick = {
                             openMethodSelectionDialog()

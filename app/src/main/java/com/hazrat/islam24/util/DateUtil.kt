@@ -47,7 +47,7 @@ object DateUtil {
      * @return The current date as a string.
      */
     fun getCurrentDate(): String {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
         return dateFormat.format(Date())
     }
 
@@ -58,7 +58,7 @@ object DateUtil {
      * @return true if the provided date string represents today's date, false otherwise.
      */
     fun isToday(dateString: String): Boolean {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
         val currentDate = dateFormat.format(Date())
         return dateString == currentDate
     }

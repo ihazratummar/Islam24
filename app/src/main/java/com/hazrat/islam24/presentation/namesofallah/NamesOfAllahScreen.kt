@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -72,7 +73,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                 title =
                 {
                     Text(
-                        text = "Names Of Allah",
+                        text = stringResource(id = R.string.names),
                         color = colorResource(id = R.color.text),
                         style = MaterialTheme.typography.displaySmall
                     )

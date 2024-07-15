@@ -41,13 +41,16 @@ fun PrayerTimeSettingCard(
     subText: String?,
     onClick: () -> Unit
 ) {
-    Surface(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(MaterialTheme.dimens.size8)
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
-        color = colorResource(id = R.color.primary).copy(0.6f),
+        colors = CardDefaults.cardColors(
+            contentColor = MaterialTheme.colorScheme.primaryContainer,
+            containerColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
         border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Green)
     ) {
         Row(
@@ -58,7 +61,6 @@ fun PrayerTimeSettingCard(
                 painter = painterResource(id = icon),
                 contentDescription = "Icon",
                 modifier = Modifier.size(MaterialTheme.dimens.size30),
-                tint = colorResource(id = R.color.text)
             )
             Column(
                 modifier = Modifier.padding(horizontal = MaterialTheme.dimens.size10)
@@ -67,13 +69,11 @@ fun PrayerTimeSettingCard(
                 Text(
                     text = text,
                     style = MaterialTheme.typography.displaySmall,
-                    color = colorResource(id = R.color.text)
                 )
                 if (subText != null) {
                     Text(
                         text = subText,
                         style = MaterialTheme.typography.labelMedium,
-                        color = colorResource(id = R.color.background_color)
                     )
                 }
             }
@@ -136,37 +136,32 @@ fun PrayerDateCard(
     enDate: String,
     hrDate: String
 ) {
-    Surface(
-        modifier = modifier
+    Card(
+        modifier = Modifier
             .fillMaxWidth(),
-        color = Color.Transparent,
+        colors = CardDefaults.cardColors(Color.Transparent)
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = CardDefaults.cardColors(Color.Transparent)
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = enDate,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = colorResource(id = R.color.text),
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
-                Text(
-                    text = hrDate,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = colorResource(id = R.color.text),
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
+            Text(
+                text = enDate,
+                style = MaterialTheme.typography.labelLarge,
+                color = colorResource(id = R.color.text),
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
+            Text(
+                text = hrDate,
+                style = MaterialTheme.typography.labelLarge,
+                color = colorResource(id = R.color.text),
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
+
 }
 
 //@Preview

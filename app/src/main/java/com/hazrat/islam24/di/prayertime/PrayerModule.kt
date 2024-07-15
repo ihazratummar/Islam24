@@ -79,6 +79,8 @@ object PrayerModule {
         .writeTimeout(5, TimeUnit.MINUTES)
         .readTimeout(5, TimeUnit.MINUTES)
         .build()
+
+
     //Prayer Time Api
     @Singleton
     @Provides

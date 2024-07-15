@@ -23,12 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.R
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
-import com.hazrat.islam24.ui.theme.Hidayat
 import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
@@ -56,7 +56,7 @@ fun RepeatCountDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Set Tasbih Count",
+                    text = stringResource(R.string.set_tasbih_count),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = MaterialTheme.dimens.size15),
@@ -93,7 +93,7 @@ fun RepeatCountDialog(
                         ),
                         border = BorderStroke(MaterialTheme.dimens.size1, color = Color.Green)
                     ) {
-                        Text("Cancel", style = MaterialTheme.typography.labelMedium)
+                        Text(stringResource(R.string.cancel), style = MaterialTheme.typography.labelMedium)
                     }
                     Spacer(modifier = Modifier.width(MaterialTheme.dimens.size10))
                     Button(
@@ -113,7 +113,7 @@ fun RepeatCountDialog(
                         ),
                         border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.primary))
                     ) {
-                        Text("Select", style = MaterialTheme.typography.labelMedium)
+                        Text(stringResource(R.string.select), style = MaterialTheme.typography.labelMedium)
                     }
                 }
             }

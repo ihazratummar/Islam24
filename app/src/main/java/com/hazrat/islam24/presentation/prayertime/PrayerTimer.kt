@@ -25,6 +25,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
@@ -56,7 +57,7 @@ fun ShowData(
 
             TopAppBar(
                 title = {
-                    Text(text = "Prayer Times", color = colorResource(id = R.color.text))
+                    Text(text = stringResource(R.string.prayer_times), color = colorResource(id = R.color.text))
                 },
                 actions = {
                     Icon(imageVector = Icons.Default.Settings,
@@ -137,37 +138,37 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
         )
         PrayerTimeCard(
             icon = R.drawable.fajr,
-            text = "Fajr",
+            text = stringResource(R.string.fajr),
             time = getTime(data.fajrTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.sunrise,
-            text = "Sunrise",
+            text = stringResource(R.string.sunrise),
             time = getTime(data.sunriseTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.dhuhr,
-            text = "Dhuhr",
+            text = stringResource(R.string.dhuhr),
             time = getTime(data.dhuhrTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.asr,
-            text = "Asr",
+            text = stringResource(R.string.asr),
             time = getTime(data.asrTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.maghrib,
-            text = "Maghrib",
+            text = stringResource(R.string.maghrib),
             time = getTime(data.maghribTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.isha,
-            text = "Isha'a",
+            text = stringResource(R.string.isha_a),
             time = getTime(data.ishaTime),
             onClick = {}
         )

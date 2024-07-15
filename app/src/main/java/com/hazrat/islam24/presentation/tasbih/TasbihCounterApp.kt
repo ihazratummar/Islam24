@@ -3,7 +3,6 @@ package com.hazrat.islam24.presentation.tasbih
 import android.content.Context
 import android.os.Vibrator
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -38,11 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.R
@@ -51,7 +50,7 @@ import com.hazrat.islam24.domain.model.TasbihPhrase
 import com.hazrat.islam24.domain.model.tasbihPhraseList
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.presentation.tasbih.tasbihcomponent.RepeatCountDialog
-import com.hazrat.islam24.ui.theme.Hidayat
+import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.Islam24Theme
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.vibrate
@@ -82,164 +81,168 @@ fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modif
                 TasbihHeader(phrase, viewModel)
             }
         }
-
-        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size10))
-        Column(
+        LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            item {
 
-            ToTalCount(tasbih)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-
-                // Repeat Count Selection
-                Card(
-                    modifier = Modifier
-                        .clickable { isDialogOpen = true }
-                        .width(MaterialTheme.dimens.size150)
-                        .height(MaterialTheme.dimens.size50)
-                        .padding(MaterialTheme.dimens.size5),
-                    colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(
-                        MaterialTheme.dimens.size1,
-                        color = colorResource(id = R.color.text)
-                    ),
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            "Count: $repeatCount", modifier = Modifier,
-                            color = colorResource(id = R.color.text)
-                        )
-                    }
-                }
-
-                // Round Counter
-                Card(
-                    modifier = Modifier
-                        .width(MaterialTheme.dimens.size150)
-                        .height(MaterialTheme.dimens.size50)
-                        .padding(MaterialTheme.dimens.size5),
-                    colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(
-                        MaterialTheme.dimens.size1,
-                        color = colorResource(id = R.color.text)
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            "Round: $roundCount",
-                            modifier = Modifier
-                                .padding(MaterialTheme.dimens.size5),
-                            color = colorResource(id = R.color.text)
-                        )
-                    }
-                }
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size10))
             }
-        }
-        // Tasbih Count Display
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
-                    onClick = {
-                        if (tasbih != null) {
-                            viewModel.insertTasbih(
-                                TasbihCounterEntity(
-                                    totalCount = tasbih.totalCount + 1,
-                                    tasbihCount = tasbih.tasbihCount + 1
-                                )
-                            )
-                        } else {
-                            viewModel.insertTasbih(
-                                TasbihCounterEntity(
-                                    totalCount = totalCount,
-                                    tasbihCount = tasbihCount
-                                )
-                            )
-                        }
+            item {
+                ToTalCount(tasbih)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
 
-                        totalCount++
-                        tasbihCount++
-                        if (tasbihCount % repeatCount == 0) {
-                            roundCount++
-                            viewModel.resetTasbihCount()
+                    // Repeat Count Selection
+                    Card(
+                        modifier = Modifier
+                            .clickable { isDialogOpen = true }
+                            .width(MaterialTheme.dimens.size150)
+                            .height(MaterialTheme.dimens.size50)
+                            .padding(MaterialTheme.dimens.size5),
+                        colors = CardDefaults.cardColors(Color.Transparent),
+                        border = BorderStroke(
+                            MaterialTheme.dimens.size1,
+                            color = colorResource(id = R.color.text)
+                        ),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.tasbihTarget, repeatCount), modifier = Modifier,
+                                color = colorResource(id = R.color.text)
+                            )
                         }
-                        vibrate(vibrator!!)
-                    },
+                    }
+
+                    // Round Counter
+                    Card(
+                        modifier = Modifier
+                            .width(MaterialTheme.dimens.size150)
+                            .height(MaterialTheme.dimens.size50)
+                            .padding(MaterialTheme.dimens.size5),
+                        colors = CardDefaults.cardColors(Color.Transparent),
+                        border = BorderStroke(
+                            MaterialTheme.dimens.size1,
+                            color = colorResource(id = R.color.text)
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                stringResource(R.string.round, roundCount),
+                                modifier = Modifier
+                                    .padding(MaterialTheme.dimens.size5),
+                                color = colorResource(id = R.color.text)
+                            )
+                        }
+                    }
+                }
+
+            }
+            item {
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(MaterialTheme.dimens.size300)
-                        .padding(MaterialTheme.dimens.size15),
-                    shape = CircleShape,
-                    border = BorderStroke(
-                        MaterialTheme.dimens.size2,
-                        colorResource(id = R.color.text)
-                    ),
-                    colors = ButtonDefaults.buttonColors(Color.Transparent)
+                        .fillMaxSize()
+                        .weight(1f)
                 ) {
                     Column(
+                        modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        val countText = "${tasbih?.tasbihCount ?: "0"} / $repeatCount"
-                        Text(
-                            text = countText,
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = colorResource(id = R.color.text)
-                        )
-                        if (tasbih?.tasbihCount == 0) Text(
-                            "Click to Start", color = colorResource(id = R.color.text),
-                            style = MaterialTheme.typography.labelLarge,
-                        )
+                        Button(
+                            onClick = {
+                                if (tasbih != null) {
+                                    viewModel.insertTasbih(
+                                        TasbihCounterEntity(
+                                            totalCount = tasbih.totalCount + 1,
+                                            tasbihCount = tasbih.tasbihCount + 1
+                                        )
+                                    )
+                                } else {
+                                    viewModel.insertTasbih(
+                                        TasbihCounterEntity(
+                                            totalCount = totalCount,
+                                            tasbihCount = tasbihCount
+                                        )
+                                    )
+                                }
+
+                                totalCount++
+                                tasbihCount++
+                                if (tasbihCount % repeatCount == 0) {
+                                    roundCount++
+                                    viewModel.resetTasbihCount()
+                                }
+                                vibrate(vibrator!!)
+                            },
+                            modifier = Modifier
+                                .size(MaterialTheme.dimens.size300)
+                                .padding(MaterialTheme.dimens.size15),
+                            shape = CircleShape,
+                            border = BorderStroke(
+                                MaterialTheme.dimens.size2,
+                                colorResource(id = R.color.text)
+                            ),
+                            colors = ButtonDefaults.buttonColors(Color.Transparent)
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                val countText = "${tasbih?.tasbihCount ?: "0"} / $repeatCount"
+                                Text(
+                                    text = countText,
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    color = colorResource(id = R.color.text)
+                                )
+                                if (tasbih?.tasbihCount == 0) Text(
+                                    stringResource(R.string.click_to_start), color = colorResource(id = R.color.text),
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                            }
+
+                        }
+                        // Reset Button
+                        Button(
+                            onClick = {
+                                viewModel.resetTasbihCount()
+                                roundCount = 0
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .padding(horizontal = MaterialTheme.dimens.size10),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                            border = BorderStroke(
+                                MaterialTheme.dimens.size1,
+                                color = colorResource(id = R.color.text)
+                            ),
+                            shape = RoundedCornerShape(MaterialTheme.dimens.size20)
+                        ) {
+                            Text(
+                                stringResource(R.string.reset), color = colorResource(id = R.color.primary),
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
 
                 }
-                // Reset Button
-                Button(
-                    onClick = {
-                        viewModel.resetTasbihCount()
-                        roundCount = 0
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .padding(horizontal = MaterialTheme.dimens.size10),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                    border = BorderStroke(
-                        MaterialTheme.dimens.size1,
-                        color = colorResource(id = R.color.text)
-                    ),
-                    shape = RoundedCornerShape(MaterialTheme.dimens.size20)
-                ) {
-                    Text(
-                        "Reset", color = colorResource(id = R.color.primary),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
             }
-
         }
-
         // Dialog for Repeat Count Selection
         if (isDialogOpen) {
             RepeatCountDialog(
@@ -279,7 +282,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
             ) {
                 val countText = tasbih?.totalCount ?: "0"
                 Text(
-                    "Total Count: $countText",
+                    stringResource(R.string.total_count, countText),
                     color = colorResource(id = R.color.text),
                     modifier = Modifier
                         .padding(MaterialTheme.dimens.size5)
@@ -323,11 +326,10 @@ private fun TasbihHeader(
                 phrase.arText, style = MaterialTheme.typography.headlineMedium,
                 color = colorResource(id = R.color.text),
                 textAlign = TextAlign.Center,
-                fontSize = 15.sp,
+                fontFamily = AlQalam
             )
             Text(
-                phrase.enText, style = MaterialTheme.typography.headlineMedium,
-                fontSize = 15.sp,
+                phrase.enText, style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = colorResource(id = R.color.text)
 

@@ -24,19 +24,14 @@ class NamesRepository @Inject constructor(
             try {
                 val localNames = nameDao.getAllNames()
                 if (localNames.isNotEmpty()) {
-                    Log.d("NamesRepository", "Returning names from local database")
                     localNames.map { NameEntityToData(it) }
                 } else {
-                    Log.d("NamesRepository", "Fetching names from API")
                     val remoteNames = api.getAllNames().data
-                    Log.d("NamesRepository", "Fetched ${remoteNames.size} names from API")
                     val entities = remoteNames.map { NameDataToEntity(it) }
                     nameDao.insertName(entities)
-                    Log.d("NamesRepository", "Inserted ${entities.size} names into local database")
                     remoteNames
                 }
             } catch (e: Exception) {
-                Log.e("NamesRepository", "Error fetching names: ${e.message}", e)
                 emptyList()
             }
         }

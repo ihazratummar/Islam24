@@ -17,10 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
-import com.hazrat.islam24.ui.theme.Hidayat
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +32,7 @@ fun TasbihScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Tasbih Count",
+                        text = stringResource(id = R.string.tasbih),
                         color = colorResource(id = R.color.text),
                         style =  MaterialTheme.typography.displaySmall
                     )

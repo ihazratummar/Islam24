@@ -11,8 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.PrayerTimeEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -164,7 +166,7 @@ fun DisplayCurrentPrayerTime(
         val timeUntilNextPrayer = calculateTimeDifference(currentTime, nextPrayerTime)
 
         if (currentTime.isBefore(currentPrayerTime.plusHours(1))) {
-            Text(text = "Next $currentPrayerTime",
+            Text(text = stringResource(R.string.next_prayer, currentPrayerTime),
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White)

@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -85,7 +86,8 @@ fun HomeScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(MaterialTheme.dimens.size200).shimmerEffect()
+                                .height(MaterialTheme.dimens.size200)
+                                .shimmerEffect()
                                 .clickable {
                                     navigateToPrayerTime()
                                 },
@@ -171,7 +173,7 @@ private fun TimeLocationCard(
                 ),
                 shape = RoundedCornerShape(MaterialTheme.dimens.size30),
 
-            )
+                )
             .clickable {
                 navigateToPrayerTime()
             },
@@ -201,7 +203,7 @@ private fun TimeLocationCard(
                 )
 
                 Text(
-                    text = "View Times",
+                    text = stringResource(R.string.view_salat_times),
                     color = colorResource(id = R.color.white),
                     style = MaterialTheme.typography.bodyLarge
                 )

@@ -25,9 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.hazrat.islam24.R
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.MethodDetails
 import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.prayerMethods
 import com.hazrat.islam24.ui.theme.Islam24Theme
@@ -52,7 +54,7 @@ fun MethodSelectionDialog(
                 LazyColumn(){
                     item{
                         Text(
-                            text = "PRAYER TIMES",
+                            text = stringResource(id = R.string.prayer_times),
                             style = TextStyle(fontSize = 10.sp),
                             color = Color(0xFFFFFFFF),
                             modifier = Modifier.padding(top = MaterialTheme.dimens.size30)

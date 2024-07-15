@@ -29,6 +29,7 @@ class GregorianToHijriRepositoryImpl(
      */
     override suspend fun getGregorianToHijriDate(): GregorianToHijriResponse {
         val date = DateUtil.getCurrentDate()
+        Log.d("Grego to Hijri Rep", "Hijri date response: $date")
         try {
             val response = api.getGtoHDate(date)
             if (response.code == 200 && response.status == "OK") {
@@ -41,7 +42,7 @@ class GregorianToHijriRepositoryImpl(
                 throw Exception("Failed to get Hijri date: ${response.status}")
             }
         } catch (e: Exception) {
-            Log.e("Repository", "Exception occurred: ${e.message}")
+            Log.e("Grego to Hijri Repository", "Exception occurred: ${e.message}")
             throw e
         }
     }

@@ -17,9 +17,9 @@ val Poppins = FontFamily(
     )
 )
 
-val Hidayat = FontFamily(
+val AlQalam = FontFamily(
     fonts = listOf(
-        Font(R.font.hidayatullah)
+        Font(R.font.al_qalam)
     )
 )
 
