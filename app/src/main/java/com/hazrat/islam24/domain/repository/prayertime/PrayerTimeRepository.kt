@@ -12,6 +12,7 @@ import com.hazrat.islam24.data.entity.LocationEntity
 import com.hazrat.islam24.domain.model.prayertime.prayertimemodel.ApiResponse
 import com.hazrat.islam24.domain.model.prayertime.prayertimemodel.Data
 import com.hazrat.islam24.domain.repository.location.LocationRepository
+import com.hazrat.islam24.util.DateUtil.timeStringToLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
@@ -70,17 +71,17 @@ class PrayerTimeRepository @Inject constructor(
         val meta = apiResponse.meta
         return PrayerTimeEntity(
             day = date.gregorian.day.toInt(),
-            fajrTime = timings.Fajr,
-            sunriseTime = timings.Sunrise,
-            dhuhrTime = timings.Dhuhr,
-            asrTime = timings.Asr,
-            sunsetTime = timings.Sunset,
-            maghribTime = timings.Maghrib,
-            ishaTime = timings.Isha,
-            imsakTime = timings.Imsak,
-            midnightTime = timings.Midnight,
-            firstThirdTime = timings.Firstthird,
-            lastThirdTime = timings.Lastthird,
+            fajrTime = timeStringToLong("${date.gregorian.date} ${timings.Fajr}"),
+            sunriseTime = timeStringToLong("${date.gregorian.date} ${timings.Sunrise}"),
+            dhuhrTime = timeStringToLong("${date.gregorian.date} ${timings.Dhuhr}"),
+            asrTime = timeStringToLong("${date.gregorian.date} ${timings.Asr}"),
+            sunsetTime = timeStringToLong("${date.gregorian.date} ${timings.Sunset}"),
+            maghribTime = timeStringToLong("${date.gregorian.date} ${timings.Maghrib}"),
+            ishaTime = timeStringToLong("${date.gregorian.date} ${timings.Isha}"),
+            imsakTime = timeStringToLong("${date.gregorian.date} ${timings.Imsak}"),
+            midnightTime = timeStringToLong("${date.gregorian.date} ${timings.Midnight}"),
+            firstThirdTime = timeStringToLong("${date.gregorian.date} ${timings.Firstthird}"),
+            lastThirdTime = timeStringToLong("${date.gregorian.date} ${timings.Lastthird}"),
             readableDate = date.readable,
             gregorianDate = date.gregorian.date,
             gregorianDay = date.gregorian.day,

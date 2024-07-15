@@ -36,6 +36,7 @@ import com.hazrat.islam24.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
+import com.hazrat.islam24.util.DateUtil.dateLongToString
 
 @Composable
 fun PrayerTimer(viewModel: MainViewModel = hiltViewModel(), navController: NavController) {
@@ -139,45 +140,42 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
         PrayerTimeCard(
             icon = R.drawable.fajr,
             text = stringResource(R.string.fajr),
-            time = getTime(data.fajrTime),
+            time = dateLongToString(data.fajrTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.sunrise,
             text = stringResource(R.string.sunrise),
-            time = getTime(data.sunriseTime),
+            time = dateLongToString(data.sunriseTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.dhuhr,
             text = stringResource(R.string.dhuhr),
-            time = getTime(data.dhuhrTime),
+            time = dateLongToString(data.dhuhrTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.asr,
             text = stringResource(R.string.asr),
-            time = getTime(data.asrTime),
+            time = dateLongToString(data.asrTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.maghrib,
             text = stringResource(R.string.maghrib),
-            time = getTime(data.maghribTime),
+            time = dateLongToString(data.maghribTime),
             onClick = {}
         )
         PrayerTimeCard(
             icon = R.drawable.isha,
             text = stringResource(R.string.isha_a),
-            time = getTime(data.ishaTime),
+            time = dateLongToString(data.ishaTime),
             onClick = {}
         )
     }
 }
 
-fun getTime(prayerTime: String): String {
-    return prayerTime.substring(0, 5) // Extract HH:mm part
-}
 
 
 

@@ -62,4 +62,18 @@ object DateUtil {
         val currentDate = dateFormat.format(Date())
         return dateString == currentDate
     }
+
+
+    fun timeStringToLong(dateString: String, format: String = "dd-MM-yyyy HH:mm"): Long{
+        val dateFormat = SimpleDateFormat(format, Locale.ENGLISH)
+        val date = dateFormat.parse(dateString) ?: return 0L
+        return date.time
+    }
+
+
+    fun dateLongToString(dateLong: Long, format: String = "hh:mm a"): String {
+        val formatter =SimpleDateFormat(format, Locale.getDefault())
+        val date = Date(dateLong)
+        return formatter.format(date)
+    }
 }

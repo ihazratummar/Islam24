@@ -9,28 +9,28 @@ data class PrayerTimeEntity(
     @PrimaryKey val day: Int,
 
     @ColumnInfo("Fajr Time")
-    val fajrTime: String,
+    val fajrTime: Long,
 
     @ColumnInfo("Sunrise Time")
-    val sunriseTime: String,
+    val sunriseTime: Long,
     @ColumnInfo("Dhuhr Time")
-    val dhuhrTime: String,
+    val dhuhrTime: Long,
     @ColumnInfo("AsrTime")
-    val asrTime: String,
+    val asrTime: Long,
     @ColumnInfo("Sunset Time")
-    val sunsetTime: String,
+    val sunsetTime: Long,
     @ColumnInfo("Maghrib Time")
-    val maghribTime: String,
+    val maghribTime: Long,
     @ColumnInfo("Isha Time")
-    val ishaTime: String,
+    val ishaTime: Long,
     @ColumnInfo("ImsakTime")
-    val imsakTime: String,
+    val imsakTime: Long,
     @ColumnInfo("MidNight Time")
-    val midnightTime: String,
+    val midnightTime: Long,
     @ColumnInfo("FirstThird Time")
-    val firstThirdTime: String,
+    val firstThirdTime: Long,
     @ColumnInfo("LastThird Time")
-    val lastThirdTime: String,
+    val lastThirdTime: Long,
     @ColumnInfo("Readable Date")
     val readableDate: String,
     @ColumnInfo("GregorianDate")
