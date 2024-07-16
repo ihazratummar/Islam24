@@ -94,7 +94,7 @@ fun HomeScreen(
                             colors = CardDefaults.cardColors(
                                 containerColor = Color.Transparent
                             ),
-                        ){
+                        ) {
 
                         }
                     }
@@ -113,8 +113,6 @@ fun HomeScreen(
         }
     }
 }
-
-
 
 
 ////BACKGROUND CARD WITH MASJID ICON
@@ -156,7 +154,8 @@ private fun TimeLocationCard(
     prayerTimeEntity: List<PrayerTimeEntity>,
     navigateToPrayerTime: () -> Unit,
     locationDetailsEntity: LocationDetailsEntity,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel(),
+    homeViewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     Card(
         modifier = Modifier
@@ -165,20 +164,19 @@ private fun TimeLocationCard(
             .background(
                 brush = Brush.verticalGradient(
                     listOf(
-                        Color(0xD71F581F),
-                        Color(0xFF054105),
-                        Color(0xFA277006),
+                        MaterialTheme.colorScheme.primaryContainer.copy(0.6f),
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.primaryContainer
                     )
                 ),
                 shape = RoundedCornerShape(MaterialTheme.dimens.size30),
-
                 )
             .clickable {
                 navigateToPrayerTime()
             },
         colors = CardDefaults.cardColors(Color.Transparent),
 
-    ) {
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
@@ -203,7 +201,7 @@ private fun TimeLocationCard(
 
                 Text(
                     text = stringResource(R.string.view_salat_times),
-                    color = colorResource(id = R.color.white),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -220,11 +218,21 @@ private fun TimeLocationCard(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End
             ) {
+
                 LocationName(locationDetailsEntity)
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
                 val grday = getCurrentDay()
                 val hijriday = viewModel.getHijriDay()
-                DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
+                if (homeViewModel.isPrayerTime(prayerTimeEntity, grday, hijriday)) {
+                    Text(
+                        text = stringResource(id = R.string.now),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                } else {
+                    DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
+                }
             }
         }
     }

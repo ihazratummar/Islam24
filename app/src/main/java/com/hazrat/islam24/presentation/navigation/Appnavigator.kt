@@ -1,5 +1,7 @@
 package com.hazrat.islam24.presentation.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -31,12 +33,13 @@ import com.hazrat.islam24.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.presentation.prayertime.setting.UserSettingViewModel
 import com.hazrat.islam24.presentation.tasbih.TasbihScreen
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
     val bottomNavigationItem = remember {
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
-            BottomNavigationItem(icon = R.drawable.prayericon, text = "Time"),
+            BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
 //            BottomNavigationItem(icon = R.drawable.zakaticon, text = "Zakat"),
 //            BottomNavigationItem(icon = R.drawable.qiblaicon, text = "Qibla")
         )
@@ -67,6 +70,7 @@ fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 private fun TotalContent(
     isBottomBarVisible: Boolean,

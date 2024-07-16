@@ -1,6 +1,7 @@
 package com.hazrat.islam24.presentation.namesofallah
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +52,7 @@ import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.data.entity.NameEntity
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +76,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                 {
                     Text(
                         text = stringResource(id = R.string.names),
-                        color = colorResource(id = R.color.text),
+                        color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.displaySmall
                     )
                 },
@@ -87,7 +89,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                                 navController.popBackStack()
 
                             },
-                        tint = colorResource(id = R.color.primary)
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 },
                 scrollBehavior = scrollBehavior
@@ -113,7 +115,7 @@ fun NameCard(name: NameEntity) {
     }
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize().padding(vertical = MaterialTheme.dimens.size8)
             .background(MaterialTheme.colorScheme.background)
             .clickable {
                 expanded = !expanded
@@ -123,12 +125,16 @@ fun NameCard(name: NameEntity) {
                 vertical = MaterialTheme.dimens.size1
             ),
         shape = RoundedCornerShape(MaterialTheme.dimens.size10),
-        colors = CardDefaults.cardColors(Color.Transparent)
+        colors = CardDefaults.cardColors(Color.Transparent),
+        border = BorderStroke(
+            MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primaryContainer
+        )
     ) {
         Column {
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.Top
             ) {
                 Column(
                     modifier = Modifier
@@ -139,11 +145,11 @@ fun NameCard(name: NameEntity) {
                             top = MaterialTheme.dimens.size20
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Top
                 ) {
                     Text(
-                        text = "${name.number}.", style = MaterialTheme.typography.displaySmall,
-                        color = colorResource(id = R.color.text)
+                        text = "${name.number}", style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 Column(
@@ -153,24 +159,18 @@ fun NameCard(name: NameEntity) {
                         .padding(MaterialTheme.dimens.size5)
                 ) {
                     Text(
-                        text = name.transliteration, style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 25.sp,
-                            color = colorResource(id = R.color.text)
-                        )
+                        text = name.transliteration, style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = name.meaning, style = TextStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 15.sp,
-                            color = colorResource(id = R.color.text)
-                        )
+                        text = name.meaning, style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Arrow",
-                        tint = colorResource(id = R.color.primary)
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
                 Column(
@@ -184,14 +184,15 @@ fun NameCard(name: NameEntity) {
                     Text(
                         text = name.name,
                         style = MaterialTheme.typography.displayMedium,
-                        color = colorResource(id = R.color.primary)
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontFamily = AlQalam
                     )
                 }
             }
             AnimatedVisibility(visible = expanded) {
                 HorizontalDivider(
                     thickness = MaterialTheme.dimens.size2,
-                    color = colorResource(id = R.color.text)
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Column(
                     modifier = Modifier
@@ -200,9 +201,15 @@ fun NameCard(name: NameEntity) {
                             top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10
                         )
                 ) {
-                    Text(text = "Ayat: ${name.found}", color = colorResource(id = R.color.text))
+                    Text(
+                        text = "Ayat: ${name.found}",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size5))
-                    Text(text = name.enDec, color = colorResource(id = R.color.text))
+                    Text(
+                        text = name.enDec,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
             }
         }

@@ -29,13 +29,18 @@ class PrayerTimeViewModel @Inject constructor(
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
     val prayerTimes = _prayerTimes.asStateFlow()
 
-
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
 
 //    private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
 //    val locationName = _locationName.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            getAllPrayerTimes()
+            repository.fetchAndSavePrayerTimesForMonth()
+        }
+    }
 
     private fun getAllPrayerTimes() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -50,27 +55,5 @@ class PrayerTimeViewModel @Inject constructor(
         }
     }
 
-//    private fun locationNAme(){
-//        viewModelScope.launch(Dispatchers.IO) {
-//            locationNameRepository.getLocationDetails().distinctUntilChanged()
-//                .collectLatest { locationName : List<LocationDetailsEntity> ->
-//                    if (locationName.isEmpty()){
-//                        Log.d("LocationNameStatus" , "Location list empty")
-//                    }else{
-//                        _locationName.value = locationName
-//                    }
-//                }
-//        }
-//    }
 
-    init {
-        viewModelScope.launch {
-            getAllPrayerTimes()
-//            locationNAme()
-            repository.fetchAndSavePrayerTimesForMonth()
-//            locationNameRepository.fetchLocationName()
-//            locationNameRepository.getLocationName()
-            Log.d("GettingSomething", "${prayerTimes.value.size}")
-        }
-    }
 }

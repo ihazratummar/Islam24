@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,7 +33,7 @@ fun DisplayCurrentPrayerName(
     data: List<PrayerTimeEntity>,
     textStyle: TextStyle = TextStyle()
 ) {
-    var currentTime by remember { mutableStateOf(LocalTime.now()) }
+    var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
     val currentDate = LocalDate.now()
     var previousPrayerName by remember { mutableStateOf<String?>(null) }
 
@@ -42,7 +43,7 @@ fun DisplayCurrentPrayerName(
         val job = coroutineScope.launch {
             while (true) {
                 delay(1000) // Update every second
-                currentTime = LocalTime.now()
+                currentTime = System.currentTimeMillis()
             }
         }
 
@@ -51,42 +52,25 @@ fun DisplayCurrentPrayerName(
         }
     }
 
-    // Convert the long times to LocalTime
-    fun Long.toLocalTime(): LocalTime =
-        Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalTime()
-
     // Filter prayer times for the current day
     val currentDayPrayer = data.firstOrNull { it.day == currentDate.dayOfMonth }
 
-    // Get prayer times for the current day, converting from Long to LocalTime
-    val fajrTime = currentDayPrayer?.fajrTime?.toLocalTime()
-    val sunriseTime = currentDayPrayer?.sunriseTime?.toLocalTime()
-    val zuhrTime = currentDayPrayer?.dhuhrTime?.toLocalTime()
-    val asrTime = currentDayPrayer?.asrTime?.toLocalTime()
-    val sunsetTime = currentDayPrayer?.sunsetTime?.toLocalTime()
-    val maghribTime = currentDayPrayer?.maghribTime?.toLocalTime()
-    val ishaTime = currentDayPrayer?.ishaTime?.toLocalTime()
-    val midnightTime = currentDayPrayer?.midnightTime?.toLocalTime()
+    val currentPrayerName: String? = currentDayPrayer?.let {
+        val isFajrTime = currentTime in (it.fajrTime + 1)..it.sunriseTime
+        val isSunriseTime = currentTime in (it.sunriseTime - 300000)..(it.sunriseTime + 300000)
+        val isDhuhrTime = currentTime in (it.sunriseTime + 1)..(it.asrTime)
+        val isAsrTime = currentTime in (it.asrTime + 1)..(it.maghribTime)
+        val isMaghribTime = currentTime in (it.maghribTime + 1)..(it.ishaTime)
+        val isIshaTime = currentTime in (it.ishaTime + 1)..it.midnightTime
 
-    val timeRanges = mapOf(
-        stringResource(id = R.string.fajr) to Pair(fajrTime, sunriseTime),
-        stringResource(id = R.string.dhuhr) to Pair(sunriseTime, asrTime),
-        stringResource(id = R.string.asr) to Pair(asrTime, maghribTime),
-        stringResource(id = R.string.maghrib) to Pair(maghribTime, ishaTime),
-        stringResource(id = R.string.isha_a) to Pair(ishaTime, midnightTime)
-    )
-
-    var currentPrayerName: String? = null
-
-    for ((prayerName, timeRange) in timeRanges) {
-        val (startTime, endTime) = timeRange
-        if (startTime != null && endTime != null) {
-            if (currentTime in startTime..endTime) {
-                currentPrayerName = prayerName
-                break
-            }
-        } else {
-            // Handle the case where startTime or endTime is null
+        when {
+            isFajrTime -> stringResource(id = R.string.fajr)
+            isSunriseTime -> stringResource(id = R.string.sunrise)
+            isDhuhrTime -> stringResource(id = R.string.dhuhr)
+            isAsrTime -> stringResource(id = R.string.asr)
+            isMaghribTime -> stringResource(id = R.string.maghrib)
+            isIshaTime -> stringResource(id = R.string.isha_a)
+            else -> null
         }
     }
 
@@ -98,11 +82,12 @@ fun DisplayCurrentPrayerName(
     currentPrayerName?.let { prayerName ->
         Text(
             text = prayerName,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             style = textStyle
         )
     }
 }
+
 
 @Composable
 fun DisplayCurrentPrayerTime(
@@ -133,11 +118,6 @@ fun DisplayCurrentPrayerTime(
 
     val prayerTimes = mapOf(
         stringResource(id = R.string.fajr) to currentDayPrayerTimes?.fajrTime?.let {
-            Instant.ofEpochMilli(
-                it
-            ).atZone(ZoneId.systemDefault()).toLocalTime()
-        },
-        stringResource(id = R.string.sunrise) to currentDayPrayerTimes?.sunriseTime?.let {
             Instant.ofEpochMilli(
                 it
             ).atZone(ZoneId.systemDefault()).toLocalTime()
@@ -178,14 +158,14 @@ fun DisplayCurrentPrayerTime(
                 text = stringResource(R.string.next_prayer, prayerName),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             formatLocalTime(time)?.let {
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         }

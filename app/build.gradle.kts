@@ -18,8 +18,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 27
-        versionName = "1.3.0"
+        versionCode = 30
+        versionName = "1.3.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -147,6 +147,10 @@ dependencies {
 
     implementation (libs.logging.interceptor)
     implementation(libs.onesignal)
+
+    //Google Play Store Update
+    implementation(libs.app.update)
+    implementation(libs.app.update.ktx)
 }
 
 

@@ -26,7 +26,7 @@ fun Location(modifier: Modifier = Modifier,
     Text(text = locationDetailsEntity.city?: locationDetailsEntity.village?: locationDetailsEntity.town ?: "",
         modifier = modifier,
         style = MaterialTheme.typography.displaySmall,
-        color = Color.White,
+        color = MaterialTheme.colorScheme.onPrimaryContainer,
         fontWeight = FontWeight.SemiBold
     )
 }

@@ -166,8 +166,9 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
     }
 
     val currentTime = System.currentTimeMillis()
+
     val isFajrTime = currentTime in (data.fajrTime + 1)..(data.sunriseTime)
-    val isSunriseTime = currentTime in (data.sunriseTime + 1)..(data.sunriseTime + 1800000)
+    val isSunriseTime = currentTime in (data.sunriseTime + 1)..(data.sunriseTime)
     val isDhuhrTime = currentTime in (data.dhuhrTime + 1)..(data.dhuhrTime + 3600000)
     val isAsrTime = currentTime in (data.asrTime + 1)..(data.maghribTime - 600000)
     val isMaghribTime = currentTime in (data.maghribTime + 1)..(data.ishaTime - 600000)
@@ -241,7 +242,6 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
         )
     }
 }
-
 
 
 
