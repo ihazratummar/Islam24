@@ -31,6 +31,7 @@ import com.hazrat.islam24.presentation.navigation.nvgraph.Route
 import com.hazrat.islam24.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.presentation.prayertime.setting.UserSettingViewModel
+import com.hazrat.islam24.presentation.profileScreen.ProfileScreen
 import com.hazrat.islam24.presentation.tasbih.TasbihScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -40,7 +41,7 @@ fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
-//            BottomNavigationItem(icon = R.drawable.zakaticon, text = "Zakat"),
+            BottomNavigationItem(icon = R.drawable.profile, text = "Profile"),
 //            BottomNavigationItem(icon = R.drawable.qiblaicon, text = "Qibla")
         )
     }
@@ -54,7 +55,7 @@ fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.PrayerTimeScreen.route -> 1
-//        Route.ZakatScreen.route -> 2
+        Route.ProfileScreen.route -> 2
 //        Route.QiblaDirectionScreen.route -> 3
         else -> 0
     }
@@ -62,8 +63,8 @@ fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
     //Hide the bottom navigation when the user is in the details screen
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.PrayerTimeScreen.route
-//                backStackState?.destination?.route == Route.ZakatScreen.route ||
+                backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
+                backStackState?.destination?.route == Route.ProfileScreen.route
 //                backStackState?.destination?.route == Route.QiblaDirectionScreen.route
     }
     TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController)
@@ -96,10 +97,10 @@ private fun TotalContent(
                                 route = Route.PrayerTimeScreen.route
                             )
 
-//                            2 -> navigateToTab(
-//                                navController = navController,
-//                                route = Route.ZakatScreen.route
-//                            )
+                            2 -> navigateToTab(
+                                navController = navController,
+                                route = Route.ProfileScreen.route
+                            )
 //
 //                            3 -> navigateToTab(
 //                                navController = navController,
@@ -129,9 +130,9 @@ private fun TotalContent(
                 val viewModel: MainViewModel = hiltViewModel()
                 PrayerTimeScreen(viewModel, navController)
             }
-//            composable(route = Route.QiblaDirectionScreen.route) {
-//                QiblaScreen(navController)
-//            }
+            composable(route = Route.ProfileScreen.route) {
+                ProfileScreen(navController)
+            }
 //            composable(route = Route.ZakatScreen.route) {
 //                ZakatScreen(navController)
 //            }

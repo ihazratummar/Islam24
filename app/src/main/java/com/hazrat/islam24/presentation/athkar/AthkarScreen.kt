@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
-import com.hazrat.islam24.domain.model.athkar.tabItems
+import com.hazrat.islam24.core.domain.model.athkar.tabItems
 import com.hazrat.islam24.presentation.athkar.components.EveningContent
 import com.hazrat.islam24.presentation.athkar.components.MorningContent
 import com.hazrat.islam24.ui.theme.dimens
@@ -43,7 +43,7 @@ fun AthkarScreen(navController: NavController) {
         mutableIntStateOf(0)
     }
     val pagerState = rememberPagerState {
-        tabItems.size
+        com.hazrat.islam24.core.domain.model.athkar.tabItems.size
     }
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
@@ -88,7 +88,7 @@ fun AthkarScreen(navController: NavController) {
             TabRow(selectedTabIndex = selectedTabIndex,
                 containerColor = Color.Transparent
             ) {
-                tabItems.forEachIndexed { index, item ->
+                com.hazrat.islam24.core.domain.model.athkar.tabItems.forEachIndexed { index, item ->
                     Tab(selected = index == selectedTabIndex,
                         onClick = { selectedTabIndex = index },
                         text = {

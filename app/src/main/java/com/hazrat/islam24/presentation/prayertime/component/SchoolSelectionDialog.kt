@@ -26,15 +26,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.SchoolDetails
-import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.schoolDetailsList
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.SchoolDetails
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SchoolSelectionDialog(
     showSchoolSelectionDialog: Boolean,
-    onSchoolSelected: (SchoolDetails) -> Unit,
+    onSchoolSelected: (com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.SchoolDetails) -> Unit,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheetLayout(
@@ -63,8 +63,8 @@ fun SchoolSelectionDialog(
                             }
                         }
                     }
-                    items(schoolDetailsList.size){ index ->
-                        val school = schoolDetailsList[index]
+                    items(com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList.size){ index ->
+                        val school = com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList[index]
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()

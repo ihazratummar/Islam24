@@ -13,7 +13,7 @@ import com.hazrat.islam24.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.data.entity.NameEntity
 import com.hazrat.islam24.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.data.entity.TasbihCounterEntity
-import com.hazrat.islam24.domain.model.tasbihPhraseList
+import com.hazrat.islam24.core.domain.model.tasbihPhraseList
 import com.hazrat.islam24.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.data.manager.NamesRepositoryImpl
@@ -92,7 +92,7 @@ class MainViewModel @Inject constructor(
     private val _tasbihCounter = MutableStateFlow<List<TasbihCounterEntity?>>(emptyList())
     val tasbihCounter = _tasbihCounter.asStateFlow()
 
-    var selectedPhrase by mutableStateOf(tasbihPhraseList[0])
+    var selectedPhrase by mutableStateOf(com.hazrat.islam24.core.domain.model.tasbihPhraseList[0])
 
     /**
      * Location name

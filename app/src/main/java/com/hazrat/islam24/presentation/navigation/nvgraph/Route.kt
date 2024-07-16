@@ -27,4 +27,6 @@ sealed class Route (
     object AthkarScreen: Route(route = "AthkarScreen")
 
     object NoInternetScreen: Route(route = "NoInternetScreen")
+
+    object ProfileScreen: Route(route = "profileScreen")
 }

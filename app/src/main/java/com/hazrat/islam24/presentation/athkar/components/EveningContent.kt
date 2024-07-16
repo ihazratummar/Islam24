@@ -30,8 +30,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.adhkarscreen.model.morningAthkars
 import com.hazrat.islam24.R
-import com.hazrat.islam24.domain.model.athkar.EveningAkhtarData
-import com.hazrat.islam24.domain.model.athkar.eveningAkhtar
+import com.hazrat.islam24.core.domain.model.athkar.EveningAkhtarData
+import com.hazrat.islam24.core.domain.model.athkar.eveningAkhtar
 import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
@@ -39,14 +39,14 @@ fun EveningContent() {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
-        items(eveningAkhtar) { athkar ->
+        items(com.hazrat.islam24.core.domain.model.athkar.eveningAkhtar) { athkar ->
             AdhkarEveningCard(adhkars = athkar)
         }
     }
 }
 
 @Composable
-fun AdhkarEveningCard(adhkars: EveningAkhtarData) {
+fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.EveningAkhtarData) {
 
 
     var expanded by remember {

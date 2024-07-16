@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.data.entity.PrayerSettingEntity
-import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.MethodDetails
-import com.hazrat.islam24.domain.model.prayertime.prayersettingmodel.SchoolDetails
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.SchoolDetails
 import com.hazrat.islam24.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,13 +28,23 @@ class UserSettingViewModel @Inject constructor(
     private val _methodList = MutableStateFlow<List<PrayerSettingEntity>>(emptyList())
     val methodList = _methodList.asStateFlow()
 
-    private val _methodDetails = MutableStateFlow<List<MethodDetails>>(emptyList())
+    private val _methodDetails = MutableStateFlow<List<com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails>>(emptyList())
     val methodDetails = _methodDetails.asStateFlow()
 
     var showMethodSelectionDialog by mutableStateOf(false)
     var showSchoolSelectionDialog by  mutableStateOf(false)
-    var selectedMethod by mutableStateOf(MethodDetails(1, ""))
-    var selectedSchool by mutableStateOf(SchoolDetails(0, ""))
+    var selectedMethod by mutableStateOf(
+        com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+            1,
+            ""
+        )
+    )
+    var selectedSchool by mutableStateOf(
+        com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.SchoolDetails(
+            0,
+            ""
+        )
+    )
     fun openMethodSelectionDialog() {
         showMethodSelectionDialog = true
     }
