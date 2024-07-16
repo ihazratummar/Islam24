@@ -29,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -68,7 +67,10 @@ fun ShowData(
 
             TopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.prayer_times), color = colorResource(id = R.color.text))
+                    Text(
+                        text = stringResource(R.string.prayer_times),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 },
                 actions = {
                     Icon(imageVector = Icons.Default.Settings,
@@ -78,7 +80,7 @@ fun ShowData(
                                 navController.navigate(Route.UserSettings.route)
                             }
                             .padding(end = MaterialTheme.dimens.size20),
-                        tint = colorResource(id = R.color.text)
+                        tint = MaterialTheme.colorScheme.onBackground
 
                     )
                 },
@@ -140,7 +142,7 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
     val gregorianDay = data.gregorianDay.toInt()
     val hijriDay = data.hijriDay
 
-    val prayerTime = gregorianDay == getCurrentDay()
+    val prayerDay = gregorianDay == getCurrentDay()
 
     // Define state for countdown times
     var fajrCountDown by remember { mutableStateOf(getCountdownText(data.fajrTime)) }
@@ -166,10 +168,16 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
     val currentTime = System.currentTimeMillis()
     val isFajrTime = currentTime in (data.fajrTime + 1)..(data.sunriseTime)
     val isSunriseTime = currentTime in (data.sunriseTime + 1)..(data.sunriseTime + 1800000)
-    val isDhuhrTime = currentTime in (data.dhuhrTime + 1)..(data.dhuhrTime + 1800000)
-    val isAsrTime = currentTime in (data.asrTime + 1)..(data.asrTime + 1800000)
-    val isMaghribTime = currentTime in (data.maghribTime + 1)..(data.maghribTime + 1800000)
-    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.ishaTime + 1800000)
+    val isDhuhrTime = currentTime in (data.dhuhrTime + 1)..(data.dhuhrTime + 3600000)
+    val isAsrTime = currentTime in (data.asrTime + 1)..(data.maghribTime - 600000)
+    val isMaghribTime = currentTime in (data.maghribTime + 1)..(data.ishaTime - 600000)
+    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.midnightTime)
+
+    val isNextFajrTime = currentTime in (data.lastThirdTime + 1)..(data.fajrTime)
+    val isNextDhurTime = currentTime in (data.sunriseTime + 1)..(data.dhuhrTime)
+    val isNextAsrTime = currentTime in (data.dhuhrTime + 1)..(data.asrTime)
+    val isNextMaghribTime = currentTime in (data.asrTime + 1)..(data.maghribTime)
+    val isNextIshaTime = currentTime in (data.maghribTime + 1)..(data.ishaTime)
 
     Column(
         modifier = Modifier.padding(top = MaterialTheme.dimens.size10)
@@ -186,16 +194,16 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
             icon = R.drawable.fajr,
             text = stringResource(R.string.fajr),
             time = dateLongToString(data.fajrTime),
-            countDownText = if (prayerTime) fajrCountDown else "",
+            countDownText = if (prayerDay && isNextFajrTime) fajrCountDown else "",
             isPrayerTime = isFajrTime,
-            isNow = if (isFajrTime) "NOW" else ""
+            isNow = if (isFajrTime) stringResource(id = R.string.now) else ""
 
         )
         PrayerTimeCard(
             icon = R.drawable.sunrise,
             text = stringResource(R.string.sunrise),
             time = dateLongToString(data.sunriseTime),
-            countDownText = if (prayerTime) sunriseCountDown else "",
+            countDownText = "",
             isPrayerTime = isSunriseTime,
             isNow = ""
         )
@@ -203,33 +211,33 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
             icon = R.drawable.dhuhr,
             text = stringResource(R.string.dhuhr),
             time = dateLongToString(data.dhuhrTime),
-            countDownText = if (prayerTime) dhuhrCountDown else "",
+            countDownText = if (prayerDay && isNextDhurTime) dhuhrCountDown else "",
             isPrayerTime = isDhuhrTime,
-            isNow = if (isDhuhrTime) "NOW" else ""
+            isNow = if (isDhuhrTime) stringResource(id = R.string.now) else ""
         )
         PrayerTimeCard(
             icon = R.drawable.asr,
             text = stringResource(R.string.asr),
             time = dateLongToString(data.asrTime),
-            countDownText = if (prayerTime) asrCountDown else "",
+            countDownText = if (prayerDay && isNextAsrTime) asrCountDown else "",
             isPrayerTime = isAsrTime,
-            isNow = if (isAsrTime) "NOW" else ""
+            isNow = if (isAsrTime) stringResource(id = R.string.now) else ""
         )
         PrayerTimeCard(
             icon = R.drawable.maghrib,
             text = stringResource(R.string.maghrib),
             time = dateLongToString(data.maghribTime),
-            countDownText = if (prayerTime) maghribCountDown else "",
+            countDownText = if (prayerDay && isNextMaghribTime) maghribCountDown else "",
             isPrayerTime = isMaghribTime,
-            isNow = if (isMaghribTime) "NOW" else ""
+            isNow = if (isMaghribTime) stringResource(id = R.string.now) else ""
         )
         PrayerTimeCard(
             icon = R.drawable.isha,
             text = stringResource(R.string.isha_a),
             time = dateLongToString(data.ishaTime),
-            countDownText = if (prayerTime) ishaCountDown else "",
+            countDownText = if (prayerDay && isNextIshaTime) ishaCountDown else "",
             isPrayerTime = isIshaTime,
-            isNow = if (isIshaTime) "NOW" else ""
+            isNow = if (isIshaTime) stringResource(id = R.string.now) else ""
         )
     }
 }

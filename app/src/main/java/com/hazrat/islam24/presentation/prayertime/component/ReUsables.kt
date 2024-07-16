@@ -21,10 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.islam24.R
+import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.ui.theme.dimens
 
 
@@ -88,17 +87,26 @@ fun PrayerTimeCard(
     isNow: String
 ) {
 
-    Card (modifier = Modifier
-        .padding(MaterialTheme.dimens.size4 ),
+    Card (
+        modifier = Modifier
+        .padding(horizontal = MaterialTheme.dimens.size10, vertical = MaterialTheme.dimens.size4 ),
         colors =  if (isPrayerTime) {
             CardDefaults.cardColors(
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+
             )
         }else{
             CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
+        },
+        elevation = if (isPrayerTime) {
+            CardDefaults.cardElevation(
+                defaultElevation = MaterialTheme.dimens.size10
+            )
+        }else {
+            CardDefaults.cardElevation(defaultElevation = 0.dp)
         }
     ){
         Row(
@@ -138,7 +146,7 @@ fun PrayerTimeCard(
                 )
             }
             Column(
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row (
@@ -147,8 +155,8 @@ fun PrayerTimeCard(
                 ){
                     Text(
                         text = countDownText,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                     )
                     Spacer(modifier = Modifier.width(MaterialTheme.dimens.size40))
@@ -159,6 +167,12 @@ fun PrayerTimeCard(
                         modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                     )
                 }
+                Text(
+                    text = "",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
+                )
             }
         }
     }
@@ -183,14 +197,14 @@ fun PrayerDateCard(
         ) {
             Text(
                 text = enDate,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
             Text(
                 text = hrDate,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.SemiBold
             )
