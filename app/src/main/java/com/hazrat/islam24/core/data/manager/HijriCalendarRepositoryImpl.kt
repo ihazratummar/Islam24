@@ -1,13 +1,13 @@
 package com.hazrat.islam24.core.data.manager
 
-import com.hazrat.islam24.data.dao.GregorianToHijriDao
-import com.hazrat.islam24.data.dao.HijriCalendarDao
+import com.hazrat.islam24.core.data.dao.GregorianToHijriDao
+import com.hazrat.islam24.core.data.dao.HijriCalendarDao
 import com.hazrat.hijricaneldar.domain.model.hijricalendar.Data
 import com.hazrat.hijricaneldar.domain.model.hijricalendar.HijriCalendarResponse
-import com.hazrat.islam24.domain.repository.HijriCalendarRepository
+import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.core.network.HijriCalendarApi
-import com.hazrat.islam24.data.entity.GregorianToHijriEntity
-import com.hazrat.islam24.data.entity.HijriCalendarEntity
+import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
+import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate

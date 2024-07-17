@@ -2,9 +2,9 @@ package com.hazrat.islam24.core.di
 
 import android.app.Application
 import androidx.room.Room
-import com.hazrat.islam24.data.database.TasbihDatabase
-import com.hazrat.islam24.data.manager.TasbihRepositoryImpl
-import com.hazrat.islam24.domain.repository.TasbihRepository
+import com.hazrat.islam24.core.data.database.TasbihDatabase
+import com.hazrat.islam24.core.data.manager.TasbihRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.TasbihRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

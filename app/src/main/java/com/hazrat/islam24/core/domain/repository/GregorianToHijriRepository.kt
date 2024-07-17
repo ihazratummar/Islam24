@@ -2,7 +2,7 @@ package com.hazrat.islam24.core.domain.repository
 
 
 import com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse
-import com.hazrat.islam24.data.entity.GregorianToHijriEntity
+import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
 import kotlinx.coroutines.flow.Flow
 
 interface GregorianToHijriRepository {

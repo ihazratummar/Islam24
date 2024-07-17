@@ -1,6 +1,6 @@
 package com.hazrat.islam24.core.domain.repository
 
-import com.hazrat.islam24.data.entity.NameEntity
+import com.hazrat.islam24.core.data.entity.NameEntity
 import com.hazrat.islam24.core.domain.model.namesofallah.Data
 
 /**

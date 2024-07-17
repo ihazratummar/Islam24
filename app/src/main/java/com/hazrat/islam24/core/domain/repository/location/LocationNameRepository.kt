@@ -1,6 +1,6 @@
 package com.hazrat.islam24.core.domain.repository.location
 
-import com.hazrat.islam24.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
 import kotlinx.coroutines.flow.Flow
 

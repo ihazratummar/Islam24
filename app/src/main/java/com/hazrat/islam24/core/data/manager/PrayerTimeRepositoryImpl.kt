@@ -4,16 +4,14 @@ package com.hazrat.islam24.core.data.manager
 
 
 import android.util.Log
-import com.hazrat.islam24.data.dao.PrayerTimeDao
-import com.hazrat.islam24.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.data.dao.PrayerTimeDao
+import com.hazrat.islam24.core.data.entity.LocationEntity
+import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.network.PrayerTimeApi
+import com.hazrat.islam24.core.domain.repository.location.LocationRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
+import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.DateUtil
-import com.hazrat.islam24.data.entity.LocationEntity
-import com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.ApiResponse
-import com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.Data
-import com.hazrat.islam24.domain.repository.location.LocationRepositoryImpl
-import com.hazrat.islam24.domain.repository.prayertime.PrayerSettingRepository
-import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.DateUtil.timeStringToLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

@@ -2,12 +2,12 @@ package com.hazrat.islam24.core.data.manager
 
 import android.util.Log
 import com.hazrat.islam24.core.network.LocationNameApi
-import com.hazrat.islam24.data.entity.LocationEntity
-import com.hazrat.islam24.data.entity.LocationDetailsEntity
-import com.hazrat.islam24.data.dao.LocationNameDao
+import com.hazrat.islam24.core.data.entity.LocationEntity
+import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.core.data.dao.LocationNameDao
 import com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
-import com.hazrat.islam24.domain.repository.location.LocationNameRepository
-import com.hazrat.islam24.domain.repository.location.LocationRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
+import com.hazrat.islam24.core.domain.repository.location.LocationRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn

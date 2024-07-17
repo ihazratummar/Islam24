@@ -1,8 +1,8 @@
 package com.hazrat.islam24.core.data.manager
 
-import com.hazrat.islam24.data.dao.TasbihCounterDao
-import com.hazrat.islam24.data.entity.TasbihCounterEntity
-import com.hazrat.islam24.domain.repository.TasbihRepository
+import com.hazrat.islam24.core.data.dao.TasbihCounterDao
+import com.hazrat.islam24.core.data.entity.TasbihCounterEntity
+import com.hazrat.islam24.core.domain.repository.TasbihRepository
 import kotlinx.coroutines.flow.Flow
 
 /**

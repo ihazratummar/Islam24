@@ -1,7 +1,7 @@
 package com.hazrat.islam24.core.domain.repository.prayertime
 
-import com.hazrat.islam24.data.dao.PrayerSettingDao
-import com.hazrat.islam24.data.entity.PrayerSettingEntity
+import com.hazrat.islam24.core.data.dao.PrayerSettingDao
+import com.hazrat.islam24.core.data.entity.PrayerSettingEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

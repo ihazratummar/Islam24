@@ -2,8 +2,8 @@ package com.hazrat.islam24.core.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.hazrat.islam24.data.dao.NameDao
-import com.hazrat.islam24.data.entity.NameEntity
+import com.hazrat.islam24.core.data.dao.NameDao
+import com.hazrat.islam24.core.data.entity.NameEntity
 
 
 @Database(entities = [NameEntity::class], version = 2, exportSchema = false)

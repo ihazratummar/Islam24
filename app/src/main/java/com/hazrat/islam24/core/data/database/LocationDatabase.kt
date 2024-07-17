@@ -2,10 +2,10 @@ package com.hazrat.islam24.core.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.hazrat.islam24.data.dao.LocationDao
-import com.hazrat.islam24.data.entity.LocationDetailsEntity
-import com.hazrat.islam24.data.dao.LocationNameDao
-import com.hazrat.islam24.data.entity.LocationEntity
+import com.hazrat.islam24.core.data.dao.LocationDao
+import com.hazrat.islam24.core.data.dao.LocationNameDao
+import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.core.data.entity.LocationEntity
 
 
 @Database(entities = [LocationEntity::class , LocationDetailsEntity::class], version = 4, exportSchema = false)

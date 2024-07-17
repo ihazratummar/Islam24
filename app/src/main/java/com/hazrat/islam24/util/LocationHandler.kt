@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
-import com.hazrat.islam24.domain.repository.location.LocationRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.location.LocationRepositoryImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

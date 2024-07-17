@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.hazrat.islam24.data.entity.PrayerSettingEntity
+import com.hazrat.islam24.core.data.entity.PrayerSettingEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

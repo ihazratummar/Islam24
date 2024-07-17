@@ -1,0 +1,176 @@
+package com.hazrat.islam24.core.presentation.prayertime.setting
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.hazrat.islam24.R
+import com.hazrat.islam24.core.data.entity.PrayerSettingEntity
+import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.core.presentation.prayertime.component.MethodSelectionDialog
+import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeSettingCard
+import com.hazrat.islam24.core.presentation.prayertime.component.SchoolSelectionDialog
+import com.hazrat.islam24.ui.theme.dimens
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UserSetting(
+    navController: NavController,
+    settingViewModel: UserSettingViewModel = hiltViewModel(),
+    prayerTimeViewModel: MainViewModel = hiltViewModel()
+) {
+
+    fun openMethodSelectionDialog() {
+        settingViewModel.openMethodSelectionDialog()
+    }
+
+    val methodList = settingViewModel.methodList.collectAsState()
+
+    val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
+    val prayerTimeEntities = prayerTimes.getOrNull(0)
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.prayer_setting),
+                        style = MaterialTheme.typography.displaySmall,
+                        modifier = Modifier.padding(MaterialTheme.dimens.size5)
+                    )
+                },
+                colors = TopAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    navigationIconContentColor = colorResource(id = R.color.text),
+                    titleContentColor = colorResource(id = R.color.text),
+                    actionIconContentColor = colorResource(id = R.color.text)
+                ),
+                navigationIcon = {
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .clickable {
+                                navController.popBackStack()
+                            }
+                            .padding(MaterialTheme.dimens.size5)
+                    )
+                }
+            )
+        }
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .padding(it)
+        ) {
+            item {
+                HorizontalDivider(
+                    thickness = MaterialTheme.dimens.size1,
+                    color = colorResource(id = R.color.primary)
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size20))
+            }
+            item {
+                val methodName = prayerTimeEntities?.methodName
+                if (methodName != null) {
+                    PrayerTimeSettingCard(
+                        icon = R.drawable.athkar,
+                        text = stringResource(R.string.prayer_method),
+                        subText = methodName,
+                        onClick = {
+                            openMethodSelectionDialog()
+                        }
+                    )
+                } else {
+                    PrayerTimeSettingCard(
+                        icon = R.drawable.athkar,
+                        text = stringResource(R.string.juristic_method),
+                        subText = null,
+                        onClick = {
+                            openMethodSelectionDialog()
+                        }
+                    )
+                }
+            }
+            item {
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size20))
+            }
+            item {
+                val school = prayerTimeEntities?.school
+                if (school != null) {
+                    PrayerTimeSettingCard(
+                        icon = R.drawable.duaicon,
+                        text = "Select Madhab",
+                        subText = school,
+                        onClick = {
+                            settingViewModel.showSchoolSelectionDialog = true
+                        }
+                    )
+                } else {
+                    PrayerTimeSettingCard(
+                        icon = R.drawable.duaicon,
+                        text = "Select Madhab",
+                        subText = null,
+                        onClick = {
+                            settingViewModel.showSchoolSelectionDialog = true
+                        }
+                    )
+                }
+
+            }
+        }
+    }
+
+    if (settingViewModel.showMethodSelectionDialog) {
+        MethodSelectionDialog(
+            showMethodSelectionDialog = settingViewModel.showMethodSelectionDialog,
+            onMethodSelected = { method ->
+                settingViewModel.selectedMethod = method
+                settingViewModel.insertMethod(
+                    PrayerSettingEntity(
+                        method.method,
+                        settingViewModel.selectedSchool.number
+                    )
+                )
+                settingViewModel.showMethodSelectionDialog = false
+            },
+            onDismiss = { settingViewModel.showMethodSelectionDialog = false }
+        )
+    }
+
+    if (settingViewModel.showSchoolSelectionDialog) {
+        SchoolSelectionDialog(
+            showSchoolSelectionDialog = settingViewModel.showSchoolSelectionDialog,
+            onSchoolSelected = { school ->
+                settingViewModel.selectedSchool = school
+                settingViewModel.insertMethod(
+                    PrayerSettingEntity(settingViewModel.selectedMethod.method, school.number)
+                )
+                settingViewModel.showSchoolSelectionDialog = false
+            },
+            onDismiss = { settingViewModel.showSchoolSelectionDialog = false }
+        )
+    }
+}

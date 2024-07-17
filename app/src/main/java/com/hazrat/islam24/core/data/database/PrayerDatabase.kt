@@ -2,10 +2,10 @@ package com.hazrat.islam24.core.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.hazrat.islam24.data.dao.PrayerSettingDao
-import com.hazrat.islam24.data.entity.PrayerSettingEntity
-import com.hazrat.islam24.data.dao.PrayerTimeDao
-import com.hazrat.islam24.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.data.dao.PrayerSettingDao
+import com.hazrat.islam24.core.data.dao.PrayerTimeDao
+import com.hazrat.islam24.core.data.entity.PrayerSettingEntity
+import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 
 @Database(entities = [PrayerTimeEntity::class, PrayerSettingEntity::class], version = 5, exportSchema = false)
 abstract class PrayerDatabase : RoomDatabase() {

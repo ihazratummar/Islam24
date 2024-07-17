@@ -2,10 +2,10 @@ package com.hazrat.islam24.core.di
 
 import android.content.Context
 import androidx.room.Room
-import com.hazrat.islam24.data.dao.NameDao
-import com.hazrat.islam24.data.database.NamesDataBase
-import com.hazrat.islam24.data.manager.NamesRepositoryImpl
-import com.hazrat.islam24.domain.repository.NamesRepository
+import com.hazrat.islam24.core.data.dao.NameDao
+import com.hazrat.islam24.core.data.database.NamesDataBase
+import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.network.NamesApi
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Constants.BASE_URL_NAME

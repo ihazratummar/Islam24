@@ -2,8 +2,8 @@ package com.hazrat.islam24.core.domain.repository
 
 
 import com.hazrat.hijricaneldar.domain.model.hijricalendar.HijriCalendarResponse
-import com.hazrat.islam24.data.entity.GregorianToHijriEntity
-import com.hazrat.islam24.data.entity.HijriCalendarEntity
+import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
+import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import kotlinx.coroutines.flow.Flow
 
 interface HijriCalendarRepository {

@@ -4,7 +4,7 @@ package com.hazrat.islam24.core.domain.repository.prayertime
  * @author Hazrat Ummar Shaikh
  */
 
-import com.hazrat.islam24.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import kotlinx.coroutines.flow.Flow
 
 interface PrayerTimeRepository {

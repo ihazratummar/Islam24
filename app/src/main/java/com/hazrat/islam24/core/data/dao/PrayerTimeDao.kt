@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.hazrat.islam24.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
