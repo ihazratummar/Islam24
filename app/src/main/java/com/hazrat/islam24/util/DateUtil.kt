@@ -103,7 +103,7 @@ object DateUtil {
         val minutesLeft = minutes % 60
         val secondsLeft = seconds % 60
 
-        return String.format("%02d:%02d:%02d", hoursLeft, minutesLeft, secondsLeft)
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hoursLeft, minutesLeft, secondsLeft)
     }
 
 
