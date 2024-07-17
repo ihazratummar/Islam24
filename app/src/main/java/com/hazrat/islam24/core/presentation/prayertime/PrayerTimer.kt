@@ -92,7 +92,7 @@ fun ShowData(
         Column(
             modifier = Modifier.padding(it)
         ) {
-            ViewPager(viewModel, prayerTimes = prayerTimes, navController)
+            ViewPager(prayerTimes = prayerTimes, navController)
         }
     }
 }
@@ -101,7 +101,6 @@ fun ShowData(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ViewPager(
-    viewModel: MainViewModel,
     prayerTimes: List<PrayerTimeEntity>,
     navController: NavController
 ) {

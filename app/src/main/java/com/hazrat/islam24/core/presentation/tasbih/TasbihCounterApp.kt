@@ -53,7 +53,7 @@ import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.vibrate
 
 @Composable
-fun TasbihCounterApp(viewModel: MainViewModel = hiltViewModel(), modifier: Modifier = Modifier) {
+fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltViewModel()) {
     val myTasbihCounter by viewModel.tasbihCounter.collectAsState(initial = emptyList())
     val tasbih = myTasbihCounter.firstOrNull()
 

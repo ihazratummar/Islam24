@@ -3,7 +3,6 @@ package com.hazrat.islam24.auth.presentation.login
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +49,6 @@ import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
 fun AuthLoginScreen(
-    modifier: Modifier = Modifier,
     navController: NavController,
     state: LoginState,
     loginEvent: (LoginEvent) -> Unit,
@@ -67,7 +64,7 @@ fun AuthLoginScreen(
                 }
             }
             is AuthState.Error -> {
-                Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, authState.message, Toast.LENGTH_LONG).show()
             }
             else -> Unit
         }
@@ -105,7 +102,7 @@ fun AuthLoginScreen(
             },
             value = state.email,
             onValueChange = { loginEvent(LoginEvent.SetEmail(it)) },
-            keyboardtype = KeyboardType.Email,
+            keyboardType = KeyboardType.Email,
             imeAction = ImeAction.Next
         )
         Spacer(modifier = Modifier.height(5.dp))
@@ -120,7 +117,7 @@ fun AuthLoginScreen(
             },
             value = state.password,
             onValueChange = { loginEvent(LoginEvent.SetPassword(it)) },
-            keyboardtype = KeyboardType.Password,
+            keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done,
             trailingIcon = {
                 val image = if (state.passwordVisible) painterResource(id = R.drawable.eyeopen)
@@ -144,8 +141,8 @@ fun AuthLoginScreen(
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                 disabledContentColor = MaterialTheme.colorScheme.onSurface,
 

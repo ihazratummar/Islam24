@@ -1,4 +1,4 @@
-package com.hazrat.hijricaneldar.domain.model.gregoriantohijri
+package com.hazrat.islam24.core.domain.model.gregoriantohijri
 
 data class Designation(
     val abbreviated: String,

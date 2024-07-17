@@ -2,8 +2,8 @@ package com.hazrat.islam24.core.data.manager
 
 import com.hazrat.islam24.core.data.dao.GregorianToHijriDao
 import com.hazrat.islam24.core.data.dao.HijriCalendarDao
-import com.hazrat.hijricaneldar.domain.model.hijricalendar.Data
-import com.hazrat.hijricaneldar.domain.model.hijricalendar.HijriCalendarResponse
+import com.hazrat.islam24.core.domain.model.hijricalendar.Data
+import com.hazrat.islam24.core.domain.model.hijricalendar.HijriCalendarResponse
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.core.network.HijriCalendarApi
 import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity

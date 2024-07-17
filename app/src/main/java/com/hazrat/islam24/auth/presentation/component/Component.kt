@@ -25,9 +25,8 @@ fun CustomTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     value: String,
     onValueChange: (String) -> Unit,
-    keyboardtype: KeyboardType = KeyboardType.Text,
+    keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Done,
-    modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
@@ -39,7 +38,7 @@ fun CustomTextField(
         trailingIcon = trailingIcon,
         onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = keyboardtype,
+            keyboardType = keyboardType,
             imeAction = imeAction
         ),
         keyboardActions = KeyboardActions.Default,

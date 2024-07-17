@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.core.data.manager.LocationNameRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PrayerTimeViewModel @Inject constructor(
-    private val repository: PrayerTimeRepository,
-    private val locationNameRepository: LocationNameRepositoryImpl
+    private val repository: PrayerTimeRepository
 ) : ViewModel() {
 
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
@@ -31,9 +29,6 @@ class PrayerTimeViewModel @Inject constructor(
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
-
-//    private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
-//    val locationName = _locationName.asStateFlow()
 
     init {
         viewModelScope.launch {

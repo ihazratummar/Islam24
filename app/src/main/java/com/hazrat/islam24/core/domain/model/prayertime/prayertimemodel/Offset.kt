@@ -1,5 +1,6 @@
 package com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel
 
+
 data class Offset(
     val Asr: Int,
     val Dhuhr: Int,

@@ -121,7 +121,7 @@ fun UserSetting(
                 val school = prayerTimeEntities?.school
                 if (school != null) {
                     PrayerTimeSettingCard(
-                        icon = R.drawable.duaicon,
+                        icon = R.drawable.settings,
                         text = "Select Madhab",
                         subText = school,
                         onClick = {
@@ -130,7 +130,7 @@ fun UserSetting(
                     )
                 } else {
                     PrayerTimeSettingCard(
-                        icon = R.drawable.duaicon,
+                        icon = R.drawable.settings,
                         text = "Select Madhab",
                         subText = null,
                         onClick = {

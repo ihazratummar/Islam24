@@ -29,7 +29,6 @@ import com.hazrat.islam24.auth.presentation.AuthEvent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileSettingScreen(
-    modifier: Modifier = Modifier,
     navController: NavController,
     state: AuthState,
     authEvent: (AuthEvent) -> Unit,

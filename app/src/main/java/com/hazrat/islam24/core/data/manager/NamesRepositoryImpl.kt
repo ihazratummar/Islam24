@@ -3,8 +3,8 @@ package com.hazrat.islam24.core.data.manager
 
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.entity.NameEntity
-import com.hazrat.islam24.core.domain.model.namesofallah.Data
 import com.hazrat.islam24.core.domain.model.namesofallah.En
+import com.hazrat.islam24.core.domain.model.namesofallah.NameOfAllahData
 import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.network.NamesApi
 import kotlinx.coroutines.Dispatchers
@@ -17,15 +17,15 @@ class NamesRepositoryImpl @Inject constructor(
 ): NamesRepository {
 
 
-    override suspend fun getAllNames(): List<com.hazrat.islam24.core.domain.model.namesofallah.Data> {
+    override suspend fun getAllNames(): List<com.hazrat.islam24.core.domain.model.namesofallah.NameOfAllahData> {
         return withContext(Dispatchers.IO) {
             try {
                 val localNames = nameDao.getAllNames()
                 if (localNames.isNotEmpty()) {
-                    localNames.map { NameEntityToData(it) }
+                    localNames.map { nameEntityToData(it) }
                 } else {
                     val remoteNames = api.getAllNames().data
-                    val entities = remoteNames.map { NameDataToEntity(it) }
+                    val entities = remoteNames.map { nameDataToEntity(it) }
                     nameDao.insertName(entities)
                     remoteNames
                 }
@@ -35,7 +35,7 @@ class NamesRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun NameDataToEntity(data: com.hazrat.islam24.core.domain.model.namesofallah.Data): NameEntity {
+    private fun nameDataToEntity(data: NameOfAllahData): NameEntity {
         return NameEntity(
             enDec = data.en.desc,
             meaning = data.en.meaning,
@@ -46,9 +46,9 @@ class NamesRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun NameEntityToData(entity: NameEntity): com.hazrat.islam24.core.domain.model.namesofallah.Data {
-        return com.hazrat.islam24.core.domain.model.namesofallah.Data(
-            en = com.hazrat.islam24.core.domain.model.namesofallah.En(entity.enDec, entity.meaning),
+    private fun nameEntityToData(entity: NameEntity): com.hazrat.islam24.core.domain.model.namesofallah.NameOfAllahData {
+        return NameOfAllahData(
+            en = En(entity.enDec, entity.meaning),
             found = entity.found,
             name = entity.name,
             number = entity.number,

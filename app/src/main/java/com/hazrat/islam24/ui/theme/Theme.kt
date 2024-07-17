@@ -265,7 +265,6 @@ val unspecified_scheme = ColorFamily(
 fun Islam24Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     activity: Activity = LocalContext.current as MainActivity,
     content: @Composable () -> Unit
 ) {

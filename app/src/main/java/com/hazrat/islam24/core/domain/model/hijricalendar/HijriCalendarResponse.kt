@@ -1,4 +1,6 @@
-package com.hazrat.hijricaneldar.domain.model.hijricalendar
+package com.hazrat.islam24.core.domain.model.hijricalendar
+
+import com.hazrat.islam24.core.domain.model.hijricalendar.Data
 
 data class HijriCalendarResponse(
     val code: Int,

@@ -1,4 +1,4 @@
-package com.hazrat.hijricaneldar.domain.model.hijricalendar
+package com.hazrat.islam24.core.domain.model.hijricalendar
 
 data class MonthX(
     val ar: String,

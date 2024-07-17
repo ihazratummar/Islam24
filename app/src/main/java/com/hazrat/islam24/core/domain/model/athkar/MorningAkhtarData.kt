@@ -1,4 +1,4 @@
-package com.hazrat.adhkarscreen.model
+package com.hazrat.islam24.core.domain.model.athkar
 
 data class MorningAkhtarData(
     val number: Int,

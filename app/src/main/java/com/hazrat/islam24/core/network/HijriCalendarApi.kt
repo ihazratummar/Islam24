@@ -1,6 +1,6 @@
 package com.hazrat.islam24.core.network
 
-import com.hazrat.hijricaneldar.domain.model.hijricalendar.HijriCalendarResponse
+import com.hazrat.islam24.core.domain.model.hijricalendar.HijriCalendarResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import javax.inject.Singleton

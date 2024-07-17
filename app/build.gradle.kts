@@ -68,7 +68,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx.v281)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom.v20240500))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
@@ -87,7 +86,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended.android)
 
     //window size
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+    implementation(libs.androidx.window)
 
     //Splash Api
     implementation (libs.androidx.core.splashscreen)
@@ -145,7 +144,6 @@ dependencies {
     implementation (libs.androidx.runtime)
     implementation (libs.androidx.compose.ui.ui)
     implementation (libs.androidx.animation.core)
-    implementation (libs.androidx.foundation.vxyz)
 
     implementation (libs.logging.interceptor)
     implementation(libs.onesignal)
@@ -153,6 +151,8 @@ dependencies {
     //Google Play Store Update
     implementation(libs.app.update)
     implementation(libs.app.update.ktx)
+    implementation(libs.review)
+    implementation(libs.review.ktx)
 }
 
 

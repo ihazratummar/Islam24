@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -101,7 +101,7 @@ private fun ProfileComponent() {
                     )
                 }
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size20))
-                Divider(
+                HorizontalDivider(
                     thickness = MaterialTheme.dimens.size1,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -137,7 +137,7 @@ private fun ProfileComponent() {
                     )
                 }
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size20))
-                Divider(
+                HorizontalDivider(
                     thickness = MaterialTheme.dimens.size1,
                     color = MaterialTheme.colorScheme.onBackground
                 )

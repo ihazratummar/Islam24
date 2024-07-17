@@ -36,7 +36,7 @@ import com.hazrat.islam24.main.navigation.nvgraph.Route
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun AppNavigator(mainViewModel: MainViewModel = hiltViewModel()) {
+fun AppNavigator() {
     val bottomNavigationItem = remember {
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),

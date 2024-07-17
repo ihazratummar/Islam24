@@ -40,7 +40,7 @@ class SingupViewModel @Inject constructor(
         }
     }
 
-    fun isFormValid(state: SingupState): Boolean {
+    private fun isFormValid(): Boolean {
         return _state.value.name.isNotEmpty() &&
                 _state.value.email.isNotEmpty() &&
                 _state.value.password.isNotEmpty() &&
@@ -80,7 +80,7 @@ class SingupViewModel @Inject constructor(
                 _state.update {
                     val newSTate = it.copy(
                         name = event.name,
-                        isFormValid = isFormValid(it.copy(name = event.name))
+                        isFormValid = isFormValid()
                     )
                     newSTate
                 }
@@ -90,7 +90,7 @@ class SingupViewModel @Inject constructor(
                 _state.update {
                     val newState = it.copy(
                         email = event.email,
-                        isFormValid = isFormValid(it.copy(email = event.email))
+                        isFormValid = isFormValid()
                     )
                     newState
                 }
@@ -100,7 +100,7 @@ class SingupViewModel @Inject constructor(
                 _state.update {
                     val newState = it.copy(
                         password = event.password,
-                        isFormValid = isFormValid(it.copy(password = event.password)),
+                        isFormValid = isFormValid(),
                         isPasswordValid = isPasswordValid(event.password, it.confirmPassword)
                     )
                     newState
@@ -111,7 +111,7 @@ class SingupViewModel @Inject constructor(
                 _state.update {
                     val newState = it.copy(
                         confirmPassword = event.confirmPassword,
-                        isFormValid = isFormValid(it.copy(confirmPassword = event.confirmPassword)),
+                        isFormValid = isFormValid(),
                         isPasswordValid = isPasswordValid(it.password, event.confirmPassword)
                     )
                     newState

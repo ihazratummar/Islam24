@@ -29,7 +29,6 @@ import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
 fun PrayerTimeSettingCard(
-    modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
     text: String,
     subText: String?,
@@ -78,7 +77,6 @@ fun PrayerTimeSettingCard(
 
 @Composable
 fun PrayerTimeCard(
-    modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
     text: String,
     time: String,
@@ -186,7 +184,7 @@ fun PrayerDateCard(
     hrDate: String
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {

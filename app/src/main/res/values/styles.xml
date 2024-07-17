@@ -2,6 +2,6 @@
 <resources>
 	<!-- home_page styles -->
 
-	<style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar"/>
+
 
 </resources>

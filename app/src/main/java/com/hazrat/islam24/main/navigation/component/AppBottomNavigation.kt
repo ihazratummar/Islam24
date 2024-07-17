@@ -49,8 +49,6 @@ fun AppBottomNavigation(
                         Spacer(modifier = Modifier.height(6.dp))
                         if (isSelected){
                             Text(text = item.text, style = MaterialTheme.typography.labelMedium)
-                        }else {
-
                         }
                     }
                 },

@@ -28,10 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.adhkarscreen.model.morningAthkars
+import com.hazrat.islam24.core.domain.model.athkar.morningAthkars
 import com.hazrat.islam24.R
-import com.hazrat.islam24.core.domain.model.athkar.EveningAkhtarData
-import com.hazrat.islam24.core.domain.model.athkar.eveningAkhtar
 import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
