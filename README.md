@@ -1,8 +1,23 @@
 # Islamic 24 Application
 
-A simple and easy-to-use Islamic app without any ad popups or distractions, focused on prayer times.
+**Embrace the Serenity of Faith with Islamic 24**
 
-![Logo](https://media.discordapp.net/attachments/1244897208453693461/1244897266188161064/mosque.png?ex=66995c2d&is=66980aad&hm=a8d6ebddaaf8d338a1b0f815881af3713dd6c72e458e65ca8540f5668ac63b01&=&format=webp&quality=lossless&width=203&height=350)
+Discover a seamless and intuitive Islamic app crafted to enhance your spiritual journey. **Islamic 24** offers a clutter-free experience with no ad interruptions, allowing you to focus entirely on your prayers and religious obligations.
+
+<div align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.hazrat.islam24">
+    <img src="https://img.icons8.com/?size=100&id=118627&format=png&color=000000" alt="Google Playstore"/>
+  </a>
+</div>
+
+---
+
+## Key Features:
+- **Accurate Prayer Times**: Stay punctual with precise prayer timings based on your location.
+- **Islamic Calendar**: Never miss important Islamic dates and events.
+- **Zikr & Tasbih**: Keep track of your supplications and dhikr with ease.
+- **No Ads**: Enjoy a seamless experience without any interruptions.
+- **No Tracker**: Your privacy is our priority.
 
 ---
 
