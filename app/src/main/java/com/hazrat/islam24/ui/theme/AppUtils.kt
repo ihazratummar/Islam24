@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
-import com.hazrat.islam24.presentation.CompactDimens
-import com.hazrat.islam24.presentation.Dimens
+import com.hazrat.islam24.util.CompactDimens
+import com.hazrat.islam24.util.Dimens
 
 @Composable
 fun AppUtils(
