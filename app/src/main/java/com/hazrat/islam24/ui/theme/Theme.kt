@@ -13,11 +13,11 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import com.hazrat.islam24.main.CompactDimens
-import com.hazrat.islam24.main.CompactMediumDimens
-import com.hazrat.islam24.main.CompactSmallDimens
-import com.hazrat.islam24.main.ExpandedDimens
-import com.hazrat.islam24.main.MediumDimens
+import com.hazrat.islam24.util.CompactDimens
+import com.hazrat.islam24.util.CompactMediumDimens
+import com.hazrat.islam24.util.CompactSmallDimens
+import com.hazrat.islam24.util.ExpandedDimens
+import com.hazrat.islam24.util.MediumDimens
 import com.hazrat.islam24.main.mainActivity.MainActivity
 
 private val lightScheme = lightColorScheme(

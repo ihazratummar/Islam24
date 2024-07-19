@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -29,20 +30,25 @@ import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.core.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.core.presentation.prayertime.setting.UserSettingViewModel
 import com.hazrat.islam24.core.presentation.tasbih.TasbihScreen
-import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.component.AppBottomNavigation
 import com.hazrat.islam24.main.navigation.component.BottomNavigationItem
 import com.hazrat.islam24.main.navigation.nvgraph.Route
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun AppNavigator() {
+fun AppNavigator(
+    mainViewModel: MainViewModel = hiltViewModel(),
+    qiblaDirection: Float,
+    currentDirection: Float
+) {
     val bottomNavigationItem = remember {
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
-            BottomNavigationItem(icon = R.drawable.profile, text = "Profile"),
-//            BottomNavigationItem(icon = R.drawable.qiblaicon, text = "Qibla")
+            BottomNavigationItem(icon = R.drawable.goldqaba, text = "Qibla"),
+            BottomNavigationItem(icon = R.drawable.profile, text = "Profile")
         )
     }
 
@@ -55,8 +61,8 @@ fun AppNavigator() {
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.PrayerTimeScreen.route -> 1
-        Route.ProfileScreen.route -> 2
-//        Route.QiblaDirectionScreen.route -> 3
+        Route.QiblaDirectionScreen.route -> 2
+        Route.ProfileScreen.route -> 3
         else -> 0
     }
 
@@ -64,10 +70,10 @@ fun AppNavigator() {
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HomeScreen.route ||
                 backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
+                backStackState?.destination?.route == Route.QiblaDirectionScreen.route ||
                 backStackState?.destination?.route == Route.ProfileScreen.route
-//                backStackState?.destination?.route == Route.QiblaDirectionScreen.route
     }
-    TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController)
+    TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController, qiblaDirection, currentDirection)
 
 }
 
@@ -77,7 +83,9 @@ private fun TotalContent(
     isBottomBarVisible: Boolean,
     bottomNavigationItem: List<BottomNavigationItem>,
     selectedItem: Int,
-    navController: NavHostController
+    navController: NavHostController,
+    qiblaDirection: Float,
+    currentDirection: Float
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -99,13 +107,13 @@ private fun TotalContent(
 
                             2 -> navigateToTab(
                                 navController = navController,
+                                route = Route.QiblaDirectionScreen.route
+                            )
+
+                            3 -> navigateToTab(
+                                navController = navController,
                                 route = Route.ProfileScreen.route
                             )
-//
-//                            3 -> navigateToTab(
-//                                navController = navController,
-//                                route = Route.QiblaDirectionScreen.route
-//                            )
                         }
                     }
                 )
@@ -130,7 +138,15 @@ private fun TotalContent(
                 val viewModel: MainViewModel = hiltViewModel()
                 PrayerTimeScreen(viewModel, navController)
             }
-
+            composable(route = Route.QiblaDirectionScreen.route) {
+                val viewModel: MainViewModel = hiltViewModel()
+                val state = viewModel.qiblaState.collectAsState()
+                QiblaScreen(
+                    navController = navController,
+                    currentDirection = currentDirection,
+                    qiblaDirection = qiblaDirection
+                )
+            }
             composable(route = Route.NamesOfAllah.route) {
                 val viewModel: MainViewModel = hiltViewModel()
                 NamesOfAllahScreen(viewModel, navController)
@@ -145,7 +161,6 @@ private fun TotalContent(
             composable(route = Route.CalendarScreen.route) {
                 CalendarScreen(navController)
             }
-
             composable(route = Route.AthkarScreen.route) {
                 AthkarScreen(navController)
             }

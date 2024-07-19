@@ -1,15 +1,11 @@
 package com.hazrat.islam24.util
 
-import androidx.compose.runtime.Composable
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-
-import java.util.*
 
 /**
  * Object containing utility methods for date manipulation.
@@ -103,7 +99,7 @@ object DateUtil {
         val minutesLeft = minutes % 60
         val secondsLeft = seconds % 60
 
-        return String.format(Locale.getDefault(),"%02d:%02d:%02d", hoursLeft, minutesLeft, secondsLeft)
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hoursLeft, minutesLeft, secondsLeft)
     }
 
 

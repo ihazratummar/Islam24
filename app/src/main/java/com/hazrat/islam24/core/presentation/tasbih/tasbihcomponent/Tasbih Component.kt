@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.R
-import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
 @Composable

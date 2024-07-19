@@ -43,9 +43,9 @@ import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
 import com.hazrat.islam24.core.presentation.home.component.LazyRowWithCards
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
-import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.core.presentation.home.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.core.presentation.home.component.DisplayCurrentPrayerTime
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 

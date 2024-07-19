@@ -34,10 +34,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString

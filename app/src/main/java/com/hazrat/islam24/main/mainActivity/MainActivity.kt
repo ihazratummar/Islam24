@@ -1,133 +1,133 @@
 package com.hazrat.islam24.main.mainActivity
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.InstallStateUpdatedListener
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.InstallStatus
-import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
-import com.google.android.play.core.ktx.isImmediateUpdateAllowed
-import com.hazrat.islam24.core.domain.repository.location.LocationRepositoryImpl
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.service.*
 import com.hazrat.islam24.ui.theme.Islam24Theme
-import com.hazrat.islam24.util.LocationHandler
+import com.hazrat.islam24.util.calculateQiblaDirection
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
-//MainActivity.kt
+// MainActivity.kt
 
+/**
+ * MainActivity is the entry point of the application, responsible for setting up
+ * the UI, managing permissions, and initializing services.
+ */
+
+/**
+ * @author Hazrat Ummar Shaikh
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    // Dependency injected services
     @Inject
-    lateinit var locationRepository: LocationRepositoryImpl
-    private lateinit var locationHandler: LocationHandler
+    lateinit var updateManager: UpdateManager
+
+    @Inject
+    lateinit var locationManager: LocationManager
+
+    @Inject
+    lateinit var locationHandler: LocationHandler
+
+    @Inject
+    lateinit var compassSensorManager: CompassSensorManager
+
+    // Permissions manager, initialized in onCreate
+    private lateinit var permissionsManager: PermissionsManager
+
+    // ViewModel for the activity
     private val viewModel by viewModels<MainViewModel>()
 
-    private lateinit var appUpdateManager: AppUpdateManager
-    private val updateType = AppUpdateType.IMMEDIATE
-
+    /**
+     * Called when the activity is starting. This is where most initialization should go.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appUpdateManager = AppUpdateManagerFactory.create(this)
-        if (updateType == AppUpdateType.FLEXIBLE){
-            appUpdateManager.registerListener(installStateUpdateListener)
-        }
-        checkForAppUpdates()
+
+        // Enable edge-to-edge display
         enableEdgeToEdge()
+
+        // Hide the action bar
         actionBar?.hide()
+
+        // Set window decor to fit system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Install and configure splash screen
         installSplashScreen().apply {
             setKeepOnScreenCondition { viewModel.splashCondition.value }
         }
-        locationHandler = LocationHandler(this, locationRepository)
+
+        // Initialize PermissionsManager and handle location permissions
+        permissionsManager = PermissionsManager(this)
+        permissionsManager.onPermissionGranted = {
+            locationManager.getLastKnownLocation()
+        }
+        permissionsManager.checkAndRequestLocationPermission()
+
+        // Handle location updates
+        locationManager.onLocationReceived = { location ->
+            val qiblaDirection = calculateQiblaDirection(location.latitude, location.longitude).toFloat()
+            Log.d("MainActivity Qibla", "New Qibla Direction: $qiblaDirection")
+            viewModel.updateQiblaDirection(qiblaDirection)
+        }
+
+        // Handle compass direction changes
+        compassSensorManager.onDirectionChanged = { direction ->
+            Log.d("MainActivity Current", "New Current Direction: $direction")
+            viewModel.updateCurrentDirection(direction)
+        }
+
+        // Set the content view with Jetpack Compose
         setContent {
+            val qiblaState = viewModel.qiblaState.collectAsState()
             Islam24Theme {
-                NavGraph(startDestination = viewModel.startDestination.value)
-            }
-        }
-    }
-
-    private val installStateUpdateListener = InstallStateUpdatedListener {state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED){
-            Toast.makeText(
-                applicationContext,
-                "Download successfull. Restarting app in 5 seconds.",
-                Toast.LENGTH_LONG
-            ).show()
-            lifecycleScope.launch {
-                delay(5.seconds)
-                appUpdateManager.completeUpdate()
-            }
-        }
-    }
-
-
-    private fun checkForAppUpdates(){
-        appUpdateManager.appUpdateInfo.addOnSuccessListener {info ->
-            val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-            val isUpdateAllowed = when(updateType){
-                AppUpdateType.FLEXIBLE -> info.isFlexibleUpdateAllowed
-                AppUpdateType.IMMEDIATE -> info.isImmediateUpdateAllowed
-                else -> false
-            }
-            if (isUpdateAvailable && isUpdateAllowed){
-                appUpdateManager.startUpdateFlowForResult(
-                    info,
-                    updateType,
-                    this,
-                    123
+                NavGraph(
+                    startDestination = viewModel.startDestination.value,
+                    qiblaDirection = qiblaState.value.qiblaDirection,
+                    currentDirection = qiblaState.value.currentDirection
                 )
             }
         }
+
+        // Register compass sensor listeners
+        compassSensorManager.registerListeners()
+
+        // Check for app updates
+        updateManager.checkForAppUpdates(this)
+
+        // Show location permission dialog if needed
+        locationHandler.showLocationPermissionDialog(this)
     }
 
+    /**
+     * Called when the activity will start interacting with the user.
+     */
     override fun onResume() {
         super.onResume()
-        if (updateType == AppUpdateType.IMMEDIATE){
-            appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
-                if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
-                    appUpdateManager.startUpdateFlowForResult(
-                        info,
-                        updateType,
-                        this,
-                        123
-                    )
-                }
-            }
-        }
+        updateManager.onResume(this)
     }
 
-    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}\n      with the appropriate {@link ActivityResultContract} and handling the result in the\n      {@link ActivityResultCallback#onActivityResult(Object) callback}.")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == 123){
-            if (resultCode != RESULT_OK){
-                println("Something Went Wrong")
-            }
-        }
-    }
-
+    /**
+     * Perform any final cleanup before an activity is destroyed.
+     */
     override fun onDestroy() {
         super.onDestroy()
-        if (updateType == AppUpdateType.FLEXIBLE){
-            appUpdateManager.unregisterListener(installStateUpdateListener)
-        }
+        updateManager.onDestroy()
     }
 }

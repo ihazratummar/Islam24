@@ -18,8 +18,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 30
-        versionName = "1.3.3"
+        versionCode = 36
+        versionName = "1.4.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -154,6 +154,5 @@ dependencies {
     implementation(libs.review)
     implementation(libs.review.ktx)
 }
-
 
 

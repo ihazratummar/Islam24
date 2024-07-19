@@ -45,7 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.NameEntity
-import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
 
