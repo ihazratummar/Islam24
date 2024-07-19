@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
+import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -51,7 +52,6 @@ class CompassSensorManager @Inject constructor(
                         accelerometerReading.size
                     )
                 }
-
                 Sensor.TYPE_MAGNETIC_FIELD -> {
                     System.arraycopy(
                         event.values,
@@ -70,14 +70,13 @@ class CompassSensorManager @Inject constructor(
             )
             SensorManager.getOrientation(rotationMatrix, orientationAngles)
             val currentDirection = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+            Log.d("CompassSensorManager", "Current Direction: $currentDirection") // Log current direction
             onDirectionChanged?.invoke(currentDirection)
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        TODO("Not yet implemented")
     }
-
 
 
 }

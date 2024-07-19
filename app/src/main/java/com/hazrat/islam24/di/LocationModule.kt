@@ -5,6 +5,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.hazrat.islam24.domain.repository.location.LocationRepositoryImpl
 import com.hazrat.islam24.service.LocationHandler
+import com.hazrat.islam24.service.LocationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,6 +32,12 @@ object LocationModule {
         // Provide the ComponentActivity here
     ): LocationHandler {
         return LocationHandler(context, locationRepository, fusedLocationProviderClient )
+    }
+
+    @Singleton
+    @Provides
+    fun provideLocationManager(@ApplicationContext context: Context, fusedLocationProviderClient: FusedLocationProviderClient): LocationManager{
+        return LocationManager(context, fusedLocationProviderClient)
     }
 
 
