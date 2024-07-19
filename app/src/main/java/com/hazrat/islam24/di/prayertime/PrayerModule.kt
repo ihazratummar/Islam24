@@ -149,12 +149,6 @@ object PrayerModule {
     }
 
 
-    //location service
-    @Provides
-    fun provideFusedLocationProviderClient(@ApplicationContext context: Context): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(context)
-    }
-
     @Singleton
     @Provides
     fun provideLocationDao(locationDatabase: LocationDatabase): LocationDao {

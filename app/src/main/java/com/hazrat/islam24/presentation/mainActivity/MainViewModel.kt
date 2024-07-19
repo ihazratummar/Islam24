@@ -21,18 +21,19 @@ import com.hazrat.islam24.domain.repository.TasbihRepository
 import com.hazrat.islam24.data.manager.LocationNameRepositoryImpl
 import com.hazrat.islam24.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.presentation.navigation.nvgraph.Route
+import com.hazrat.islam24.presentation.qibla.QiblaState
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -100,6 +101,31 @@ class MainViewModel @Inject constructor(
     private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
     val locationName = _locationName.asStateFlow()
 
+
+    private val _qiblaState = MutableStateFlow(QiblaState())
+    val qiblaState = _qiblaState.asStateFlow()
+
+    // Other properties and methods...
+
+    fun updateQiblaDirection(newDirection: Float) {
+        _qiblaState.update {
+            it.copy(
+                qiblaDirection = newDirection
+            )
+        }
+        Log.d("ViewModel direction", "Updating Qibla Direction to $newDirection")
+    }
+
+    fun updateCurrentDirection(newDirection: Float) {
+        _qiblaState.update {
+            it.copy(
+                currentDirection = newDirection
+            )
+        }
+        Log.d("ViewModel direction", "Updating currentDirection to $newDirection")
+    }
+
+
     init {
         _startDestination.value = Route.HomeNavigation.route
         viewModelScope.launch {
@@ -108,6 +134,10 @@ class MainViewModel @Inject constructor(
             fetchDataFromDB()
         }
         observeNetworkStatus()
+        Log.d(
+            "New Degrees",
+            "Updating Current Direction to ${qiblaState.value.qiblaDirection} ${qiblaState.value.currentDirection}"
+        )
     }
 
     private fun fetchDataFromDB() {
