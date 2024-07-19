@@ -150,10 +150,10 @@ object PrayerModule {
 
 
     //location service
-    @Provides
-    fun provideFusedLocationProviderClient(@ApplicationContext context: Context): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(context)
-    }
+//    @Provides
+//    fun provideFusedLocationProviderClient(@ApplicationContext context: Context): FusedLocationProviderClient {
+//        return LocationServices.getFusedLocationProviderClient(context)
+//    }
 
     @Singleton
     @Provides
