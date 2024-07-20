@@ -11,7 +11,6 @@ import com.hazrat.islam24.ui.theme.Islam24Theme
 
 @Composable
 fun LocationName(locationDetailsEntity: LocationDetailsEntity) {
-
     Location(modifier = Modifier,locationDetailsEntity)
 }
 
@@ -20,18 +19,11 @@ fun LocationName(locationDetailsEntity: LocationDetailsEntity) {
 fun Location(modifier: Modifier = Modifier,
     locationDetailsEntity: LocationDetailsEntity
 ) {
-    Text(text = locationDetailsEntity.city?: locationDetailsEntity.village?: locationDetailsEntity.town ?: "",
+
+    Text(text = locationDetailsEntity.city?: locationDetailsEntity.village?: locationDetailsEntity.town ?: locationDetailsEntity.suburb?:"",
         modifier = modifier,
         style = MaterialTheme.typography.displaySmall,
         color = MaterialTheme.colorScheme.onPrimaryContainer,
         fontWeight = FontWeight.SemiBold
     )
-}
-
-@Preview
-@Composable
-fun LocationNamePreview() {
-    Islam24Theme {
-//        LocationName()
-    }
 }

@@ -145,7 +145,7 @@ class MainViewModel @Inject constructor(
             fetchHijriDate()
             fetchHijriCalendar()
             getAllPrayerTimes()
-            locationNAme()
+            locationName()
             locationNameRepository.getLocationDetails()
             _names.value = namesRepository.getAllahNames()
             tasbihRepository.getTasbih()
@@ -254,7 +254,7 @@ class MainViewModel @Inject constructor(
     /**
      *  Location Name from db
      */
-    private fun locationNAme() {
+    private fun locationName() {
         viewModelScope.launch(Dispatchers.IO) {
             locationNameRepository.getLocationDetails().distinctUntilChanged()
                 .collectLatest { locationName: List<LocationDetailsEntity> ->
