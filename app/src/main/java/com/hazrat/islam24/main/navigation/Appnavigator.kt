@@ -48,7 +48,7 @@ fun AppNavigator(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
             BottomNavigationItem(icon = R.drawable.qiblaiconnav, text = "Qibla"),
-            BottomNavigationItem(icon = R.drawable.profile, text = "Profile")
+//            BottomNavigationItem(icon = R.drawable.profile, text = "Profile")
         )
     }
 
@@ -62,7 +62,7 @@ fun AppNavigator(
         Route.HomeScreen.route -> 0
         Route.PrayerTimeScreen.route -> 1
         Route.QiblaDirectionScreen.route -> 2
-        Route.ProfileScreen.route -> 3
+//        Route.ProfileScreen.route -> 3
         else -> 0
     }
 
@@ -110,10 +110,10 @@ private fun TotalContent(
                                 route = Route.QiblaDirectionScreen.route
                             )
 
-                            3 -> navigateToTab(
-                                navController = navController,
-                                route = Route.ProfileScreen.route
-                            )
+//                            3 -> navigateToTab(
+//                                navController = navController,
+//                                route = Route.ProfileScreen.route
+//                            )
                         }
                     }
                 )
@@ -164,7 +164,7 @@ private fun TotalContent(
             composable(route = Route.AthkarScreen.route) {
                 AthkarScreen(navController)
             }
-            authNavGraph(navController)
+//            authNavGraph(navController)
         }
     }
 }
