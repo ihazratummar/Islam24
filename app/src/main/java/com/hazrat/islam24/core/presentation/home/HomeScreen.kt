@@ -26,6 +26,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -65,7 +66,7 @@ fun HomeScreen(
 
         item {
             Surface(
-                modifier = Modifier.padding(MaterialTheme.dimens.size5)
+                modifier = Modifier
             ) {
                 BackGroundCard()
                 Column(
@@ -120,8 +121,7 @@ fun HomeScreen(
 fun BackGroundCard() {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(MaterialTheme.dimens.size250),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(
             bottomEnd = MaterialTheme.dimens.size50,
             bottomStart = MaterialTheme.dimens.size50

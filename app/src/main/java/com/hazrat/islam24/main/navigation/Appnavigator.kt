@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -29,17 +28,16 @@ import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.core.presentation.prayertime.setting.UserSetting
 import com.hazrat.islam24.core.presentation.prayertime.setting.UserSettingViewModel
+import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.main.navigation.component.AppBottomNavigation
 import com.hazrat.islam24.main.navigation.component.BottomNavigationItem
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
-import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AppNavigator(
-    mainViewModel: MainViewModel = hiltViewModel(),
     qiblaDirection: Float,
     currentDirection: Float
 ) {
@@ -47,7 +45,7 @@ fun AppNavigator(
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
-            BottomNavigationItem(icon = R.drawable.goldqaba, text = "Qibla"),
+            BottomNavigationItem(icon = R.drawable.qiblaiconnav, text = "Qibla"),
             BottomNavigationItem(icon = R.drawable.profile, text = "Profile")
         )
     }
@@ -140,7 +138,6 @@ private fun TotalContent(
             }
             composable(route = Route.QiblaDirectionScreen.route) {
                 val viewModel: MainViewModel = hiltViewModel()
-                val state = viewModel.qiblaState.collectAsState()
                 QiblaScreen(
                     navController = navController,
                     currentDirection = currentDirection,
