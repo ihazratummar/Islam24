@@ -47,7 +47,7 @@ fun AppNavigator(
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
-            BottomNavigationItem(icon = R.drawable.goldqaba, text = "Qibla"),
+            BottomNavigationItem(icon = R.drawable.qiblaiconnav, text = "Qibla"),
             BottomNavigationItem(icon = R.drawable.profile, text = "Profile")
         )
     }
