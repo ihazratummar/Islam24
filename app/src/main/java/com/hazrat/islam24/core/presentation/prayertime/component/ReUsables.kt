@@ -153,7 +153,7 @@ fun PrayerTimeCard(
                 ){
                     Text(
                         text = countDownText,
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                     )
@@ -197,14 +197,12 @@ fun PrayerDateCard(
                 text = enDate,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
             Text(
                 text = hrDate,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.SemiBold
             )
         }
     }
