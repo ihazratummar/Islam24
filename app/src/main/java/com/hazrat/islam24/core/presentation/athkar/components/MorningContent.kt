@@ -43,7 +43,6 @@ fun MorningContent() {
             AdhkarCard(adhkars = athkar)
         }
     }
-
 }
 
 @Composable
@@ -61,9 +60,12 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
             .clickable {
                 expanded = !expanded
             },
-        colors = CardDefaults.cardColors(colorResource(id = R.color.background_color)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground
+        ),
         elevation = CardDefaults.outlinedCardElevation(MaterialTheme.dimens.size2),
-        border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.primary))
+        border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -76,27 +78,28 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
                 Text(
                     text = "${adhkars.number}-${morningAthkars.size - 1}",
                     modifier = Modifier.padding(top = MaterialTheme.dimens.size20),
-                    style = MaterialTheme.typography.titleMedium, color = colorResource(id = R.color.text)
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
             Text(
                 text = adhkars.transliteration,
                 modifier = Modifier.padding(MaterialTheme.dimens.size10),
                 style = MaterialTheme.typography.titleMedium,
-                color = colorResource(id = R.color.text)
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             AnimatedVisibility(visible = expanded) {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = MaterialTheme.dimens.size1,
-                    color = colorResource(id = R.color.primary)
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = adhkars.translation,
                     modifier = Modifier.padding(MaterialTheme.dimens.size10),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = colorResource(id = R.color.text)
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
             Row(
@@ -107,7 +110,7 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
                 Card(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(MaterialTheme.dimens.size1, colorResource(id = R.color.primary)),
+                    border = BorderStroke(MaterialTheme.dimens.size1, MaterialTheme.colorScheme.primary),
                     modifier = Modifier
                         .size(MaterialTheme.dimens.size80)
                         .padding(bottom = MaterialTheme.dimens.size10),
@@ -121,7 +124,7 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
                             text = "X${adhkars.count}",
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.text)
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }

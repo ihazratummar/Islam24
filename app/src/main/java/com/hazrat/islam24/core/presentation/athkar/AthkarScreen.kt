@@ -57,8 +57,7 @@ fun AthkarScreen(navController: NavController) {
             TopAppBar(title = {
                 Text(
                     text = "Dhikr & Athkar",
-                    style = MaterialTheme.typography.displaySmall,
-                    color = colorResource(id = R.color.text)
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }, navigationIcon = {
                 Icon(
@@ -69,7 +68,7 @@ fun AthkarScreen(navController: NavController) {
                             navController.popBackStack()
                         }
                         .padding(start = MaterialTheme.dimens.size10),
-                    tint = colorResource(id = R.color.text)
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -91,7 +90,7 @@ fun AthkarScreen(navController: NavController) {
                         onClick = { selectedTabIndex = index },
                         text = {
                             Text(
-                                text = item.title, color = colorResource(id = R.color.primary)
+                                text = item.title, color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     )

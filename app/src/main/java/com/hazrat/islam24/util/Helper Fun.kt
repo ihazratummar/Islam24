@@ -3,7 +3,6 @@ package com.hazrat.islam24.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.core.content.ContextCompat
@@ -34,12 +33,12 @@ fun drawableToBitmap(context: Context, drawableId: Int): Bitmap {
     return drawable.toBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
 }
 
-fun vibrateDevice(context: Context, virateTime: Long) {
+fun vibrateDevice(context: Context, vibrateTime: Long) {
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
     if (vibrator != null && vibrator.hasVibrator()) {
         vibrator.vibrate(
             VibrationEffect.createOneShot(
-                virateTime, // Vibration duration in milliseconds
+                vibrateTime, // Vibration duration in milliseconds
                 VibrationEffect.DEFAULT_AMPLITUDE
             )
         )

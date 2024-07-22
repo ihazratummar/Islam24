@@ -26,26 +26,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
-import com.hazrat.islam24.core.presentation.home.component.LazyRowWithCards
-import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.core.presentation.home.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.core.presentation.home.component.DisplayCurrentPrayerTime
+import com.hazrat.islam24.core.presentation.home.component.LazyRowWithCards
+import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
@@ -63,7 +60,6 @@ fun HomeScreen(
     LazyColumn(
         modifier = Modifier
     ) {
-
         item {
             Surface(
                 modifier = Modifier
@@ -76,7 +72,7 @@ fun HomeScreen(
                         .padding(MaterialTheme.dimens.size10),
                     verticalArrangement = Arrangement.Top
                 ) {
-//                            Text(text = "Salam", style = MaterialTheme.typography.bodySmall)
+//                    Text(text = "Salam", style = MaterialTheme.typography.bodySmall)
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size100))
                     if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
                         TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
@@ -141,7 +137,6 @@ fun BackGroundCard() {
                 )
                 .size(MaterialTheme.dimens.size300),
             colorFilter = ColorFilter.colorMatrix(colorMatrix = ColorMatrix())
-
         )
     }
 }
@@ -169,7 +164,7 @@ private fun TimeLocationCard(
                     )
                 ),
                 shape = RoundedCornerShape(MaterialTheme.dimens.size30),
-                )
+            )
             .clickable {
                 navigateToPrayerTime()
             },
@@ -197,7 +192,7 @@ private fun TimeLocationCard(
 
                 Text(
                     text = stringResource(R.string.view_salat_times),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -222,9 +217,9 @@ private fun TimeLocationCard(
                 if (homeViewModel.isPrayerTime(prayerTimeEntity, grday, hijriday)) {
                     Text(
                         text = stringResource(id = R.string.now),
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 } else {
                     DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)

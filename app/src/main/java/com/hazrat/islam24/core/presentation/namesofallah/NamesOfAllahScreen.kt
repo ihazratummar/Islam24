@@ -71,7 +71,6 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                     Text(
                         text = stringResource(id = R.string.names),
                         color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.displaySmall
                     )
                 },
                 navigationIcon = {
@@ -142,7 +141,7 @@ fun NameCard(name: NameEntity) {
                     verticalArrangement = Arrangement.Top
                 ) {
                     Text(
-                        text = "${name.number}", style = MaterialTheme.typography.displaySmall,
+                        text = "${name.number}", style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
@@ -153,11 +152,11 @@ fun NameCard(name: NameEntity) {
                         .padding(MaterialTheme.dimens.size5)
                 ) {
                     Text(
-                        text = name.transliteration, style = MaterialTheme.typography.displaySmall,
+                        text = name.transliteration, style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = name.meaning, style = MaterialTheme.typography.labelLarge,
+                        text = name.meaning, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
@@ -177,7 +176,7 @@ fun NameCard(name: NameEntity) {
                 ) {
                     Text(
                         text = name.name,
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.displaySmall,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontFamily = AlQalam
                     )
@@ -192,17 +191,20 @@ fun NameCard(name: NameEntity) {
                     modifier = Modifier
                         .padding(
                             start = MaterialTheme.dimens.size35,
-                            top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10
+                            top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10,
+                            bottom = MaterialTheme.dimens.size10
                         )
                 ) {
                     Text(
                         text = "Ayat: ${name.found}",
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size5))
                     Text(
                         text = name.enDec,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
