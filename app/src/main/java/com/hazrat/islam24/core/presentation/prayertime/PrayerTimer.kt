@@ -8,6 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -179,67 +180,114 @@ fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
     val isNextMaghribTime = currentTime in (data.asrTime + 1)..(data.maghribTime)
     val isNextIshaTime = currentTime in (data.maghribTime + 1)..(data.ishaTime)
 
-    Column(
+    LazyColumn(
         modifier = Modifier.padding(top = MaterialTheme.dimens.size10)
     ) {
-        PrayerDateCard(
-            modifier = Modifier.clickable {
-                navController.navigate(route = Route.CalendarScreen.route)
-            },
-            enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",
-            hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear} ${data.hijriab}"
+        item {
+            PrayerDateCard(
+                modifier = Modifier.clickable {
+                    navController.navigate(route = Route.CalendarScreen.route)
+                },
+                enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",
+                hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear} ${data.hijriab}"
 
-        )
-        PrayerTimeCard(
-            icon = R.drawable.fajr,
-            text = stringResource(R.string.fajr),
-            time = dateLongToString(data.fajrTime),
-            countDownText = if (prayerDay && isNextFajrTime) fajrCountDown else "",
-            isPrayerTime = isFajrTime,
-            isNow = if (isFajrTime) stringResource(id = R.string.now) else ""
-
-        )
-        PrayerTimeCard(
-            icon = R.drawable.sunrise,
-            text = stringResource(R.string.sunrise),
-            time = dateLongToString(data.sunriseTime),
-            countDownText = "",
-            isPrayerTime = isSunriseTime,
-            isNow = ""
-        )
-        PrayerTimeCard(
-            icon = R.drawable.dhuhr,
-            text = stringResource(R.string.dhuhr),
-            time = dateLongToString(data.dhuhrTime),
-            countDownText = if (prayerDay && isNextDhurTime) dhuhrCountDown else "",
-            isPrayerTime = isDhuhrTime,
-            isNow = if (isDhuhrTime) stringResource(id = R.string.now) else ""
-        )
-        PrayerTimeCard(
-            icon = R.drawable.asr,
-            text = stringResource(R.string.asr),
-            time = dateLongToString(data.asrTime),
-            countDownText = if (prayerDay && isNextAsrTime) asrCountDown else "",
-            isPrayerTime = isAsrTime,
-            isNow = if (isAsrTime) stringResource(id = R.string.now) else ""
-        )
-        PrayerTimeCard(
-            icon = R.drawable.maghrib,
-            text = stringResource(R.string.maghrib),
-            time = dateLongToString(data.maghribTime),
-            countDownText = if (prayerDay && isNextMaghribTime) maghribCountDown else "",
-            isPrayerTime = isMaghribTime,
-            isNow = if (isMaghribTime) stringResource(id = R.string.now) else ""
-        )
-        PrayerTimeCard(
-            icon = R.drawable.isha,
-            text = stringResource(R.string.isha_a),
-            time = dateLongToString(data.ishaTime),
-            countDownText = if (prayerDay && isNextIshaTime) ishaCountDown else "",
-            isPrayerTime = isIshaTime,
-            isNow = if (isIshaTime) stringResource(id = R.string.now) else ""
-        )
+            )
+        }
+        item {
+            PrayerTime(
+                data,
+                prayerDay,
+                isNextFajrTime,
+                fajrCountDown,
+                isFajrTime,
+                isSunriseTime,
+                isNextDhurTime,
+                dhuhrCountDown,
+                isDhuhrTime,
+                isNextAsrTime,
+                asrCountDown,
+                isAsrTime,
+                isNextMaghribTime,
+                maghribCountDown,
+                isMaghribTime,
+                isNextIshaTime,
+                ishaCountDown,
+                isIshaTime
+            )
+        }
     }
+}
+
+@Composable
+private fun PrayerTime(
+    data: PrayerTimeEntity,
+    prayerDay: Boolean,
+    isNextFajrTime: Boolean,
+    fajrCountDown: String,
+    isFajrTime: Boolean,
+    isSunriseTime: Boolean,
+    isNextDhurTime: Boolean,
+    dhuhrCountDown: String,
+    isDhuhrTime: Boolean,
+    isNextAsrTime: Boolean,
+    asrCountDown: String,
+    isAsrTime: Boolean,
+    isNextMaghribTime: Boolean,
+    maghribCountDown: String,
+    isMaghribTime: Boolean,
+    isNextIshaTime: Boolean,
+    ishaCountDown: String,
+    isIshaTime: Boolean
+) {
+    PrayerTimeCard(
+        icon = R.drawable.fajr,
+        text = stringResource(R.string.fajr),
+        time = dateLongToString(data.fajrTime),
+        countDownText = if (prayerDay && isNextFajrTime) fajrCountDown else "",
+        isPrayerTime = isFajrTime,
+        isNow = if (isFajrTime) stringResource(id = R.string.now) else ""
+
+    )
+    PrayerTimeCard(
+        icon = R.drawable.sunrise,
+        text = stringResource(R.string.sunrise),
+        time = dateLongToString(data.sunriseTime),
+        countDownText = "",
+        isPrayerTime = isSunriseTime,
+        isNow = ""
+    )
+    PrayerTimeCard(
+        icon = R.drawable.dhuhr,
+        text = stringResource(R.string.dhuhr),
+        time = dateLongToString(data.dhuhrTime),
+        countDownText = if (prayerDay && isNextDhurTime) dhuhrCountDown else "",
+        isPrayerTime = isDhuhrTime,
+        isNow = if (isDhuhrTime) stringResource(id = R.string.now) else ""
+    )
+    PrayerTimeCard(
+        icon = R.drawable.asr,
+        text = stringResource(R.string.asr),
+        time = dateLongToString(data.asrTime),
+        countDownText = if (prayerDay && isNextAsrTime) asrCountDown else "",
+        isPrayerTime = isAsrTime,
+        isNow = if (isAsrTime) stringResource(id = R.string.now) else ""
+    )
+    PrayerTimeCard(
+        icon = R.drawable.maghrib,
+        text = stringResource(R.string.maghrib),
+        time = dateLongToString(data.maghribTime),
+        countDownText = if (prayerDay && isNextMaghribTime) maghribCountDown else "",
+        isPrayerTime = isMaghribTime,
+        isNow = if (isMaghribTime) stringResource(id = R.string.now) else ""
+    )
+    PrayerTimeCard(
+        icon = R.drawable.isha,
+        text = stringResource(R.string.isha_a),
+        time = dateLongToString(data.ishaTime),
+        countDownText = if (prayerDay && isNextIshaTime) ishaCountDown else "",
+        isPrayerTime = isIshaTime,
+        isNow = if (isIshaTime) stringResource(id = R.string.now) else ""
+    )
 }
 
 

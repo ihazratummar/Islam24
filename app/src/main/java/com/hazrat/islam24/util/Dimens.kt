@@ -33,18 +33,7 @@ data class Dimens (
     val size200:Dp = 0.dp,
     val size250:Dp = 0.dp,
     val size300:Dp = 0.dp,
-
-//    /textsize
-//    val SpSize10 = 10.sp
-//    val SpSize15 = 15.sp
-//    val SpSize17 = 17.sp
-//    val SpSize20 = 20.sp
-//    val SpSize25 = 25.sp
-//    val SpSize30 = 30.sp
-//    val SpSize50 = 50.sp
-) {
-
-}
+)
 
 val CompactSmallDimens = Dimens( // = 22% DownScale
 
