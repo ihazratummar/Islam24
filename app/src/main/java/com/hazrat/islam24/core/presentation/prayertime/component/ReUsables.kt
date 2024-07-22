@@ -27,15 +27,15 @@ import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
 fun PrayerSettingCard(
-    @DrawableRes icon: Int,
     text: String,
-    subText: String?,
+    methodID: String?,
+    method: String?,
     onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = MaterialTheme.dimens.size10)
+            .padding(horizontal = MaterialTheme.dimens.size10, vertical = MaterialTheme.dimens.size4)
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
@@ -44,32 +44,30 @@ fun PrayerSettingCard(
 
         )
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(MaterialTheme.dimens.size10)
+        Column(
+            modifier = Modifier.padding(horizontal = MaterialTheme.dimens.size20, vertical = MaterialTheme.dimens.size10),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
         ) {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = "Icon",
-                modifier = Modifier.size(MaterialTheme.dimens.size20),
+            Spacer(modifier = Modifier.width(MaterialTheme.dimens.size8))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
             )
-            Column(
-                modifier = Modifier.padding(horizontal = MaterialTheme.dimens.size10)
-            ) {
-                Spacer(modifier = Modifier.width(MaterialTheme.dimens.size8))
+            if (methodID != null) {
                 Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyLarge,
+                    text = methodID,
+                    style = MaterialTheme.typography.bodySmall,
                 )
-                if (subText != null) {
-                    Text(
-                        text = subText,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                }
+            }
+            if (method != null) {
+                Text(
+                    text = method,
+                    style = MaterialTheme.typography.labelSmall,
+                )
             }
         }
+
     }
 }
 

@@ -21,14 +21,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
-import com.hazrat.islam24.auth.navigation.authNavGraph
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.home.HomeScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
-import com.hazrat.islam24.core.presentation.prayertime.setting.UserSetting
-import com.hazrat.islam24.core.presentation.prayertime.setting.UserSettingViewModel
+import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
+import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.main.navigation.component.AppBottomNavigation
 import com.hazrat.islam24.main.navigation.component.BottomNavigationItem
@@ -155,8 +154,7 @@ private fun TotalContent(
                 TasbihScreen(navController)
             }
             composable(route = Route.UserSettings.route) {
-                val viewModel: UserSettingViewModel = hiltViewModel()
-                UserSetting(navController = navController, viewModel)
+                PrayerSetting(navController = navController)
             }
             composable(route = Route.CalendarScreen.route) {
                 CalendarScreen(navController)

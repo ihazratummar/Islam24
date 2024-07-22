@@ -37,9 +37,10 @@ class PrayerTimeRepositoryImpl @Inject constructor(
             val location: LocationEntity? = locationRepository.getLocation()
             val latitude = location?.latitude ?: 24.628
             val longitude = location?.longitude ?: 88.011
-            val methodList = prayerSettingRepository.getMethod().firstOrNull() ?: emptyList()
-            val methodValue = methodList.firstOrNull()?.method ?: 1 // Default value is 1 if methodList or method is null
-            val schoolValue = methodList.firstOrNull()?.school ?: 0
+            val methodList = prayerSettingRepository.getCalculationMethod().firstOrNull()
+            val juristicList = prayerSettingRepository.getJuristicMethod().firstOrNull()
+            val methodValue = methodList?.method?:1 // Default value is 1 if methodList or method is null
+            val schoolValue = juristicList?.school?:0
             Log.d("ChekingApi", "$latitude $longitude $methodValue $schoolValue")
 
             val year = DateUtil.getCurrentYear()
