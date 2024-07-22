@@ -153,7 +153,7 @@ fun PrayerTimeCard(
                 ){
                     Text(
                         text = countDownText,
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                     )
