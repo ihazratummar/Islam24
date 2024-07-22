@@ -53,10 +53,8 @@ fun HomeScreen(
     navigateToPrayerTime: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-
     val prayerTimes = viewModel.prayerTimes.collectAsState().value
     val locationName = viewModel.locationName.collectAsState().value
-
     LazyColumn(
         modifier = Modifier
     ) {
