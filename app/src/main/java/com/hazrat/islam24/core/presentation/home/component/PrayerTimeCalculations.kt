@@ -80,8 +80,8 @@ fun DisplayCurrentPrayerName(
     currentPrayerName?.let { prayerName ->
         Text(
             text = prayerName,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            style =  MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onBackground,
+            style =  MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.SemiBold
         )
     }
@@ -157,14 +157,14 @@ fun DisplayCurrentPrayerTime(
                 text = stringResource(R.string.next_prayer, prayerName),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onBackground
             )
             formatLocalTime(time)?.let {
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

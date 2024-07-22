@@ -23,7 +23,7 @@ fun Location(modifier: Modifier = Modifier,
     Text(text = locationDetailsEntity.city?: locationDetailsEntity.village?: locationDetailsEntity.town ?: locationDetailsEntity.suburb?:"",
         modifier = modifier,
         style = MaterialTheme.typography.displaySmall,
-        color = MaterialTheme.colorScheme.onPrimaryContainer,
+        color = MaterialTheme.colorScheme.onBackground,
         fontWeight = FontWeight.SemiBold
     )
 }

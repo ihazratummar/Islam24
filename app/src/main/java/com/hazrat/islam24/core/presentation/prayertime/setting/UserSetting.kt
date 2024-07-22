@@ -14,20 +14,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerSettingEntity
 import com.hazrat.islam24.core.presentation.prayertime.component.MethodSelectionDialog
-import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeSettingCard
+import com.hazrat.islam24.core.presentation.prayertime.component.PrayerSettingCard
 import com.hazrat.islam24.core.presentation.prayertime.component.SchoolSelectionDialog
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
@@ -44,7 +41,7 @@ fun UserSetting(
         settingViewModel.openMethodSelectionDialog()
     }
 
-    val methodList = settingViewModel.methodList.collectAsState()
+
 
     val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
     val prayerTimeEntities = prayerTimes.getOrNull(0)
@@ -55,17 +52,9 @@ fun UserSetting(
                 title = {
                     Text(
                         text = stringResource(R.string.prayer_setting),
-                        style = MaterialTheme.typography.displaySmall,
                         modifier = Modifier.padding(MaterialTheme.dimens.size5)
                     )
                 },
-                colors = TopAppBarColors(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = Color.Transparent,
-                    navigationIconContentColor = colorResource(id = R.color.text),
-                    titleContentColor = colorResource(id = R.color.text),
-                    actionIconContentColor = colorResource(id = R.color.text)
-                ),
                 navigationIcon = {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
@@ -86,7 +75,7 @@ fun UserSetting(
             item {
                 HorizontalDivider(
                     thickness = MaterialTheme.dimens.size1,
-                    color = colorResource(id = R.color.primary)
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
             item {
@@ -95,7 +84,7 @@ fun UserSetting(
             item {
                 val methodName = prayerTimeEntities?.methodName
                 if (methodName != null) {
-                    PrayerTimeSettingCard(
+                    PrayerSettingCard(
                         icon = R.drawable.athkar,
                         text = stringResource(R.string.prayer_method),
                         subText = methodName,
@@ -104,7 +93,7 @@ fun UserSetting(
                         }
                     )
                 } else {
-                    PrayerTimeSettingCard(
+                    PrayerSettingCard(
                         icon = R.drawable.athkar,
                         text = stringResource(R.string.juristic_method),
                         subText = null,
@@ -120,7 +109,7 @@ fun UserSetting(
             item {
                 val school = prayerTimeEntities?.school
                 if (school != null) {
-                    PrayerTimeSettingCard(
+                    PrayerSettingCard(
                         icon = R.drawable.settings,
                         text = "Select Madhab",
                         subText = school,
@@ -129,7 +118,7 @@ fun UserSetting(
                         }
                     )
                 } else {
-                    PrayerTimeSettingCard(
+                    PrayerSettingCard(
                         icon = R.drawable.settings,
                         text = "Select Madhab",
                         subText = null,

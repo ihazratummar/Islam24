@@ -32,17 +32,18 @@ fun TasbihScreen(navController: NavController) {
                 title = {
                     Text(
                         text = stringResource(id = R.string.tasbih),
-                        color = colorResource(id = R.color.text),
-                        style =  MaterialTheme.typography.displaySmall
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 },
                 navigationIcon = {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Go Back",
                         modifier = Modifier.clickable {
                             navController.popBackStack()
                         },
-                        tint = colorResource(id = R.color.primary))
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
             )

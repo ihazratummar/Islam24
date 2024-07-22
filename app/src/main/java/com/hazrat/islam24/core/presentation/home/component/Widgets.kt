@@ -100,7 +100,7 @@ fun LazyRowWithCards(navController: NavController) {
                         modifier = Modifier.size(MaterialTheme.dimens.size100)
                     )
                 }
-                Text(names[index], color = colorResource(id = R.color.text))
+                Text(names[index], color = MaterialTheme.colorScheme.onBackground)
             }
             Spacer(modifier = Modifier.width(MaterialTheme.dimens.size10))
 

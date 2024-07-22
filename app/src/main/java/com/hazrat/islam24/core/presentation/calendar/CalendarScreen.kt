@@ -30,7 +30,6 @@ fun CalendarScreen(navController: NavController) {
                 title = {
                     Text(
                         text = "Hijri Calendar",
-                        style = MaterialTheme.typography.displaySmall,
                         color = colorResource(id = R.color.text)
                     )
                 },

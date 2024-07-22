@@ -37,20 +37,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.core.presentation.tasbih.tasbihcomponent.RepeatCountDialog
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.AlQalam
-import com.hazrat.islam24.ui.theme.Islam24Theme
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.vibrate
+import com.hazrat.islam24.util.vibrateDevice
 
 @Composable
 fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = hiltViewModel()) {
@@ -65,7 +63,7 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
     var roundCount by remember { mutableIntStateOf(0) }
     var isDialogOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val vibrator = remember { context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator }
+    val vibrator by remember { mutableStateOf(false) }
 
 
     Column(
@@ -78,17 +76,19 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                 TasbihHeader(phrase, viewModel)
             }
         }
+        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size4))
+        // Tasbih Counter
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size10))
             }
             item {
                 ToTalCount(tasbih)
+                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -105,7 +105,7 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                         colors = CardDefaults.cardColors(Color.Transparent),
                         border = BorderStroke(
                             MaterialTheme.dimens.size1,
-                            color = colorResource(id = R.color.text)
+                            color = MaterialTheme.colorScheme.onBackground
                         ),
                     ) {
                         Row(
@@ -115,7 +115,7 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                         ) {
                             Text(
                                 text = stringResource(R.string.tasbihTarget, repeatCount), modifier = Modifier,
-                                color = colorResource(id = R.color.text)
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }
@@ -129,7 +129,7 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                         colors = CardDefaults.cardColors(Color.Transparent),
                         border = BorderStroke(
                             MaterialTheme.dimens.size1,
-                            color = colorResource(id = R.color.text)
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     ) {
                         Row(
@@ -141,12 +141,11 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                                 stringResource(R.string.round, roundCount),
                                 modifier = Modifier
                                     .padding(MaterialTheme.dimens.size5),
-                                color = colorResource(id = R.color.text)
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }
                 }
-
             }
             item {
                 Box(
@@ -184,7 +183,7 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                                     roundCount++
                                     viewModel.resetTasbihCount()
                                 }
-                                vibrate(vibrator!!)
+                                vibrateDevice(context, 100)
                             },
                             modifier = Modifier
                                 .size(MaterialTheme.dimens.size300)
@@ -192,7 +191,7 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                             shape = CircleShape,
                             border = BorderStroke(
                                 MaterialTheme.dimens.size2,
-                                colorResource(id = R.color.text)
+                                MaterialTheme.colorScheme.onBackground
                             ),
                             colors = ButtonDefaults.buttonColors(Color.Transparent)
                         ) {
@@ -203,11 +202,11 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                                 val countText = "${tasbih?.tasbihCount ?: "0"} / $repeatCount"
                                 Text(
                                     text = countText,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    color = colorResource(id = R.color.text)
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                                 if (tasbih?.tasbihCount == 0) Text(
-                                    stringResource(R.string.click_to_start), color = colorResource(id = R.color.text),
+                                    stringResource(R.string.click_to_start), color = MaterialTheme.colorScheme.onBackground,
                                     style = MaterialTheme.typography.labelLarge,
                                 )
                             }
@@ -225,14 +224,14 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                             border = BorderStroke(
                                 MaterialTheme.dimens.size1,
-                                color = colorResource(id = R.color.text)
+                                color = MaterialTheme.colorScheme.onBackground
                             ),
                             shape = RoundedCornerShape(MaterialTheme.dimens.size20)
                         ) {
                             Text(
-                                stringResource(R.string.reset), color = colorResource(id = R.color.primary),
+                                stringResource(R.string.reset), color = MaterialTheme.colorScheme.onBackground,
                                 style = MaterialTheme.typography.labelLarge,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
@@ -269,7 +268,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
             colors = CardDefaults.cardColors(Color.Transparent),
             border = BorderStroke(
                 MaterialTheme.dimens.size1,
-                color = colorResource(id = R.color.text)
+                color = MaterialTheme.colorScheme.onBackground
             )
         ) {
             Row(
@@ -280,7 +279,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
                 val countText = tasbih?.totalCount ?: "0"
                 Text(
                     stringResource(R.string.total_count, countText),
-                    color = colorResource(id = R.color.text),
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .padding(MaterialTheme.dimens.size5)
                 )
@@ -306,9 +305,9 @@ private fun TasbihHeader(
             },
         elevation = CardDefaults.cardElevation(MaterialTheme.dimens.size4),
         colors = CardDefaults.cardColors(
-            containerColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.primaryContainer
+            containerColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.primaryContainer.copy(0.8f)
             else MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.onPrimaryContainer
+            contentColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.onPrimaryContainer.copy(0.8f)
             else MaterialTheme.colorScheme.onSecondaryContainer
         )
     ) {
@@ -321,26 +320,16 @@ private fun TasbihHeader(
         ) {
             Text(
                 phrase.arText, style = MaterialTheme.typography.headlineMedium,
-                color = colorResource(id = R.color.text),
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 fontFamily = AlQalam
             )
             Text(
                 phrase.enText, style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.text)
+                color = MaterialTheme.colorScheme.onBackground
 
             )
         }
-    }
-}
-
-
-@Preview()
-@Composable
-fun PreviewTasbihCounterApp() {
-    Islam24Theme {
-        val tasbihCounterEntity = TasbihCounterEntity(totalCount = 10)
-        ToTalCount(tasbihCounterEntity)
     }
 }
