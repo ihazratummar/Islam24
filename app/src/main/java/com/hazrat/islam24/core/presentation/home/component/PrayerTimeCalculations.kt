@@ -30,7 +30,6 @@ import java.time.ZoneId
 @Composable
 fun DisplayCurrentPrayerName(
     data: List<PrayerTimeEntity>,
-    textStyle: TextStyle = TextStyle()
 ) {
     var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
     val currentDate = LocalDate.now()
@@ -82,7 +81,8 @@ fun DisplayCurrentPrayerName(
         Text(
             text = prayerName,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
-            style = textStyle
+            style =  MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }

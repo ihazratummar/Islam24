@@ -110,7 +110,7 @@ fun PrayerTimeCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(MaterialTheme.dimens.size20),
+                .padding(horizontal = MaterialTheme.dimens.size10, vertical = MaterialTheme.dimens.size15),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -131,7 +131,7 @@ fun PrayerTimeCard(
                     Spacer(modifier = Modifier.width(MaterialTheme.dimens.size10))
                     Text(
                         text = text,
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                     )
@@ -153,14 +153,14 @@ fun PrayerTimeCard(
                 ){
                     Text(
                         text = countDownText,
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                     )
                     Spacer(modifier = Modifier.width(MaterialTheme.dimens.size40))
                     Text(
                         text = time,
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                     )

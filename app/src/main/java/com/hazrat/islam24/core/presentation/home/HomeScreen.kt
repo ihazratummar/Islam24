@@ -192,10 +192,7 @@ private fun TimeLocationCard(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 DisplayCurrentPrayerName(
-                    prayerTimeEntity, textStyle = TextStyle(
-                        fontSize = 35.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    prayerTimeEntity,
                 )
 
                 Text(
