@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -62,19 +63,28 @@ fun ShowData(
 ) {
     val prayerTimes by viewModel.prayerTimes.collectAsState()
 
+    val methods = prayerTimes.firstOrNull()
+
     Scaffold(
         modifier = Modifier,
         topBar = {
 
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.prayer_times),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                    Column {
+                        Text(
+                            text = stringResource(R.string.prayer_times),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = "${methods?.methodName?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
                 },
                 actions = {
-                    Icon(imageVector = Icons.Default.Settings,
+                    Icon(painter = painterResource(id = R.drawable.settings),
                         contentDescription = "Setting Icon",
                         modifier = Modifier
                             .clickable {
@@ -113,7 +123,6 @@ fun ViewPager(
     }
     val initialPage =
         if (todayIndex != -1) todayIndex else todayDay - 1 // Use 0 as the default page if today's date is not found
-
     val pagerState = rememberPagerState(
         pageCount = { prayerTimes.size },
         initialPage = initialPage
@@ -138,7 +147,10 @@ fun ViewPager(
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun PrayerTimesDay(data: PrayerTimeEntity, navController: NavController) {
+fun PrayerTimesDay(
+    data: PrayerTimeEntity,
+    navController: NavController
+) {
     val gregorianDay = data.gregorianDay.toInt()
     val hijriDay = data.hijriDay
 

@@ -1,24 +1,24 @@
 package com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel
 
-data class MethodDetails(
+data class CalculationMethodDetails(
     val method: Int,
     val name: String
 )
 
 val prayerMethods = listOf(
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 0,
         name = "Shia Ithna-Ashari"
     ),
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 1,
         name = "University of Islamic Sciences, Karachi"
     ),
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 2,
         name = "Islamic Society of North America"
     ),
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 3,
         name = "Muslim World League"
     ),
@@ -46,23 +46,23 @@ val prayerMethods = listOf(
 //        method = 10,
 //        name = "Qatar"
 //    ),
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 11,
         name = "Majlis Ugama Islam Singapura, Singapore"
     ),
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 12,
         name = "Union Organization Islamic de France"
     ),
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 13,
         name = "SDiyanet İşleri Başkanlığı, Turkey"
     ),
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 14,
         name = "Spiritual Administration of Muslims of Russia"
     ),
-    com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails(
+    CalculationMethodDetails(
         method = 15,
         name = "Moonsighting Committee Worldwide"
     ),

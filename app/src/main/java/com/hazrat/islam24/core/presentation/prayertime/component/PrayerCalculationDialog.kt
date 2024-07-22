@@ -3,6 +3,7 @@ package com.hazrat.islam24.core.presentation.prayertime.component
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -29,16 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import com.hazrat.islam24.R
-import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.CalculationMethodDetails
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.prayerMethods
 import com.hazrat.islam24.ui.theme.dimens
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MethodSelectionDialog(
+fun PrayerCalculationDialog(
     showMethodSelectionDialog: Boolean,
-    onMethodSelected: (MethodDetails) -> Unit,
+    onMethodSelected: (CalculationMethodDetails) -> Unit,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheetLayout(
@@ -53,17 +55,19 @@ fun MethodSelectionDialog(
                     item{
                         Text(
                             text = stringResource(id = R.string.prayer_times),
-                            style = TextStyle(fontSize = 10.sp),
+                            style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(top = MaterialTheme.dimens.size30)
                         )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size10))
                     }
                     items(prayerMethods.size) { index ->
                         val method = prayerMethods[index]
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(MaterialTheme.dimens.size60)
                                 .padding(vertical = MaterialTheme.dimens.size5)
                                 .clickable {
                                     onMethodSelected(method)
@@ -80,10 +84,12 @@ fun MethodSelectionDialog(
                             ) {
                                 Text(
                                     text = method.name,
-                                    color = Color.White,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
                                 )
                             }
+                            Divider(color = MaterialTheme.colorScheme.inverseOnSurface)
                         }
                     }
                 }
@@ -94,7 +100,7 @@ fun MethodSelectionDialog(
             initialValue = if (showMethodSelectionDialog) ModalBottomSheetValue.Expanded else ModalBottomSheetValue.Hidden
         ),
         sheetShape = MaterialTheme.shapes.large,
-        sheetBackgroundColor = Color(0xff031600) ,
+        sheetBackgroundColor = MaterialTheme.colorScheme.surfaceContainerLow ,
         sheetContentColor = MaterialTheme.colorScheme.surface
     ) {
         // Empty content
