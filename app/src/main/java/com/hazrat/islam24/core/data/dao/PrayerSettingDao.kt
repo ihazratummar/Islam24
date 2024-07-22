@@ -5,7 +5,9 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.hazrat.islam24.core.data.entity.PrayerSettingEntity
+import androidx.room.Upsert
+import com.hazrat.islam24.core.data.entity.PrayerCalculationEntity
+import com.hazrat.islam24.core.data.entity.PrayerJuristicEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,33 +18,33 @@ interface PrayerSettingDao {
      *
      * @return Flow representing the list of prayer method settings as PrayerSettingEntity objects.
      */
-    @Query("SELECT * FROM method_entity")
-    fun getMethod(): Flow<List<PrayerSettingEntity>>
+    @Query("SELECT * FROM calculation_method_entity")
+    fun getCalculationMethod(): Flow<PrayerCalculationEntity>
+
+    @Query("SELECT * FROM juristic_method_entity")
+    fun getJuristicMethod(): Flow<PrayerJuristicEntity>
 
     /**
      * Inserts or updates a prayer method setting into the database.
      * If a setting with the same primary key already exists, it will be replaced.
      *
-     * @param prayerSettingEntity The PrayerSettingEntity object to be inserted or updated.
+     * @param prayerCalculationEntity The PrayerSettingEntity object to be inserted or updated.
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMethod(prayerSettingEntity: PrayerSettingEntity)
+    @Upsert()
+    suspend fun insertCalculationMethod(prayerCalculationEntity: PrayerCalculationEntity)
 
-    /**
-     * Updates a prayer method setting in the database.
-     * This method assumes that the setting already exists.
-     *
-     * @param prayerSettingEntity The updated PrayerSettingEntity object.
-     */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateMethod(prayerSettingEntity: PrayerSettingEntity)
+    @Upsert()
+    suspend fun insertJuristicMethod(prayerJuristicEntity: PrayerJuristicEntity)
 
     /**
      * Deletes all prayer method settings from the database.
      * This method is useful for cleaning up the database.
      */
-    @Query("DELETE FROM method_entity")
+    @Query("DELETE FROM calculation_method_entity")
     suspend fun deleteAllMethod()
+
+    @Query("DELETE FROM juristic_method_entity")
+    suspend fun deleteAllJuristic()
 
     /**
      * Deletes a specific prayer method setting from the database.
@@ -50,5 +52,8 @@ interface PrayerSettingDao {
      * @param prayerSettingEntity The PrayerSettingEntity object to be deleted.
      */
     @Delete
-    suspend fun deleteMethod(prayerSettingEntity: PrayerSettingEntity)
+    suspend fun deleteMethod(prayerSettingEntity: PrayerCalculationEntity)
+
+    @Delete
+    suspend fun deleteJuristic(prayerJuristicEntity: PrayerJuristicEntity)
 }
