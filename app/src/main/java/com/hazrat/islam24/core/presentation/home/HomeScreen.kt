@@ -42,6 +42,7 @@ import com.hazrat.islam24.core.presentation.common.LocationName
 import com.hazrat.islam24.core.presentation.home.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.core.presentation.home.component.DisplayCurrentPrayerTime
 import com.hazrat.islam24.core.presentation.home.component.LazyRowWithCards
+import com.hazrat.islam24.core.presentation.home.component.isPrayerTime
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
@@ -147,7 +148,6 @@ private fun TimeLocationCard(
     navigateToPrayerTime: () -> Unit,
     locationDetailsEntity: LocationDetailsEntity,
     viewModel: MainViewModel = hiltViewModel(),
-    homeViewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     Card(
         modifier = Modifier
@@ -212,7 +212,7 @@ private fun TimeLocationCard(
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
                 val grday = getCurrentDay()
                 val hijriday = viewModel.getHijriDay()
-                if (homeViewModel.isPrayerTime(prayerTimeEntity, grday, hijriday)) {
+                if (isPrayerTime(prayerTimeEntity, grday, hijriday)) {
                     Text(
                         text = stringResource(id = R.string.now),
                         style = MaterialTheme.typography.bodyLarge,

@@ -29,6 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import com.hazrat.islam24.R
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.prayerMethods
 import com.hazrat.islam24.ui.theme.dimens
 
 
@@ -36,7 +38,7 @@ import com.hazrat.islam24.ui.theme.dimens
 @Composable
 fun MethodSelectionDialog(
     showMethodSelectionDialog: Boolean,
-    onMethodSelected: (com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.MethodDetails) -> Unit,
+    onMethodSelected: (MethodDetails) -> Unit,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheetLayout(
@@ -52,12 +54,12 @@ fun MethodSelectionDialog(
                         Text(
                             text = stringResource(id = R.string.prayer_times),
                             style = TextStyle(fontSize = 10.sp),
-                            color = Color(0xFFFFFFFF),
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(top = MaterialTheme.dimens.size30)
                         )
                     }
-                    items(com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.prayerMethods.size) { index ->
-                        val method = com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.prayerMethods[index]
+                    items(prayerMethods.size) { index ->
+                        val method = prayerMethods[index]
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()

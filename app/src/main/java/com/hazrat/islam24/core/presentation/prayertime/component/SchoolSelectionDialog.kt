@@ -25,13 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.SchoolDetails
+import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SchoolSelectionDialog(
     showSchoolSelectionDialog: Boolean,
-    onSchoolSelected: (com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.SchoolDetails) -> Unit,
+    onSchoolSelected: (SchoolDetails) -> Unit,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheetLayout(
@@ -56,12 +58,14 @@ fun SchoolSelectionDialog(
                             Box(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(text = "Select School of thought for changing the Asr Time", color = Color.White)
+                                Text(text = "Select School of thought for changing the Asr Time",
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
                             }
                         }
                     }
-                    items(com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList.size){ index ->
-                        val school = com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList[index]
+                    items(schoolDetailsList.size){ index ->
+                        val school = schoolDetailsList[index]
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
