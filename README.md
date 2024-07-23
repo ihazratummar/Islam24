@@ -1,8 +1,23 @@
 # Islamic 24 Application
 
-A simple and easy-to-use Islamic app without any ad popups or distractions, focused on prayer times.
+**Embrace the Serenity of Faith with Islamic 24**
 
-![Logo](https://media.discordapp.net/attachments/1244897208453693461/1244897266188161064/mosque.png?ex=66995c2d&is=66980aad&hm=a8d6ebddaaf8d338a1b0f815881af3713dd6c72e458e65ca8540f5668ac63b01&=&format=webp&quality=lossless&width=203&height=350)
+Discover a seamless and intuitive Islamic app crafted to enhance your spiritual journey. **Islamic 24** offers a clutter-free experience with no ad interruptions, allowing you to focus entirely on your prayers and religious obligations.
+
+<div align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.hazrat.islam24">
+    <img src="https://img.icons8.com/?size=100&id=118627&format=png&color=000000" alt="Google Playstore"/>
+  </a>
+</div>
+
+---
+
+## Key Features:
+- **Accurate Prayer Times**: Stay punctual with precise prayer timings based on your location.
+- **Islamic Calendar**: Never miss important Islamic dates and events.
+- **Zikr & Tasbih**: Keep track of your supplications and dhikr with ease.
+- **No Ads**: Enjoy a seamless experience without any interruptions.
+- **No Tracker**: Your privacy is our priority.
 
 ---
 
@@ -19,14 +34,14 @@ A simple and easy-to-use Islamic app without any ad popups or distractions, focu
 2. ![Islamic Calendar](https://img.icons8.com/?size=30&id=a2wLbmUJ3x4y&format=png&color=000000) **Islamic Calendar:** Keep track of important Islamic dates.
 3. ![Zikr](https://img.icons8.com/?size=30&id=UaUPkdzCxbCt&format=png&color=000000) **Zikr:** A collection of supplications and remembrances.
 4. ![Tasbih](https://img.icons8.com/?size=30&id=pL3eOc0xrPsO&format=png&color=000000) **Tasbih:** Digital counter for your Tasbih needs.
+5. ![Qibla Direction](https://img.icons8.com/?size=30&id=22lwhESSqHNw&format=png&color=000000) **Qibla Direction:** Easy-to-use Qibla compass to find the direction of the Kaaba.
 
 ---
 
 **Upcoming Features:**
-1. ![Qibla Direction](https://img.icons8.com/?size=30&id=22lwhESSqHNw&format=png&color=000000) **Qibla Direction:** Easy-to-use Qibla compass to find the direction of the Kaaba.
-2. ![Zakat Calculator](https://img.icons8.com/?size=30&id=cp8BMs7vNblP&format=png&color=000000) **Zakat Calculator:** Calculate your Zakat with ease.
-3. ![Duas](https://img.icons8.com/?size=30&id=wJfaXYIQCMLt&format=png&color=000000) **Duas:** A comprehensive collection of daily Duas.
-4. ![Islamic Quiz](https://img.icons8.com/?size=30&id=WPrc6tXLWBBQ&format=png&color=000000) **Islamic Quiz:** Test your knowledge with Islamic quizzes.
-5. ![User Profile](https://img.icons8.com/?size=30&id=qVcjfxtIiPix&format=png&color=000000) **User Profile:** Customize your profile within the app.
-6. ![Nearby Halal Places](https://img.icons8.com/?size=30&id=37713&format=png&color=000000) **Nearby Halal Places:** Find Halal restaurants and shops near you.
-7. ![Nearby Masjids](https://img.icons8.com/?size=30&id=rRRmNzuBSYaF&format=png&color=000000) **Nearby Masjids:** Locate the closest Masjids for prayer.
+1. ![Zakat Calculator](https://img.icons8.com/?size=30&id=cp8BMs7vNblP&format=png&color=000000) **Zakat Calculator:** Calculate your Zakat with ease.
+2. ![Duas](https://img.icons8.com/?size=30&id=wJfaXYIQCMLt&format=png&color=000000) **Duas:** A comprehensive collection of daily Duas.
+3. ![Islamic Quiz](https://img.icons8.com/?size=30&id=WPrc6tXLWBBQ&format=png&color=000000) **Islamic Quiz:** Test your knowledge with Islamic quizzes.
+4. ![User Profile](https://img.icons8.com/?size=30&id=qVcjfxtIiPix&format=png&color=000000) **User Profile:** Customize your profile within the app.
+5. ![Nearby Halal Places](https://img.icons8.com/?size=30&id=37713&format=png&color=000000) **Nearby Halal Places:** Find Halal restaurants and shops near you.
+6. ![Nearby Masjids](https://img.icons8.com/?size=30&id=rRRmNzuBSYaF&format=png&color=000000) **Nearby Masjids:** Locate the closest Masjids for prayer.

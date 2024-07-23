@@ -29,169 +29,479 @@ val Arabic = FontFamily(
     )
 )
 
+val Hidaya = FontFamily(
+    fonts = listOf(
+        Font(R.font.hidayatullah)
+    )
+)
+
 
 // Set of Material typography styles to start with
 val CompactTypography = Typography(
-    displaySmall = TextStyle(
-        fontSize = 24.sp,
-        fontFamily = Poppins,
+    displayLarge = TextStyle(
+        fontSize = 28.sp,
         fontWeight = FontWeight.Normal,
-        lineHeight = 36.sp,
+        fontFamily = Poppins,
+        lineHeight = 42.sp
     ),
     displayMedium = TextStyle(
-        fontSize = 32.sp,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Normal,
+        fontFamily = Poppins,
+        lineHeight = 36.sp
+    ),
+    displaySmall = TextStyle(
+        fontSize = 20.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 48.sp,
+        lineHeight = 30.sp
     ),
-    bodySmall = TextStyle(
+    headlineLarge = TextStyle(
+        fontSize = 22.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 32.sp
+    ),
+    headlineMedium = TextStyle(
+        fontSize = 20.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 30.sp
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 28.sp
+    ),
+    titleLarge = TextStyle(
+        fontSize = 16.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 24.sp
+    ),
+    titleMedium = TextStyle(
         fontSize = 14.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 21.sp,
+        lineHeight = 22.sp
+    ),
+    titleSmall = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 20.sp
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 21.sp
+    ),
+    bodyMedium = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 19.sp
+    ),
+    bodySmall = TextStyle(
+        fontSize = 10.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 18.sp
+    ),
+    labelLarge = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 20.sp
+
+    ),
+    labelMedium = TextStyle(
+        fontSize = 10.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 18.sp
+    ),
+    labelSmall = TextStyle(
+        fontSize = 8.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 15.sp
+    )
+)
+
+val CompactMediumTypography = Typography(
+    displayLarge = TextStyle(
+        fontSize = 32.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 48.sp
+    ),
+    displayMedium = TextStyle(
+        fontSize = 30.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 46.sp
+    ),
+    displaySmall = TextStyle(
+        fontSize = 28.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 42.sp
+    ),
+    headlineLarge = TextStyle(
+        fontSize = 26.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 38.sp
+    ),
+    headlineMedium = TextStyle(
+        fontSize = 24.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 36.sp
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 22.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 34.sp
+    ),
+    titleLarge = TextStyle(
+        fontSize = 20.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 32.sp
+    ),
+    titleMedium = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 30.sp
+    ),
+    titleSmall = TextStyle(
+        fontSize = 16.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 28.sp
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 25.sp
     ),
     bodyMedium = TextStyle(
         fontSize = 16.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 24.sp,
-    ),
-    labelSmall = TextStyle(
-        fontSize = 13.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 19.sp,
-    )
-)
-val CompactMediumTypography  = Typography(
-    displaySmall = TextStyle(
-        fontSize = 22.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 34.sp,
-    ),
-    displayMedium = TextStyle(
-        fontSize = 30.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 46.sp,
+        lineHeight = 24.sp
     ),
     bodySmall = TextStyle(
-        fontSize = 12.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 19.sp,
-    ),
-    bodyMedium = TextStyle(
         fontSize = 14.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 22.sp,
+        lineHeight = 22.sp
+    ),
+    labelLarge = TextStyle(
+        fontSize = 16.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 22.sp
+    ),
+    labelMedium = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 20.sp
     ),
     labelSmall = TextStyle(
-        fontSize = 11.sp,
+        fontSize = 12.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 17.sp,
-    ),
+        lineHeight = 18.sp
+    )
 )
 
-val CompactSmallTypography  = Typography(
-    displaySmall = TextStyle(
-        fontSize = 18.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 30.sp,
-    ),
-    displayMedium = TextStyle(
+
+val CompactSmallTypography = Typography(
+    displayLarge = TextStyle(
         fontSize = 26.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 42.sp,
-    ),
-    bodySmall = TextStyle(
-        fontSize = 8.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 15.sp,
-    ),
-    bodyMedium = TextStyle(
-        fontSize = 10.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 18.sp,
-    ),
-    labelSmall = TextStyle(
-        fontSize = 7.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 13.sp,
-    ),
-)
-
-val MediumTypography  = Typography(
-    displaySmall = TextStyle(
-        fontSize = 30.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 42.sp,
+        lineHeight = 40.sp
     ),
     displayMedium = TextStyle(
-        fontSize = 38.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 54.sp,
-    ),
-    bodySmall = TextStyle(
-        fontSize = 20.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 27.sp,
-    ),
-    bodyMedium = TextStyle(
-        fontSize = 22.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 30.sp,
-    ),
-    labelSmall = TextStyle(
-        fontSize = 19.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 25.sp,
-    ),
-)
-
-
-val ExpandedTypography   = Typography(
-    displaySmall = TextStyle(
-        fontSize = 34.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 46.sp,
-    ),
-    displayMedium = TextStyle(
-        fontSize = 42.sp,
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        lineHeight = 58.sp,
-    ),
-    bodySmall = TextStyle(
         fontSize = 24.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 31.sp,
+        lineHeight = 38.sp
+    ),
+    displaySmall = TextStyle(
+        fontSize = 22.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 36.sp
+    ),
+    headlineLarge = TextStyle(
+        fontSize = 20.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 34.sp
+    ),
+    headlineMedium = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 32.sp
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 16.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 30.sp
+    ),
+    titleLarge = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 28.sp
+    ),
+    titleMedium = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 26.sp
+    ),
+    titleSmall = TextStyle(
+        fontSize = 10.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 24.sp
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 21.sp
     ),
     bodyMedium = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 19.sp
+    ),
+    bodySmall = TextStyle(
+        fontSize = 10.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 18.sp
+    ),
+    labelLarge = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 20.sp
+    ),
+    labelMedium = TextStyle(
+        fontSize = 10.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 18.sp
+    ),
+    labelSmall = TextStyle(
+        fontSize = 8.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 15.sp
+    )
+)
+
+
+val MediumTypography = Typography(
+    displayLarge = TextStyle(
+        fontSize = 34.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 50.sp
+    ),
+    displayMedium = TextStyle(
+        fontSize = 30.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 46.sp
+    ),
+    displaySmall = TextStyle(
         fontSize = 26.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 34.sp,
+        lineHeight = 42.sp
     ),
-    labelSmall = TextStyle(
-        fontSize = 23.sp,
+    headlineLarge = TextStyle(
+        fontSize = 28.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 29.sp,
+        lineHeight = 40.sp
     ),
+    headlineMedium = TextStyle(
+        fontSize = 26.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 38.sp
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 24.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 36.sp
+    ),
+    titleLarge = TextStyle(
+        fontSize = 22.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 34.sp
+    ),
+    titleMedium = TextStyle(
+        fontSize = 20.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 32.sp
+    ),
+    titleSmall = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 30.sp
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 20.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 27.sp
+    ),
+    bodyMedium = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 25.sp
+    ),
+    bodySmall = TextStyle(
+        fontSize = 16.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 24.sp
+    ),
+    labelLarge = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 24.sp
+    ),
+    labelMedium = TextStyle(
+        fontSize = 16.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 22.sp
+    ),
+    labelSmall = TextStyle(
+        fontSize = 14.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 20.sp
+    )
+)
+
+
+val ExpandedTypography = Typography(
+    displayLarge = TextStyle(
+        fontSize = 40.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 56.sp
+    ),
+    displayMedium = TextStyle(
+        fontSize = 36.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 52.sp
+    ),
+    displaySmall = TextStyle(
+        fontSize = 32.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 48.sp
+    ),
+    headlineLarge = TextStyle(
+        fontSize = 34.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 50.sp
+    ),
+    headlineMedium = TextStyle(
+        fontSize = 32.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 48.sp
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 30.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 46.sp
+    ),
+    titleLarge = TextStyle(
+        fontSize = 28.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 42.sp
+    ),
+    titleMedium = TextStyle(
+        fontSize = 26.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 40.sp
+    ),
+    titleSmall = TextStyle(
+        fontSize = 24.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 38.sp
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 26.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 34.sp
+    ),
+    bodyMedium = TextStyle(
+        fontSize = 24.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 31.sp
+    ),
+    bodySmall = TextStyle(
+        fontSize = 22.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 30.sp
+    ),
+    labelLarge = TextStyle(
+        fontSize = 22.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 28.sp
+    ),
+    labelMedium = TextStyle(
+        fontSize = 20.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 26.sp
+    ),
+    labelSmall = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Poppins,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 24.sp
+    )
 )

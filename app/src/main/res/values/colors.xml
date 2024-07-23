@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- home_page colors -->
-
-	<color name="colorPrimary">#008577</color>
-	<color name="colorPrimaryDark">#00574B</color>
-	<color name="colorAccent">#D81B60</color>
-	<color name="black">#FF000000</color>
-	<color name="white">#FFFFFFFF</color>
-	<color name="ThemeText">#0E6443</color>
-
-
 	///prayer colors
 	<color name="primary">#054E05</color>
 	<color name="background_color">#E7FCE6</color>
-	<color name="body">#4E4B66</color>
 	<color name="text">#031600</color>
 
 

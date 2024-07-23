@@ -23,8 +23,8 @@
     <string name="maghrib">মাগরিব</string>
     <string name="isha_a">ইশা</string>
     <string name="prayer_setting">নামাজের সেটিংস</string>
-    <string name="prayer_method">নামাজের সময় পদ্ধতি</string>
+    <string name="calculation_method">নামাজের সময় পদ্ধতি</string>
     <string name="juristic_method">ফিকাহাবিদের পদ্ধতি</string>
-    <string name="midnight">মধ্যরাত</string>
     <string name="now">এখন</string>
+    <string name="kaba">কিবলা</string>
 </resources>

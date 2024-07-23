@@ -13,7 +13,7 @@ import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.hazrat.islam24.domain.repository.location.LocationRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.location.LocationRepositoryImpl
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
