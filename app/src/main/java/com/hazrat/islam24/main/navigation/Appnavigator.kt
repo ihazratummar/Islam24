@@ -46,8 +46,6 @@ fun AppNavigator(
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
-            BottomNavigationItem(icon = R.drawable.qiblaiconnav, text = "Qibla"),
-//            BottomNavigationItem(icon = R.drawable.profile, text = "Profile")
         )
     }
 
@@ -60,17 +58,13 @@ fun AppNavigator(
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.PrayerTimeScreen.route -> 1
-        Route.QiblaDirectionScreen.route -> 2
-//        Route.ProfileScreen.route -> 3
         else -> 0
     }
 
     //Hide the bottom navigation when the user is in the details screen
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
-                backStackState?.destination?.route == Route.QiblaDirectionScreen.route ||
-                backStackState?.destination?.route == Route.ProfileScreen.route
+                backStackState?.destination?.route == Route.PrayerTimeScreen.route
     }
     TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController, qiblaDirection, currentDirection)
 
@@ -103,16 +97,6 @@ private fun TotalContent(
                                 navController = navController,
                                 route = Route.PrayerTimeScreen.route
                             )
-
-                            2 -> navigateToTab(
-                                navController = navController,
-                                route = Route.QiblaDirectionScreen.route
-                            )
-
-//                            3 -> navigateToTab(
-//                                navController = navController,
-//                                route = Route.ProfileScreen.route
-//                            )
                         }
                     }
                 )
