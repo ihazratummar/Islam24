@@ -14,46 +14,36 @@ import kotlinx.coroutines.flow.Flow
 interface PrayerSettingDao {
 
     /**
-     * Retrieves the prayer method settings from the database.
+     * Retrieves all prayer calculation method settings from the database.
      *
-     * @return Flow representing the list of prayer method settings as PrayerSettingEntity objects.
+     * @return Flow representing the list of prayer calculation method settings as PrayerCalculationEntity objects.
      */
-    @Query("SELECT * FROM calculation_method_entity")
+    @Query("SELECT * FROM calculation_method_entity WHERE  id = 1")
     fun getCalculationMethod(): Flow<PrayerCalculationEntity>
 
-    @Query("SELECT * FROM juristic_method_entity")
+    /**
+     * Retrieves all prayer juristic method settings from the database.
+     *
+     * @return Flow representing the list of prayer juristic method settings as PrayerJuristicEntity objects.
+     */
+    @Query("SELECT * FROM juristic_method_entity WHERE  id = 1")
     fun getJuristicMethod(): Flow<PrayerJuristicEntity>
 
     /**
-     * Inserts or updates a prayer method setting into the database.
+     * Inserts or updates a prayer calculation method setting into the database.
      * If a setting with the same primary key already exists, it will be replaced.
      *
-     * @param prayerCalculationEntity The PrayerSettingEntity object to be inserted or updated.
+     * @param prayerCalculationEntity The PrayerCalculationEntity object to be inserted or updated.
      */
-    @Upsert()
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCalculationMethod(prayerCalculationEntity: PrayerCalculationEntity)
 
-    @Upsert()
-    suspend fun insertJuristicMethod(prayerJuristicEntity: PrayerJuristicEntity)
-
     /**
-     * Deletes all prayer method settings from the database.
-     * This method is useful for cleaning up the database.
-     */
-    @Query("DELETE FROM calculation_method_entity")
-    suspend fun deleteAllMethod()
-
-    @Query("DELETE FROM juristic_method_entity")
-    suspend fun deleteAllJuristic()
-
-    /**
-     * Deletes a specific prayer method setting from the database.
+     * Inserts or updates a prayer juristic method setting into the database.
+     * If a setting with the same primary key already exists, it will be replaced.
      *
-     * @param prayerSettingEntity The PrayerSettingEntity object to be deleted.
+     * @param prayerJuristicEntity The PrayerJuristicEntity object to be inserted or updated.
      */
-    @Delete
-    suspend fun deleteMethod(prayerSettingEntity: PrayerCalculationEntity)
-
-    @Delete
-    suspend fun deleteJuristic(prayerJuristicEntity: PrayerJuristicEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertJuristicMethod(prayerJuristicEntity: PrayerJuristicEntity)
 }

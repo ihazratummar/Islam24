@@ -19,5 +19,5 @@ interface NamesApi {
      * @return NamesDataModel containing the names of Allah.
      */
     @GET("99_Names_Of_Allah.json")
-    suspend fun getAllNames(): com.hazrat.islam24.core.domain.model.namesofallah.NamesDataModel
+    suspend fun getAllNames(): NamesDataModel
 }

@@ -10,11 +10,33 @@ class PrayerSettingRepository @Inject constructor(
     private val prayerSettingDao: PrayerSettingDao
 ) {
 
+    /**
+     * Retrieves the prayer calculation method from the database.
+     *
+     * @return Flow representing the prayer calculation method as a PrayerCalculationEntity object.
+     */
     fun getCalculationMethod(): Flow<PrayerCalculationEntity> = prayerSettingDao.getCalculationMethod()
+
+    /**
+     * Retrieves the prayer juristic method from the database.
+     *
+     * @return Flow representing the prayer juristic method as a PrayerJuristicEntity object.
+     */
     fun getJuristicMethod(): Flow<PrayerJuristicEntity> = prayerSettingDao.getJuristicMethod()
+
+    /**
+     * Inserts or updates a prayer calculation method into the database.
+     * If a method with the same primary key already exists, it will be replaced.
+     *
+     * @param prayerSettingEntity The PrayerCalculationEntity object to be inserted or updated.
+     */
     suspend fun insertCalculationMethod(prayerSettingEntity: PrayerCalculationEntity) = prayerSettingDao.insertCalculationMethod(prayerSettingEntity)
-    suspend fun deleteCalculationMethod() = prayerSettingDao.deleteAllMethod()
-    suspend fun deleteJuristicMethod() = prayerSettingDao.deleteAllJuristic()
-    suspend fun deleteMethod(prayerSettingEntity: PrayerCalculationEntity) = prayerSettingDao.deleteMethod(prayerSettingEntity)
+
+    /**
+     * Inserts or updates a prayer juristic method into the database.
+     * If a method with the same primary key already exists, it will be replaced.
+     *
+     * @param prayerSettingEntity The PrayerJuristicEntity object to be inserted or updated.
+     */
     suspend fun insertJuristicMethod(prayerSettingEntity: PrayerJuristicEntity) = prayerSettingDao.insertJuristicMethod(prayerSettingEntity)
 }

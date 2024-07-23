@@ -1,7 +1,5 @@
 package com.hazrat.islam24.core.data.dao
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
