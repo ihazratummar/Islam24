@@ -41,7 +41,7 @@ import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
 import com.hazrat.islam24.core.presentation.home.component.DisplayCurrentPrayerName
 import com.hazrat.islam24.core.presentation.home.component.DisplayCurrentPrayerTime
-import com.hazrat.islam24.core.presentation.home.component.LazyRowWithCards
+import com.hazrat.islam24.core.presentation.home.component.LazyVerticalGridCardIcons
 import com.hazrat.islam24.core.presentation.home.component.isPrayerTime
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
@@ -103,7 +103,7 @@ fun HomeScreen(
                     .padding(MaterialTheme.dimens.size10),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LazyRowWithCards(navController)
+                LazyVerticalGridCardIcons(navController)
             }
         }
     }

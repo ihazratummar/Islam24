@@ -28,5 +28,6 @@
     <string name="calculation_method">Calculation Method</string>
     <string name="juristic_method">Prayer Method</string>
     <string name="now">NOW</string>
+    <string name="kaba">Qibla</string>
 
 </resources>
