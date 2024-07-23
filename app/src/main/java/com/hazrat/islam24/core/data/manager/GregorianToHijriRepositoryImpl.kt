@@ -29,20 +29,16 @@ class GregorianToHijriRepositoryImpl(
      */
     override suspend fun getGregorianToHijriDate(): com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse {
         val date = DateUtil.getCurrentDate()
-        Log.d("Grego to Hijri Rep", "Hijri date response: $date")
         try {
             val response = api.getGtoHDate(date)
             if (response.code == 200 && response.status == "OK") {
-                Log.d("Repository", "Hijri date response: $response")
                 saveResponseToDatabase(response)
                 return response
             } else {
                 // Handle error cases appropriately
-                Log.e("Repository", "Failed to get Hijri date: ${response.status}")
                 throw Exception("Failed to get Hijri date: ${response.status}")
             }
         } catch (e: Exception) {
-            Log.e("Grego to Hijri Repository", "Exception occurred: ${e.message}")
             throw e
         }
     }

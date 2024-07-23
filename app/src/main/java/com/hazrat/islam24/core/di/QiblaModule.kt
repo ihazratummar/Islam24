@@ -1,4 +1,4 @@
-package com.hazrat.islam24.di
+package com.hazrat.islam24.core.di
 
 import android.content.Context
 import android.hardware.SensorManager

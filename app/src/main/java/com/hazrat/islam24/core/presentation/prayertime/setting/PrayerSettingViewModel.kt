@@ -56,9 +56,8 @@ class PrayerSettingViewModel @Inject constructor(
         when (event) {
             is PrayerSettingEvent.CalculationChanged -> {
                 viewModelScope.launch {
-                    repository.deleteCalculationMethod()
                     repository.insertCalculationMethod(
-                        PrayerCalculationEntity(event.value)
+                        PrayerCalculationEntity(method = event.value)
                     )
                     prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
                 }
@@ -66,9 +65,8 @@ class PrayerSettingViewModel @Inject constructor(
 
             is PrayerSettingEvent.JuristicChanged -> {
                 viewModelScope.launch {
-                    repository.deleteJuristicMethod()
                     repository.insertJuristicMethod(
-                        PrayerJuristicEntity(event.value)
+                        PrayerJuristicEntity(school = event.value)
 
                     )
                     prayerTimeRepository.fetchAndSavePrayerTimesForMonth()

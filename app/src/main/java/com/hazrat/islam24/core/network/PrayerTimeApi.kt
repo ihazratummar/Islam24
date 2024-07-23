@@ -34,5 +34,5 @@ interface PrayerTimeApi {
         @Query("longitude") longitude: String,
         @Query("method") method: Int,
         @Query("school") school: Int
-    ): com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.ApiResponse
+    ): ApiResponse
 }
