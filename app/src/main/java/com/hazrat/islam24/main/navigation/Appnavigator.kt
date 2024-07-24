@@ -52,10 +52,10 @@ fun AppNavigator(
                 route = Route.PrayerTimeScreen.route,
                 icon = R.drawable.pray, text = "Time"
             ),
-            BottomNavigationItem(
-                route = Route.ProfileScreen.route,
-                icon = R.drawable.profile, text = "Profile"
-            ),
+//            BottomNavigationItem(
+//                route = Route.ProfileScreen.route,
+//                icon = R.drawable.profile, text = "Profile"
+//            ),
         )
     }
 
@@ -68,7 +68,7 @@ fun AppNavigator(
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.PrayerTimeScreen.route -> 1
-        Route.ProfileScreen.route -> 2
+//        Route.ProfileScreen.route -> 2
         else -> 0
     }
 
@@ -114,10 +114,10 @@ private fun TotalContent(
                                 route = Route.PrayerTimeScreen.route
                             )
 
-                            2 -> navigateToTab(
-                                navController = navController,
-                                route = Route.ProfileScreen.route
-                            )
+//                            2 -> navigateToTab(
+//                                navController = navController,
+//                                route = Route.ProfileScreen.route
+//                            )
                         }
                     }
                 )
@@ -165,7 +165,7 @@ private fun TotalContent(
             composable(route = Route.AthkarScreen.route) {
                 AthkarScreen(navController)
             }
-            authNavGraph(navController)
+//            authNavGraph(navController)
         }
     }
 }
