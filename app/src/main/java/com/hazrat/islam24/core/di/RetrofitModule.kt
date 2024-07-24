@@ -12,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,8 +29,21 @@ object RetrofitModule {
     private val logging = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
     }
+
+    private val retryInterceptor = Interceptor { chain ->
+        var response = chain.proceed(chain.request())
+        var tryCount = 0
+        val maxLimit = 3 // Number of retries
+        while (!response.isSuccessful && tryCount < maxLimit) {
+            tryCount++
+            response = chain.proceed(chain.request())
+        }
+        response
+    }
+
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(logging)
+        .addInterceptor(retryInterceptor)
         .connectTimeout(5, TimeUnit.MINUTES)
         .writeTimeout(5, TimeUnit.MINUTES)
         .readTimeout(5, TimeUnit.MINUTES)
