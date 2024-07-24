@@ -13,6 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -32,8 +35,8 @@ import com.hazrat.islam24.core.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.main.navigation.component.AppBottomNavigation
 import com.hazrat.islam24.main.navigation.component.BottomNavigationItem
 import com.hazrat.islam24.main.navigation.nvgraph.Route
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -42,22 +45,24 @@ fun AppNavigator(
     qiblaDirection: Float,
     currentDirection: Float
 ) {
-    val bottomNavigationItem = remember {
+    val bottomNavigationItem =
         listOf(
             BottomNavigationItem(
                 route = Route.HomeScreen.route,
-                icon = R.drawable.naviconhome, text = "Home"
+                icon =  R.drawable.naviconhome,
+                text = "Home"
             ),
             BottomNavigationItem(
                 route = Route.PrayerTimeScreen.route,
-                icon = R.drawable.pray, text = "Time"
+                icon = R.drawable.pray,
+                text = "Time"
             ),
 //            BottomNavigationItem(
 //                route = Route.ProfileScreen.route,
 //                icon = R.drawable.profile, text = "Profile"
 //            ),
         )
-    }
+
 
     val navController = rememberNavController()
     val backStackState by navController.currentBackStackEntryAsState()
@@ -73,7 +78,8 @@ fun AppNavigator(
     }
 
     //Hide the bottom navigation when the user is in the details screen
-    val isBottomBarVisible = bottomNavigationItem.any { it.route == backStackState?.destination?.route }
+    val isBottomBarVisible =
+        bottomNavigationItem.any { it.route == backStackState?.destination?.route }
 
     TotalContent(
         isBottomBarVisible,

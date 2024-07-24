@@ -1,4 +1,4 @@
-package com.hazrat.islam24.presentation.mainActivity
+package com.hazrat.islam24.main.mainActivity
 
 import android.util.Log
 import androidx.compose.runtime.State
@@ -166,10 +166,9 @@ class MainViewModel @Inject constructor(
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
             locationNameRepository.fetchLocationName()
-            namesRepository.getAllahNamesFromApi()
             gregorianToHijriRepository.getGregorianToHijriDate()
             hijriCalendarRepository.getHijriCalendarFromApi()
-
+            namesRepository.getAllahNamesFromApi()
         }
     }
 

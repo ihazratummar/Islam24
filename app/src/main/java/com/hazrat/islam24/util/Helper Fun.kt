@@ -7,6 +7,8 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -43,4 +45,11 @@ fun vibrateDevice(context: Context, vibrateTime: Long) {
             )
         )
     }
+}
+
+fun NavController.popUpTo(destination: String) = navigate(destination) {
+    popUpTo(graph.findStartDestination().id) {
+        saveState = true
+    }
+    restoreState = true
 }

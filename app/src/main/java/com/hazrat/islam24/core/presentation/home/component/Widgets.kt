@@ -34,19 +34,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
+import okhttp3.internal.immutableListOf
 
 @Composable
 fun LazyVerticalGridCardIcons(navController: NavController) {
 
-    val icons = listOf(
+    val icons = immutableListOf(
         R.drawable.allahname,
         R.drawable.tasbihicon,
         R.drawable.calendaricon,
@@ -54,7 +57,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
         R.drawable.goldqaba,
     )
 
-    val names = listOf(
+    val names = immutableListOf(
         stringResource(R.string.names),
         stringResource(R.string.tasbih),
         stringResource(R.string.calendar),
@@ -62,7 +65,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
         stringResource(id = R.string.qibla)
     )
 
-    val onClickLabel = listOf(
+    val onClickLabel = immutableListOf(
         stringResource(R.string.names),
         stringResource(R.string.tasbih),
         stringResource(R.string.calendar),
@@ -100,7 +103,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                         )
                     ) {
                         Icon(
-                            painter = painterResource(id = icons[index]),
+                            imageVector = ImageVector.vectorResource(id = icons[index]),
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier

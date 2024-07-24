@@ -1,7 +1,5 @@
 package com.hazrat.islam24.core.presentation.tasbih
 
-import android.content.Context
-import android.os.Vibrator
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,10 +43,9 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.core.domain.model.TasbihPhrase
 import com.hazrat.islam24.core.presentation.tasbih.tasbihcomponent.RepeatCountDialog
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.vibrate
 import com.hazrat.islam24.util.vibrateDevice
 
 @Composable

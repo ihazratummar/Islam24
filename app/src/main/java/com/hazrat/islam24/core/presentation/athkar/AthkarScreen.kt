@@ -44,7 +44,7 @@ fun AthkarScreen(navController: NavController) {
         mutableIntStateOf(0)
     }
     val pagerState = rememberPagerState {
-        com.hazrat.islam24.core.domain.model.athkar.tabItems.size
+        tabItems.size
     }
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
