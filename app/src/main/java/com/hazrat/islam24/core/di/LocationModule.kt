@@ -1,9 +1,9 @@
-package com.hazrat.islam24.di
+package com.hazrat.islam24.core.di
 
 import android.content.Context
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.hazrat.islam24.core.domain.repository.location.LocationRepositoryImpl
+import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
 import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
 import dagger.Module

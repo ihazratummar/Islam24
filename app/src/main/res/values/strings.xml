@@ -28,5 +28,8 @@
     <string name="calculation_method">Calculation Method</string>
     <string name="juristic_method">Prayer Method</string>
     <string name="now">NOW</string>
+    <string name="qibla">Qibla</string>
+    <string name="tasbihnames" translatable="false">Tasbih NAmes</string>
+    <string name="prayertimesandlocation">Prayer Times and Location</string>
 
 </resources>

@@ -27,32 +27,13 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private val logging = HttpLoggingInterceptor().apply {
-        setLevel(HttpLoggingInterceptor.Level.BODY)
-    }
-
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(logging)
-        .connectTimeout(5, TimeUnit.MINUTES)
-        .writeTimeout(5, TimeUnit.MINUTES)
-        .readTimeout(5, TimeUnit.MINUTES)
-        .build()
 
     @Singleton
     @Provides
     fun provideNamesRepository(api: NamesApi, nameDao: NameDao): NamesRepository =
         NamesRepositoryImpl(api, nameDao)
 
-    @Singleton
-    @Provides
-    fun provideNamesApi(): NamesApi {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL_NAME)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(NamesApi::class.java)
-    }
+
 
     @Singleton
     @Provides

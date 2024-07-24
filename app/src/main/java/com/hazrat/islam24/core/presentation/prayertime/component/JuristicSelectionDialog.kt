@@ -70,7 +70,7 @@ fun JuristicSelectionDialog(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = MaterialTheme.dimens.size10)
+                                .padding(vertical = MaterialTheme.dimens.size15)
                                 .clickable {
                                     onJuristicSelected(school)
                                     onDismiss()

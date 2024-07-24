@@ -21,5 +21,5 @@ interface GregorianToHijriApi {
     @GET("v1/gToH/{date}")
     suspend fun getGtoHDate(
         @Path("date") month: String
-    ): com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse
+    ): GregorianToHijriResponse
 }

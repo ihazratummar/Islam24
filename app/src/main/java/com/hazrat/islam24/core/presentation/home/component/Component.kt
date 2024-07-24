@@ -1,5 +1,8 @@
 package com.hazrat.islam24.core.presentation.home.component
 
+import android.graphics.drawable.Icon
+import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 
 /**

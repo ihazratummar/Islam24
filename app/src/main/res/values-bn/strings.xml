@@ -26,4 +26,6 @@
     <string name="calculation_method">নামাজের সময় পদ্ধতি</string>
     <string name="juristic_method">ফিকাহাবিদের পদ্ধতি</string>
     <string name="now">এখন</string>
+    <string name="qibla">কিবলা</string>
+    <string name="prayertimesandlocation">Prayer Times and Location</string>
 </resources>
