@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -27,7 +26,7 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.core.presentation.prayertime.component.JuristicSelectionDialog
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerCalculationDialog
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerSettingCard
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
