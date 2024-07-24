@@ -30,15 +30,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object CalendarModule {
 
-    private val logging = HttpLoggingInterceptor().apply {
-        setLevel(HttpLoggingInterceptor.Level.BODY)
-    }
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(logging)
-        .connectTimeout(5, TimeUnit.MINUTES)
-        .writeTimeout(5, TimeUnit.MINUTES)
-        .readTimeout(5, TimeUnit.MINUTES)
-        .build()
 
     @Singleton
     @Provides
@@ -46,16 +37,7 @@ object CalendarModule {
         return GregorianToHijriRepositoryImpl(api,gregorianToHijriDao)
     }
 
-    @Singleton
-    @Provides
-    fun provideGregorianToHijriApi(): GregorianToHijriApi {
-         return Retrofit.Builder()
-             .baseUrl(GTH_BASE_URL)
-             .client(okHttpClient)
-             .addConverterFactory(GsonConverterFactory.create())
-             .build()
-             .create(GregorianToHijriApi::class.java)
-    }
+
 
 
 

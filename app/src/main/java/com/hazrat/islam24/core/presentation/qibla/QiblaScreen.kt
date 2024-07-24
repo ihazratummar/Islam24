@@ -36,12 +36,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.presentation.common.LocationName
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.Hidaya
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.drawableToBitmap
@@ -66,7 +66,7 @@ import com.hazrat.islam24.util.vibrateDevice
 @Composable
 fun QiblaScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
+    navController: NavController,
     qiblaDirection: Float, currentDirection: Float,
     viewModel: MainViewModel = hiltViewModel()
 ) {
@@ -109,7 +109,7 @@ fun QiblaScreen(
                 modifier = Modifier.fillMaxWidth(),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.kaba),
+                        text = stringResource(id = R.string.qibla),
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 },

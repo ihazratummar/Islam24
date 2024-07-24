@@ -9,10 +9,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.service.*
 import com.hazrat.islam24.ui.theme.Islam24Theme
 import com.hazrat.islam24.util.calculateQiblaDirection
@@ -95,12 +96,13 @@ class MainActivity : ComponentActivity() {
 
         // Set the content view with Jetpack Compose
         setContent {
-            val qiblaState = viewModel.qiblaState.collectAsState()
             Islam24Theme {
+                val qiblaState by viewModel.qiblaState.collectAsState()
+                val navController = rememberNavController()
                 NavGraph(
                     startDestination = viewModel.startDestination.value,
-                    qiblaDirection = qiblaState.value.qiblaDirection,
-                    currentDirection = qiblaState.value.currentDirection
+                    qiblaDirection = qiblaState.qiblaDirection,
+                    currentDirection = qiblaState.currentDirection,
                 )
             }
         }

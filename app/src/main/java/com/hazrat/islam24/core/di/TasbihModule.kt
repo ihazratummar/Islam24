@@ -30,5 +30,4 @@ object TasbihModule {
     fun provideTasbihRepository(database: TasbihDatabase): TasbihRepository {
         return TasbihRepositoryImpl(database.tasbihCounterDao())
     }
-
 }

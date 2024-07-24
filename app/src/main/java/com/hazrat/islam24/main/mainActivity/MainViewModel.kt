@@ -1,4 +1,4 @@
-package com.hazrat.islam24.presentation.mainActivity
+package com.hazrat.islam24.main.mainActivity
 
 import android.util.Log
 import androidx.compose.runtime.State
@@ -57,7 +57,7 @@ class MainViewModel @Inject constructor(
     /**
      * app destination screen
      */
-    private val _startDestination = mutableStateOf(Route.HomeNavigation.route)
+    private val _startDestination = mutableStateOf(Route.RootNav.route)
     val startDestination: State<String> = _startDestination
 
     /**
@@ -127,17 +127,13 @@ class MainViewModel @Inject constructor(
 
 
     init {
-        _startDestination.value = Route.HomeNavigation.route
+        _startDestination.value = Route.RootNav.route
         viewModelScope.launch {
             delay(300)
             _splashCondition.value = false
             fetchDataFromDB()
         }
         observeNetworkStatus()
-        Log.d(
-            "New Degrees",
-            "Updating Current Direction to ${qiblaState.value.qiblaDirection} ${qiblaState.value.currentDirection}"
-        )
     }
 
     private fun fetchDataFromDB() {
@@ -147,7 +143,7 @@ class MainViewModel @Inject constructor(
             getAllPrayerTimes()
             locationName()
             locationNameRepository.getLocationDetails()
-            _names.value = namesRepository.getAllahNames()
+            _names.value = namesRepository.getAllahNamesFromDatabase()
             tasbihRepository.getTasbih()
                 .distinctUntilChanged()
                 .collectLatest { tasbihList ->
@@ -169,12 +165,10 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-//            locationNameRepository.getLocationName()
             locationNameRepository.fetchLocationName()
-            namesRepository.getAllNames()
             gregorianToHijriRepository.getGregorianToHijriDate()
             hijriCalendarRepository.getHijriCalendarFromApi()
-
+            namesRepository.getAllahNamesFromApi()
         }
     }
 
@@ -259,6 +253,11 @@ class MainViewModel @Inject constructor(
             locationNameRepository.getLocationDetails().distinctUntilChanged()
                 .collectLatest { locationName: List<LocationDetailsEntity> ->
                     if (locationName.isEmpty()) {
+                        if (_networkStatus.value == ConnectivityObserver.Status.Available){
+                            locationNameRepository.fetchLocationName()
+                        }else{
+                            return@collectLatest
+                        }
                         Log.d("LocationNameStatus", "Location list empty")
                     } else {
                         _locationName.value = locationName

@@ -68,7 +68,7 @@ fun PrayerCalculationDialog(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = MaterialTheme.dimens.size5)
+                                .padding(vertical = MaterialTheme.dimens.size15)
                                 .clickable {
                                     onMethodSelected(method)
                                     onDismiss()

@@ -7,18 +7,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun PrayerTimeScreen(viewModel: MainViewModel, navController:NavController) {
+fun PrayerTimeScreen(
+    viewModel: MainViewModel = hiltViewModel(),
+    navController: NavController
+) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        PrayerTimer(viewModel,navController)
+        PrayerTimer(viewModel, navController)
     }
 }

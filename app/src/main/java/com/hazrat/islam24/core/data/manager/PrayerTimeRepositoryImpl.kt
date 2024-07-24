@@ -8,7 +8,7 @@ import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.entity.LocationEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.network.PrayerTimeApi
-import com.hazrat.islam24.core.domain.repository.location.LocationRepositoryImpl
+import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.DateUtil
@@ -41,7 +41,6 @@ class PrayerTimeRepositoryImpl @Inject constructor(
             val juristicList = prayerSettingRepository.getJuristicMethod().firstOrNull()
             val methodValue = methodList?.method?:1 // Default value is 1 if methodList or method is null
             val schoolValue = juristicList?.school?:0
-            Log.d("ChekingApi", "$latitude $longitude $methodValue $schoolValue")
 
             val year = DateUtil.getCurrentYear()
             val month = DateUtil.getCurrentMonth()
@@ -51,7 +50,6 @@ class PrayerTimeRepositoryImpl @Inject constructor(
                 val prayerTimeEntity = convertApiResponseToEntity(apiDataForDay)
                 updatePrayerTime(prayerTimeEntity)
             }
-            Log.d("PrayerTimeRepository", "API response: $apiResponse")
             apiResponse
         } catch (e: HttpException) {
             Log.e("ApiError", "HTTP error: ${e.code()}", e)

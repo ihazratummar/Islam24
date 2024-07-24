@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
@@ -47,20 +46,25 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.NameEntity
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.navigation.nvgraph.Route
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.popUpTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController: NavController) {
+fun NamesOfAllahScreen(
+    viewModel: MainViewModel = hiltViewModel(),
+    navController: NavController
+) {
 
-    val names = viewModel.names.collectAsState()
-
+    val names by viewModel.names.collectAsState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(modifier = Modifier
-        .nestedScroll(scrollBehavior.nestedScrollConnection),
+    Scaffold(
+        modifier = Modifier
+            ,
         topBar = {
             TopAppBar(
                 title =
@@ -71,10 +75,8 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-
+                    IconButton(onClick = { navController.popBackStack() }
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.backicon),
                             contentDescription = "Back"
@@ -88,7 +90,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
         LazyColumn(
             modifier = Modifier.padding(padding)
         ) {
-            items(names.value) { name ->
+            items(names) { name ->
                 NameCard(name = name)
             }
         }
@@ -104,7 +106,8 @@ fun NameCard(name: NameEntity) {
     }
     Card(
         modifier = Modifier
-            .fillMaxSize().padding(vertical = MaterialTheme.dimens.size8)
+            .fillMaxSize()
+            .padding(vertical = MaterialTheme.dimens.size8)
             .background(MaterialTheme.colorScheme.background)
             .clickable {
                 expanded = !expanded
