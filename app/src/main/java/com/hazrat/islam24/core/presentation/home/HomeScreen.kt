@@ -163,9 +163,10 @@ private fun TimeLocationCard(
                 ),
                 shape = RoundedCornerShape(MaterialTheme.dimens.size30),
             )
-            .clickable {
-                navigateToPrayerTime()
-            },
+            .clickable(
+                onClick = { navigateToPrayerTime() },
+                onClickLabel = stringResource(id = R.string.prayertimesandlocation)
+            ),
         colors = CardDefaults.cardColors(Color.Transparent),
 
         ) {

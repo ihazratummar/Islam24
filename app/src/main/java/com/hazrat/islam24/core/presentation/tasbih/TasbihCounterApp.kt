@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.TasbihCounterEntity
+import com.hazrat.islam24.core.domain.model.TasbihPhrase
 import com.hazrat.islam24.core.presentation.tasbih.tasbihcomponent.RepeatCountDialog
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.AlQalam
@@ -114,7 +115,8 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = stringResource(R.string.tasbihTarget, repeatCount), modifier = Modifier,
+                                text = stringResource(R.string.tasbihTarget, repeatCount),
+                                modifier = Modifier,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                         }
@@ -206,7 +208,8 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
                                 if (tasbih?.tasbihCount == 0) Text(
-                                    stringResource(R.string.click_to_start), color = MaterialTheme.colorScheme.onBackground,
+                                    stringResource(R.string.click_to_start),
+                                    color = MaterialTheme.colorScheme.onBackground,
                                     style = MaterialTheme.typography.labelLarge,
                                 )
                             }
@@ -229,7 +232,8 @@ fun TasbihCounterApp(modifier: Modifier = Modifier, viewModel: MainViewModel = h
                             shape = RoundedCornerShape(MaterialTheme.dimens.size20)
                         ) {
                             Text(
-                                stringResource(R.string.reset), color = MaterialTheme.colorScheme.onBackground,
+                                stringResource(R.string.reset),
+                                color = MaterialTheme.colorScheme.onBackground,
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -290,7 +294,7 @@ private fun ToTalCount(tasbih: TasbihCounterEntity?) {
 
 @Composable
 private fun TasbihHeader(
-    phrase: com.hazrat.islam24.core.domain.model.TasbihPhrase,
+    phrase: TasbihPhrase,
     viewModel: MainViewModel
 ) {
     val selectedPhrase = viewModel.selectedPhrase
@@ -299,15 +303,22 @@ private fun TasbihHeader(
             .padding(MaterialTheme.dimens.size8)
             .width(MaterialTheme.dimens.size300)
             .height(MaterialTheme.dimens.size200)
-            .clickable {
-                viewModel.selectedPhrase = phrase
-                viewModel.resetTasbihCount()
-            },
+            .clickable(
+                onClick = {
+                    viewModel.selectedPhrase = phrase
+                    viewModel.resetTasbihCount()
+                },
+                onClickLabel = stringResource(id = R.string.tasbihnames)
+            ),
         elevation = CardDefaults.cardElevation(MaterialTheme.dimens.size4),
         colors = CardDefaults.cardColors(
-            containerColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.primaryContainer.copy(0.8f)
+            containerColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.primaryContainer.copy(
+                0.8f
+            )
             else MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.onPrimaryContainer.copy(0.8f)
+            contentColor = if (phrase == selectedPhrase) MaterialTheme.colorScheme.onPrimaryContainer.copy(
+                0.8f
+            )
             else MaterialTheme.colorScheme.onSecondaryContainer
         )
     ) {

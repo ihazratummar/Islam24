@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.hazrat.islam24.R
@@ -109,7 +108,7 @@ fun QiblaScreen(
                 modifier = Modifier.fillMaxWidth(),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.kaba),
+                        text = stringResource(id = R.string.qibla),
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 },
