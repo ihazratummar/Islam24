@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -88,7 +86,7 @@ fun ShowData(
                         contentDescription = "Setting Icon",
                         modifier = Modifier
                             .clickable {
-                                navController.navigate(Route.UserSettings.route)
+                                navController.navigate(Route.PrayerSetting.route)
                             }
                             .padding(end = MaterialTheme.dimens.size20),
                         tint = MaterialTheme.colorScheme.onBackground

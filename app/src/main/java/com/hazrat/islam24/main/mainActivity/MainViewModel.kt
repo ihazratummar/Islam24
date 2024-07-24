@@ -57,7 +57,7 @@ class MainViewModel @Inject constructor(
     /**
      * app destination screen
      */
-    private val _startDestination = mutableStateOf(Route.HomeNavigation.route)
+    private val _startDestination = mutableStateOf(Route.RootNav.route)
     val startDestination: State<String> = _startDestination
 
     /**
@@ -127,7 +127,7 @@ class MainViewModel @Inject constructor(
 
 
     init {
-        _startDestination.value = Route.HomeNavigation.route
+        _startDestination.value = Route.RootNav.route
         viewModelScope.launch {
             delay(300)
             _splashCondition.value = false

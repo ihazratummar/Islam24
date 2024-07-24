@@ -43,7 +43,7 @@ fun AppBottomNavigation(
                     ) {
                         Icon(
                             painter = painterResource(id = item.icon),
-                            contentDescription = null,
+                            contentDescription = item.text,
                             modifier = Modifier.size(MaterialTheme.dimens.size20 *2f)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
@@ -65,6 +65,7 @@ fun AppBottomNavigation(
 }
 
 data class BottomNavigationItem(
+    val route: String,
     @DrawableRes val icon: Int,
     val text: String
 )

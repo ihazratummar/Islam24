@@ -28,7 +28,6 @@ import com.hazrat.islam24.core.presentation.home.HomeScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
-import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.main.navigation.component.AppBottomNavigation
 import com.hazrat.islam24.main.navigation.component.BottomNavigationItem
@@ -45,14 +44,23 @@ fun AppNavigator(
 ) {
     val bottomNavigationItem = remember {
         listOf(
-            BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
-            BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
-            BottomNavigationItem(icon = R.drawable.profile, text = "Time"),
+            BottomNavigationItem(
+                route = Route.HomeScreen.route,
+                icon = R.drawable.naviconhome, text = "Home"
+            ),
+            BottomNavigationItem(
+                route = Route.PrayerTimeScreen.route,
+                icon = R.drawable.pray, text = "Time"
+            ),
+            BottomNavigationItem(
+                route = Route.ProfileScreen.route,
+                icon = R.drawable.profile, text = "Profile"
+            ),
         )
     }
 
     val navController = rememberNavController()
-    val backStackState = navController.currentBackStackEntryAsState().value
+    val backStackState by navController.currentBackStackEntryAsState()
     var selectedItem by rememberSaveable {
         mutableIntStateOf(0)
     }
@@ -65,12 +73,16 @@ fun AppNavigator(
     }
 
     //Hide the bottom navigation when the user is in the details screen
-    val isBottomBarVisible = remember(key1 = backStackState) {
-        backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
-                backStackState?.destination?.route == Route.ProfileScreen.route
-    }
-    TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController, qiblaDirection, currentDirection)
+    val isBottomBarVisible = bottomNavigationItem.any { it.route == backStackState?.destination?.route }
+
+    TotalContent(
+        isBottomBarVisible,
+        bottomNavigationItem,
+        selectedItem,
+        navController,
+        qiblaDirection,
+        currentDirection
+    )
 
 }
 
@@ -101,6 +113,7 @@ private fun TotalContent(
                                 navController = navController,
                                 route = Route.PrayerTimeScreen.route
                             )
+
                             2 -> navigateToTab(
                                 navController = navController,
                                 route = Route.ProfileScreen.route
@@ -130,8 +143,6 @@ private fun TotalContent(
                 PrayerTimeScreen(viewModel, navController)
             }
             composable(route = Route.QiblaDirectionScreen.route) {
-                val viewModel: MainViewModel = hiltViewModel()
-                val state = viewModel.qiblaState.collectAsState()
                 QiblaScreen(
                     navController = navController,
                     currentDirection = currentDirection,
@@ -145,7 +156,7 @@ private fun TotalContent(
             composable(route = Route.TasbihScreen.route) {
                 TasbihScreen(navController)
             }
-            composable(route = Route.UserSettings.route) {
+            composable(route = Route.PrayerSetting.route) {
                 PrayerSetting(navController = navController)
             }
             composable(route = Route.CalendarScreen.route) {

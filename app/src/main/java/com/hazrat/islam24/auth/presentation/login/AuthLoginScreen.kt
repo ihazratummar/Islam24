@@ -170,7 +170,7 @@ fun AuthLoginScreen(
                 color = MaterialTheme.colorScheme.primary,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
-                    navController.navigate(Route.SingupScreen.route)
+                    navController.navigate(Route.SignupScreen.route)
 
                 }
             )

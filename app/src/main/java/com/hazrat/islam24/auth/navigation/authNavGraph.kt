@@ -38,7 +38,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
                 authState = authState.value
             )
         }
-        composable(route = Route.SingupScreen.route) {
+        composable(route = Route.SignupScreen.route) {
             val singUpViewModel = hiltViewModel<SingupViewModel>()
             val signUpState = singUpViewModel.state.collectAsState()
             val signUpEvent = singUpViewModel::onEvent
