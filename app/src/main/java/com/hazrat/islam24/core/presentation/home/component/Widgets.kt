@@ -37,10 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
@@ -61,12 +59,20 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
         stringResource(R.string.tasbih),
         stringResource(R.string.calendar),
         stringResource(R.string.athkar),
-        stringResource(id = R.string.kaba)
+        stringResource(id = R.string.qibla)
+    )
+
+    val onClickLabel = listOf(
+        stringResource(R.string.names),
+        stringResource(R.string.tasbih),
+        stringResource(R.string.calendar),
+        stringResource(R.string.athkar),
+        stringResource(id = R.string.qibla)
     )
 
     Box(modifier = Modifier.height(MaterialTheme.dimens.size300)) {
         LazyVerticalGrid(columns = GridCells.Fixed(5)) {
-            items(icons.size) { index ->
+            items(names.size) { index ->
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -76,15 +82,18 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             .width(MaterialTheme.dimens.size60)
                             .height(MaterialTheme.dimens.size60)
                             .padding(MaterialTheme.dimens.size4)
-                            .clickable {
-                                when (index) {
-                                    0 -> navController.navigate(Route.NamesOfAllah.route)
-                                    1 -> navController.navigate(Route.TasbihScreen.route)
-                                    2 -> navController.navigate(Route.CalendarScreen.route)
-                                    3 -> navController.navigate(Route.AthkarScreen.route)
-                                    4 -> navController.navigate(Route.QiblaDirectionScreen.route)
-                                }
-                            }
+                            .clickable(
+                                onClick = {
+                                    when (index) {
+                                        0 -> navController.navigate(Route.NamesOfAllah.route)
+                                        1 -> navController.navigate(Route.TasbihScreen.route)
+                                        2 -> navController.navigate(Route.CalendarScreen.route)
+                                        3 -> navController.navigate(Route.AthkarScreen.route)
+                                        4 -> navController.navigate(Route.QiblaDirectionScreen.route)
+                                    }
+                                },
+                                onClickLabel =onClickLabel [index]
+                            )
                             .clip(RoundedCornerShape(MaterialTheme.dimens.size8)),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -94,7 +103,9 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             painter = painterResource(id = icons[index]),
                             contentDescription = null,
                             tint = Color.Unspecified,
-                            modifier = Modifier.fillMaxSize().padding(MaterialTheme.dimens.size5)
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(MaterialTheme.dimens.size5)
                         )
                     }
                     Text(
@@ -146,11 +157,4 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     ).onGloballyPositioned {
         size = it.size
     }
-}
-
-@Preview(backgroundColor = 0xFF000000)
-@Composable
-fun MyScreenPreview() {
-    val navController = rememberNavController()
-    MyScreen(navController = navController)
 }

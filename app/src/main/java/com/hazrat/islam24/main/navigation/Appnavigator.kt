@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.auth.navigation.authNavGraph
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.home.HomeScreen
@@ -46,6 +47,7 @@ fun AppNavigator(
         listOf(
             BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
             BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
+            BottomNavigationItem(icon = R.drawable.profile, text = "Time"),
         )
     }
 
@@ -58,13 +60,15 @@ fun AppNavigator(
     selectedItem = when (backStackState?.destination?.route) {
         Route.HomeScreen.route -> 0
         Route.PrayerTimeScreen.route -> 1
+        Route.ProfileScreen.route -> 2
         else -> 0
     }
 
     //Hide the bottom navigation when the user is in the details screen
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.PrayerTimeScreen.route
+                backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
+                backStackState?.destination?.route == Route.ProfileScreen.route
     }
     TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController, qiblaDirection, currentDirection)
 
@@ -96,6 +100,10 @@ private fun TotalContent(
                             1 -> navigateToTab(
                                 navController = navController,
                                 route = Route.PrayerTimeScreen.route
+                            )
+                            2 -> navigateToTab(
+                                navController = navController,
+                                route = Route.ProfileScreen.route
                             )
                         }
                     }
@@ -146,7 +154,7 @@ private fun TotalContent(
             composable(route = Route.AthkarScreen.route) {
                 AthkarScreen(navController)
             }
-//            authNavGraph(navController)
+            authNavGraph(navController)
         }
     }
 }
