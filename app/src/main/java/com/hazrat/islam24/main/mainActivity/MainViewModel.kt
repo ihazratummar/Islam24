@@ -21,7 +21,6 @@ import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.core.domain.repository.TasbihRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.main.navigation.nvgraph.Route
-import com.hazrat.islam24.core.presentation.qibla.QiblaState
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +32,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -102,29 +100,6 @@ class MainViewModel @Inject constructor(
     val locationName = _locationName.asStateFlow()
 
 
-    private val _qiblaState = MutableStateFlow(QiblaState())
-    val qiblaState = _qiblaState.asStateFlow()
-
-    // Other properties and methods...
-
-    fun updateQiblaDirection(newDirection: Float) {
-        _qiblaState.update {
-            it.copy(
-                qiblaDirection = newDirection
-            )
-        }
-        Log.d("ViewModel direction", "Updating Qibla Direction to $newDirection")
-    }
-
-    fun updateCurrentDirection(newDirection: Float) {
-        _qiblaState.update {
-            it.copy(
-                currentDirection = newDirection
-            )
-        }
-        Log.d("ViewModel direction", "Updating currentDirection to $newDirection")
-    }
-
 
     init {
         _startDestination.value = Route.RootNav.route
@@ -134,6 +109,7 @@ class MainViewModel @Inject constructor(
             fetchDataFromDB()
         }
         observeNetworkStatus()
+
     }
 
     private fun fetchDataFromDB() {

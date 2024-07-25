@@ -40,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.Hidaya
@@ -67,11 +68,11 @@ import com.hazrat.islam24.util.vibrateDevice
 fun QiblaScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    qiblaDirection: Float, currentDirection: Float,
-    viewModel: MainViewModel = hiltViewModel()
+    qiblaDirection: Float,
+    currentDirection: Float,
+    locationName: List<LocationDetailsEntity>,
 ) {
 
-    val locationName = viewModel.locationName.collectAsState().value
 
     val context = LocalContext.current
     val compassBgBitmap =
@@ -81,8 +82,8 @@ fun QiblaScreen(
     val needleBitmap = remember { drawableToBitmap(context, R.drawable.needles).asImageBitmap() }
     val goldQaba = remember { drawableToBitmap(context, R.drawable.goldqaba).asImageBitmap() }
 
-    val minTolerance = 3f // Adjusted tolerance range
-    val maxTolerance = 3.5f // Adjusted tolerance range
+    val minTolerance = 2.9f // Adjusted tolerance range
+    val maxTolerance = 3.8f // Adjusted tolerance range
 
     val directionDifference = qiblaDirection - currentDirection
     val normalizedDifference = (directionDifference + 360) % 360
