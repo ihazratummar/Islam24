@@ -2,21 +2,19 @@ package com.hazrat.islam24.main.mainActivity
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
-import com.hazrat.islam24.service.*
+import com.hazrat.islam24.service.LocationHandler
+import com.hazrat.islam24.service.LocationManager
+import com.hazrat.islam24.service.PermissionsManager
+import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.islam24.ui.theme.Islam24Theme
-import com.hazrat.islam24.util.calculateQiblaDirection
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -42,9 +40,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var locationHandler: LocationHandler
-
-    @Inject
-    lateinit var compassSensorManager: CompassSensorManager
 
     // Permissions manager, initialized in onCreate
     private lateinit var permissionsManager: PermissionsManager
@@ -81,34 +76,15 @@ class MainActivity : ComponentActivity() {
         }
         permissionsManager.checkAndRequestLocationPermission()
 
-        // Handle location updates
-        locationManager.onLocationReceived = { location ->
-            val qiblaDirection = calculateQiblaDirection(location.latitude, location.longitude).toFloat()
-            Log.d("MainActivity Qibla", "New Qibla Direction: $qiblaDirection")
-            viewModel.updateQiblaDirection(qiblaDirection)
-        }
-
-        // Handle compass direction changes
-        compassSensorManager.onDirectionChanged = { direction ->
-            Log.d("MainActivity Current", "New Current Direction: $direction")
-            viewModel.updateCurrentDirection(direction)
-        }
 
         // Set the content view with Jetpack Compose
         setContent {
             Islam24Theme {
-                val qiblaState by viewModel.qiblaState.collectAsState()
-                val navController = rememberNavController()
                 NavGraph(
                     startDestination = viewModel.startDestination.value,
-                    qiblaDirection = qiblaState.qiblaDirection,
-                    currentDirection = qiblaState.currentDirection,
                 )
             }
         }
-
-        // Register compass sensor listeners
-        compassSensorManager.registerListeners()
 
         // Check for app updates
         updateManager.checkForAppUpdates(this)

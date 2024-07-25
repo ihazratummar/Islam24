@@ -31,19 +31,17 @@ import com.hazrat.islam24.core.presentation.home.HomeScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
-import com.hazrat.islam24.core.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.main.navigation.component.AppBottomNavigation
 import com.hazrat.islam24.main.navigation.component.BottomNavigationItem
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
+import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AppNavigator(
     mainViewModel: MainViewModel = hiltViewModel(),
-    qiblaDirection: Float,
-    currentDirection: Float
 ) {
     val bottomNavigationItem =
         listOf(
@@ -82,12 +80,11 @@ fun AppNavigator(
         bottomNavigationItem.any { it.route == backStackState?.destination?.route }
 
     TotalContent(
+        mainViewModel= mainViewModel,
         isBottomBarVisible,
         bottomNavigationItem,
         selectedItem,
         navController,
-        qiblaDirection,
-        currentDirection
     )
 
 }
@@ -95,12 +92,11 @@ fun AppNavigator(
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 private fun TotalContent(
+    mainViewModel: MainViewModel,
     isBottomBarVisible: Boolean,
     bottomNavigationItem: List<BottomNavigationItem>,
     selectedItem: Int,
     navController: NavHostController,
-    qiblaDirection: Float,
-    currentDirection: Float
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -149,18 +145,21 @@ private fun TotalContent(
                 PrayerTimeScreen(viewModel, navController)
             }
             composable(route = Route.QiblaDirectionScreen.route) {
+                val viewModel: QiblaViewModel = hiltViewModel()
+                val locationName by mainViewModel.locationName.collectAsState()
+                val state by viewModel.qiblaState.collectAsState()
+                val qiblaDirection = state.qiblaDirection
+                val currentDirection = state.currentDirection
                 QiblaScreen(
                     navController = navController,
                     currentDirection = currentDirection,
-                    qiblaDirection = qiblaDirection
+                    qiblaDirection = qiblaDirection,
+                    locationName = locationName
                 )
             }
             composable(route = Route.NamesOfAllah.route) {
                 val viewModel: MainViewModel = hiltViewModel()
                 NamesOfAllahScreen(viewModel, navController)
-            }
-            composable(route = Route.TasbihScreen.route) {
-                TasbihScreen(navController)
             }
             composable(route = Route.PrayerSetting.route) {
                 PrayerSetting(navController = navController)
