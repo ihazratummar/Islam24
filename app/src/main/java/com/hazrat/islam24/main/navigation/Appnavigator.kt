@@ -31,7 +31,6 @@ import com.hazrat.islam24.core.presentation.home.HomeScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
-import com.hazrat.islam24.core.presentation.tasbih.TasbihScreen
 import com.hazrat.islam24.main.navigation.component.AppBottomNavigation
 import com.hazrat.islam24.main.navigation.component.BottomNavigationItem
 import com.hazrat.islam24.main.navigation.nvgraph.Route
@@ -161,9 +160,6 @@ private fun TotalContent(
             composable(route = Route.NamesOfAllah.route) {
                 val viewModel: MainViewModel = hiltViewModel()
                 NamesOfAllahScreen(viewModel, navController)
-            }
-            composable(route = Route.TasbihScreen.route) {
-                TasbihScreen(navController)
             }
             composable(route = Route.PrayerSetting.route) {
                 PrayerSetting(navController = navController)

@@ -12,13 +12,10 @@ import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.NameEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.core.data.manager.LocationNameRepositoryImpl
 import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
-import com.hazrat.islam24.core.domain.model.tasbihPhraseList
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
-import com.hazrat.islam24.core.domain.repository.TasbihRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.util.ConnectivityObserver
@@ -44,7 +41,6 @@ class MainViewModel @Inject constructor(
     private val namesRepository: NamesRepositoryImpl,
     private val gregorianToHijriRepository: GregorianToHijriRepository,
     private val hijriCalendarRepository: HijriCalendarRepository,
-    private val tasbihRepository: TasbihRepository,
 ) : ViewModel() {
     /**
      * splash screen condition
@@ -85,13 +81,6 @@ class MainViewModel @Inject constructor(
     private val _hijriCalendar = MutableStateFlow<List<HijriCalendarEntity>>(emptyList())
     val hijriCalendar = _hijriCalendar.asStateFlow()
 
-    /**
-     * tasbih
-     */
-    private val _tasbihCounter = MutableStateFlow<List<TasbihCounterEntity?>>(emptyList())
-    val tasbihCounter = _tasbihCounter.asStateFlow()
-
-    var selectedPhrase by mutableStateOf(tasbihPhraseList[0])
 
     /**
      * Location name
@@ -120,11 +109,6 @@ class MainViewModel @Inject constructor(
             locationName()
             locationNameRepository.getLocationDetails()
             _names.value = namesRepository.getAllahNamesFromDatabase()
-            tasbihRepository.getTasbih()
-                .distinctUntilChanged()
-                .collectLatest { tasbihList ->
-                    _tasbihCounter.value = tasbihList
-                }
         }
     }
 
@@ -145,21 +129,6 @@ class MainViewModel @Inject constructor(
             gregorianToHijriRepository.getGregorianToHijriDate()
             hijriCalendarRepository.getHijriCalendarFromApi()
             namesRepository.getAllahNamesFromApi()
-        }
-    }
-
-    /**
-     * tasbih
-     */
-    fun insertTasbih(tasbihCounterEntity: TasbihCounterEntity) {
-        viewModelScope.launch {
-            tasbihRepository.insertTasbih(tasbihCounterEntity)
-        }
-    }
-
-    fun resetTasbihCount() {
-        viewModelScope.launch {
-            tasbihRepository.resetTasbihCount()
         }
     }
 
