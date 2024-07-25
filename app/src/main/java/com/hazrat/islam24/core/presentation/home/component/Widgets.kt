@@ -84,7 +84,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                         modifier = Modifier
                             .width(MaterialTheme.dimens.size60)
                             .height(MaterialTheme.dimens.size60)
-                            .padding(MaterialTheme.dimens.size4)
+                            .padding(MaterialTheme.dimens.size1)
                             .clickable(
                                 onClick = {
                                     when (index) {
@@ -120,14 +120,6 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
 
             }
         }
-    }
-}
-
-
-@Composable
-fun MyScreen(navController: NavController) {
-    Surface {
-        LazyVerticalGridCardIcons(navController)
     }
 }
 
