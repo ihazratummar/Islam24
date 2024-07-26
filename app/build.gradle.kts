@@ -17,8 +17,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk = 34
-        versionCode = 53
-        versionName = "1.4.10"
+        versionCode = 54
+        versionName = "1.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

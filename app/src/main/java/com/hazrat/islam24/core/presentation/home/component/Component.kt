@@ -77,23 +77,14 @@ fun TimeLocationCard(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().padding(MaterialTheme.dimens.size5)
             .height(MaterialTheme.dimens.size200)
-            .background(
-                brush = Brush.verticalGradient(
-                    immutableListOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(0.6f),
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.primaryContainer
-                    )
-                ),
-                shape = RoundedCornerShape(MaterialTheme.dimens.size30),
-            )
             .clickable(
                 onClick = { navigateToPrayerTime() },
                 onClickLabel = stringResource(id = R.string.prayertimesandlocation)
             ),
-        colors = CardDefaults.cardColors(Color.Transparent),
+        shape = RoundedCornerShape(MaterialTheme.dimens.size30),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
 
         ) {
         Row(
