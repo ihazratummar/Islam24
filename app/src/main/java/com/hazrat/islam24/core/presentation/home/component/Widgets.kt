@@ -50,10 +50,10 @@ import okhttp3.internal.immutableListOf
 fun LazyVerticalGridCardIcons(navController: NavController) {
 
     val icons = immutableListOf(
-        R.drawable.allahname,
-        R.drawable.calendaricon,
+        R.drawable.allah_logo,
+        R.drawable.calendar,
         R.drawable.athkar,
-        R.drawable.goldqaba,
+        R.drawable.qibla,
     )
 
     val names = immutableListOf(
