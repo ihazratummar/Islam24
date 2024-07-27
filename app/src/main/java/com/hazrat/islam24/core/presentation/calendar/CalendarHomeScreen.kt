@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 import java.time.LocalDate
 

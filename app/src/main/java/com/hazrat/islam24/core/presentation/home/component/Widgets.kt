@@ -7,13 +7,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,86 +35,91 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
+import okhttp3.internal.immutableListOf
 
 @Composable
-fun LazyRowWithCards(navController: NavController) {
+fun LazyVerticalGridCardIcons(navController: NavController) {
 
-    val icons = listOf(
-        R.drawable.allahname,
-        R.drawable.tasbihicon,
-//        R.drawable.duaicon,
-        R.drawable.calendaricon,
+    val icons = immutableListOf(
+        R.drawable.allah_logo,
+        R.drawable.calendar,
         R.drawable.athkar,
+        R.drawable.qibla,
     )
 
-    val names = listOf(
-        stringResource(R.string.names), stringResource(R.string.tasbih),
-        stringResource(R.string.calendar), stringResource(R.string.athkar)
+    val names = immutableListOf(
+        stringResource(R.string.names),
+        stringResource(R.string.calendar),
+        stringResource(R.string.athkar),
+        stringResource(id = R.string.qibla)
     )
 
-    LazyRow {
-        items(icons.size) { index ->
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+    val onClickLabel = immutableListOf(
+        stringResource(R.string.names),
+        stringResource(R.string.calendar),
+        stringResource(R.string.athkar),
+        stringResource(id = R.string.qibla)
+    )
 
-                val cardModifier = when (index) {
-                    0 -> Modifier.background(Color(0xFFE6C556))
-                    1 -> Modifier.background(Color(0xFF7AFFFF))
-//                    2 -> Modifier.background(Color(0xFFFFBFA6))
-                    2 -> Modifier.background(Color(0xFFFF958C))
-                    3 -> Modifier.background(Color(0xffFBBC05))
-                    else -> Modifier.background(Color.Gray)
-                }
-                Card(
-                    modifier = Modifier
-                        .width(MaterialTheme.dimens.size80)
-                        .height(MaterialTheme.dimens.size80)
-                        .padding(MaterialTheme.dimens.size8)
-                        .clickable {
-                            when (index) {
-                                0 -> navController.navigate("NamesOfAllah")
-                                1 -> navController.navigate("TasbihScreen")
-//                                2 -> navController.navigate("DuasPageScreen")
-                                2 -> navController.navigate("CalendarScreen")
-                                3 -> navController.navigate("AthkarScreen")
-                            }
-                        }
-                        .clip(RoundedCornerShape(MaterialTheme.dimens.size8))
-                        .then(cardModifier),
-                    colors = CardDefaults.cardColors(Color.Transparent)
+    Box(modifier = Modifier.height(MaterialTheme.dimens.size300).fillMaxWidth()) {
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxWidth(),
+            columns = GridCells.Fixed(4),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            items(names.size) { index ->
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(
-                        painter = painterResource(id = icons[index]),
-                        contentDescription = null,
-                        tint = Color.Unspecified,
-                        modifier = Modifier.size(MaterialTheme.dimens.size100)
+                    Card(
+                        modifier = Modifier
+                            .width(MaterialTheme.dimens.size60)
+                            .height(MaterialTheme.dimens.size60)
+                            .padding(MaterialTheme.dimens.size1)
+                            .clickable(
+                                onClick = {
+                                    when (index) {
+                                        0 -> navController.navigate(Route.NamesOfAllah.route)
+                                        1 -> navController.navigate(Route.CalendarScreen.route)
+                                        2 -> navController.navigate(Route.AthkarScreen.route)
+                                        3 -> navController.navigate(Route.QiblaDirectionScreen.route)
+                                    }
+                                },
+                                onClickLabel = onClickLabel[index]
+                            )
+                            .clip(RoundedCornerShape(MaterialTheme.dimens.size8)),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        )
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = icons[index]),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(MaterialTheme.dimens.size5)
+                        )
+                    }
+                    Text(
+                        names[index],
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.labelSmall
                     )
                 }
-                Text(names[index], color = MaterialTheme.colorScheme.onBackground)
+
             }
-            Spacer(modifier = Modifier.width(MaterialTheme.dimens.size10))
-
         }
-    }
-}
-
-
-@Composable
-fun MyScreen(navController: NavController) {
-    Surface {
-        LazyRowWithCards(navController)
     }
 }
 
@@ -145,11 +152,4 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     ).onGloballyPositioned {
         size = it.size
     }
-}
-
-@Preview(backgroundColor = 0xFF000000)
-@Composable
-fun MyScreenPreview() {
-    val navController = rememberNavController()
-    MyScreen(navController = navController)
 }

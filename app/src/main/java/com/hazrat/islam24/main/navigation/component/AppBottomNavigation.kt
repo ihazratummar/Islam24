@@ -16,9 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.ui.theme.dimens
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
+import com.hazrat.islam24.R
 
 @Composable
 fun AppBottomNavigation(
@@ -43,7 +47,7 @@ fun AppBottomNavigation(
                     ) {
                         Icon(
                             painter = painterResource(id = item.icon),
-                            contentDescription = null,
+                            contentDescription = item.text,
                             modifier = Modifier.size(MaterialTheme.dimens.size20 *2f)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
@@ -64,7 +68,9 @@ fun AppBottomNavigation(
     }
 }
 
+
 data class BottomNavigationItem(
+    val route: String,
     @DrawableRes val icon: Int,
     val text: String
 )

@@ -1,4 +1,4 @@
-package com.hazrat.islam24.presentation.mainActivity
+package com.hazrat.islam24.main.mainActivity
 
 import android.util.Log
 import androidx.compose.runtime.State
@@ -12,16 +12,12 @@ import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.NameEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.data.entity.TasbihCounterEntity
 import com.hazrat.islam24.core.data.manager.LocationNameRepositoryImpl
 import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
-import com.hazrat.islam24.core.domain.model.tasbihPhraseList
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
-import com.hazrat.islam24.core.domain.repository.TasbihRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.main.navigation.nvgraph.Route
-import com.hazrat.islam24.core.presentation.qibla.QiblaState
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +29,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,7 +41,6 @@ class MainViewModel @Inject constructor(
     private val namesRepository: NamesRepositoryImpl,
     private val gregorianToHijriRepository: GregorianToHijriRepository,
     private val hijriCalendarRepository: HijriCalendarRepository,
-    private val tasbihRepository: TasbihRepository,
 ) : ViewModel() {
     /**
      * splash screen condition
@@ -57,7 +51,7 @@ class MainViewModel @Inject constructor(
     /**
      * app destination screen
      */
-    private val _startDestination = mutableStateOf(Route.HomeNavigation.route)
+    private val _startDestination = mutableStateOf(Route.RootNav.route)
     val startDestination: State<String> = _startDestination
 
     /**
@@ -87,13 +81,6 @@ class MainViewModel @Inject constructor(
     private val _hijriCalendar = MutableStateFlow<List<HijriCalendarEntity>>(emptyList())
     val hijriCalendar = _hijriCalendar.asStateFlow()
 
-    /**
-     * tasbih
-     */
-    private val _tasbihCounter = MutableStateFlow<List<TasbihCounterEntity?>>(emptyList())
-    val tasbihCounter = _tasbihCounter.asStateFlow()
-
-    var selectedPhrase by mutableStateOf(tasbihPhraseList[0])
 
     /**
      * Location name
@@ -102,42 +89,16 @@ class MainViewModel @Inject constructor(
     val locationName = _locationName.asStateFlow()
 
 
-    private val _qiblaState = MutableStateFlow(QiblaState())
-    val qiblaState = _qiblaState.asStateFlow()
-
-    // Other properties and methods...
-
-    fun updateQiblaDirection(newDirection: Float) {
-        _qiblaState.update {
-            it.copy(
-                qiblaDirection = newDirection
-            )
-        }
-        Log.d("ViewModel direction", "Updating Qibla Direction to $newDirection")
-    }
-
-    fun updateCurrentDirection(newDirection: Float) {
-        _qiblaState.update {
-            it.copy(
-                currentDirection = newDirection
-            )
-        }
-        Log.d("ViewModel direction", "Updating currentDirection to $newDirection")
-    }
-
 
     init {
-        _startDestination.value = Route.HomeNavigation.route
+        _startDestination.value = Route.RootNav.route
         viewModelScope.launch {
             delay(300)
             _splashCondition.value = false
             fetchDataFromDB()
         }
         observeNetworkStatus()
-        Log.d(
-            "New Degrees",
-            "Updating Current Direction to ${qiblaState.value.qiblaDirection} ${qiblaState.value.currentDirection}"
-        )
+
     }
 
     private fun fetchDataFromDB() {
@@ -147,12 +108,7 @@ class MainViewModel @Inject constructor(
             getAllPrayerTimes()
             locationName()
             locationNameRepository.getLocationDetails()
-            _names.value = namesRepository.getAllahNames()
-            tasbihRepository.getTasbih()
-                .distinctUntilChanged()
-                .collectLatest { tasbihList ->
-                    _tasbihCounter.value = tasbihList
-                }
+            _names.value = namesRepository.getAllahNamesFromDatabase()
         }
     }
 
@@ -169,27 +125,10 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-//            locationNameRepository.getLocationName()
             locationNameRepository.fetchLocationName()
-            namesRepository.getAllNames()
             gregorianToHijriRepository.getGregorianToHijriDate()
             hijriCalendarRepository.getHijriCalendarFromApi()
-
-        }
-    }
-
-    /**
-     * tasbih
-     */
-    fun insertTasbih(tasbihCounterEntity: TasbihCounterEntity) {
-        viewModelScope.launch {
-            tasbihRepository.insertTasbih(tasbihCounterEntity)
-        }
-    }
-
-    fun resetTasbihCount() {
-        viewModelScope.launch {
-            tasbihRepository.resetTasbihCount()
+            namesRepository.getAllahNamesFromApi()
         }
     }
 
@@ -259,6 +198,11 @@ class MainViewModel @Inject constructor(
             locationNameRepository.getLocationDetails().distinctUntilChanged()
                 .collectLatest { locationName: List<LocationDetailsEntity> ->
                     if (locationName.isEmpty()) {
+                        if (_networkStatus.value == ConnectivityObserver.Status.Available){
+                            locationNameRepository.fetchLocationName()
+                        }else{
+                            return@collectLatest
+                        }
                         Log.d("LocationNameStatus", "Location list empty")
                     } else {
                         _locationName.value = locationName

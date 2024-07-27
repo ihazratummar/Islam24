@@ -1,38 +1,46 @@
 package com.hazrat.islam24.main.navigation.nvgraph
 
-sealed class Route (
+sealed class Route(
     val route: String
-){
-    object Auth : Route("auth")
-    object HomeScreen: Route(route = "homeScreen")
+) {
+    /*
+    Root nav
+     */
+    data object RootNav : Route(route = "root_nav")
 
-    object HomeNavigation: Route(route = "homeNavigation")
+    /*
+    Home screens and other screens
+     */
+    data object HomeScreen : Route(route = "homeScreen")
 
-    object TasbihScreen: Route(route = "TasbihScreen")
+    data object PrayerTimeScreen : Route(route = "PrayerTimeScreen")
 
-    object DuasPageScreen: Route(route = "DuasPageScreen")
+    data object TasbihScreen : Route(route = "TasbihScreen")
 
-    object PrayerTimeScreen: Route(route = "PrayerTimeScreen")
+    data object DuasPageScreen : Route(route = "DuasPageScreen")
 
-    object QiblaDirectionScreen: Route(route = "QiblaDirectionScreen")
+    data object QiblaDirectionScreen : Route(route = "QiblaDirectionScreen")
 
-    object CalendarScreen: Route(route = "CalendarScreen")
+    data object CalendarScreen : Route(route = "CalendarScreen")
 
-    object ZakatScreen: Route(route = "ZakatScreen")
+    data object ZakatScreen : Route(route = "ZakatScreen")
 
-    object NamesOfAllah: Route(route = "NamesOfAllah")
+    data object PrayerSetting : Route(route = "PrayerSetting")
 
-    object UserSettings: Route(route = "UserSettingScreen")
+    data object AthkarScreen : Route(route = "AthkarScreen")
 
-    object AthkarScreen: Route(route = "AthkarScreen")
+    /*
+    Auth login signup screens
+     */
+    data object Auth : Route("auth")
 
-    object NoInternetScreen: Route(route = "NoInternetScreen")
+    data object ProfileScreen : Route(route = "profileScreen")
 
-    object ProfileScreen: Route(route = "profileScreen")
+    data object NamesOfAllah : Route(route = "NamesOfAllah")
 
-    object ProfileSettingScreen: Route(route = "profileSettingScreen")
+    data object ProfileSettingScreen : Route(route = "profileSettingScreen")
 
-    object LoginScreen: Route(route = "loginScreen")
+    data object LoginScreen : Route(route = "loginScreen")
 
-    object SingupScreen: Route(route = "signupScreen")
+    data object SignupScreen : Route(route = "signupScreen")
 }

@@ -7,7 +7,7 @@ import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.dao.LocationNameDao
 import com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
 import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
-import com.hazrat.islam24.core.domain.repository.location.LocationRepositoryImpl
+import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -19,12 +19,11 @@ class LocationNameRepositoryImpl @Inject constructor(
     private val locationRepository: LocationRepositoryImpl,
     private val locationNameDao: LocationNameDao
 ) : LocationNameRepository {
-    override suspend fun getLocationName(): com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder {
+    override suspend fun getLocationName():LocationNameFinder {
 
         val location: LocationEntity? = locationRepository.getLocation()
         val lat = location?.latitude ?: 24.628
         val lon = location?.longitude ?: 88.011
-        Log.d("getLocationName", "$lat $lon")
         return locationNameApi.getLocationName(format = "json", lat = lat, lon = lon)
     }
 
@@ -47,7 +46,6 @@ class LocationNameRepositoryImpl @Inject constructor(
                 // Return the locationName
                 locationName
             } catch (e: Exception) {
-                Log.e("LocationName", "Error fetching location name: ${e.message}")
                 null // Return null if there's an error
             }
         }

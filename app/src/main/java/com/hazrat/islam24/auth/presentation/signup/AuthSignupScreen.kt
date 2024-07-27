@@ -35,7 +35,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
@@ -59,7 +58,7 @@ fun AuthSignupScreen(
         when(authState){
             is AuthState.Authenticated -> {
                 navController.navigate(Route.ProfileScreen.route) {
-                    popUpTo(Route.SingupScreen.route) { inclusive = true }
+                    popUpTo(Route.SignupScreen.route) { inclusive = true }
                 }
             }
             is AuthState.Error -> {

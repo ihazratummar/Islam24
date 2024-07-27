@@ -37,14 +37,12 @@ fun DisplayCurrentPrayerName(
 
     DisposableEffect(Unit) {
         val coroutineScope = CoroutineScope(Dispatchers.Default)
-
         val job = coroutineScope.launch {
             while (true) {
                 delay(1000) // Update every second
                 currentTime = System.currentTimeMillis()
             }
         }
-
         onDispose {
             job.cancel()
         }
@@ -148,22 +146,17 @@ fun DisplayCurrentPrayerTime(
         .filterValues { it!! > currentTime }
         .minByOrNull { it.value ?: LocalTime.MAX }
 
-
-
     nextPrayer?.let { (prayerName, time) ->
-
         Column {
             Text(
                 text = stringResource(R.string.next_prayer, prayerName),
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground
             )
             formatLocalTime(time)?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }

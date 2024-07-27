@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,7 +41,7 @@ import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
@@ -93,7 +91,7 @@ fun ShowData(
                         contentDescription = "Setting Icon",
                         modifier = Modifier
                             .clickable {
-                                navController.navigate(Route.UserSettings.route)
+                                navController.navigate(Route.PrayerSetting.route)
                             }
                             .padding(end = MaterialTheme.dimens.size20),
                         tint = MaterialTheme.colorScheme.onBackground
