@@ -1,9 +1,10 @@
 package com.hazrat.islam24.core.presentation.home.component
 
+import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,8 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -34,10 +36,11 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
+import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
-import okhttp3.internal.immutableListOf
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -77,7 +80,8 @@ fun TimeLocationCard(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth().padding(MaterialTheme.dimens.size5)
+            .fillMaxWidth()
+            .padding(MaterialTheme.dimens.size5)
             .height(MaterialTheme.dimens.size200)
             .clickable(
                 onClick = { navigateToPrayerTime() },
@@ -85,62 +89,79 @@ fun TimeLocationCard(
             ),
         shape = RoundedCornerShape(MaterialTheme.dimens.size30),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            val today = DateUtil.getCurrentDay()
+            val index = today.toInt()
+            Log.d("Today", "$index")
+            if (index < prayerTimeEntity.size - 1) {
+                HomePrayerTimeCardAnimation(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(
+                            radius = MaterialTheme.dimens.size2,
+                            edgeTreatment = BlurredEdgeTreatment.Unbounded
+                        ),
+                    prayerTimeEntity = prayerTimeEntity[index - 1]
 
-        ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(MaterialTheme.dimens.size10)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.5f)
-                    .padding(
-                        start = MaterialTheme.dimens.size20,
-                        bottom = MaterialTheme.dimens.size15
-                    ),
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                DisplayCurrentPrayerName(
-                    prayerTimeEntity,
-                )
-
-                Text(
-                    text = stringResource(R.string.view_salat_times),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.bodyLarge
                 )
             }
-            Column(
+            Row(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.5f)
-                    .padding(
-                        start = MaterialTheme.dimens.size5,
-                        bottom = MaterialTheme.dimens.size15,
-                        end = MaterialTheme.dimens.size10,
-                        top = MaterialTheme.dimens.size20
-                    ),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.End
+                    .fillMaxSize()
+                    .padding(MaterialTheme.dimens.size10)
             ) {
-
-                LocationName(locationDetailsEntity)
-                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
-                val grday = getCurrentDay()
-                val hijriday = viewModel.getHijriDay()
-                if (isPrayerTime(prayerTimeEntity, grday, hijriday)) {
-                    Text(
-                        text = stringResource(id = R.string.now),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.5f)
+                        .padding(
+                            start = MaterialTheme.dimens.size20,
+                            bottom = MaterialTheme.dimens.size15
+                        ),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    DisplayCurrentPrayerName(
+                        prayerTimeEntity,
                     )
-                } else {
-                    DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
+
+                    Text(
+                        text = stringResource(R.string.view_salat_times),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.5f)
+                        .padding(
+                            start = MaterialTheme.dimens.size5,
+                            bottom = MaterialTheme.dimens.size15,
+                            end = MaterialTheme.dimens.size10,
+                            top = MaterialTheme.dimens.size20
+                        ),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.End
+                ) {
+
+                    LocationName(locationDetailsEntity)
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
+                    val grday = getCurrentDay()
+                    val hijriday = viewModel.getHijriDay()
+                    if (isPrayerTime(prayerTimeEntity, grday, hijriday)) {
+                        Text(
+                            text = stringResource(id = R.string.now),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    } else {
+                        DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
+                    }
                 }
             }
+
         }
     }
 }
