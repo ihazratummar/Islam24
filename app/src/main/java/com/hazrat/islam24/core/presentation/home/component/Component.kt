@@ -22,6 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -92,11 +94,15 @@ fun TimeLocationCard(
             val today = DateUtil.getCurrentDay()
             val index = today.toInt()
             Log.d("Today", "$index")
-            if (index < prayerTimeEntity.size-1) {
+            if (index < prayerTimeEntity.size - 1) {
                 HomePrayerTimeCardAnimation(
                     modifier = Modifier
-                        .fillMaxSize(),
-                    prayerTimeEntity = prayerTimeEntity[index -1]
+                        .fillMaxSize()
+                        .blur(
+                            radius = MaterialTheme.dimens.size2,
+                            edgeTreatment = BlurredEdgeTreatment.Unbounded
+                        ),
+                    prayerTimeEntity = prayerTimeEntity[index - 1]
 
                 )
             }
