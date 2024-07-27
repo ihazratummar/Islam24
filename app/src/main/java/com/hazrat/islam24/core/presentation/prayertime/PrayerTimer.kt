@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
@@ -47,7 +48,6 @@ import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
-import com.hazrat.islam24.util.DateUtil.isToday
 import kotlinx.coroutines.delay
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -104,25 +104,22 @@ fun ShowData(
         }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            val today = DateUtil.getCurrentDay()
-            val index = today.toInt()
-
-            if (index < prayerTimes.size) {
-                AnimationCircle(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(MaterialTheme.dimens.size250),
-                    prayerTimeEntity = prayerTimes[index]
-                )
-            } else {
-                // Handle the case where the index is out of bounds
-                Text(text = "No prayer times available for today.")
-            }
-
             Column(
                 modifier = Modifier.padding(it)
             ) {
                 ViewPager(prayerTimes = prayerTimes, navController)
+            }
+            val today = DateUtil.getCurrentDay()
+            val index = today.toInt()
+            Log.d("Today", "$index")
+            if (index < prayerTimes.size-1) {
+                PrayerTimeScreenAnimation(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(MaterialTheme.dimens.size250),
+                    prayerTimeEntity = prayerTimes[index -1]
+
+                )
             }
         }
     }

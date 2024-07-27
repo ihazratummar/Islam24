@@ -1,4 +1,4 @@
-package com.hazrat.islam24.core.presentation.prayertime
+package com.hazrat.islam24.core.presentation.prayertime.component
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -9,35 +9,20 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathFillType
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.convertLongToLocalTime
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import java.time.LocalTime
@@ -48,20 +33,14 @@ import java.time.temporal.ChronoUnit
  */
 
 @Composable
-fun AnimationCircle(
+fun PrayerTimeScreenAnimation(
     modifier: Modifier = Modifier,
     prayerTimeEntity: PrayerTimeEntity
 ) {
 
-    val gregorianDay = prayerTimeEntity.gregorianDay.toInt()
-    val hijriDay = prayerTimeEntity.hijriDay
-    val prayerDay = gregorianDay == getCurrentDay()
-
     val sunrise = convertLongToLocalTime(prayerTimeEntity.sunriseTime)
     val sunset =convertLongToLocalTime(prayerTimeEntity.sunsetTime)
 
-//    val sunrise = LocalTime.of(5, 0)
-//    val sunset = LocalTime.of(18, 30)
     val currentTime = remember { mutableStateOf(LocalTime.now()) }
 
     val dayTotalMinutes = ChronoUnit.MINUTES.between(sunrise, sunset).toFloat()
@@ -85,19 +64,12 @@ fun AnimationCircle(
         targetValue = 150f,
         animationSpec = infiniteRepeatable(
             animation = tween(
-                durationMillis = 4000, // Duration for one complete cycle
+                durationMillis = 7000, // Duration for one complete cycle
+                delayMillis = 2000,
                 easing = FastOutSlowInEasing // Easing for smooth transition
             ),
             repeatMode = RepeatMode.Reverse // Reverses the animation on repeat
         ), label = ""
-    )
-
-    val shadowColor = Color(0x80000000) // Semi-transparent black for shadow
-    val moonColors = listOf(
-        Color(0xFFFAFAFA), // Very light gray for a soft glow
-        Color(0xFFC0C0C0), // Light gray for the moon's surface
-        Color(0xFFA9ADAD), // Medium gray for shading
-        Color(0xFF99C9EE)  // Dark gray for deeper shadows
     )
 
 
@@ -153,32 +125,6 @@ fun AnimationCircle(
 
 }
 
-@Composable
-private fun MyCards() {
-    val list = 100
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item { Spacer(modifier = Modifier.height(100.dp)) }
-        items(list) {
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(0.9f),
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            ) {
-                Text(text = "Hello", modifier = Modifier.padding(20.dp))
-            }
-        }
-    }
-}
-
 private fun DrawScope.moonAnimation(
     animatedRadius: Float,
     animatedFraction: Float,
@@ -226,22 +172,52 @@ private fun DrawScope.moonAnimation(
     // Draw stars
     drawStar(
         center = Offset(center.x, center.y - size.height / 2),
-        size = starAnimationSize,
+        size = starAnimationSize- 60f,
         color = Color.Yellow
     )
     drawStar(
         center = Offset(center.x + size.width / 4, center.y + size.height / 3),
-        size = starAnimationSize - 20f,
+        size = starAnimationSize - 40f,
         color = Color.Yellow.copy(0.6f)
     )
     drawStar(
         center = Offset(center.x - size.width / 4, center.y - size.height / 4),
-        size = starAnimationSize,
+        size = starAnimationSize - 60f,
         color = Color.Yellow
     )
     drawStar(
         center = Offset(center.x + size.width / 4, center.y - size.height / 4),
-        size = starAnimationSize - 20f,
+        size = starAnimationSize - 50f,
+        color = Color.Yellow
+    )
+    drawStar(
+        center = Offset(size.width , center.y - size.height / 4),
+        size = starAnimationSize - 40f,
+        color = Color.Yellow
+    )
+    drawStar(
+        center = Offset(0f , center.y - size.height / 4),
+        size = starAnimationSize - 50f,
+        color = Color.Yellow.copy(0.4f)
+    )
+    drawStar(
+        center = Offset(width* 0.3f, center.y - size.height / 4),
+        size = starAnimationSize - 50f,
+        color = Color.Yellow
+    )
+    drawStar(
+        center = Offset(width* 0.3f, center.y - size.height-20f),
+        size = starAnimationSize - 30f,
+        color = Color.Yellow
+    )
+    drawStar(
+        center = Offset(40f, center.y - size.height-20f),
+        size = starAnimationSize - 30f,
+        color = Color.Yellow
+    )
+    drawStar(
+        center = Offset(100f, center.y - size.height /4),
+        size = starAnimationSize - 30f,
         color = Color.Yellow
     )
 }
