@@ -22,30 +22,30 @@ val prayerMethods = listOf(
         method = 3,
         name = "Muslim World League"
     ),
-//    MethodDetails(
-//        method = 4,
-//        name = "Umm Al-Qura University, Makkah"
-//    ),
-//    MethodDetails(
-//        method = 5,
-//        name = "Egyptian General Authority of Survey"
-//    ),
-//    MethodDetails(
-//        method = 7,
-//        name = "Institute of Geophysics, University of Tehran"
-//    ),
-//    MethodDetails(
-//        method = 8,
-//        name = "Gulf Region"
-//    ),
-//    MethodDetails(
-//        method = 9,
-//        name = "Kuwait"
-//    ),
-//    MethodDetails(
-//        method = 10,
-//        name = "Qatar"
-//    ),
+    CalculationMethodDetails(
+        method = 4,
+        name = "Umm Al-Qura University, Makkah"
+    ),
+    CalculationMethodDetails(
+        method = 5,
+        name = "Egyptian General Authority of Survey"
+    ),
+    CalculationMethodDetails(
+        method = 7,
+        name = "Institute of Geophysics, University of Tehran"
+    ),
+    CalculationMethodDetails(
+        method = 8,
+        name = "Gulf Region"
+    ),
+    CalculationMethodDetails(
+        method = 9,
+        name = "Kuwait"
+    ),
+    CalculationMethodDetails(
+        method = 10,
+        name = "Qatar"
+    ),
     CalculationMethodDetails(
         method = 11,
         name = "Majlis Ugama Islam Singapura, Singapore"

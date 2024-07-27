@@ -6,7 +6,11 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
@@ -45,6 +49,7 @@ import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.islam24.util.DateUtil.isToday
 import kotlinx.coroutines.delay
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -62,11 +67,11 @@ fun ShowData(
     navController: NavController
 ) {
     val prayerTimes by viewModel.prayerTimes.collectAsState()
-
     val methods = prayerTimes.firstOrNull()
 
     Scaffold(
         modifier = Modifier,
+        containerColor = Color.Transparent,
         topBar = {
 
             TopAppBar(
@@ -77,7 +82,7 @@ fun ShowData(
                             color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
-                            text = "${methods?.methodName?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
+                            text = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
                             color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.labelSmall
                         )
@@ -100,10 +105,27 @@ fun ShowData(
             )
         }
     ) {
-        Column(
-            modifier = Modifier.padding(it)
-        ) {
-            ViewPager(prayerTimes = prayerTimes, navController)
+        Box(modifier = Modifier.fillMaxSize()) {
+            val today = DateUtil.getCurrentDay()
+            val index = today.toInt()
+
+            if (index < prayerTimes.size) {
+                AnimationCircle(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(MaterialTheme.dimens.size250),
+                    prayerTimeEntity = prayerTimes[index]
+                )
+            } else {
+                // Handle the case where the index is out of bounds
+                Text(text = "No prayer times available for today.")
+            }
+
+            Column(
+                modifier = Modifier.padding(it)
+            ) {
+                ViewPager(prayerTimes = prayerTimes, navController)
+            }
         }
     }
 }
