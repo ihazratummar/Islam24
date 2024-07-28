@@ -15,19 +15,26 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.convertLongToLocalTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -43,7 +50,7 @@ fun HomePrayerTimeCardAnimation(
 ) {
 
     val sunrise = convertLongToLocalTime(prayerTimeEntity.sunriseTime)
-    val sunset =convertLongToLocalTime(prayerTimeEntity.sunsetTime)
+    val sunset = convertLongToLocalTime(prayerTimeEntity.sunsetTime)
 
     val currentTime = remember { mutableStateOf(LocalTime.now()) }
 
@@ -105,7 +112,8 @@ fun HomePrayerTimeCardAnimation(
                     animatedFraction = sunAnimatedFraction,
                     width = width,
                     sunYPosition = sunYPosition,
-                    shadowColor = shadowColor
+                    shadowColor = shadowColor,
+                    height = height,
                 )
             } else {
                 moonAnimation(
@@ -113,7 +121,7 @@ fun HomePrayerTimeCardAnimation(
                     animatedFraction = moonAnimatedFraction,
                     width = width,
                     shadowColor = shadowColor,
-                    height  = height,
+                    height = height,
                     starAnimationSize = starAnimationSize
                 )
             }
@@ -137,17 +145,17 @@ private fun DrawScope.moonAnimation(
     drawCircle(
         color = Color(0x4F8A8DFF),
         radius = animatedRadius * 2f,
-        center = Offset(width/2, height/2 )
+        center = Offset(width / 2, height / 2)
     )
     drawCircle(
         color = Color(0x9AADBFFF),
         radius = animatedRadius * 1.7f,
-        center = Offset(width/2, height/2 )
+        center = Offset(width / 2, height / 2)
     )
     drawCircle(
         color = Color(0xC4D8E8FF),
         radius = animatedRadius * 1.4f,
-        center = Offset(width/2, height/2 )
+        center = Offset(width / 2, height / 2)
     )
 //    drawCircle(
 //        color = shadowColor,
@@ -170,12 +178,16 @@ private fun DrawScope.moonAnimation(
     drawCircle(
         color = Color(0xC4D8E8FF), // Color for the masking circle
         radius = animatedRadius * 0.8f,
-        center = Offset(width / 2 + animatedRadius * 0.3f, height / 2.1f) // Offset to create the crescent shape
+        center = Offset(
+            width / 2 + animatedRadius * 0.3f,
+            height / 2.1f
+        ) // Offset to create the crescent shape
     )
 
     stars(width, starAnimationSize)
 
-    drawCloud(width = width /5, height = height/5,
+    drawCloud(
+        width = width / 5, height = height / 5,
         position = Offset(x = width * 0.1f, y = height * 0.1f)
     )
 }
@@ -236,12 +248,12 @@ private fun DrawScope.stars(
         color = Color(0xC4D8E8FF)
     )
     drawStar(
-        center = Offset(50f, size.height -40f),
+        center = Offset(50f, size.height - 40f),
         size = starAnimationSize - 40f,
         color = Color(0xC4D8E8FF)
     )
     drawStar(
-        center = Offset(width -30f, size.height -40f),
+        center = Offset(width - 30f, size.height - 40f),
         size = starAnimationSize - 40f,
         color = Color(0xC4D8E8FF)
     )
@@ -326,7 +338,8 @@ private fun DrawScope.sunAnimation(
     animatedFraction: Float,
     width: Float,
     sunYPosition: Float,
-    shadowColor: Color
+    shadowColor: Color,
+    height: Float
 ) {
     val sunXPosition = animatedFraction * width
     drawCircle(
@@ -353,5 +366,58 @@ private fun DrawScope.sunAnimation(
         color = Color(0xFFEBAE3A),
         radius = animatedRadius,
         center = Offset(sunXPosition, sunYPosition)
+    )
+    sunCloud(
+        animatedRadius = animatedRadius ,
+        width = width / 2,
+        height = height / 1.1f
+    )
+    sunCloud(
+        animatedRadius = animatedRadius ,
+        width = width + width * 1.8f,
+        height = height + height /1.1f
+    )
+}
+
+private fun DrawScope.sunCloud(
+    animatedRadius: Float,
+    width: Float,
+    height: Float
+) {
+    drawCircle(
+        brush = Brush.linearGradient(
+            listOf(
+                Color.Gray,
+                Color.White,
+                Color.White,
+                Color.Gray
+            )
+        ),
+        radius = animatedRadius * 0.3f,
+        center = Offset(width / 3 - 60f, height / 2 + 20f)
+    )
+    drawCircle(
+        brush = Brush.linearGradient(
+            listOf(
+                Color.Gray,
+                Color.White,
+                Color.White,
+                Color.Gray
+            )
+        ),
+        radius = animatedRadius * 0.3f,
+        center = Offset(width / 3 + 60f, height / 2 + 10f)
+    )
+    drawCircle(
+        brush = Brush.linearGradient(
+            listOf(
+                Color.Gray,
+                Color.White,
+                Color.White,
+                Color.Gray
+            )
+        ),
+        radius = animatedRadius * 0.5f,
+        center = Offset(width / 3, height / 2)
     )
 }
