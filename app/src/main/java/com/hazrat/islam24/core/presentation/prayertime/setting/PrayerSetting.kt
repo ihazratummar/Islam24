@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,14 +19,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.presentation.prayertime.component.JuristicSelectionDialog
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerCalculationDialog
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerSettingCard
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -55,7 +56,7 @@ fun PrayerSetting(
                     )
                 },
                 navigationIcon = {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    Icon(imageVector = ImageVector.vectorResource(id = R.drawable.backicon),
                         contentDescription = "Back",
                         modifier = Modifier
                             .clickable {

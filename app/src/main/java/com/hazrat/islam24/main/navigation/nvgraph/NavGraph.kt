@@ -13,20 +13,18 @@ import com.hazrat.islam24.main.navigation.AppNavigator
 @Composable
 fun NavGraph(
     startDestination: String,
-    qiblaDirection: Float,
-    currentDirection: Float
 ) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = startDestination) {
         navigation(
-            route = Route.HomeNavigation.route,
+            route = Route.RootNav.route,
             startDestination = Route.HomeScreen.route
         ) {
             composable(
                 route = Route.HomeScreen.route
             ) {
-                AppNavigator(qiblaDirection = qiblaDirection, currentDirection = currentDirection)
+                AppNavigator()
             }
         }
     }
