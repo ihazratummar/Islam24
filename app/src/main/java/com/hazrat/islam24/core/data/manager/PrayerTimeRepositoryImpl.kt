@@ -9,6 +9,7 @@ import com.hazrat.islam24.core.data.entity.LocationEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.network.PrayerTimeApi
 import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
+import com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.Data
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.DateUtil
@@ -64,7 +65,7 @@ class PrayerTimeRepositoryImpl @Inject constructor(
     }
 
 
-    private fun convertApiResponseToEntity(apiResponse: com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.Data): PrayerTimeEntity {
+    private fun convertApiResponseToEntity(apiResponse: Data): PrayerTimeEntity {
         val timings = apiResponse.timings
         val date = apiResponse.date
         val meta = apiResponse.meta

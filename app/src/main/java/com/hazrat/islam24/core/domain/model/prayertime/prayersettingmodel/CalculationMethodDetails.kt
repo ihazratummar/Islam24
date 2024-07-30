@@ -22,27 +22,27 @@ val prayerMethods = listOf(
         method = 3,
         name = "Muslim World League"
     ),
-//    MethodDetails(
+//    CalculationMethodDetails(
 //        method = 4,
 //        name = "Umm Al-Qura University, Makkah"
 //    ),
-//    MethodDetails(
+//    CalculationMethodDetails(
 //        method = 5,
 //        name = "Egyptian General Authority of Survey"
 //    ),
-//    MethodDetails(
+//    CalculationMethodDetails(
 //        method = 7,
 //        name = "Institute of Geophysics, University of Tehran"
 //    ),
-//    MethodDetails(
+//    CalculationMethodDetails(
 //        method = 8,
 //        name = "Gulf Region"
 //    ),
-//    MethodDetails(
+//    CalculationMethodDetails(
 //        method = 9,
 //        name = "Kuwait"
 //    ),
-//    MethodDetails(
+//    CalculationMethodDetails(
 //        method = 10,
 //        name = "Qatar"
 //    ),
