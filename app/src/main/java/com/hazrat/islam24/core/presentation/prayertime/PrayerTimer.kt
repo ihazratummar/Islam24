@@ -110,14 +110,14 @@ fun ShowData(
                 ViewPager(prayerTimes = prayerTimes, navController)
             }
             val today = DateUtil.getCurrentDay()
-            val index = today.toInt()
+            val index = today - 1
             Log.d("Today", "$index")
-            if (index < prayerTimes.size-1) {
+            if (index in prayerTimes.indices) {
                 PrayerTimeScreenAnimation(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(MaterialTheme.dimens.size250),
-                    prayerTimeEntity = prayerTimes[index -1]
+                    prayerTimeEntity = prayerTimes[index]
 
                 )
             }

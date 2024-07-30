@@ -4,6 +4,7 @@ package com.hazrat.islam24.core.presentation.home.component
  * @author Hazrat Ummar Shaikh
  */
 
+import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -15,26 +16,18 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.convertLongToLocalTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -51,6 +44,8 @@ fun HomePrayerTimeCardAnimation(
 
     val sunrise = convertLongToLocalTime(prayerTimeEntity.sunriseTime)
     val sunset = convertLongToLocalTime(prayerTimeEntity.sunsetTime)
+
+    Log.d("SunTime", "$sunrise $sunset")
 
     val currentTime = remember { mutableStateOf(LocalTime.now()) }
 
@@ -71,8 +66,8 @@ fun HomePrayerTimeCardAnimation(
     // State to control the radius of the circle
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val sunAnimatedRadius by infiniteTransition.animateFloat(
-        initialValue = 130f,
-        targetValue = 150f,
+        initialValue = 120f,
+        targetValue = 130f,
         animationSpec = infiniteRepeatable(
             animation = tween(
                 durationMillis = 7000, // Duration for one complete cycle
@@ -120,21 +115,18 @@ fun HomePrayerTimeCardAnimation(
                     animatedRadius = sunAnimatedRadius,
                     animatedFraction = moonAnimatedFraction,
                     width = width,
-                    shadowColor = shadowColor,
                     height = height,
                     starAnimationSize = starAnimationSize
                 )
             }
         }
     }
-
 }
 
 private fun DrawScope.moonAnimation(
     animatedRadius: Float,
     animatedFraction: Float,
     width: Float,
-    shadowColor: Color,
     height: Float,
     starAnimationSize: Float
 ) {
@@ -187,8 +179,12 @@ private fun DrawScope.moonAnimation(
     stars(width, starAnimationSize)
 
     drawCloud(
-        width = width / 5, height = height / 5,
-        position = Offset(x = width * 0.1f, y = height * 0.1f)
+        width = width / 5, height = height / 5
+    )
+    sunCloud(
+        animatedRadius = animatedRadius ,
+        width = width + width * 1.8f,
+        height = height + height /1.1f
     )
 }
 
@@ -261,8 +257,7 @@ private fun DrawScope.stars(
 
 private fun DrawScope.drawCloud(
     width: Float,
-    height: Float,
-    position: Offset = Offset.Zero
+    height: Float
 ) {
     val cloudColor = Color.White
     // Drawing multiple circles to create a cloud shape
