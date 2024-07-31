@@ -91,21 +91,21 @@ fun TimeLocationCard(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            val today = DateUtil.getCurrentDay()
+            val today = getCurrentDay()
             val index = today -1
-            Log.d("Today", "$index")
             if (index in prayerTimeEntity.indices) {
                 HomePrayerTimeCardAnimation(
                     modifier = Modifier
                         .fillMaxSize(),
                     prayerTimeEntity = prayerTimeEntity[index]
-
                 )
-
-            } else {
-                Log.e("Error", "Index $index out of bounds for prayerTimeEntity list.")
+            }else{
+                HomePrayerTimeCardAnimation(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    prayerTimeEntity = prayerTimeEntity[1]
+                )
             }
-            Log.d("prayerTimeSize", "${prayerTimeEntity[index]}")
             Row(
                 modifier = Modifier
                     .fillMaxSize()
