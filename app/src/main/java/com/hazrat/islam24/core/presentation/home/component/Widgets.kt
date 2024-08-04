@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -34,44 +35,47 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
+import okhttp3.internal.immutableListOf
 
 @Composable
 fun LazyVerticalGridCardIcons(navController: NavController) {
 
-    val icons = listOf(
-        R.drawable.allahname,
-        R.drawable.tasbihicon,
-        R.drawable.calendaricon,
+    val icons = immutableListOf(
+        R.drawable.allah_logo,
+        R.drawable.calendar,
         R.drawable.athkar,
-        R.drawable.goldqaba,
+        R.drawable.qibla,
     )
 
-    val names = listOf(
+    val names = immutableListOf(
         stringResource(R.string.names),
-        stringResource(R.string.tasbih),
         stringResource(R.string.calendar),
         stringResource(R.string.athkar),
         stringResource(id = R.string.qibla)
     )
 
-    val onClickLabel = listOf(
+    val onClickLabel = immutableListOf(
         stringResource(R.string.names),
-        stringResource(R.string.tasbih),
         stringResource(R.string.calendar),
         stringResource(R.string.athkar),
         stringResource(id = R.string.qibla)
     )
 
-    Box(modifier = Modifier.height(MaterialTheme.dimens.size300)) {
-        LazyVerticalGrid(columns = GridCells.Fixed(5)) {
+    Box(modifier = Modifier.height(MaterialTheme.dimens.size300).fillMaxWidth()) {
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxWidth(),
+            columns = GridCells.Fixed(4),
+            horizontalArrangement = Arrangement.Center
+        ) {
             items(names.size) { index ->
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -81,18 +85,17 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                         modifier = Modifier
                             .width(MaterialTheme.dimens.size60)
                             .height(MaterialTheme.dimens.size60)
-                            .padding(MaterialTheme.dimens.size4)
+                            .padding(MaterialTheme.dimens.size1)
                             .clickable(
                                 onClick = {
                                     when (index) {
                                         0 -> navController.navigate(Route.NamesOfAllah.route)
-                                        1 -> navController.navigate(Route.TasbihScreen.route)
-                                        2 -> navController.navigate(Route.CalendarScreen.route)
-                                        3 -> navController.navigate(Route.AthkarScreen.route)
-                                        4 -> navController.navigate(Route.QiblaDirectionScreen.route)
+                                        1 -> navController.navigate(Route.CalendarScreen.route)
+                                        2 -> navController.navigate(Route.AthkarScreen.route)
+                                        3 -> navController.navigate(Route.QiblaDirectionScreen.route)
                                     }
                                 },
-                                onClickLabel =onClickLabel [index]
+                                onClickLabel = onClickLabel[index]
                             )
                             .clip(RoundedCornerShape(MaterialTheme.dimens.size8)),
                         colors = CardDefaults.cardColors(
@@ -100,7 +103,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                         )
                     ) {
                         Icon(
-                            painter = painterResource(id = icons[index]),
+                            imageVector = ImageVector.vectorResource(id = icons[index]),
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier
@@ -117,14 +120,6 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
 
             }
         }
-    }
-}
-
-
-@Composable
-fun MyScreen(navController: NavController) {
-    Surface {
-        LazyVerticalGridCardIcons(navController)
     }
 }
 

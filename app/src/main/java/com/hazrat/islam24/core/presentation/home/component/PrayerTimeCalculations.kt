@@ -37,14 +37,12 @@ fun DisplayCurrentPrayerName(
 
     DisposableEffect(Unit) {
         val coroutineScope = CoroutineScope(Dispatchers.Default)
-
         val job = coroutineScope.launch {
             while (true) {
                 delay(1000) // Update every second
                 currentTime = System.currentTimeMillis()
             }
         }
-
         onDispose {
             job.cancel()
         }

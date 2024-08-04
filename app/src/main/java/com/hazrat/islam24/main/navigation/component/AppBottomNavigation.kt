@@ -16,9 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.ui.theme.dimens
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
+import com.hazrat.islam24.R
 
 @Composable
 fun AppBottomNavigation(
@@ -63,6 +67,7 @@ fun AppBottomNavigation(
         }
     }
 }
+
 
 data class BottomNavigationItem(
     val route: String,

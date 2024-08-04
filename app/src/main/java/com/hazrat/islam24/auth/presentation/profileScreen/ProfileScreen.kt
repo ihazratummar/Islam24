@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
@@ -217,7 +219,7 @@ private fun ProfileHeader(
             navController.navigate(Route.ProfileSettingScreen.route)
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.settings),
+                imageVector = ImageVector.vectorResource(id = R.drawable.settings),
                 contentDescription = "Settings",
                 tint = MaterialTheme.colorScheme.onBackground
             )
