@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
+import com.hazrat.islam24.main.navigation.nvgraph.RootNav
 import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.service.*
 import com.hazrat.islam24.ui.theme.Islam24Theme
@@ -98,7 +99,6 @@ class MainActivity : ComponentActivity() {
             val qiblaState = viewModel.qiblaState.collectAsState()
             Islam24Theme {
                 NavGraph(
-                    startDestination = viewModel.startDestination.value,
                     qiblaDirection = qiblaState.value.qiblaDirection,
                     currentDirection = qiblaState.value.currentDirection
                 )

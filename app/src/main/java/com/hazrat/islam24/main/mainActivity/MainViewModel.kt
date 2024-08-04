@@ -22,6 +22,7 @@ import com.hazrat.islam24.core.domain.repository.TasbihRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.core.presentation.qibla.QiblaState
+import com.hazrat.islam24.main.navigation.nvgraph.RootNav
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,8 +58,6 @@ class MainViewModel @Inject constructor(
     /**
      * app destination screen
      */
-    private val _startDestination = mutableStateOf(Route.RootNav.route)
-    val startDestination: State<String> = _startDestination
 
     /**
      * prayer time
@@ -127,7 +126,6 @@ class MainViewModel @Inject constructor(
 
 
     init {
-        _startDestination.value = Route.RootNav.route
         viewModelScope.launch {
             delay(300)
             _splashCondition.value = false

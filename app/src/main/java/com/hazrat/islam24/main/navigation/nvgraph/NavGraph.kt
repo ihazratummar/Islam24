@@ -8,27 +8,25 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.main.navigation.AppNavigator
+import com.hazrat.islam24.main.navigation.HomeScreen
+import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun NavGraph(
-    startDestination: String,
     qiblaDirection: Float,
     currentDirection: Float
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = startDestination) {
-        navigation(
-            route = Route.RootNav.route,
-            startDestination = Route.HomeScreen.route
-        ) {
-            composable(
-                route = Route.HomeScreen.route
-            ) {
+    NavHost(navController = navController, startDestination = RootNav) {
+        navigation<RootNav>(startDestination = HomeScreen) {
+            composable<HomeScreen> {
                 AppNavigator(qiblaDirection = qiblaDirection, currentDirection = currentDirection)
             }
         }
     }
-
 }
+
+@Serializable
+data object RootNav

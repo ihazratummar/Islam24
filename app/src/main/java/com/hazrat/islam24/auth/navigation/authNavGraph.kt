@@ -16,17 +16,15 @@ import com.hazrat.islam24.auth.presentation.profileSetting.ProfileSettingScreen
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.Route
+import kotlinx.serialization.Serializable
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
-    navigation(
-        route = Route.Auth.route,
-        startDestination = Route.ProfileScreen.route
-    ) {
-        composable(route = Route.LoginScreen.route) {
+    navigation<Auth>(startDestination = Route.ProfileScreen.route) {
+        composable<Login> {
             val loginViewModel = hiltViewModel<LoginViewModel>()
             val loginState = loginViewModel.loginState.collectAsState()
             val loginEvent = loginViewModel::onEvent
@@ -38,7 +36,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
                 authState = authState.value
             )
         }
-        composable(route = Route.SignupScreen.route) {
+        composable<SignUp> {
             val singUpViewModel = hiltViewModel<SingupViewModel>()
             val signUpState = singUpViewModel.state.collectAsState()
             val signUpEvent = singUpViewModel::onEvent
@@ -72,3 +70,13 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
         }
     }
 }
+
+
+@Serializable
+data object Auth
+
+@Serializable
+data object Login
+
+@Serializable
+data object SignUp
