@@ -44,7 +44,6 @@ import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScree
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.CalendarScreen
 import com.hazrat.islam24.main.navigation.PrayerSetting
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
@@ -111,9 +110,8 @@ fun ShowData(
             ) {
                 ViewPager(prayerTimes = prayerTimes, navController)
             }
-            val today = DateUtil.getCurrentDay()
+            val today = getCurrentDay()
             val index = today - 1
-            Log.d("Today", "$index")
             if (index in prayerTimes.indices) {
                 PrayerTimeScreenAnimation(
                     modifier = Modifier
@@ -128,14 +126,13 @@ fun ShowData(
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ViewPager(
     prayerTimes: List<PrayerTimeEntity>,
     navController: NavController
 ) {
 
-    val todayDay = DateUtil.getCurrentDay()
+    val todayDay = getCurrentDay()
     val todayIndex = prayerTimes.indexOfFirst { data ->
         val day = data.day
         todayDay == day

@@ -3,6 +3,8 @@ package com.hazrat.islam24.main.navigation
 import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,9 +41,7 @@ import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.popUpTo
 import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -58,7 +58,9 @@ fun AppNavigator() {
         NavHost(
             navController = navController,
             startDestination = HomeScreen,
-            modifier = Modifier.padding(bottom = bottomPadding)
+            modifier = Modifier.padding(bottom = bottomPadding),
+            enterTransition = { EnterTransition.None},
+            exitTransition = { ExitTransition.None}
         ) {
             composable<HomeScreen> {
                 HomeScreen(navController, navigateToPrayerTime = {
@@ -123,7 +125,8 @@ private fun BottomBar(navController: NavHostController) {
         bottomNavigationItem.any { it.route::class.qualifiedName == currentDestination?.route }
     if (isBottomBarVisible) {
         NavigationBar(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
+            tonalElevation = MaterialTheme.dimens.size10
         ) {
             bottomNavigationItem.forEach { screen ->
                 val isSelected =

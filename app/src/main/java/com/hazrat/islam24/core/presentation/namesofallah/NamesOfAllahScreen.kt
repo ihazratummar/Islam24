@@ -39,18 +39,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.NameEntity
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.popUpTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

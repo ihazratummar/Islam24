@@ -17,7 +17,6 @@ import com.hazrat.islam24.auth.presentation.profileSetting.ProfileSettingScreen
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
 import com.hazrat.islam24.main.navigation.ProfileScreen
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import kotlinx.serialization.Serializable
 
 /**

@@ -2,6 +2,8 @@ package com.hazrat.islam24.main.navigation.nvgraph
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,7 +18,10 @@ import kotlinx.serialization.Serializable
 fun NavGraph() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = RootNav) {
+    NavHost(navController = navController, startDestination = RootNav,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None }
+    ) {
         navigation<RootNav>(startDestination = HomeScreen) {
             composable<HomeScreen> {
                 AppNavigator()

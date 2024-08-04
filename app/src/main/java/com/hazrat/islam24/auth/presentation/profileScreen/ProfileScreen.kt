@@ -37,7 +37,6 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
 import com.hazrat.islam24.auth.presentation.AuthEvent
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
 
 /**

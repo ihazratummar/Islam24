@@ -42,7 +42,6 @@ import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.SignUp
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.main.navigation.ProfileScreen
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 
 /**
  * @author Hazrat Ummar Shaikh
