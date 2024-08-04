@@ -40,8 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.navigation.Login
+import com.hazrat.islam24.auth.navigation.SignUp
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
-import com.hazrat.islam24.main.navigation.nvgraph.Route
+import com.hazrat.islam24.main.navigation.ProfileScreen
 import com.hazrat.islam24.ui.theme.dimens
 
 /**
@@ -60,8 +62,8 @@ fun AuthLoginScreen(
     LaunchedEffect(authState) {
         when(authState){
             is AuthState.Authenticated -> {
-                navController.navigate(Route.ProfileScreen.route) {
-                    popUpTo(Route.LoginScreen.route) { inclusive = true }
+                navController.navigate(ProfileScreen) {
+                    popUpTo(Login) { inclusive = true }
                 }
             }
             is AuthState.Error -> {
@@ -175,7 +177,7 @@ fun AuthLoginScreen(
                 color = MaterialTheme.colorScheme.primary,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
-                    navController.navigate(Route.SignupScreen.route)
+                    navController.navigate(SignUp)
 
                 }
             )

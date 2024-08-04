@@ -6,10 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.data.entity.NameEntity
 import com.hazrat.islam24.core.domain.repository.NamesRepository
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn

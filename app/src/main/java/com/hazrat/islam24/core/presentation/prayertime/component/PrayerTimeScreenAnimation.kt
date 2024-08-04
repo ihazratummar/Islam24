@@ -60,8 +60,8 @@ fun PrayerTimeScreenAnimation(
     // State to control the radius of the circle
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val sunAnimatedRadius by infiniteTransition.animateFloat(
-        initialValue = 130f,
-        targetValue = 150f,
+        initialValue = 110f,
+        targetValue = 120f,
         animationSpec = infiniteRepeatable(
             animation = tween(
                 durationMillis = 7000, // Duration for one complete cycle
@@ -117,7 +117,8 @@ fun PrayerTimeScreenAnimation(
                     shadowColor = shadowColor,
                     moonColors = moonColors,
                     sunYPosition = sunYPosition,
-                    starAnimationSize = starAnimationSize
+                    starAnimationSize = starAnimationSize,
+                    height = height
                 )
             }
         }
@@ -132,7 +133,8 @@ private fun DrawScope.moonAnimation(
     shadowColor: Color,
     moonColors: List<Color>,
     sunYPosition: Float,
-    starAnimationSize: Float
+    starAnimationSize: Float,
+    height: Float
 ) {
     // Adjust the moon's position based on the animatedFraction
     val moonXPosition = animatedFraction * width
@@ -141,32 +143,40 @@ private fun DrawScope.moonAnimation(
     drawCircle(
         color = Color(0x4F8A8DFF),
         radius = animatedRadius * 2f,
-        center = Offset(moonXPosition, sunYPosition * 0.25f)
+        center = Offset(width / 2, height/ 4)
     )
     drawCircle(
         color = Color(0x9AADBFFF),
         radius = animatedRadius * 1.7f,
-        center = Offset(moonXPosition, sunYPosition * 0.25f)
+        center = Offset(width / 2, height/ 4)
     )
     drawCircle(
         color = Color(0xC4D8E8FF),
         radius = animatedRadius * 1.4f,
-        center = Offset(moonXPosition, sunYPosition * 0.25f)
+        center = Offset(width / 2, height/ 4)
     )
     drawCircle(
         color = shadowColor,
         radius = animatedRadius,
-        center = Offset(moonXPosition, sunYPosition * 0.25f)
+        center = Offset(width / 2, height/ 4)
     )
     drawCircle(
         brush = Brush.radialGradient(moonColors),
         radius = animatedRadius,
-        center = Offset(moonXPosition, sunYPosition * 0.25f)
+        center = Offset(width / 2, height/ 4)
     )
     drawCircle(
         brush = Brush.radialGradient(moonColors),
         radius = animatedRadius * 0.7f,
-        center = Offset(moonXPosition, sunYPosition * 0.25f)
+        center = Offset(width / 2, height/ 4)
+    )
+    drawCircle(
+        color = Color(0xC4D8E8FF), // Color for the masking circle
+        radius = animatedRadius * 0.8f,
+        center = Offset(
+            width / 2 + animatedRadius * 0.3f,
+            height / 4.3f
+        ) // Offset to create the crescent shape
     )
 
     // Draw stars
@@ -183,7 +193,7 @@ private fun DrawScope.moonAnimation(
     drawStar(
         center = Offset(center.x - size.width / 4, center.y - size.height / 4),
         size = starAnimationSize - 60f,
-        color = Color.Yellow
+        color = Color(0xC4A8DAFC)
     )
     drawStar(
         center = Offset(center.x + size.width / 4, center.y - size.height / 4),
@@ -193,7 +203,7 @@ private fun DrawScope.moonAnimation(
     drawStar(
         center = Offset(size.width , center.y - size.height / 4),
         size = starAnimationSize - 40f,
-        color = Color.Yellow
+        color = Color(0xC4A8DAFC)
     )
     drawStar(
         center = Offset(0f , center.y - size.height / 4),
@@ -208,7 +218,7 @@ private fun DrawScope.moonAnimation(
     drawStar(
         center = Offset(width* 0.3f, center.y - size.height-20f),
         size = starAnimationSize - 30f,
-        color = Color.Yellow
+        color = Color(0xC4A8DAFC)
     )
     drawStar(
         center = Offset(40f, center.y - size.height-20f),

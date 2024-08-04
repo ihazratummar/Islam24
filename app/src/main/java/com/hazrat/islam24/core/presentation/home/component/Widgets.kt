@@ -21,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,8 +40,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.hazrat.islam24.R
-import com.hazrat.islam24.main.navigation.nvgraph.Route
+import com.hazrat.islam24.main.navigation.AthkarScreen
+import com.hazrat.islam24.main.navigation.CalendarScreen
+import com.hazrat.islam24.main.navigation.NamesOfAllahScreen
+import com.hazrat.islam24.main.navigation.QiblaDirectionScreen
 import com.hazrat.islam24.ui.theme.dimens
 import okhttp3.internal.immutableListOf
 
@@ -89,10 +92,10 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             .clickable(
                                 onClick = {
                                     when (index) {
-                                        0 -> navController.navigate(Route.NamesOfAllah.route)
-                                        1 -> navController.navigate(Route.CalendarScreen.route)
-                                        2 -> navController.navigate(Route.AthkarScreen.route)
-                                        3 -> navController.navigate(Route.QiblaDirectionScreen.route)
+                                        0 -> navController.navigate(NamesOfAllahScreen)
+                                        1 -> navController.navigate(CalendarScreen)
+                                        2 -> navController.navigate(AthkarScreen)
+                                        3 -> navController.navigate(QiblaDirectionScreen)
                                     }
                                 },
                                 onClickLabel = onClickLabel[index]
