@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.navigation.Login
+import com.hazrat.islam24.auth.navigation.SignUp
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
+import com.hazrat.islam24.main.navigation.ProfileScreen
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
 
@@ -59,8 +63,8 @@ fun AuthLoginScreen(
     LaunchedEffect(authState) {
         when(authState){
             is AuthState.Authenticated -> {
-                navController.navigate(Route.ProfileScreen.route) {
-                    popUpTo(Route.LoginScreen.route) { inclusive = true }
+                navController.navigate(ProfileScreen) {
+                    popUpTo(Login) { inclusive = true }
                 }
             }
             is AuthState.Error -> {
@@ -71,7 +75,11 @@ fun AuthLoginScreen(
         loginEvent(LoginEvent.Refresh)
     }
 
-
+    val onLoginClick = remember(state.email, state.password) {
+        {
+            loginEvent(LoginEvent.Login(email = state.email, password = state.password))
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -136,9 +144,9 @@ fun AuthLoginScreen(
         )
         Spacer(modifier = Modifier.height(35.dp))
         Button(
-            onClick = {
-                loginEvent(LoginEvent.Login(email = state.email, password= state.password))
-            },
+            onClick = onLoginClick
+
+            ,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -170,7 +178,7 @@ fun AuthLoginScreen(
                 color = MaterialTheme.colorScheme.primary,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
-                    navController.navigate(Route.SignupScreen.route)
+                    navController.navigate(SignUp)
 
                 }
             )

@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,11 +35,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.Hidaya
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.drawableToBitmap
@@ -65,12 +63,12 @@ import com.hazrat.islam24.util.vibrateDevice
 @Composable
 fun QiblaScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
-    qiblaDirection: Float, currentDirection: Float,
-    viewModel: MainViewModel = hiltViewModel()
+    navController: NavController,
+    qiblaDirection: Float,
+    currentDirection: Float,
+    locationName: List<LocationDetailsEntity>,
 ) {
 
-    val locationName = viewModel.locationName.collectAsState().value
 
     val context = LocalContext.current
     val compassBgBitmap =
@@ -80,8 +78,8 @@ fun QiblaScreen(
     val needleBitmap = remember { drawableToBitmap(context, R.drawable.needles).asImageBitmap() }
     val goldQaba = remember { drawableToBitmap(context, R.drawable.goldqaba).asImageBitmap() }
 
-    val minTolerance = 3f // Adjusted tolerance range
-    val maxTolerance = 3.5f // Adjusted tolerance range
+    val minTolerance = 2.9f // Adjusted tolerance range
+    val maxTolerance = 3.8f // Adjusted tolerance range
 
     val directionDifference = qiblaDirection - currentDirection
     val normalizedDifference = (directionDifference + 360) % 360

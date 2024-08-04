@@ -13,16 +13,13 @@ import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun NavGraph(
-    qiblaDirection: Float,
-    currentDirection: Float
-) {
+fun NavGraph() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = RootNav) {
         navigation<RootNav>(startDestination = HomeScreen) {
             composable<HomeScreen> {
-                AppNavigator(qiblaDirection = qiblaDirection, currentDirection = currentDirection)
+                AppNavigator()
             }
         }
     }
