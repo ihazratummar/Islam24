@@ -38,11 +38,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
+import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
 import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.main.navigation.CalendarScreen
+import com.hazrat.islam24.main.navigation.PrayerSetting
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
@@ -91,7 +92,7 @@ fun ShowData(
                         contentDescription = "Setting Icon",
                         modifier = Modifier
                             .clickable {
-                                navController.navigate(Route.PrayerSetting.route)
+                                navController.navigate(PrayerSetting)
                             }
                             .padding(end = MaterialTheme.dimens.size20),
                         tint = MaterialTheme.colorScheme.onBackground
@@ -109,9 +110,8 @@ fun ShowData(
             ) {
                 ViewPager(prayerTimes = prayerTimes, navController)
             }
-            val today = DateUtil.getCurrentDay()
+            val today = getCurrentDay()
             val index = today - 1
-            Log.d("Today", "$index")
             if (index in prayerTimes.indices) {
                 PrayerTimeScreenAnimation(
                     modifier = Modifier
@@ -126,14 +126,13 @@ fun ShowData(
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ViewPager(
     prayerTimes: List<PrayerTimeEntity>,
     navController: NavController
 ) {
 
-    val todayDay = DateUtil.getCurrentDay()
+    val todayDay = getCurrentDay()
     val todayIndex = prayerTimes.indexOfFirst { data ->
         val day = data.day
         todayDay == day
@@ -215,7 +214,7 @@ fun PrayerTimesDay(
         item {
             PrayerDateCard(
                 modifier = Modifier.clickable {
-                    navController.navigate(route = Route.CalendarScreen.route)
+                    navController.navigate(CalendarScreen)
                 },
                 enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",
                 hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear} ${data.hijriab}"

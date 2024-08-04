@@ -102,10 +102,8 @@ fun TimeLocationCard(
 
                 )
 
-            } else {
-                Log.e("Error", "Index $index out of bounds for prayerTimeEntity list.")
             }
-            Log.d("prayerTimeSize", "${prayerTimeEntity[index]}")
+
             Row(
                 modifier = Modifier
                     .fillMaxSize()

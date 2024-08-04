@@ -34,8 +34,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.navigation.Login
+import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
 import com.hazrat.islam24.auth.presentation.AuthEvent
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
 
 /**
@@ -162,7 +163,7 @@ private fun ProfileHeader(
         Box(
             modifier = Modifier.clickable {
                 if (state == AuthState.Unauthenticated){
-                    navController.navigate(Route.LoginScreen.route)
+                    navController.navigate( Login)
                 }
             }
         ) {
@@ -216,7 +217,7 @@ private fun ProfileHeader(
             }
         }
         IconButton(onClick = {
-            navController.navigate(Route.ProfileSettingScreen.route)
+            navController.navigate(ProfileSettingScreen)
         }) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.settings),

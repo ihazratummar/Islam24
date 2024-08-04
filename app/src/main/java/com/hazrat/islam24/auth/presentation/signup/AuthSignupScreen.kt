@@ -38,8 +38,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.navigation.Login
+import com.hazrat.islam24.auth.navigation.SignUp
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
-import com.hazrat.islam24.main.navigation.nvgraph.Route
+import com.hazrat.islam24.main.navigation.ProfileScreen
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -57,8 +59,8 @@ fun AuthSignupScreen(
     LaunchedEffect(authState) {
         when(authState){
             is AuthState.Authenticated -> {
-                navController.navigate(Route.ProfileScreen.route) {
-                    popUpTo(Route.SignupScreen.route) { inclusive = true }
+                navController.navigate(ProfileScreen) {
+                    popUpTo(SignUp) { inclusive = true }
                 }
             }
             is AuthState.Error -> {
@@ -237,7 +239,7 @@ fun AuthSignupScreen(
                 color = MaterialTheme.colorScheme.primary,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
-                    navController.navigate(Route.LoginScreen.route)
+                    navController.navigate(Login)
                 }
             )
         }

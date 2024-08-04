@@ -80,9 +80,7 @@ class MainActivity : ComponentActivity() {
         // Set the content view with Jetpack Compose
         setContent {
             Islam24Theme {
-                NavGraph(
-                    startDestination = viewModel.startDestination.value,
-                )
+                NavGraph()
             }
         }
 
