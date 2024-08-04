@@ -41,6 +41,7 @@ import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.popUpTo
 import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -61,7 +62,13 @@ fun AppNavigator() {
         ) {
             composable<HomeScreen> {
                 HomeScreen(navController, navigateToPrayerTime = {
-
+                    navController.navigate(PrayerTimeScreen) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 })
             }
             composable<PrayerTimeScreen> {
@@ -116,11 +123,11 @@ private fun BottomBar(navController: NavHostController) {
         bottomNavigationItem.any { it.route::class.qualifiedName == currentDestination?.route }
     if (isBottomBarVisible) {
         NavigationBar(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = Color.Transparent
         ) {
             bottomNavigationItem.forEach { screen ->
                 val isSelected =
-                    currentDestination?.hierarchy?.any { it.route == screen.route } == true
+                    currentDestination?.hierarchy?.any { it.route == screen.route::class.qualifiedName } == true
                 NavigationBarItem(
                     selected = isSelected,
                     onClick = {
@@ -136,7 +143,7 @@ private fun BottomBar(navController: NavHostController) {
                         Icon(
                             painter = painterResource(id = screen.icon),
                             contentDescription = screen.name,
-                            modifier = Modifier.size(if (isSelected) MaterialTheme.dimens.size50 else MaterialTheme.dimens.size40)
+                            modifier = Modifier.size(if (isSelected) MaterialTheme.dimens.size50 / 1.1f else MaterialTheme.dimens.size40 / 1.1f)
                         )
                     },
                     label = { Text(text = screen.name) },
@@ -183,7 +190,8 @@ data object AthkarScreen
 sealed class ContentDestination<T>(val name: String, @DrawableRes val icon: Int, val route: T) {
 
     @Serializable
-    data object Home : ContentDestination<HomeScreen>("Home", R.drawable.naviconhome, HomeScreen)
+    data object Home :
+        ContentDestination<HomeScreen>("Home", R.drawable.naviconhome, HomeScreen)
 
     @Serializable
     data object PrayerTime :
