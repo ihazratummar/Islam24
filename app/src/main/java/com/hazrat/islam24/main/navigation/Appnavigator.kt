@@ -31,7 +31,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
-import com.hazrat.islam24.auth.navigation.authNavGraph
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.home.HomeScreen
@@ -91,7 +90,7 @@ fun AppNavigator() {
                     locationName = locationName
                 )
             }
-            composable<NamesOfAllahScreen>() {
+            composable<NamesOfAllahScreen> {
                 val viewModel: MainViewModel = hiltViewModel()
                 NamesOfAllahScreen(viewModel, navController)
             }
@@ -104,7 +103,7 @@ fun AppNavigator() {
             composable<AthkarScreen> {
                 AthkarScreen(navController)
             }
-            authNavGraph(navController)
+//            authNavGraph(navController)
         }
     }
 
@@ -116,7 +115,7 @@ private fun BottomBar(navController: NavHostController) {
         listOf(
             ContentDestination.Home,
             ContentDestination.PrayerTime,
-            ContentDestination.Profile
+//            ContentDestination.Profile
         )
     }
     val backStackState by navController.currentBackStackEntryAsState()
@@ -200,7 +199,7 @@ sealed class ContentDestination<T>(val name: String, @DrawableRes val icon: Int,
     data object PrayerTime :
         ContentDestination<PrayerTimeScreen>("PrayerTime", R.drawable.pray, PrayerTimeScreen)
 
-    @Serializable
-    data object Profile :
-        ContentDestination<ProfileScreen>("Profile", R.drawable.profile, ProfileScreen)
+//    @Serializable
+//    data object Profile :
+//        ContentDestination<ProfileScreen>("Profile", R.drawable.profile, ProfileScreen)
 }
