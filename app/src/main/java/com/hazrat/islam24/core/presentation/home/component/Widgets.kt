@@ -92,10 +92,34 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             .clickable(
                                 onClick = {
                                     when (index) {
-                                        0 -> navController.navigate(NamesOfAllahScreen)
-                                        1 -> navController.navigate(CalendarScreen)
-                                        2 -> navController.navigate(AthkarScreen)
-                                        3 -> navController.navigate(QiblaDirectionScreen)
+                                        0 -> navController.navigate(NamesOfAllahScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = false
+                                        }
+                                        1 -> navController.navigate(CalendarScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        2 -> navController.navigate(AthkarScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        3 -> navController.navigate(QiblaDirectionScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
                                 },
                                 onClickLabel = onClickLabel[index]
