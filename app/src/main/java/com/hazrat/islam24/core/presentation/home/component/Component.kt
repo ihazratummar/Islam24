@@ -92,20 +92,18 @@ fun TimeLocationCard(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val today = DateUtil.getCurrentDay()
-            val index = today.toInt()
+            val index = today -1
             Log.d("Today", "$index")
-            if (index < prayerTimeEntity.size - 1) {
+            if (index in prayerTimeEntity.indices) {
                 HomePrayerTimeCardAnimation(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .blur(
-                            radius = MaterialTheme.dimens.size2,
-                            edgeTreatment = BlurredEdgeTreatment.Unbounded
-                        ),
-                    prayerTimeEntity = prayerTimeEntity[index - 1]
+                        .fillMaxSize(),
+                    prayerTimeEntity = prayerTimeEntity[index]
 
                 )
+
             }
+
             Row(
                 modifier = Modifier
                     .fillMaxSize()

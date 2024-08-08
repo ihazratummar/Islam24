@@ -2,20 +2,15 @@ package com.hazrat.islam24.core.presentation.qibla
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.service.CompassSensorManager
 import com.hazrat.islam24.service.LocationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
-import kotlin.math.log
 import kotlin.math.sin
 
 /**

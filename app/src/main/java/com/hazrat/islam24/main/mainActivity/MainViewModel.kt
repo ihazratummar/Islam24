@@ -2,9 +2,7 @@ package com.hazrat.islam24.main.mainActivity
 
 import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
@@ -17,7 +15,6 @@ import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.main.navigation.nvgraph.Route
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,11 +45,6 @@ class MainViewModel @Inject constructor(
     private val _splashCondition = mutableStateOf(true)
     val splashCondition: State<Boolean> = _splashCondition
 
-    /**
-     * app destination screen
-     */
-    private val _startDestination = mutableStateOf(Route.RootNav.route)
-    val startDestination: State<String> = _startDestination
 
     /**
      * prayer time
@@ -91,7 +83,6 @@ class MainViewModel @Inject constructor(
 
 
     init {
-        _startDestination.value = Route.RootNav.route
         viewModelScope.launch {
             delay(300)
             _splashCondition.value = false

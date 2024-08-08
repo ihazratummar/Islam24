@@ -4,6 +4,7 @@ package com.hazrat.islam24.core.presentation.home.component
  * @author Hazrat Ummar Shaikh
  */
 
+import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -21,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -43,7 +43,9 @@ fun HomePrayerTimeCardAnimation(
 ) {
 
     val sunrise = convertLongToLocalTime(prayerTimeEntity.sunriseTime)
-    val sunset =convertLongToLocalTime(prayerTimeEntity.sunsetTime)
+    val sunset = convertLongToLocalTime(prayerTimeEntity.sunsetTime)
+
+    Log.d("SunTime", "$sunrise $sunset")
 
     val currentTime = remember { mutableStateOf(LocalTime.now()) }
 
@@ -64,8 +66,8 @@ fun HomePrayerTimeCardAnimation(
     // State to control the radius of the circle
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val sunAnimatedRadius by infiniteTransition.animateFloat(
-        initialValue = 130f,
-        targetValue = 150f,
+        initialValue = 120f,
+        targetValue = 130f,
         animationSpec = infiniteRepeatable(
             animation = tween(
                 durationMillis = 7000, // Duration for one complete cycle
@@ -105,28 +107,26 @@ fun HomePrayerTimeCardAnimation(
                     animatedFraction = sunAnimatedFraction,
                     width = width,
                     sunYPosition = sunYPosition,
-                    shadowColor = shadowColor
+                    shadowColor = shadowColor,
+                    height = height,
                 )
             } else {
                 moonAnimation(
                     animatedRadius = sunAnimatedRadius,
                     animatedFraction = moonAnimatedFraction,
                     width = width,
-                    shadowColor = shadowColor,
-                    height  = height,
+                    height = height,
                     starAnimationSize = starAnimationSize
                 )
             }
         }
     }
-
 }
 
 private fun DrawScope.moonAnimation(
     animatedRadius: Float,
     animatedFraction: Float,
     width: Float,
-    shadowColor: Color,
     height: Float,
     starAnimationSize: Float
 ) {
@@ -137,17 +137,17 @@ private fun DrawScope.moonAnimation(
     drawCircle(
         color = Color(0x4F8A8DFF),
         radius = animatedRadius * 2f,
-        center = Offset(width/2, height/2 )
+        center = Offset(width / 2, height / 2)
     )
     drawCircle(
         color = Color(0x9AADBFFF),
         radius = animatedRadius * 1.7f,
-        center = Offset(width/2, height/2 )
+        center = Offset(width / 2, height / 2)
     )
     drawCircle(
         color = Color(0xC4D8E8FF),
         radius = animatedRadius * 1.4f,
-        center = Offset(width/2, height/2 )
+        center = Offset(width / 2, height / 2)
     )
 //    drawCircle(
 //        color = shadowColor,
@@ -170,13 +170,21 @@ private fun DrawScope.moonAnimation(
     drawCircle(
         color = Color(0xC4D8E8FF), // Color for the masking circle
         radius = animatedRadius * 0.8f,
-        center = Offset(width / 2 + animatedRadius * 0.3f, height / 2.1f) // Offset to create the crescent shape
+        center = Offset(
+            width / 2 + animatedRadius * 0.3f,
+            height / 2.1f
+        ) // Offset to create the crescent shape
     )
 
     stars(width, starAnimationSize)
 
-    drawCloud(width = width /5, height = height/5,
-        position = Offset(x = width * 0.1f, y = height * 0.1f)
+    drawCloud(
+        width = width / 5, height = height / 5
+    )
+    sunCloud(
+        animatedRadius = animatedRadius ,
+        width = width + width * 1.8f,
+        height = height + height /1.1f
     )
 }
 
@@ -236,12 +244,12 @@ private fun DrawScope.stars(
         color = Color(0xC4D8E8FF)
     )
     drawStar(
-        center = Offset(50f, size.height -40f),
+        center = Offset(50f, size.height - 40f),
         size = starAnimationSize - 40f,
         color = Color(0xC4D8E8FF)
     )
     drawStar(
-        center = Offset(width -30f, size.height -40f),
+        center = Offset(width - 30f, size.height - 40f),
         size = starAnimationSize - 40f,
         color = Color(0xC4D8E8FF)
     )
@@ -249,8 +257,7 @@ private fun DrawScope.stars(
 
 private fun DrawScope.drawCloud(
     width: Float,
-    height: Float,
-    position: Offset = Offset.Zero
+    height: Float
 ) {
     val cloudColor = Color.White
     // Drawing multiple circles to create a cloud shape
@@ -326,7 +333,8 @@ private fun DrawScope.sunAnimation(
     animatedFraction: Float,
     width: Float,
     sunYPosition: Float,
-    shadowColor: Color
+    shadowColor: Color,
+    height: Float
 ) {
     val sunXPosition = animatedFraction * width
     drawCircle(
@@ -353,5 +361,58 @@ private fun DrawScope.sunAnimation(
         color = Color(0xFFEBAE3A),
         radius = animatedRadius,
         center = Offset(sunXPosition, sunYPosition)
+    )
+    sunCloud(
+        animatedRadius = animatedRadius ,
+        width = width / 2,
+        height = height / 1.1f
+    )
+    sunCloud(
+        animatedRadius = animatedRadius ,
+        width = width + width * 1.8f,
+        height = height + height /1.1f
+    )
+}
+
+private fun DrawScope.sunCloud(
+    animatedRadius: Float,
+    width: Float,
+    height: Float
+) {
+    drawCircle(
+        brush = Brush.linearGradient(
+            listOf(
+                Color.Gray,
+                Color.White,
+                Color.White,
+                Color.Gray
+            )
+        ),
+        radius = animatedRadius * 0.3f,
+        center = Offset(width / 3 - 60f, height / 2 + 20f)
+    )
+    drawCircle(
+        brush = Brush.linearGradient(
+            listOf(
+                Color.Gray,
+                Color.White,
+                Color.White,
+                Color.Gray
+            )
+        ),
+        radius = animatedRadius * 0.3f,
+        center = Offset(width / 3 + 60f, height / 2 + 10f)
+    )
+    drawCircle(
+        brush = Brush.linearGradient(
+            listOf(
+                Color.Gray,
+                Color.White,
+                Color.White,
+                Color.Gray
+            )
+        ),
+        radius = animatedRadius * 0.5f,
+        center = Offset(width / 3, height / 2)
     )
 }

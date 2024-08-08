@@ -21,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,8 +40,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.hazrat.islam24.R
-import com.hazrat.islam24.main.navigation.nvgraph.Route
+import com.hazrat.islam24.main.navigation.AthkarScreen
+import com.hazrat.islam24.main.navigation.CalendarScreen
+import com.hazrat.islam24.main.navigation.NamesOfAllahScreen
+import com.hazrat.islam24.main.navigation.QiblaDirectionScreen
 import com.hazrat.islam24.ui.theme.dimens
 import okhttp3.internal.immutableListOf
 
@@ -89,10 +92,34 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             .clickable(
                                 onClick = {
                                     when (index) {
-                                        0 -> navController.navigate(Route.NamesOfAllah.route)
-                                        1 -> navController.navigate(Route.CalendarScreen.route)
-                                        2 -> navController.navigate(Route.AthkarScreen.route)
-                                        3 -> navController.navigate(Route.QiblaDirectionScreen.route)
+                                        0 -> navController.navigate(NamesOfAllahScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = false
+                                        }
+                                        1 -> navController.navigate(CalendarScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        2 -> navController.navigate(AthkarScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        3 -> navController.navigate(QiblaDirectionScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
                                 },
                                 onClickLabel = onClickLabel[index]
@@ -142,6 +169,35 @@ fun Modifier.shimmerEffect(): Modifier = composed {
                 Color(0xD71F581F),
                 Color(0xFA277006),
                 Color(0xD71F581F),
+            ),
+            start = Offset(startOffsetX, 0F),
+            end = Offset(
+                startOffsetX + size.width.toFloat(), size.height.toFloat()
+            )
+        ),
+        shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+    ).onGloballyPositioned {
+        size = it.size
+    }
+}
+
+
+fun Modifier.generalShimmerEffect(): Modifier = composed {
+    var size by remember { mutableStateOf(IntSize.Zero) }
+    val transition = rememberInfiniteTransition(label = "")
+    val startOffsetX by transition.animateFloat(
+        initialValue = -2 * size.width.toFloat(),
+        targetValue = 2 * size.width.toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000)
+        ), label = ""
+    )
+    background(
+        brush = Brush.linearGradient(
+            colors = listOf(
+                Color(0x8FBDBDBD), // Light grey
+                Color(0x75E0E0E0), // Medium grey
+                Color(0x8BBDBDBD)  // Light grey
             ),
             start = Offset(startOffsetX, 0F),
             end = Offset(
