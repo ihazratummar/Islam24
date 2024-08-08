@@ -17,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -63,11 +64,12 @@ fun PrayerTimer(viewModel: MainViewModel = hiltViewModel(), navController: NavCo
 @Composable
 fun ShowData(
     viewModel: MainViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
 ) {
     val prayerTimes by viewModel.prayerTimes.collectAsState()
     val methods = prayerTimes.firstOrNull()
-
+    val event = prayerTimeViewModel::onEvent
     Scaffold(
         modifier = Modifier,
         containerColor = Color.Transparent,
@@ -88,16 +90,31 @@ fun ShowData(
                     }
                 },
                 actions = {
-                    Icon(painter = painterResource(id = R.drawable.settings),
-                        contentDescription = "Setting Icon",
-                        modifier = Modifier
-                            .clickable {
-                                navController.navigate(PrayerSetting)
-                            }
-                            .padding(end = MaterialTheme.dimens.size20),
-                        tint = MaterialTheme.colorScheme.onBackground
+                    IconButton(
+                        modifier = Modifier,
+                        onClick = { event(PrayerEvent.SharePrayer) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = "Setting Icon",
+                            modifier = Modifier,
+                            tint = MaterialTheme.colorScheme.onBackground
 
-                    )
+                        )
+                    }
+                    IconButton(
+                        modifier = Modifier.padding(end = MaterialTheme.dimens.size20),
+                        onClick = { navController.navigate(PrayerSetting) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = "Setting Icon",
+                            modifier = Modifier,
+                            tint = MaterialTheme.colorScheme.onBackground
+
+                        )
+                    }
+
                 },
                 colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
 
