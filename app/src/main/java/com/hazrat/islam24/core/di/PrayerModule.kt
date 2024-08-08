@@ -41,8 +41,9 @@ object PrayerModule {
         api: PrayerTimeApi,
         locationRepository: LocationRepositoryImpl,
         prayerSettingRepository: PrayerSettingRepository,
-        prayerTimeDao: PrayerTimeDao
-    ) : PrayerTimeRepository = PrayerTimeRepositoryImpl(api, locationRepository, prayerSettingRepository, prayerTimeDao)
+        prayerTimeDao: PrayerTimeDao,
+        @ApplicationContext context: Context
+    ) : PrayerTimeRepository = PrayerTimeRepositoryImpl(api, locationRepository, prayerSettingRepository, prayerTimeDao, context)
 
 
 //    /prayer time database

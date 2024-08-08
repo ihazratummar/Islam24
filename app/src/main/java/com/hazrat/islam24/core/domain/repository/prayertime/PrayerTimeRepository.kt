@@ -44,4 +44,6 @@ interface PrayerTimeRepository {
      * Deletes all prayer times from the database.
      */
     suspend fun deleteAllPrayer()
+
+    fun sharePrayerTimes(prayerTimes: List<PrayerTimeEntity>)
 }
