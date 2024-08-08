@@ -1,179 +1,205 @@
 package com.hazrat.islam24.main.navigation
 
 import android.os.Build
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
-import com.hazrat.islam24.auth.navigation.authNavGraph
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.home.HomeScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
-import com.hazrat.islam24.core.presentation.prayertime.setting.UserSetting
-import com.hazrat.islam24.core.presentation.prayertime.setting.UserSettingViewModel
+import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
-import com.hazrat.islam24.core.presentation.tasbih.TasbihScreen
-import com.hazrat.islam24.main.navigation.component.AppBottomNavigation
-import com.hazrat.islam24.main.navigation.component.BottomNavigationItem
-import com.hazrat.islam24.main.navigation.nvgraph.Route
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.ui.theme.dimens
+import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun AppNavigator(
-    qiblaDirection: Float,
-    currentDirection: Float
-) {
-    val bottomNavigationItem = remember {
-        listOf(
-            BottomNavigationItem(icon = R.drawable.naviconhome, text = "Home"),
-            BottomNavigationItem(icon = R.drawable.pray, text = "Time"),
-            BottomNavigationItem(icon = R.drawable.qiblaiconnav, text = "Qibla"),
-            BottomNavigationItem(icon = R.drawable.profile, text = "Profile")
-        )
-    }
-
+fun AppNavigator() {
     val navController = rememberNavController()
-    val backStackState = navController.currentBackStackEntryAsState().value
-    var selectedItem by rememberSaveable {
-        mutableIntStateOf(0)
-    }
-
-    selectedItem = when (backStackState?.destination?.route) {
-        Route.HomeScreen.route -> 0
-        Route.PrayerTimeScreen.route -> 1
-        Route.QiblaDirectionScreen.route -> 2
-        Route.ProfileScreen.route -> 3
-        else -> 0
-    }
-
-    //Hide the bottom navigation when the user is in the details screen
-    val isBottomBarVisible = remember(key1 = backStackState) {
-        backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.PrayerTimeScreen.route ||
-                backStackState?.destination?.route == Route.QiblaDirectionScreen.route ||
-                backStackState?.destination?.route == Route.ProfileScreen.route
-    }
-    TotalContent(isBottomBarVisible, bottomNavigationItem, selectedItem, navController, qiblaDirection, currentDirection)
-
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-private fun TotalContent(
-    isBottomBarVisible: Boolean,
-    bottomNavigationItem: List<BottomNavigationItem>,
-    selectedItem: Int,
-    navController: NavHostController,
-    qiblaDirection: Float,
-    currentDirection: Float
-) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            if (isBottomBarVisible) {
-                AppBottomNavigation(items = bottomNavigationItem,
-                    selectedItem = selectedItem,
-                    onItemClick = { index ->
-                        when (index) {
-                            0 -> navigateToTab(
-                                navController = navController,
-                                route = Route.HomeScreen.route
-                            )
-
-                            1 -> navigateToTab(
-                                navController = navController,
-                                route = Route.PrayerTimeScreen.route
-                            )
-
-                            2 -> navigateToTab(
-                                navController = navController,
-                                route = Route.QiblaDirectionScreen.route
-                            )
-
-                            3 -> navigateToTab(
-                                navController = navController,
-                                route = Route.ProfileScreen.route
-                            )
-                        }
-                    }
-                )
-            }
+            BottomBar(navController)
         }
     ) {
         val bottomPadding = it.calculateBottomPadding()
         NavHost(
             navController = navController,
-            startDestination = Route.HomeScreen.route,
-            modifier = Modifier.padding(bottom = bottomPadding)
+            startDestination = HomeScreen,
+            modifier = Modifier.padding(bottom = bottomPadding),
+            enterTransition = { EnterTransition.None},
+            exitTransition = { ExitTransition.None}
         ) {
-            composable(route = Route.HomeScreen.route) {
+            composable<HomeScreen> {
                 HomeScreen(navController, navigateToPrayerTime = {
-                    navigateToTab(
-                        navController = navController,
-                        route = Route.PrayerTimeScreen.route
-                    )
+                    navController.navigate(PrayerTimeScreen) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 })
             }
-            composable(route = Route.PrayerTimeScreen.route) {
+            composable<PrayerTimeScreen> {
                 val viewModel: MainViewModel = hiltViewModel()
                 PrayerTimeScreen(viewModel, navController)
             }
-            composable(route = Route.QiblaDirectionScreen.route) {
-                val viewModel: MainViewModel = hiltViewModel()
+            composable<QiblaDirectionScreen> {
+                val viewModel: QiblaViewModel = hiltViewModel()
+                val mainViewModel: MainViewModel = hiltViewModel()
+                val locationName by mainViewModel.locationName.collectAsState()
+                val state by viewModel.qiblaState.collectAsState()
+                val qiblaDirection = state.qiblaDirection
+                val currentDirection = state.currentDirection
                 QiblaScreen(
                     navController = navController,
                     currentDirection = currentDirection,
-                    qiblaDirection = qiblaDirection
+                    qiblaDirection = qiblaDirection,
+                    locationName = locationName
                 )
             }
-            composable(route = Route.NamesOfAllah.route) {
+            composable<NamesOfAllahScreen> {
                 val viewModel: MainViewModel = hiltViewModel()
                 NamesOfAllahScreen(viewModel, navController)
             }
-            composable(route = Route.TasbihScreen.route) {
-                TasbihScreen(navController)
+            composable<PrayerSetting> {
+                PrayerSetting(navController = navController)
             }
-            composable(route = Route.UserSettings.route) {
-                val viewModel: UserSettingViewModel = hiltViewModel()
-                UserSetting(navController = navController, viewModel)
-            }
-            composable(route = Route.CalendarScreen.route) {
+            composable<CalendarScreen> {
                 CalendarScreen(navController)
             }
-            composable(route = Route.AthkarScreen.route) {
+            composable<AthkarScreen> {
                 AthkarScreen(navController)
             }
-            authNavGraph(navController)
+//            authNavGraph(navController)
+        }
+    }
+
+}
+
+@Composable
+private fun BottomBar(navController: NavHostController) {
+    val bottomNavigationItem = remember {
+        listOf(
+            ContentDestination.Home,
+            ContentDestination.PrayerTime,
+//            ContentDestination.Profile
+        )
+    }
+    val backStackState by navController.currentBackStackEntryAsState()
+    val currentDestination = backStackState?.destination
+    val isBottomBarVisible =
+        bottomNavigationItem.any { it.route::class.qualifiedName == currentDestination?.route }
+    if (isBottomBarVisible) {
+        NavigationBar(
+            containerColor = Color.Transparent,
+            tonalElevation = MaterialTheme.dimens.size10
+        ) {
+            bottomNavigationItem.forEach { screen ->
+                val isSelected =
+                    currentDestination?.hierarchy?.any { it.route == screen.route::class.qualifiedName } == true
+                NavigationBarItem(
+                    selected = isSelected,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = screen.icon),
+                            contentDescription = screen.name,
+                            modifier = Modifier.size(MaterialTheme.dimens.size35)
+                        )
+                    },
+                    label = { Text(text = screen.name) },
+                    alwaysShowLabel = false,
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.outline,
+                        unselectedTextColor = MaterialTheme.colorScheme.outline,
+                        indicatorColor = Color.Transparent
+                    ),
+                )
+            }
         }
     }
 }
 
-private fun navigateToTab(navController: NavController, route: String) {
-    navController.navigate(route) {
-        navController.graph.startDestinationRoute?.let { screenRoute ->
-            popUpTo(screenRoute) {
-                saveState = true
-            }
-        }
-        launchSingleTop = true
-        restoreState = true
-    }
+
+@Serializable
+data object HomeScreen
+
+@Serializable
+data object PrayerTimeScreen
+
+@Serializable
+data object ProfileScreen
+
+@Serializable
+data object QiblaDirectionScreen
+
+@Serializable
+data object PrayerSetting
+
+@Serializable
+data object CalendarScreen
+
+@Serializable
+data object NamesOfAllahScreen
+
+@Serializable
+data object AthkarScreen
+
+@Serializable
+sealed class ContentDestination<T>(val name: String, @DrawableRes val icon: Int, val route: T) {
+
+    @Serializable
+    data object Home :
+        ContentDestination<HomeScreen>("Home", R.drawable.naviconhome, HomeScreen)
+
+    @Serializable
+    data object PrayerTime :
+        ContentDestination<PrayerTimeScreen>("PrayerTime", R.drawable.pray, PrayerTimeScreen)
+
+//    @Serializable
+//    data object Profile :
+//        ContentDestination<ProfileScreen>("Profile", R.drawable.profile, ProfileScreen)
 }

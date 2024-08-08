@@ -15,16 +15,17 @@ hiltNavigationCompose = "1.2.0"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
+kotlinxCollectionsImmutable = "0.3.7"
 kotlinxSerializationJson = "1.7.1"
-activityCompose = "1.9.0"
+activityCompose = "1.9.1"
 composeBom = "2024.06.00"
-lifecycleRuntimeKtxVersion = "2.8.3"
-lifecycleViewmodelComposeVersion = "2.8.3"
+lifecycleRuntimeKtxVersion = "2.8.4"
+lifecycleViewmodelComposeVersion = "2.8.4"
 loggingInterceptor = "4.12.0"
 materialAndroid = "1.6.8"
-onesignal = "5.1.17"
+onesignal = "5.1.18"
 onesignalGradlePlugin = "0.14.0"
-pagingRuntimeKtx = "3.3.0"
+pagingRuntimeKtx = "3.3.1"
 playServicesLocation = "21.3.0"
 retrofit = "2.11.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
@@ -32,13 +33,13 @@ review = "2.0.1"
 reviewKtx = "2.0.1"
 roomCompiler = "2.6.1"
 ksp = "2.0.0-1.0.22"
-navigationCompose = "2.7.7"
+navigationCompose = "2.8.0-beta06"
 coilCompose = "2.6.0"
 runtime = "x.y.z"
 runtimeLivedata = "1.6.8"
 ui = "x.y.z"
 viewpager2 = "1.1.0"
-transportationConsumer = "2.2.0"
+transportationConsumer = "2.3.0"
 firebaseAuthKtx = "23.0.0"
 playServicesAuth = "21.2.0"
 material3WindowClass = "1.2.1"
@@ -46,6 +47,7 @@ material3WindowClass = "1.2.1"
 [libraries]
 androidx-window = { module = "androidx.compose.material3:material3-window-size-class", version.ref= "material3WindowClass"}
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-animation-core = { module = "androidx.compose.animation:animation-core", version.ref = "animationCore" }
@@ -107,3 +109,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref ="ksp"}
 android-room = {id= "androidx.room", version.ref ="roomCompiler"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref ="kotlin"}

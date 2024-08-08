@@ -30,7 +30,6 @@ import java.time.ZoneId
 @Composable
 fun DisplayCurrentPrayerName(
     data: List<PrayerTimeEntity>,
-    textStyle: TextStyle = TextStyle()
 ) {
     var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
     val currentDate = LocalDate.now()
@@ -38,14 +37,12 @@ fun DisplayCurrentPrayerName(
 
     DisposableEffect(Unit) {
         val coroutineScope = CoroutineScope(Dispatchers.Default)
-
         val job = coroutineScope.launch {
             while (true) {
                 delay(1000) // Update every second
                 currentTime = System.currentTimeMillis()
             }
         }
-
         onDispose {
             job.cancel()
         }
@@ -81,8 +78,9 @@ fun DisplayCurrentPrayerName(
     currentPrayerName?.let { prayerName ->
         Text(
             text = prayerName,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            style = textStyle
+            color = MaterialTheme.colorScheme.onBackground,
+            style =  MaterialTheme.typography.displayMedium,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -148,23 +146,18 @@ fun DisplayCurrentPrayerTime(
         .filterValues { it!! > currentTime }
         .minByOrNull { it.value ?: LocalTime.MAX }
 
-
-
     nextPrayer?.let { (prayerName, time) ->
-
         Column {
             Text(
                 text = stringResource(R.string.next_prayer, prayerName),
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onBackground
             )
             formatLocalTime(time)?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

@@ -1,7 +1,8 @@
 package com.hazrat.islam24.core.domain.repository.prayertime
 
 import com.hazrat.islam24.core.data.dao.PrayerSettingDao
-import com.hazrat.islam24.core.data.entity.PrayerSettingEntity
+import com.hazrat.islam24.core.data.entity.PrayerCalculationEntity
+import com.hazrat.islam24.core.data.entity.PrayerJuristicEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -9,12 +10,33 @@ class PrayerSettingRepository @Inject constructor(
     private val prayerSettingDao: PrayerSettingDao
 ) {
 
+    /**
+     * Retrieves the prayer calculation method from the database.
+     *
+     * @return Flow representing the prayer calculation method as a PrayerCalculationEntity object.
+     */
+    fun getCalculationMethod(): Flow<PrayerCalculationEntity> = prayerSettingDao.getCalculationMethod()
 
-    fun getMethod(): Flow<List<PrayerSettingEntity>> = prayerSettingDao.getMethod()
-    suspend fun insertMethod(prayerSettingEntity: PrayerSettingEntity) = prayerSettingDao.insertMethod(prayerSettingEntity)
-    suspend fun updateMethod(prayerSettingEntity: PrayerSettingEntity) = prayerSettingDao.updateMethod(prayerSettingEntity)
-    suspend fun deleteAllMethod() = prayerSettingDao.deleteAllMethod()
-    suspend fun deleteMethod(prayerSettingEntity: PrayerSettingEntity) = prayerSettingDao.deleteMethod(prayerSettingEntity)
+    /**
+     * Retrieves the prayer juristic method from the database.
+     *
+     * @return Flow representing the prayer juristic method as a PrayerJuristicEntity object.
+     */
+    fun getJuristicMethod(): Flow<PrayerJuristicEntity> = prayerSettingDao.getJuristicMethod()
 
+    /**
+     * Inserts or updates a prayer calculation method into the database.
+     * If a method with the same primary key already exists, it will be replaced.
+     *
+     * @param prayerSettingEntity The PrayerCalculationEntity object to be inserted or updated.
+     */
+    suspend fun insertCalculationMethod(prayerSettingEntity: PrayerCalculationEntity) = prayerSettingDao.insertCalculationMethod(prayerSettingEntity)
 
+    /**
+     * Inserts or updates a prayer juristic method into the database.
+     * If a method with the same primary key already exists, it will be replaced.
+     *
+     * @param prayerSettingEntity The PrayerJuristicEntity object to be inserted or updated.
+     */
+    suspend fun insertJuristicMethod(prayerSettingEntity: PrayerJuristicEntity) = prayerSettingDao.insertJuristicMethod(prayerSettingEntity)
 }

@@ -23,8 +23,12 @@ Discover a seamless and intuitive Islamic app crafted to enhance your spiritual 
 
 ## Screenshots
 
-![App Screenshot](https://media.discordapp.net/attachments/1244897208453693461/1244948138041671740/screenshots.png?ex=66998b8e&is=66983a0e&hm=a3d44e552b0ae792bf53f351e050faae81e78a088aec469eafa3d76839881046&=&format=webp&quality=lossless&width=645&height=498)
-
+<div style="display: flex; flex-direction: row;">
+    <img src="screenshot/Home.png" alt="Home" width="150"/>
+    <img src="screenshot/PrayerTime.png" alt="Home" width="150"/>
+    <img src="screenshot/Qibla.png" alt="Home" width="150"/>
+    <img src="screenshot/Calendar.png" alt="Home" width="150"/>
+</div>
 ---
 
 ## Roadmap

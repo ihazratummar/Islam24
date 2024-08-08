@@ -7,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
+    alias(libs.plugins.kotlin.serialization)
 
 }
 
@@ -18,8 +19,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 37
-        versionName = "1.4.2"
+        versionCode = 60
+        versionName = "1.5.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -32,11 +33,13 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk.debugSymbolLevel = "FULL"
         }
     }
 
@@ -59,6 +62,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    ndkVersion = "26.1.10909125"
 
 }
 

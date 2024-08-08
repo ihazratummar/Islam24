@@ -3,11 +3,18 @@
 package com.hazrat.islam24.core.presentation.prayertime
 
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.data.manager.LocationNameRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
+import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,14 +28,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PrayerTimeViewModel @Inject constructor(
-    private val repository: PrayerTimeRepository
+    private val repository: PrayerTimeRepository,
 ) : ViewModel() {
 
+
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
-    val prayerTimes = _prayerTimes.asStateFlow()
+    private val prayerTimes = _prayerTimes.asStateFlow()
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
+
+
+    fun onEvent(prayerEvent: PrayerEvent){
+        when(prayerEvent){
+            PrayerEvent.SharePrayer -> {
+                repository.sharePrayerTimes(prayerTimes.value)
+            }
+        }
+    }
+
 
     init {
         viewModelScope.launch {
@@ -49,6 +67,5 @@ class PrayerTimeViewModel @Inject constructor(
                 }
         }
     }
-
 
 }

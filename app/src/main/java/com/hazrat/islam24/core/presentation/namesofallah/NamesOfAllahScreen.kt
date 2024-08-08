@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
@@ -24,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,52 +39,46 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.NameEntity
-import com.hazrat.islam24.presentation.mainActivity.MainViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController: NavController) {
+fun NamesOfAllahScreen(
+    viewModel: MainViewModel = hiltViewModel(),
+    navController: NavController
+) {
 
-    val names = viewModel.names.collectAsState()
-
+    val names by viewModel.names.collectAsState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(modifier = Modifier
-        .nestedScroll(scrollBehavior.nestedScrollConnection),
+    Scaffold(
+        modifier = Modifier
+            ,
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = Color.Transparent,
-                    navigationIconContentColor = MaterialTheme.colorScheme.primary
-                ),
                 title =
                 {
                     Text(
                         text = stringResource(id = R.string.names),
                         color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.displaySmall
                     )
                 },
                 navigationIcon = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "back",
-                        modifier = Modifier
-                            .clickable {
-                                navController.popBackStack()
-
-                            },
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                    IconButton(onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.backicon),
+                            contentDescription = "Back"
+                        )
+                    }
                 },
                 scrollBehavior = scrollBehavior
             )
@@ -93,7 +87,7 @@ fun NamesOfAllahScreen(viewModel: MainViewModel = hiltViewModel(), navController
         LazyColumn(
             modifier = Modifier.padding(padding)
         ) {
-            items(names.value) { name ->
+            items(names) { name ->
                 NameCard(name = name)
             }
         }
@@ -109,7 +103,8 @@ fun NameCard(name: NameEntity) {
     }
     Card(
         modifier = Modifier
-            .fillMaxSize().padding(vertical = MaterialTheme.dimens.size8)
+            .fillMaxSize()
+            .padding(vertical = MaterialTheme.dimens.size8)
             .background(MaterialTheme.colorScheme.background)
             .clickable {
                 expanded = !expanded
@@ -142,7 +137,7 @@ fun NameCard(name: NameEntity) {
                     verticalArrangement = Arrangement.Top
                 ) {
                     Text(
-                        text = "${name.number}", style = MaterialTheme.typography.displaySmall,
+                        text = "${name.number}", style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
@@ -153,11 +148,11 @@ fun NameCard(name: NameEntity) {
                         .padding(MaterialTheme.dimens.size5)
                 ) {
                     Text(
-                        text = name.transliteration, style = MaterialTheme.typography.displaySmall,
+                        text = name.transliteration, style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = name.meaning, style = MaterialTheme.typography.labelLarge,
+                        text = name.meaning, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
@@ -177,7 +172,7 @@ fun NameCard(name: NameEntity) {
                 ) {
                     Text(
                         text = name.name,
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.displaySmall,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontFamily = AlQalam
                     )
@@ -192,17 +187,20 @@ fun NameCard(name: NameEntity) {
                     modifier = Modifier
                         .padding(
                             start = MaterialTheme.dimens.size35,
-                            top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10
+                            top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10,
+                            bottom = MaterialTheme.dimens.size10
                         )
                 ) {
                     Text(
                         text = "Ayat: ${name.found}",
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(MaterialTheme.dimens.size5))
                     Text(
                         text = name.enDec,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }

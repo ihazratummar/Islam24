@@ -1,7 +1,10 @@
 package com.hazrat.islam24.util
 
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
@@ -49,6 +52,16 @@ object DateUtil {
      */
     fun getCurrentDate(): String {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+        return dateFormat.format(Date())
+    }
+
+    /**
+     * Retrieves the current date in the "dd-MM-yyyy" format.
+     *
+     * @return The current date as a string.
+     */
+    fun getCurrentDateWithMonthName(): String {
+        val dateFormat = SimpleDateFormat("dd-MMMM-yyyy", Locale.ENGLISH)
         return dateFormat.format(Date())
     }
 
@@ -108,5 +121,16 @@ object DateUtil {
             val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault())
             it.format(formatter)
         }
+    }
+
+    fun convertLongToLocalTime(timestamp: Long, zoneId: ZoneId = ZoneId.systemDefault()): LocalTime {
+        // Convert timestamp to Instant
+        val instant = Instant.ofEpochMilli(timestamp)
+
+        // Convert Instant to LocalDateTime using the specified time zone
+        val localDateTime = LocalDateTime.ofInstant(instant, zoneId)
+
+        // Extract and return the LocalTime from LocalDateTime
+        return localDateTime.toLocalTime()
     }
 }

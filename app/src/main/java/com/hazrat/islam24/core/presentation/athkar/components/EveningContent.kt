@@ -58,9 +58,9 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
             .clickable {
                 expanded = !expanded
             },
-        colors = CardDefaults.cardColors(colorResource(id = R.color.background_color)),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
         elevation = CardDefaults.outlinedCardElevation(MaterialTheme.dimens.size2),
-        border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.primary))
+        border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -73,27 +73,27 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
                 Text(
                     text = "${adhkars.number}-${morningAthkars.size - 1}",
                     modifier = Modifier.padding(top = MaterialTheme.dimens.size20),
-                    style = MaterialTheme.typography.titleMedium, color = colorResource(id = R.color.text)
+                    style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground
                 )
             }
             Text(
                 text = adhkars.transliteration,
                 modifier = Modifier.padding(MaterialTheme.dimens.size10),
                 style = MaterialTheme.typography.titleMedium,
-                color = colorResource(id = R.color.text)
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             AnimatedVisibility(visible = expanded) {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = MaterialTheme.dimens.size1,
-                    color = colorResource(id = R.color.primary)
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = adhkars.translation,
                     modifier = Modifier.padding(MaterialTheme.dimens.size10),
                     style = MaterialTheme.typography.bodyMedium,
-                    color =colorResource(id = R.color.text)
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
             Row(
@@ -104,7 +104,7 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
                 Card(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(MaterialTheme.dimens.size1, color = colorResource(id = R.color.primary)),
+                    border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary),
                     modifier = Modifier
                         .size(MaterialTheme.dimens.size80)
                         .padding(bottom = MaterialTheme.dimens.size10),
@@ -118,7 +118,7 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
                             text = "X${adhkars.count}",
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.text)
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }

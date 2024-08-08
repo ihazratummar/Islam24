@@ -26,5 +26,5 @@ interface LocationNameApi {
         @Query("format") format: String = "json",
         @Query("lat") lat: Double,
         @Query("lon") lon: Double
-    ): com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
+    ): LocationNameFinder
 }
