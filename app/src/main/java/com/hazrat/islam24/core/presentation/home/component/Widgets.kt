@@ -92,10 +92,34 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             .clickable(
                                 onClick = {
                                     when (index) {
-                                        0 -> navController.navigate(NamesOfAllahScreen)
-                                        1 -> navController.navigate(CalendarScreen)
-                                        2 -> navController.navigate(AthkarScreen)
-                                        3 -> navController.navigate(QiblaDirectionScreen)
+                                        0 -> navController.navigate(NamesOfAllahScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = false
+                                        }
+                                        1 -> navController.navigate(CalendarScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        2 -> navController.navigate(AthkarScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        3 -> navController.navigate(QiblaDirectionScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
                                 },
                                 onClickLabel = onClickLabel[index]
@@ -145,6 +169,35 @@ fun Modifier.shimmerEffect(): Modifier = composed {
                 Color(0xD71F581F),
                 Color(0xFA277006),
                 Color(0xD71F581F),
+            ),
+            start = Offset(startOffsetX, 0F),
+            end = Offset(
+                startOffsetX + size.width.toFloat(), size.height.toFloat()
+            )
+        ),
+        shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+    ).onGloballyPositioned {
+        size = it.size
+    }
+}
+
+
+fun Modifier.generalShimmerEffect(): Modifier = composed {
+    var size by remember { mutableStateOf(IntSize.Zero) }
+    val transition = rememberInfiniteTransition(label = "")
+    val startOffsetX by transition.animateFloat(
+        initialValue = -2 * size.width.toFloat(),
+        targetValue = 2 * size.width.toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000)
+        ), label = ""
+    )
+    background(
+        brush = Brush.linearGradient(
+            colors = listOf(
+                Color(0x8FBDBDBD), // Light grey
+                Color(0x75E0E0E0), // Medium grey
+                Color(0x8BBDBDBD)  // Light grey
             ),
             start = Offset(startOffsetX, 0F),
             end = Offset(

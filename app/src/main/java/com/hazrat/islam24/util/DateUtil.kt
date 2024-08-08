@@ -56,6 +56,16 @@ object DateUtil {
     }
 
     /**
+     * Retrieves the current date in the "dd-MM-yyyy" format.
+     *
+     * @return The current date as a string.
+     */
+    fun getCurrentDateWithMonthName(): String {
+        val dateFormat = SimpleDateFormat("dd-MMMM-yyyy", Locale.ENGLISH)
+        return dateFormat.format(Date())
+    }
+
+    /**
      * Checks if the provided date string represents today's date.
      *
      * @param dateString The date string to be checked (in "dd-MM-yyyy" format).
