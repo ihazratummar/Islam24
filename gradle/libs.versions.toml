@@ -27,6 +27,7 @@ onesignal = "5.1.18"
 onesignalGradlePlugin = "0.14.0"
 pagingRuntimeKtx = "3.3.1"
 playServicesLocation = "21.3.0"
+preferenceKtx = "1.2.1"
 retrofit = "2.11.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
 review = "2.0.1"
@@ -45,6 +46,7 @@ playServicesAuth = "21.2.0"
 material3WindowClass = "1.2.1"
 
 [libraries]
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 androidx-window = { module = "androidx.compose.material3:material3-window-size-class", version.ref= "material3WindowClass"}
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }

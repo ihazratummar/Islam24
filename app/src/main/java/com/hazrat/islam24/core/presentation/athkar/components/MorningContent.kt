@@ -26,11 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.islam24.core.domain.model.athkar.MorningAkhtarData
 import com.hazrat.islam24.core.domain.model.athkar.morningAthkars
-import com.hazrat.islam24.R
 import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
@@ -56,7 +54,7 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(MaterialTheme.dimens.size10)
+            .padding(dimens.size10)
             .clickable {
                 expanded = !expanded
             },
@@ -64,8 +62,8 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
             containerColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.onBackground
         ),
-        elevation = CardDefaults.outlinedCardElevation(MaterialTheme.dimens.size2),
-        border = BorderStroke(MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primary)
+        elevation = CardDefaults.outlinedCardElevation(dimens.size2),
+        border = BorderStroke(dimens.size1, color = MaterialTheme.colorScheme.primary)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -77,14 +75,14 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
             ) {
                 Text(
                     text = "${adhkars.number}-${morningAthkars.size - 1}",
-                    modifier = Modifier.padding(top = MaterialTheme.dimens.size20),
+                    modifier = Modifier.padding(top = dimens.size20),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
             Text(
                 text = adhkars.transliteration,
-                modifier = Modifier.padding(MaterialTheme.dimens.size10),
+                modifier = Modifier.padding(dimens.size10),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -92,12 +90,12 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
             AnimatedVisibility(visible = expanded) {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
-                    thickness = MaterialTheme.dimens.size1,
+                    thickness = dimens.size1,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = adhkars.translation,
-                    modifier = Modifier.padding(MaterialTheme.dimens.size10),
+                    modifier = Modifier.padding(dimens.size10),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -110,10 +108,10 @@ fun AdhkarCard(adhkars: MorningAkhtarData) {
                 Card(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(MaterialTheme.dimens.size1, MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(dimens.size1, MaterialTheme.colorScheme.primary),
                     modifier = Modifier
-                        .size(MaterialTheme.dimens.size80)
-                        .padding(bottom = MaterialTheme.dimens.size10),
+                        .size(dimens.size80)
+                        .padding(bottom = dimens.size10),
                 ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),

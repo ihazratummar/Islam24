@@ -157,6 +157,9 @@ dependencies {
     implementation(libs.app.update.ktx)
     implementation(libs.review)
     implementation(libs.review.ktx)
+
+    //dataStorePreference
+    implementation(libs.androidx.preference.ktx)
 }
 
 

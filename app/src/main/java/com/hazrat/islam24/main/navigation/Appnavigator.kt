@@ -31,6 +31,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.auth.navigation.authNavGraph
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.home.HomeScreen
@@ -40,12 +43,16 @@ import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.ui.theme.Islam24Theme
 import com.hazrat.islam24.ui.theme.dimens
 import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun AppNavigator() {
+fun AppNavigator(
+    appSettingState: AppSettingState,
+    appSettingEvent: (AppSettingEvent) -> Unit
+) {
     val navController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -58,8 +65,8 @@ fun AppNavigator() {
             navController = navController,
             startDestination = HomeScreen,
             modifier = Modifier.padding(bottom = bottomPadding),
-            enterTransition = { EnterTransition.None},
-            exitTransition = { ExitTransition.None}
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None }
         ) {
             composable<HomeScreen> {
                 HomeScreen(navController, navigateToPrayerTime = {
@@ -89,6 +96,7 @@ fun AppNavigator() {
                     qiblaDirection = qiblaDirection,
                     locationName = locationName
                 )
+
             }
             composable<NamesOfAllahScreen> {
                 val viewModel: MainViewModel = hiltViewModel()
@@ -103,7 +111,11 @@ fun AppNavigator() {
             composable<AthkarScreen> {
                 AthkarScreen(navController)
             }
-//            authNavGraph(navController)
+            authNavGraph(
+                navController = navController,
+                appSettingState = appSettingState,
+                appSettingEvent = appSettingEvent
+            )
         }
     }
 
@@ -115,7 +127,7 @@ private fun BottomBar(navController: NavHostController) {
         listOf(
             ContentDestination.Home,
             ContentDestination.PrayerTime,
-//            ContentDestination.Profile
+            ContentDestination.Profile
         )
     }
     val backStackState by navController.currentBackStackEntryAsState()
@@ -125,7 +137,7 @@ private fun BottomBar(navController: NavHostController) {
     if (isBottomBarVisible) {
         NavigationBar(
             containerColor = Color.Transparent,
-            tonalElevation = MaterialTheme.dimens.size10
+            tonalElevation = dimens.size10
         ) {
             bottomNavigationItem.forEach { screen ->
                 val isSelected =
@@ -145,7 +157,7 @@ private fun BottomBar(navController: NavHostController) {
                         Icon(
                             painter = painterResource(id = screen.icon),
                             contentDescription = screen.name,
-                            modifier = Modifier.size(MaterialTheme.dimens.size35)
+                            modifier = Modifier.size(dimens.size35)
                         )
                     },
                     label = { Text(text = screen.name) },
@@ -199,7 +211,7 @@ sealed class ContentDestination<T>(val name: String, @DrawableRes val icon: Int,
     data object PrayerTime :
         ContentDestination<PrayerTimeScreen>("PrayerTime", R.drawable.pray, PrayerTimeScreen)
 
-//    @Serializable
-//    data object Profile :
-//        ContentDestination<ProfileScreen>("Profile", R.drawable.profile, ProfileScreen)
+    @Serializable
+    data object Profile :
+        ContentDestination<ProfileScreen>("Profile", R.drawable.profile, ProfileScreen)
 }

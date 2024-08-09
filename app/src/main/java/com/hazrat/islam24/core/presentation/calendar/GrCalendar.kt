@@ -125,7 +125,7 @@ fun CalendarViewWithWeeksAndDays(
         modifier = Modifier
     ) {
         WeekDaysHeader()
-        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size4))
+        Spacer(modifier = Modifier.height(dimens.size4))
         DaysGrid(
             currentMonth = currentMonth,
             selectedDate = selectedDate,
@@ -181,10 +181,10 @@ fun DaysGrid(
                             modifier = Modifier
                                 .weight(1f)
                                 .aspectRatio(1f)
-                                .padding(MaterialTheme.dimens.size4)
+                                .padding(dimens.size4)
                                 .background(
                                     color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
-                                    shape = RoundedCornerShape(MaterialTheme.dimens.size10)
+                                    shape = RoundedCornerShape(dimens.size10)
                                 )
                                 .clickable { onDateSelected(date) },
                             contentAlignment = Alignment.Center
@@ -231,7 +231,7 @@ fun MonthNavigation(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(MaterialTheme.dimens.size10),
+            .padding(dimens.size10),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -240,9 +240,9 @@ fun MonthNavigation(
             contentDescription = "Previous Month",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
-                .size(MaterialTheme.dimens.size35)
+                .size(dimens.size35)
                 .clip(CircleShape)
-                .padding(MaterialTheme.dimens.size4)
+                .padding(dimens.size4)
                 .clickable {
                     onPrevMonth()
                 }
@@ -260,9 +260,9 @@ fun MonthNavigation(
             contentDescription = "Previous Month",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
-                .size(MaterialTheme.dimens.size35)
+                .size(dimens.size35)
                 .clip(CircleShape)
-                .padding(MaterialTheme.dimens.size4)
+                .padding(dimens.size4)
                 .clickable {
                     onNextMonth()
                 }

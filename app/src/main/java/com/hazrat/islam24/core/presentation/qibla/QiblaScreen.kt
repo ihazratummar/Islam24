@@ -129,12 +129,12 @@ fun QiblaScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(MaterialTheme.dimens.size30)
+                .padding(dimens.size30)
                 .statusBarsPadding(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size10))
+            Spacer(modifier = Modifier.height(dimens.size10))
             if (locationName.isNotEmpty()) {
                 LocationName(locationName.first())
             }
@@ -155,24 +155,24 @@ fun QiblaScreen(
                 )
                 if (isFacingQibla) {
                     Icon(
-                        modifier = Modifier.size(MaterialTheme.dimens.size60),
+                        modifier = Modifier.size(dimens.size60),
                         painter = painterResource(id = R.drawable.goldqaba),
                         contentDescription = null,
                         tint = Color.Unspecified
                     )
                 } else {
                     Icon(
-                        modifier = Modifier.size(MaterialTheme.dimens.size30),
+                        modifier = Modifier.size(dimens.size30),
                         painter = painterResource(id = R.drawable.arrowup),
                         contentDescription = null
                     )
                 }
 
-                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size40))
+                Spacer(modifier = Modifier.height(dimens.size40))
                 Box(
                     modifier = Modifier
                         .fillMaxHeight(0.5f)
-                        .padding(MaterialTheme.dimens.size10)
+                        .padding(dimens.size10)
                 ) {
                     // Canvas for compass
                     Canvas(modifier = Modifier.fillMaxSize()) {

@@ -1,7 +1,9 @@
 package com.hazrat.islam24.core.di
 
 import android.content.Context
+import android.content.ContextWrapper
 import androidx.room.Room
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.database.NamesDataBase
 import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
