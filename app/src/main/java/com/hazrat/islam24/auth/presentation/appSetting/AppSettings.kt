@@ -40,6 +40,7 @@ import com.hazrat.islam24.auth.presentation.AuthEvent
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectThemeDialog
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.Languages
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -52,7 +53,9 @@ fun AppSettingScreen(
     state: AuthState,
     authEvent: (AuthEvent) -> Unit,
     appSettingState: AppSettingState,
-    appSettingEvent: (AppSettingEvent) -> Unit
+    appSettingEvent: (AppSettingEvent) -> Unit,
+    appSettingStateTheme: AppSettingState,
+    appSettingEventTheme: (AppSettingEvent) -> Unit
 ) {
     LaunchedEffect(Unit) {
         authEvent(AuthEvent.Refresh)
@@ -113,13 +116,22 @@ fun AppSettingScreen(
                             text = stringResource(id = R.string.language),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.ClickLanguageDialog)
+                            },
+                            selectedText = when (appSettingState.currentLanguage) {
+                                Languages.ENGLISH.name-> stringResource(R.string.english)
+                                Languages.BENGALI.name -> stringResource(R.string.bengali)
+                                else -> ""
                             }
                         )
                         SettingItemCard(
                             painter = painterResource(id = R.drawable.theme_light_dark),
                             text = stringResource(R.string.theme),
                             onClick = {
-                                appSettingEvent(AppSettingEvent.ClickThemeDialog)
+                                appSettingEventTheme(AppSettingEvent.ClickThemeDialog)
+                            },
+                            selectedText = when(appSettingStateTheme.currentTheme){
+                                Themes.DARK -> stringResource(R.string.dark)
+                                Themes.LIGHT -> stringResource(R.string.light)
                             }
                         )
                     }
@@ -145,12 +157,11 @@ fun AppSettingScreen(
             SelectLanguageDialog(appSettingEvent)
         }
 
-        if (appSettingState.isThemeDialogOpen) {
-            SelectThemeDialog(appSettingEvent)
+        if (appSettingStateTheme.isThemeDialogOpen) {
+            SelectThemeDialog(appSettingEventTheme)
         }
     }
 }
-
 
 
 @Composable
@@ -159,10 +170,12 @@ private fun SettingItemCard(
     text: String,
     onClick: () -> Unit = {},
     iconColor: Color = MaterialTheme.colorScheme.onBackground,
-    cardContainerColor: Color = Color.Transparent
+    cardContainerColor: Color = Color.Transparent,
+    selectedText: String = ""
 ) {
     Card(
         modifier = Modifier
+            .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = dimens.size5),
         colors = CardDefaults.cardColors(
@@ -179,7 +192,7 @@ private fun SettingItemCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = dimens.size10),
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -188,12 +201,24 @@ private fun SettingItemCard(
                     contentDescription = text,
                     tint = iconColor
                 )
-
                 Spacer(modifier = Modifier.width(dimens.size30))
                 Text(
                     text = text,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    modifier = Modifier,
+                    text = selectedText,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Icon(
+                    modifier = Modifier.padding(horizontal = dimens.size10),
+                    painter = painterResource(id = R.drawable.arrowright),
+                    contentDescription = text,
+                    tint = iconColor
                 )
             }
         }

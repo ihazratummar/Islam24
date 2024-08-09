@@ -19,9 +19,8 @@ import kotlinx.serialization.Serializable
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun NavGraph(
-    modifier: Modifier = Modifier,
     appSettingState: AppSettingState,
-    appSettingEvent: (AppSettingEvent) -> Unit
+    appSettingEvent : (AppSettingEvent) -> Unit
 ) {
     val navController = rememberNavController()
 

@@ -18,7 +18,6 @@ sealed interface AppSettingEvent {
 }
 
 enum class Themes {
-    SYSTEM,
     DARK,
     LIGHT
 }

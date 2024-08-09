@@ -38,4 +38,8 @@
     <string name="login">লগইন</string>
     <string name="select_language">ভাষা নির্বাচন করুন</string>
     <string name="change_theme">থিম পরিবর্তন করুন</string>
+    <string name="dark">অন্ধকার</string>
+    <string name="light">আলো</string>
+    <string name="english">ইংরেজি</string>
+    <string name="bengali">বাংলা</string>
 </resources>

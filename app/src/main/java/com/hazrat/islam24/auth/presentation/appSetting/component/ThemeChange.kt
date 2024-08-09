@@ -60,7 +60,6 @@ fun SelectThemeDialog(
                         vertical = dimens.size10
                     )
                 )
-                ThemeItemCard(appSettingEvent = appSettingEvent, themes = Themes.SYSTEM)
                 ThemeItemCard(appSettingEvent = appSettingEvent, themes = Themes.DARK)
                 ThemeItemCard(appSettingEvent = appSettingEvent, themes = Themes.LIGHT)
             }

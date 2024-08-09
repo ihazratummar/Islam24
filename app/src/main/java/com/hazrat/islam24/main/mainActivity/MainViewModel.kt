@@ -84,8 +84,6 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            delay(300)
-            _splashCondition.value = false
             fetchDataFromDB()
         }
         observeNetworkStatus()

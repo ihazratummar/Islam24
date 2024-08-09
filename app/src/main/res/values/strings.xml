@@ -41,5 +41,9 @@
     <string name="login">Login</string>
     <string name="select_language">Select language</string>
     <string name="change_theme">Change Theme</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
+    <string name="english">English</string>
+    <string name="bengali">Bangla</string>
 
 </resources>

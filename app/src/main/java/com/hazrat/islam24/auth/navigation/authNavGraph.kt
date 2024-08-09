@@ -79,15 +79,17 @@ fun NavGraphBuilder.authNavGraph(
             val authViewModel = hiltViewModel<AuthViewModel>()
             val authState by authViewModel.authState.observeAsState(AuthState.Loading)
             val authEvent = authViewModel::onEvent
-//            val appSettingViewModel = hiltViewModel<AppSettingViewModel>()
-//            val appSettingState1 by appSettingViewModel.appSettingState.collectAsState()
-//            val appSettingEvent1 = appSettingViewModel::onAppSettingEvent
+            val appSettingViewModel = hiltViewModel<AppSettingViewModel>()
+            val appSettingState1 by appSettingViewModel.appSettingState.collectAsState()
+            val appSettingEvent1 = appSettingViewModel::onAppSettingEvent
             AppSettingScreen(
                 navController = navController,
                 state = authState,
                 authEvent = authEvent,
-                appSettingState = appSettingState,
-                appSettingEvent = appSettingEvent
+                appSettingState = appSettingState1,
+                appSettingEvent = appSettingEvent1,
+                appSettingStateTheme = appSettingState,
+                appSettingEventTheme = appSettingEvent
             )
         }
     }

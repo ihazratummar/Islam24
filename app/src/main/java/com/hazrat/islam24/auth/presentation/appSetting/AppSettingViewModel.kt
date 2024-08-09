@@ -1,25 +1,18 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
-import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.Languages
 import com.hazrat.islam24.util.changeLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -36,7 +29,8 @@ class AppSettingViewModel @Inject constructor(
     private val _state = MutableStateFlow(
         AppSettingState(
             currentLanguage = DataStorePreference.getLanguage(context = context),
-            isDarkMode = DataStorePreference.getThemeMode(context)
+            isDarkMode = DataStorePreference.getThemeMode(context),
+            currentTheme = DataStorePreference.getThemeName(context)
         )
     )
     val appSettingState = _state.asStateFlow()
@@ -66,25 +60,26 @@ class AppSettingViewModel @Inject constructor(
             is AppSettingEvent.ChangeTheme -> {
                 viewModelScope.launch {
                     when (event.theme) {
-                        Themes.SYSTEM -> {
-                            _state.update {
-                                it.copy(isDarkMode = systemTheme)
-                            }
-                            DataStorePreference.setThemeMode(context, systemTheme)
-                        }
-
                         Themes.DARK -> {
                             _state.update {
-                                it.copy(isDarkMode = true)
+                                it.copy(
+                                    isDarkMode = true,
+                                    currentTheme = Themes.DARK
+                                )
                             }
                             DataStorePreference.setThemeMode(context, true)
+                            DataStorePreference.setThemeName(context, Themes.DARK)
                         }
 
                         Themes.LIGHT -> {
                             _state.update {
-                                it.copy(isDarkMode = false)
+                                it.copy(
+                                    isDarkMode = false,
+                                    currentTheme = Themes.LIGHT
+                                )
                             }
                             DataStorePreference.setThemeMode(context, false)
+                            DataStorePreference.setThemeName(context, Themes.LIGHT)
                         }
                     }
                 }
@@ -100,11 +95,5 @@ class AppSettingViewModel @Inject constructor(
 
         }
     }
-
-    private val systemTheme = when (Resources.getSystem().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> { true }
-            Configuration.UI_MODE_NIGHT_NO -> { false }
-            else -> false
-        }
 
 }

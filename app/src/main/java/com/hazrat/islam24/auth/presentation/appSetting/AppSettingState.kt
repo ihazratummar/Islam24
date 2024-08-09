@@ -6,5 +6,6 @@ data class AppSettingState(
     val currentLanguage: String ,
     val isLanguageDialogOpen: Boolean = false,
     val isThemeDialogOpen: Boolean = false,
-    val isDarkMode: Boolean
+    val isDarkMode: Boolean,
+    val currentTheme: Themes
 )

@@ -1,5 +1,9 @@
 package com.hazrat.islam24.main.mainActivity
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +14,8 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,8 +31,11 @@ import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.islam24.ui.theme.Islam24Theme
 import com.hazrat.islam24.util.DataStorePreference
+import com.hazrat.islam24.util.DataStorePreference.getThemeMode
 import com.hazrat.islam24.util.changeLanguage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
+import java.util.Locale
 import javax.inject.Inject
 
 // MainActivity.kt
@@ -57,7 +66,7 @@ class MainActivity : ComponentActivity() {
 
     // ViewModel for the activity
     private val viewModel by viewModels<MainViewModel>()
-
+    private val appSettingViewModel by viewModels<AppSettingViewModel>()
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -75,10 +84,6 @@ class MainActivity : ComponentActivity() {
 
         // Set window decor to fit system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        // Install and configure splash screen
-        installSplashScreen().apply {
-            setKeepOnScreenCondition { viewModel.splashCondition.value }
-        }
 
         // Initialize PermissionsManager and handle location permissions
         permissionsManager = PermissionsManager(this)
@@ -87,32 +92,25 @@ class MainActivity : ComponentActivity() {
         }
         permissionsManager.checkAndRequestLocationPermission()
 
-
-        // Set the content view with Jetpack Compose
         setContent {
-            val appSettingViewModel by viewModels<AppSettingViewModel>()
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
-            val appSettingEvent = appSettingViewModel::onAppSettingEvent
-            Log.d("AppSettingState", "AppSettingState: ${appSettingState.currentLanguage}")
             Islam24Theme(
                 darkTheme = appSettingState.isDarkMode
             ) {
-                Scaffold { paddingValues ->
-                    NavGraph(
-                        modifier = Modifier.padding(paddingValues),
-                        appSettingState = appSettingState,
-                        appSettingEvent = appSettingEvent
-                    )
-                }
+                NavGraph(
+                    appSettingState = appSettingState,
+                    appSettingEvent = appSettingViewModel::onAppSettingEvent
+
+                )
             }
         }
-
         // Check for app updates
         updateManager.checkForAppUpdates(this)
 
         // Show location permission dialog if needed
         locationHandler.showLocationPermissionDialog(this)
     }
+
 
     /**
      * Called when the activity will start interacting with the user.
