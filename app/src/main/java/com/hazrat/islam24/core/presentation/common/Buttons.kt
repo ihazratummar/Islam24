@@ -20,7 +20,7 @@ fun ContinueButton(
 ) {
     OutlinedButton(modifier = Modifier.fillMaxWidth(),
         onClick = onClick,
-        shape = RoundedCornerShape(size =MaterialTheme.dimens.size6)
+        shape = RoundedCornerShape(size = dimens.size6)
     ) {
         Text(text = buttonText,
             style = MaterialTheme.typography.labelMedium,

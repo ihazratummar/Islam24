@@ -73,7 +73,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
         stringResource(id = R.string.qibla)
     )
 
-    Box(modifier = Modifier.height(MaterialTheme.dimens.size300).fillMaxWidth()) {
+    Box(modifier = Modifier.height(dimens.size300).fillMaxWidth()) {
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Fixed(4),
@@ -86,9 +86,9 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                 ) {
                     Card(
                         modifier = Modifier
-                            .width(MaterialTheme.dimens.size60)
-                            .height(MaterialTheme.dimens.size60)
-                            .padding(MaterialTheme.dimens.size1)
+                            .width(dimens.size60)
+                            .height(dimens.size60)
+                            .padding(dimens.size1)
                             .clickable(
                                 onClick = {
                                     when (index) {
@@ -124,7 +124,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                                 },
                                 onClickLabel = onClickLabel[index]
                             )
-                            .clip(RoundedCornerShape(MaterialTheme.dimens.size8)),
+                            .clip(RoundedCornerShape(dimens.size8)),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surfaceContainer
                         )
@@ -135,7 +135,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             tint = Color.Unspecified,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(MaterialTheme.dimens.size5)
+                                .padding(dimens.size5)
                         )
                     }
                     Text(
@@ -175,7 +175,7 @@ fun Modifier.shimmerEffect(): Modifier = composed {
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+        shape = RoundedCornerShape(dimens.size30)
     ).onGloballyPositioned {
         size = it.size
     }
@@ -204,7 +204,7 @@ fun Modifier.generalShimmerEffect(): Modifier = composed {
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+        shape = RoundedCornerShape(dimens.size30)
     ).onGloballyPositioned {
         size = it.size
     }

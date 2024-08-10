@@ -47,7 +47,7 @@ class AuthViewModel @Inject constructor(
     }
 
 
-    fun signOut(){
+    private fun signOut(){
         auth.signOut()
     }
 }

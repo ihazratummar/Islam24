@@ -5,6 +5,6 @@ package com.hazrat.islam24.auth.presentation.profileScreen
  */
 
 sealed interface ProfileEvent {
-
-
+    data object InviteFriend : ProfileEvent
+    data object RateUs : ProfileEvent
 }

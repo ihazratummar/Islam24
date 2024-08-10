@@ -213,8 +213,8 @@ fun AuthSignupScreen(
             colors = ButtonColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                disabledContentColor = Color.Gray,
-                disabledContainerColor = Color(0xFF222222)
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                disabledContentColor = MaterialTheme.colorScheme.onSurface,
             ),
             enabled = signUpState.isFormValid && signUpState.isPasswordValid && authState != AuthState.Loading
         ) {

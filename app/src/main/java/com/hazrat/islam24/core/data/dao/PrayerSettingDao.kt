@@ -1,11 +1,9 @@
 package com.hazrat.islam24.core.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Upsert
 import com.hazrat.islam24.core.data.entity.PrayerCalculationEntity
 import com.hazrat.islam24.core.data.entity.PrayerJuristicEntity
 import kotlinx.coroutines.flow.Flow

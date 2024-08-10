@@ -4,7 +4,6 @@ package com.hazrat.islam24.core.presentation.prayertime
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +45,6 @@ import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.CalendarScreen
 import com.hazrat.islam24.main.navigation.PrayerSetting
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
@@ -103,7 +101,7 @@ fun ShowData(
                         )
                     }
                     IconButton(
-                        modifier = Modifier.padding(end = MaterialTheme.dimens.size20),
+                        modifier = Modifier.padding(end = dimens.size20),
                         onClick = { navController.navigate(PrayerSetting) }
                     ) {
                         Icon(
@@ -133,7 +131,7 @@ fun ShowData(
                 PrayerTimeScreenAnimation(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(MaterialTheme.dimens.size250),
+                        .height(dimens.size250),
                     prayerTimeEntity = prayerTimes[index]
 
                 )
@@ -226,7 +224,7 @@ fun PrayerTimesDay(
     val isNextIshaTime = currentTime in (data.maghribTime + 1)..(data.ishaTime)
 
     LazyColumn(
-        modifier = Modifier.padding(top = MaterialTheme.dimens.size10)
+        modifier = Modifier.padding(top = dimens.size10)
     ) {
         item {
             PrayerDateCard(

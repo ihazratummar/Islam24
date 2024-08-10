@@ -104,19 +104,19 @@ fun NameCard(name: NameEntity) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = MaterialTheme.dimens.size8)
+            .padding(vertical = dimens.size8)
             .background(MaterialTheme.colorScheme.background)
             .clickable {
                 expanded = !expanded
             }
             .padding(
-                horizontal = MaterialTheme.dimens.size15,
-                vertical = MaterialTheme.dimens.size1
+                horizontal = dimens.size15,
+                vertical = dimens.size1
             ),
-        shape = RoundedCornerShape(MaterialTheme.dimens.size10),
+        shape = RoundedCornerShape(dimens.size10),
         colors = CardDefaults.cardColors(Color.Transparent),
         border = BorderStroke(
-            MaterialTheme.dimens.size1, color = MaterialTheme.colorScheme.primaryContainer
+            dimens.size1, color = MaterialTheme.colorScheme.primaryContainer
         )
     ) {
         Column {
@@ -130,8 +130,8 @@ fun NameCard(name: NameEntity) {
                         .fillMaxHeight()
                         .weight(0.2f)
                         .padding(
-                            start = MaterialTheme.dimens.size5,
-                            top = MaterialTheme.dimens.size20
+                            start = dimens.size5,
+                            top = dimens.size20
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
@@ -145,7 +145,7 @@ fun NameCard(name: NameEntity) {
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
-                        .padding(MaterialTheme.dimens.size5)
+                        .padding(dimens.size5)
                 ) {
                     Text(
                         text = name.transliteration, style = MaterialTheme.typography.bodyLarge,
@@ -155,7 +155,7 @@ fun NameCard(name: NameEntity) {
                         text = name.meaning, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size3))
+                    Spacer(modifier = Modifier.height(dimens.size3))
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Arrow",
@@ -166,7 +166,7 @@ fun NameCard(name: NameEntity) {
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(0.8f)
-                        .padding(MaterialTheme.dimens.size5),
+                        .padding(dimens.size5),
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -180,15 +180,15 @@ fun NameCard(name: NameEntity) {
             }
             AnimatedVisibility(visible = expanded) {
                 HorizontalDivider(
-                    thickness = MaterialTheme.dimens.size2,
+                    thickness = dimens.size2,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Column(
                     modifier = Modifier
                         .padding(
-                            start = MaterialTheme.dimens.size35,
-                            top = MaterialTheme.dimens.size20, end = MaterialTheme.dimens.size10,
-                            bottom = MaterialTheme.dimens.size10
+                            start = dimens.size35,
+                            top = dimens.size20, end = dimens.size10,
+                            bottom = dimens.size10
                         )
                 ) {
                     Text(
@@ -196,7 +196,7 @@ fun NameCard(name: NameEntity) {
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodySmall
                     )
-                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size5))
+                    Spacer(modifier = Modifier.height(dimens.size5))
                     Text(
                         text = name.enDec,
                         color = MaterialTheme.colorScheme.onBackground,

@@ -51,7 +51,7 @@ fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(MaterialTheme.dimens.size10),
+            .padding(dimens.size10),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -70,12 +70,10 @@ fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun HijriCalendar(modifier: Modifier = Modifier) {
+fun HijriCalendar() {
     val calendar by remember { mutableStateOf(IslamicCalendar()) }
 
     val month by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH )) }
-
-    Log.d("Month ", "$month")
 
     var currentMonthNumber by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH )) }
     var year by remember { mutableIntStateOf(calendar.get(IslamicCalendar.YEAR)) }
@@ -113,7 +111,7 @@ fun HijriCalendar(modifier: Modifier = Modifier) {
             }
         )
         HijriWeekDaysHeader()
-        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size4))
+        Spacer(modifier = Modifier.height(dimens.size4))
         DaysGrid(
             firstDayOfWeek = firstDayOfWeek,
             totalDays = totalDays
@@ -141,7 +139,7 @@ fun HijriMonthNavigation(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(MaterialTheme.dimens.size10),
+            .padding(dimens.size10),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -150,9 +148,9 @@ fun HijriMonthNavigation(
             contentDescription = "Previous Month",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
-                .size(MaterialTheme.dimens.size35)
+                .size(dimens.size35)
                 .clip(CircleShape)
-                .padding(MaterialTheme.dimens.size4)
+                .padding(dimens.size4)
                 .clickable {
                     onPrevMonth()
                 }
@@ -167,9 +165,9 @@ fun HijriMonthNavigation(
             contentDescription = "Previous Month",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
-                .size(MaterialTheme.dimens.size35)
+                .size(dimens.size35)
                 .clip(CircleShape)
-                .padding(MaterialTheme.dimens.size4)
+                .padding(dimens.size4)
                 .clickable {
                     onNextMonth()
                 }
@@ -227,10 +225,10 @@ fun DaysGrid(
                             modifier = Modifier
                                 .weight(1f)
                                 .aspectRatio(1f)
-                                .padding(MaterialTheme.dimens.size4)
+                                .padding(dimens.size4)
                                 .background(
                                     color = Color.Transparent,
-                                    shape = RoundedCornerShape(MaterialTheme.dimens.size10)
+                                    shape = RoundedCornerShape(dimens.size10)
                                 ),
                             contentAlignment = Alignment.Center
                         ) {

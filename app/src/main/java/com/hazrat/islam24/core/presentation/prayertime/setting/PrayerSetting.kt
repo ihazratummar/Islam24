@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -31,7 +29,7 @@ import com.hazrat.islam24.core.presentation.prayertime.component.PrayerSettingCa
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrayerSetting(
     navController: NavController,
@@ -52,7 +50,7 @@ fun PrayerSetting(
                 title = {
                     Text(
                         text = stringResource(R.string.prayer_setting),
-                        modifier = Modifier.padding(MaterialTheme.dimens.size5)
+                        modifier = Modifier.padding(dimens.size5)
                     )
                 },
                 navigationIcon = {
@@ -62,7 +60,7 @@ fun PrayerSetting(
                             .clickable {
                                 navController.popBackStack()
                             }
-                            .padding(MaterialTheme.dimens.size5)
+                            .padding(dimens.size5)
                     )
                 }
             )
@@ -73,10 +71,10 @@ fun PrayerSetting(
                 .padding(it)
         ) {
             HorizontalDivider(
-                thickness = MaterialTheme.dimens.size1,
+                thickness = dimens.size1,
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size20))
+            Spacer(modifier = Modifier.height(dimens.size20))
             PrayerSettingCard(
                 text = stringResource(R.string.calculation_method),
                 methodID = prayerTimeEntities?.methodName,

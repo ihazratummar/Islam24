@@ -84,13 +84,13 @@ fun AuthLoginScreen(
             .fillMaxSize()
             .statusBarsPadding()
             .imePadding()
-            .padding(horizontal = MaterialTheme.dimens.size20),
+            .padding(horizontal = dimens.size20),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size100))
+        Spacer(modifier = Modifier.height(dimens.size100))
         Text(text = "Sign In", fontSize = 40.sp, fontFamily = FontFamily(Font(R.font.nunitobold)))
-        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size50))
+        Spacer(modifier = Modifier.height(dimens.size50))
         Text(
             text = "Enter your email and password",
             fontSize = 16.sp,
@@ -152,7 +152,6 @@ fun AuthLoginScreen(
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                 disabledContentColor = MaterialTheme.colorScheme.onSurface,
-
                 ),
             enabled = state.isFormValid && authState != AuthState.Loading
         ) {
