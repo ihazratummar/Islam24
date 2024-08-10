@@ -69,15 +69,3 @@ fun HyperLinkText(
         )
     )
 }
-
-@Preview()
-@Composable
-fun HyperLinkTextPreview() {
-    Islam24Theme {
-        HyperLinkText(
-            fullText = "By tapping Continue you agree to our Terms and Conditions and Privacy Policy",
-            linkText = listOf("Terms and Conditions", "Privacy Policy"),
-            hyperlinks = listOf("https:www.google.com", "https:www.google.com")
-        )
-    }
-}

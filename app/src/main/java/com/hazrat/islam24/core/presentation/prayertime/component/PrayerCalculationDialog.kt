@@ -28,8 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.CalculationMethodDetails
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.prayerMethods
@@ -47,7 +45,7 @@ fun PrayerCalculationDialog(
         sheetContent = {
             Surface(
                 modifier = Modifier
-                    .padding(horizontal = MaterialTheme.dimens.size20)
+                    .padding(horizontal = dimens.size20)
                     .nestedScroll(rememberNestedScrollInteropConnection()),
                 color = Color.Transparent
             ) {
@@ -57,28 +55,28 @@ fun PrayerCalculationDialog(
                             text = stringResource(id = R.string.prayer_times),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding(top = MaterialTheme.dimens.size30)
+                            modifier = Modifier.padding(top = dimens.size30)
                         )
                     }
                     item {
-                        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size10))
+                        Spacer(modifier = Modifier.height(dimens.size10))
                     }
                     items(prayerMethods.size) { index ->
                         val method = prayerMethods[index]
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = MaterialTheme.dimens.size15)
+                                .padding(vertical = dimens.size15)
                                 .clickable {
                                     onMethodSelected(method)
                                     onDismiss()
                                 },
                             colors = CardDefaults.cardColors(Color.Transparent),
-                            shape = RoundedCornerShape(MaterialTheme.dimens.size50)
+                            shape = RoundedCornerShape(dimens.size50)
                         ) {
                             Row(modifier = Modifier
                                 .fillMaxSize()
-                                .padding(MaterialTheme.dimens.size10),
+                                .padding(dimens.size10),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start
                             ) {
@@ -86,7 +84,7 @@ fun PrayerCalculationDialog(
                                     text = method.name,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = MaterialTheme.dimens.size10)
+                                    modifier = Modifier.padding(start = dimens.size10)
                                 )
                             }
                             Divider(color = MaterialTheme.colorScheme.inverseOnSurface)

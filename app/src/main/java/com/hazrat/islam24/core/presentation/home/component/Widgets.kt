@@ -73,7 +73,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
         stringResource(id = R.string.qibla)
     )
 
-    Box(modifier = Modifier.height(MaterialTheme.dimens.size300).fillMaxWidth()) {
+    Box(modifier = Modifier.height(dimens.size300).fillMaxWidth()) {
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Fixed(4),
@@ -86,21 +86,45 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                 ) {
                     Card(
                         modifier = Modifier
-                            .width(MaterialTheme.dimens.size60)
-                            .height(MaterialTheme.dimens.size60)
-                            .padding(MaterialTheme.dimens.size1)
+                            .width(dimens.size60)
+                            .height(dimens.size60)
+                            .padding(dimens.size1)
                             .clickable(
                                 onClick = {
                                     when (index) {
-                                        0 -> navController.navigate(NamesOfAllahScreen)
-                                        1 -> navController.navigate(CalendarScreen)
-                                        2 -> navController.navigate(AthkarScreen)
-                                        3 -> navController.navigate(QiblaDirectionScreen)
+                                        0 -> navController.navigate(NamesOfAllahScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = false
+                                        }
+                                        1 -> navController.navigate(CalendarScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        2 -> navController.navigate(AthkarScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        3 -> navController.navigate(QiblaDirectionScreen){
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
                                 },
                                 onClickLabel = onClickLabel[index]
                             )
-                            .clip(RoundedCornerShape(MaterialTheme.dimens.size8)),
+                            .clip(RoundedCornerShape(dimens.size8)),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surfaceContainer
                         )
@@ -111,7 +135,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             tint = Color.Unspecified,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(MaterialTheme.dimens.size5)
+                                .padding(dimens.size5)
                         )
                     }
                     Text(
@@ -151,7 +175,36 @@ fun Modifier.shimmerEffect(): Modifier = composed {
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(MaterialTheme.dimens.size30)
+        shape = RoundedCornerShape(dimens.size30)
+    ).onGloballyPositioned {
+        size = it.size
+    }
+}
+
+
+fun Modifier.generalShimmerEffect(): Modifier = composed {
+    var size by remember { mutableStateOf(IntSize.Zero) }
+    val transition = rememberInfiniteTransition(label = "")
+    val startOffsetX by transition.animateFloat(
+        initialValue = -2 * size.width.toFloat(),
+        targetValue = 2 * size.width.toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000)
+        ), label = ""
+    )
+    background(
+        brush = Brush.linearGradient(
+            colors = listOf(
+                Color(0x8FBDBDBD), // Light grey
+                Color(0x75E0E0E0), // Medium grey
+                Color(0x8BBDBDBD)  // Light grey
+            ),
+            start = Offset(startOffsetX, 0F),
+            end = Offset(
+                startOffsetX + size.width.toFloat(), size.height.toFloat()
+            )
+        ),
+        shape = RoundedCornerShape(dimens.size30)
     ).onGloballyPositioned {
         size = it.size
     }

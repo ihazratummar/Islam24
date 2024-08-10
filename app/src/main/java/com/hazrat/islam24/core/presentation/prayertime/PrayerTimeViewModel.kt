@@ -21,14 +21,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PrayerTimeViewModel @Inject constructor(
-    private val repository: PrayerTimeRepository
+    private val repository: PrayerTimeRepository,
 ) : ViewModel() {
 
+
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
-    val prayerTimes = _prayerTimes.asStateFlow()
+    private val prayerTimes = _prayerTimes.asStateFlow()
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
+
+
+    fun onEvent(prayerEvent: PrayerEvent){
+        when(prayerEvent){
+            PrayerEvent.SharePrayer -> {
+                repository.sharePrayerTimes(prayerTimes.value)
+            }
+        }
+    }
+
 
     init {
         viewModelScope.launch {
@@ -49,6 +60,5 @@ class PrayerTimeViewModel @Inject constructor(
                 }
         }
     }
-
 
 }

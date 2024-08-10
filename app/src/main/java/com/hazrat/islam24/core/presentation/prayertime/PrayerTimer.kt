@@ -4,7 +4,6 @@ package com.hazrat.islam24.core.presentation.prayertime
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,7 +45,6 @@ import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.CalendarScreen
 import com.hazrat.islam24.main.navigation.PrayerSetting
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
@@ -63,11 +62,12 @@ fun PrayerTimer(viewModel: MainViewModel = hiltViewModel(), navController: NavCo
 @Composable
 fun ShowData(
     viewModel: MainViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
 ) {
     val prayerTimes by viewModel.prayerTimes.collectAsState()
     val methods = prayerTimes.firstOrNull()
-
+    val event = prayerTimeViewModel::onEvent
     Scaffold(
         modifier = Modifier,
         containerColor = Color.Transparent,
@@ -88,16 +88,31 @@ fun ShowData(
                     }
                 },
                 actions = {
-                    Icon(painter = painterResource(id = R.drawable.settings),
-                        contentDescription = "Setting Icon",
-                        modifier = Modifier
-                            .clickable {
-                                navController.navigate(PrayerSetting)
-                            }
-                            .padding(end = MaterialTheme.dimens.size20),
-                        tint = MaterialTheme.colorScheme.onBackground
+                    IconButton(
+                        modifier = Modifier,
+                        onClick = { event(PrayerEvent.SharePrayer) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = "Setting Icon",
+                            modifier = Modifier,
+                            tint = MaterialTheme.colorScheme.onBackground
 
-                    )
+                        )
+                    }
+                    IconButton(
+                        modifier = Modifier.padding(end = dimens.size20),
+                        onClick = { navController.navigate(PrayerSetting) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = "Setting Icon",
+                            modifier = Modifier,
+                            tint = MaterialTheme.colorScheme.onBackground
+
+                        )
+                    }
+
                 },
                 colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
 
@@ -116,7 +131,7 @@ fun ShowData(
                 PrayerTimeScreenAnimation(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(MaterialTheme.dimens.size250),
+                        .height(dimens.size250),
                     prayerTimeEntity = prayerTimes[index]
 
                 )
@@ -209,7 +224,7 @@ fun PrayerTimesDay(
     val isNextIshaTime = currentTime in (data.maghribTime + 1)..(data.ishaTime)
 
     LazyColumn(
-        modifier = Modifier.padding(top = MaterialTheme.dimens.size10)
+        modifier = Modifier.padding(top = dimens.size10)
     ) {
         item {
             PrayerDateCard(

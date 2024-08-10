@@ -9,9 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
 
 fun vibrate(vibrator: Vibrator) {
     vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))

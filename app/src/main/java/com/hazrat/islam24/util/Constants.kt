@@ -1,8 +1,5 @@
 package com.hazrat.islam24.util
 
-import okhttp3.OkHttpClient
-import java.util.concurrent.TimeUnit
-
 /**
  * Object containing constant values used in the application.
  */

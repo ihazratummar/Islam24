@@ -1,14 +1,10 @@
 package com.hazrat.islam24.service
 
-import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.location.Location
 import android.util.Log
-import com.google.android.gms.location.FusedLocationProviderClient
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 /**

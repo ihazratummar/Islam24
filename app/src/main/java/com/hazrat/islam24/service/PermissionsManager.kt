@@ -27,7 +27,7 @@ class PermissionsManager(private val activity: ComponentActivity) {
         }
 
     var onPermissionGranted: (() -> Unit)? = null
-    var onPermissionDenied: (() -> Unit)? = null
+    private var onPermissionDenied: (() -> Unit)? = null
 
     fun checkAndRequestLocationPermission() {
         when {

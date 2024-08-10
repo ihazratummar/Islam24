@@ -19,8 +19,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 58
-        versionName = "1.5.4"
+        versionCode = 60
+        versionName = "1.5.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -33,7 +33,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -62,6 +63,7 @@ android {
         }
     }
     ndkVersion = "26.1.10909125"
+
 
 }
 
@@ -156,6 +158,9 @@ dependencies {
     implementation(libs.app.update.ktx)
     implementation(libs.review)
     implementation(libs.review.ktx)
+
+    //dataStorePreference
+    implementation(libs.androidx.preference.ktx)
 }
 
 

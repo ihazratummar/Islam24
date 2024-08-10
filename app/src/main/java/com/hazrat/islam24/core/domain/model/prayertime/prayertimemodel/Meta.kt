@@ -4,9 +4,9 @@ data class Meta(
     val latitude: Double,
     val latitudeAdjustmentMethod: String,
     val longitude: Double,
-    val method: com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.Method,
+    val method: Method,
     val midnightMode: String,
-    val offset: com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.Offset,
+    val offset: Offset,
     val school: String,
     val timezone: String
 )

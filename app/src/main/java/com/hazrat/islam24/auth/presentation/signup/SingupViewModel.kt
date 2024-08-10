@@ -139,7 +139,7 @@ class SingupViewModel @Inject constructor(
         }
     }
 
-    fun singup(name: String, email: String, password: String, confirmPassword: String) {
+    private fun singup(name: String, email: String, password: String, confirmPassword: String) {
         if (name.isEmpty() && email.isEmpty() && password.isEmpty() && confirmPassword.isEmpty()) {
             _authState.value = AuthState.Error("Please fill all fields")
             return

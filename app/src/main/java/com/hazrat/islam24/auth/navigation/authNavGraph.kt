@@ -1,5 +1,7 @@
 package com.hazrat.islam24.auth.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -10,10 +12,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.AuthViewModel
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingScreen
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.auth.presentation.login.AuthLoginScreen
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
-import com.hazrat.islam24.auth.presentation.profileSetting.ProfileSettingScreen
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
 import com.hazrat.islam24.main.navigation.ProfileScreen
@@ -23,7 +29,12 @@ import kotlinx.serialization.Serializable
  * @author Hazrat Ummar Shaikh
  */
 
-fun NavGraphBuilder.authNavGraph(navController: NavController) {
+@RequiresApi(Build.VERSION_CODES.S)
+fun NavGraphBuilder.authNavGraph(
+    navController: NavController,
+    appSettingState: AppSettingState,
+    appSettingEvent : (AppSettingEvent) -> Unit
+) {
     navigation<Auth>(startDestination = ProfileScreen) {
         composable<Login> {
             val loginViewModel = hiltViewModel<LoginViewModel>()
@@ -51,22 +62,32 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
         }
         composable<ProfileScreen> {
             val authViewModel = hiltViewModel<AuthViewModel>()
+            val profileViewModel = hiltViewModel<ProfileViewModel>()
             val authState by authViewModel.authState.observeAsState(AuthState.Loading)
             val authEvent = authViewModel::onEvent
+            val profileEvent = profileViewModel::onEvent
             ProfileScreen(
                 navController = navController,
                 state = authState,
-                authEvent = authEvent
+                authEvent = authEvent,
+                profileEvent = profileEvent
             )
         }
         composable<ProfileSettingScreen> {
             val authViewModel = hiltViewModel<AuthViewModel>()
             val authState by authViewModel.authState.observeAsState(AuthState.Loading)
             val authEvent = authViewModel::onEvent
-            ProfileSettingScreen(
+            val appSettingViewModel = hiltViewModel<AppSettingViewModel>()
+            val appSettingState1 by appSettingViewModel.appSettingState.collectAsState()
+            val appSettingEvent1 = appSettingViewModel::onAppSettingEvent
+            AppSettingScreen(
                 navController = navController,
                 state = authState,
-                authEvent = authEvent
+                authEvent = authEvent,
+                appSettingState = appSettingState1,
+                appSettingEvent = appSettingEvent1,
+                appSettingStateTheme = appSettingState,
+                appSettingEventTheme = appSettingEvent
             )
         }
     }
