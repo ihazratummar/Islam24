@@ -43,7 +43,6 @@ import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
-import com.hazrat.islam24.ui.theme.Islam24Theme
 import com.hazrat.islam24.ui.theme.dimens
 import kotlinx.serialization.Serializable
 

@@ -28,7 +28,7 @@ import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.Jurist
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList
 import com.hazrat.islam24.ui.theme.dimens
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun JuristicSelectionDialog(
     showJuristicSelectionDialog: Boolean,

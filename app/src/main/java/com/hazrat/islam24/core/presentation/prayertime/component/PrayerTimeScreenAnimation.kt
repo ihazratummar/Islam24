@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.util.DateUtil.convertLongToLocalTime
-import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 

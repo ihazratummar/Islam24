@@ -1,11 +1,10 @@
 package com.hazrat.islam24.core.data.manager
 
-import android.util.Log
 import com.hazrat.islam24.core.data.dao.GregorianToHijriDao
+import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.network.GregorianToHijriApi
-import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.util.DateUtil
 import kotlinx.coroutines.flow.Flow
 
@@ -27,7 +26,7 @@ class GregorianToHijriRepositoryImpl(
      * @return The GregorianToHijriResponse containing the current Hijri date.
      * @throws Exception if an error occurs during the API call or data processing.
      */
-    override suspend fun getGregorianToHijriDate(): com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse {
+    override suspend fun getGregorianToHijriDate(): GregorianToHijriResponse {
         val date = DateUtil.getCurrentDate()
         try {
             val response = api.getGtoHDate(date)
@@ -57,7 +56,7 @@ class GregorianToHijriRepositoryImpl(
      *
      * @param response The GregorianToHijriResponse containing the Hijri date to be saved.
      */
-    private suspend fun saveResponseToDatabase(response: com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse) {
+    private suspend fun saveResponseToDatabase(response: GregorianToHijriResponse) {
         val data = response.data.hijri
         val hijriEntity = GregorianToHijriEntity(
             date = data.date,

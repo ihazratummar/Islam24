@@ -70,12 +70,10 @@ fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun HijriCalendar(modifier: Modifier = Modifier) {
+fun HijriCalendar() {
     val calendar by remember { mutableStateOf(IslamicCalendar()) }
 
     val month by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH )) }
-
-    Log.d("Month ", "$month")
 
     var currentMonthNumber by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH )) }
     var year by remember { mutableIntStateOf(calendar.get(IslamicCalendar.YEAR)) }

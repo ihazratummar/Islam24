@@ -32,7 +32,7 @@ import com.hazrat.islam24.core.domain.model.athkar.tabItems
 import com.hazrat.islam24.core.presentation.athkar.components.EveningContent
 import com.hazrat.islam24.core.presentation.athkar.components.MorningContent
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AthkarScreen(navController: NavController) {
     var selectedTabIndex by remember {

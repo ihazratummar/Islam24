@@ -88,7 +88,7 @@ fun TimeLocationCard(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            val today = DateUtil.getCurrentDay()
+            val today = getCurrentDay()
             val index = today -1
             Log.d("Today", "$index")
             if (index in prayerTimeEntity.indices) {

@@ -1,6 +1,5 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hazrat.islam24.auth.AuthState
@@ -18,7 +17,6 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _authState = MutableLiveData<AuthState>()
-    val authState: LiveData<AuthState> = _authState
 
     fun onEvent(event: ProfileEvent){
         when(event){

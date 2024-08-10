@@ -40,7 +40,6 @@ import com.hazrat.islam24.ui.theme.dimens
  * @author Hazrat Ummar Shaikh
  */
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     navController: NavController,

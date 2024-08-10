@@ -29,7 +29,7 @@ import com.hazrat.islam24.core.presentation.prayertime.component.PrayerSettingCa
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrayerSetting(
     navController: NavController,

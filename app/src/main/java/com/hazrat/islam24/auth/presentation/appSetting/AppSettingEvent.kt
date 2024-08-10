@@ -15,6 +15,8 @@ sealed interface AppSettingEvent {
 
     data class ChangeTheme(val theme: Themes) : AppSettingEvent
     data object ClickThemeDialog : AppSettingEvent
+
+    data object OpenAppSetting : AppSettingEvent
 }
 
 enum class Themes {

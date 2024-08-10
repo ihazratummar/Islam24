@@ -11,19 +11,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -118,8 +115,8 @@ fun AppSettingScreen(
                                 appSettingEvent(AppSettingEvent.ClickLanguageDialog)
                             },
                             selectedText = when (appSettingState.currentLanguage) {
-                                Languages.ENGLISH.name-> stringResource(R.string.english)
-                                Languages.BENGALI.name -> stringResource(R.string.bengali)
+                                Languages.ENGLISH-> stringResource(R.string.english)
+                                Languages.BENGALI -> stringResource(R.string.bengali)
                                 else -> ""
                             }
                         )
@@ -134,6 +131,13 @@ fun AppSettingScreen(
                                 Themes.LIGHT -> stringResource(R.string.light)
                             }
                         )
+                        SettingItemCard(
+                            painter = painterResource(id = R.drawable.sysemsetting),
+                            text = stringResource(R.string.system_seeting),
+                            onClick = {
+                                appSettingEvent(AppSettingEvent.OpenAppSetting)
+                            }
+                        )
                     }
                 }
             }
@@ -142,7 +146,7 @@ fun AppSettingScreen(
                 if (state == AuthState.Authenticated) {
                     SettingItemCard(
                         painter = painterResource(id = R.drawable.logout),
-                        text = "Logout",
+                        text = stringResource(R.string.logout),
                         onClick = {
                             authEvent(AuthEvent.SignOut)
                             authEvent(AuthEvent.Refresh)

@@ -2,7 +2,6 @@ package com.hazrat.islam24.util
 
 import android.content.Context
 import android.media.MediaFormat.KEY_LANGUAGE
-import androidx.appcompat.app.AppCompatDelegate
 import com.hazrat.islam24.auth.presentation.appSetting.Themes
 
 object DataStorePreference {
@@ -13,15 +12,15 @@ object DataStorePreference {
     private const val KEY_THEME_NAME = "theme_name"
 
 
-
-    fun setLanguage(context: Context, language: String) {
+    fun setLanguage(context: Context, language: Languages) {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        pref.edit().putString(KEY_LANGUAGE, language).apply()
+        pref.edit().putString(KEY_LANGUAGE, language.name).apply()
     }
 
-    fun getLanguage(context: Context): String{
+    fun getLanguage(context: Context): Languages{
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return pref.getString(KEY_LANGUAGE, "en") ?: "en"
+        val language =  pref.getString(KEY_LANGUAGE, Languages.ENGLISH.name) ?: Languages.ENGLISH.name
+        return Languages.valueOf(language)
     }
 
     fun setThemeMode(context: Context, themeMode: Boolean) {
@@ -31,7 +30,7 @@ object DataStorePreference {
 
     fun getThemeMode(context: Context): Boolean {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return pref.getBoolean(KEY_THEME_MODE, false)
+        return pref.getBoolean(KEY_THEME_MODE, true)
     }
 
     fun setThemeName(context: Context, themes: Themes){

@@ -5,10 +5,10 @@ data class TabItem(
 )
 
 val tabItems = listOf(
-    com.hazrat.islam24.core.domain.model.athkar.TabItem(
+    TabItem(
         title = "Morning"
     ),
-    com.hazrat.islam24.core.domain.model.athkar.TabItem(
+    TabItem(
         title = "Evening"
     )
 )

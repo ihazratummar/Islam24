@@ -3,18 +3,9 @@
     <string name="app_name" translatable="true">Islam 24</string>
     <string name="view_salat_times">সময় দেখুন</string>
     <string name="names">আল্লাহর নাম</string>
-    <string name="tasbih">তসবিহ</string>
     <string name="calendar">ক্যালেন্ডার</string>
     <string name="athkar">জিকির</string>
     <string name="next_prayer" translatable="true">পরবর্তী %1$s</string>
-    <string name="total_count">মোট গণনা: %1$s</string>
-    <string name="round">বার : %1$s</string>
-    <string name="tasbihTarget">লক্ষ্য : %1$s</string>
-    <string name="set_tasbih_count">তাসবিহ গণনা সেট করুন</string>
-    <string name="cancel">বাতিল করুন</string>
-    <string name="select">নির্বাচন করুন</string>
-    <string name="click_to_start">শুরু করতে ক্লিক করুন</string>
-    <string name="reset">রিসেট</string>
     <string name="prayer_times">নামাজের সময়</string>
     <string name="fajr">ফজর</string>
     <string name="sunrise">সূর্যোদয়</string>
@@ -24,7 +15,6 @@
     <string name="isha_a">ইশা</string>
     <string name="prayer_setting">নামাজের সেটিংস</string>
     <string name="calculation_method">নামাজের সময় পদ্ধতি</string>
-    <string name="juristic_method">ফিকাহাবিদের পদ্ধতি</string>
     <string name="now">এখন</string>
     <string name="qibla">কিবলা</string>
     <string name="prayertimesandlocation">Prayer Times and Location</string>
@@ -42,4 +32,6 @@
     <string name="light">আলো</string>
     <string name="english">ইংরেজি</string>
     <string name="bengali">বাংলা</string>
+    <string name="system_seeting">সিস্টেম সেটিং</string>
+    <string name="logout">লগআউট</string>
 </resources>

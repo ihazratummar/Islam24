@@ -15,7 +15,6 @@ import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingReposit
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.network.PrayerTimeApi
 import com.hazrat.islam24.util.DateUtil
-import com.hazrat.islam24.util.DateUtil.convertLongToLocalTime
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import com.hazrat.islam24.util.DateUtil.timeStringToLong

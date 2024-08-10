@@ -26,7 +26,6 @@ class ProfileRepositoryImpl @Inject constructor(
         }
         context.startActivity(shareIntent)
     }
-
     override fun rateUs() {
         TODO("Not yet implemented")
     }

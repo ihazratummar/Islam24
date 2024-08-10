@@ -13,18 +13,16 @@ import androidx.navigation.navigation
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.AuthViewModel
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingScreen
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.auth.presentation.login.AuthLoginScreen
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingScreen
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
 import com.hazrat.islam24.main.navigation.ProfileScreen
-import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
-import com.hazrat.islam24.ui.theme.Islam24Theme
 import kotlinx.serialization.Serializable
 
 /**

@@ -1,10 +1,14 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.islam24.util.ContextUtils
 import com.hazrat.islam24.util.DataStorePreference
-import com.hazrat.islam24.util.Languages
 import com.hazrat.islam24.util.changeLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -12,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -25,12 +28,11 @@ class AppSettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
-
     private val _state = MutableStateFlow(
         AppSettingState(
             currentLanguage = DataStorePreference.getLanguage(context = context),
             isDarkMode = DataStorePreference.getThemeMode(context),
-            currentTheme = DataStorePreference.getThemeName(context)
+            currentTheme = DataStorePreference.getThemeName(context),
         )
     )
     val appSettingState = _state.asStateFlow()
@@ -50,13 +52,14 @@ class AppSettingViewModel @Inject constructor(
                 viewModelScope.launch {
                     val newLanguage = event.language
                     _state.update {
-                        it.copy(currentLanguage = newLanguage.name)
+                        it.copy(
+                            currentLanguage = newLanguage,
+                        )
                     }
-                    DataStorePreference.setLanguage(context = context, language = newLanguage.name)
-                    changeLanguage(context = context, language = newLanguage)
+                    DataStorePreference.setLanguage(context = context, language = newLanguage)
+                    changeLanguage(language = newLanguage, context = context)
                 }
             }
-
             is AppSettingEvent.ChangeTheme -> {
                 viewModelScope.launch {
                     when (event.theme) {
@@ -93,7 +96,14 @@ class AppSettingViewModel @Inject constructor(
                 }
             }
 
+            AppSettingEvent.OpenAppSetting -> {
+                val intent: Intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(intent)
+            }
         }
     }
-
 }
+
