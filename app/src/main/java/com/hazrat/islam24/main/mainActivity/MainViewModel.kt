@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
@@ -37,6 +38,7 @@ class MainViewModel @Inject constructor(
     private val namesRepository: NamesRepositoryImpl,
     private val gregorianToHijriRepository: GregorianToHijriRepository,
     private val hijriCalendarRepository: HijriCalendarRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
     /**
      * splash screen condition
@@ -86,6 +88,7 @@ class MainViewModel @Inject constructor(
             fetchDataFromDB()
         }
         observeNetworkStatus()
+        profileRepository.checkAuthStatus()
 
     }
 

@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.util.ContextUtils
 import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.changeLanguage
@@ -26,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppSettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -36,7 +40,10 @@ class AppSettingViewModel @Inject constructor(
         )
     )
     val appSettingState = _state.asStateFlow()
-
+    val authState: LiveData<AuthState> = profileRepository.authState
+    init {
+        profileRepository.checkAuthStatus()
+    }
 
     fun onAppSettingEvent(event: AppSettingEvent) {
         when (event) {
@@ -102,6 +109,10 @@ class AppSettingViewModel @Inject constructor(
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
                 context.startActivity(intent)
+            }
+
+            AppSettingEvent.SignOut -> {
+                profileRepository.signOut()
             }
         }
     }

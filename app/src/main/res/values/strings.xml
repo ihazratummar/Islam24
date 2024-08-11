@@ -36,5 +36,8 @@
     <string name="bengali">Bangla</string>
     <string name="system_seeting">System Setting</string>
     <string name="logout">Logout</string>
+    <string name="name">Name</string>
+    <string name="emal">Email</string>
+    <string name="bio">Bio</string>
 
 </resources>

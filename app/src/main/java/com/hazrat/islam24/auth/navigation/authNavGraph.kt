@@ -20,6 +20,8 @@ import com.hazrat.islam24.auth.presentation.login.AuthLoginScreen
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
+import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsScreen
+import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
 import com.hazrat.islam24.main.navigation.ProfileScreen
@@ -33,7 +35,7 @@ import kotlinx.serialization.Serializable
 fun NavGraphBuilder.authNavGraph(
     navController: NavController,
     appSettingState: AppSettingState,
-    appSettingEvent : (AppSettingEvent) -> Unit
+    appSettingEvent: (AppSettingEvent) -> Unit
 ) {
     navigation<Auth>(startDestination = ProfileScreen) {
         composable<Login> {
@@ -61,33 +63,39 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<ProfileScreen> {
-            val authViewModel = hiltViewModel<AuthViewModel>()
             val profileViewModel = hiltViewModel<ProfileViewModel>()
-            val authState by authViewModel.authState.observeAsState(AuthState.Loading)
-            val authEvent = authViewModel::onEvent
+            val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
+            val profileState by profileViewModel.profileState.collectAsState()
             val profileEvent = profileViewModel::onEvent
             ProfileScreen(
                 navController = navController,
-                state = authState,
-                authEvent = authEvent,
-                profileEvent = profileEvent
+                authState = authState,
+                profileEvent = profileEvent,
+                profileState = profileState
             )
         }
         composable<ProfileSettingScreen> {
-            val authViewModel = hiltViewModel<AuthViewModel>()
-            val authState by authViewModel.authState.observeAsState(AuthState.Loading)
-            val authEvent = authViewModel::onEvent
             val appSettingViewModel = hiltViewModel<AppSettingViewModel>()
+            val authState by appSettingViewModel.authState.observeAsState(AuthState.Loading)
             val appSettingState1 by appSettingViewModel.appSettingState.collectAsState()
             val appSettingEvent1 = appSettingViewModel::onAppSettingEvent
             AppSettingScreen(
                 navController = navController,
-                state = authState,
-                authEvent = authEvent,
+                authState = authState,
                 appSettingState = appSettingState1,
                 appSettingEvent = appSettingEvent1,
                 appSettingStateTheme = appSettingState,
                 appSettingEventTheme = appSettingEvent
+            )
+        }
+        composable<ProfileDetailsScreen> {
+            val profileDetailsViewModel = hiltViewModel<ProfileDetailsViewModel>()
+            val appSettingState1 by profileDetailsViewModel.profileState.collectAsState()
+            val profileDetailsEvent = profileDetailsViewModel::onEvent
+            ProfileDetailsScreen(
+                navController = navController,
+                profileState = appSettingState1,
+                profileDetailsEvent = profileDetailsEvent
             )
         }
     }
@@ -105,3 +113,6 @@ data object SignUp
 
 @Serializable
 data object ProfileSettingScreen
+
+@Serializable
+data object ProfileDetailsScreen

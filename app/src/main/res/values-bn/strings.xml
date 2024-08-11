@@ -34,4 +34,7 @@
     <string name="bengali">বাংলা</string>
     <string name="system_seeting">সিস্টেম সেটিং</string>
     <string name="logout">লগআউট</string>
+    <string name="name">নাম</string>
+    <string name="emal">ইমেইল</string>
+    <string name="bio">বায়ো</string>
 </resources>

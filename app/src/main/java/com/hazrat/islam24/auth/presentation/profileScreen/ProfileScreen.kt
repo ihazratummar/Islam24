@@ -1,5 +1,7 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,28 +14,38 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
+import com.hazrat.islam24.auth.navigation.ProfileDetailsScreen
 import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
-import com.hazrat.islam24.auth.presentation.AuthEvent
 import com.hazrat.islam24.ui.theme.dimens
 
 /**
@@ -43,14 +55,10 @@ import com.hazrat.islam24.ui.theme.dimens
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    state: AuthState,
-    authEvent: (AuthEvent) -> Unit,
-    profileEvent: (ProfileEvent) -> Unit
+    authState: AuthState,
+    profileEvent: (ProfileEvent) -> Unit,
+    profileState: ProfileState
 ) {
-    LaunchedEffect(Unit) {
-        authEvent(AuthEvent.Refresh)
-    }
-
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -61,10 +69,14 @@ fun ProfileScreen(
                     start = dimens.size20,
                     end = dimens.size10
                 ),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
-            ProfileHeader(navController = navController, state = state)
+            ProfileHeader(
+                navController = navController,
+                state = authState,
+                profileState = profileState,
+            )
             ProfileComponent(
                 navController = navController,
                 profileEvent = profileEvent
@@ -85,7 +97,12 @@ private fun ProfileComponent(
         SettingCard(
             painter = painterResource(id = R.drawable.settings),
             text = stringResource(id = R.string.setting),
-            onClick = { navController.navigate(ProfileSettingScreen) }
+            onClick = { navController.navigate(ProfileSettingScreen){
+                popUpTo(ProfileSettingScreen){
+                    inclusive = true
+                    saveState = true
+                }
+            } }
         )
         SettingCard(
             painter = painterResource(id = R.drawable.like),
@@ -151,72 +168,142 @@ private fun SettingCard(
 @Composable
 private fun ProfileHeader(
     navController: NavController,
-    state: AuthState
+    state: AuthState,
+    profileState: ProfileState,
 ) {
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Absolute.SpaceBetween
-    ) {
-        Box(
-            modifier = Modifier.clickable {
-                if (state == AuthState.Unauthenticated) {
-                    navController.navigate(Login)
-                }
-            }
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
+    when (state) {
+        AuthState.Authenticated -> {
+            val imageUri = profileState.userData?.profilePictureUrl
+            val painter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUri)
+                    .size(Size.ORIGINAL)
+                    .crossfade(true)
+                    .build()
+            )
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        navController.navigate(ProfileDetailsScreen){
+                            popUpTo(ProfileDetailsScreen){
+                                inclusive = true
+                                saveState = true
+                            }
+                        }
+                    },
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             ) {
-                Card(
-                    modifier = Modifier
-                        .padding(
-                            dimens.size10
-                        )
-                        .size(dimens.size60)
-                        .fillMaxSize(),
-                    shape = CircleShape,
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                Column {
+                    Log.d("ProfileScreen", "ProfileHeader: ${painter.state.painter}")
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(dimens.size20),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
+                        when (painter.state) {
+                            is AsyncImagePainter.State.Loading -> {
+                                CircularProgressIndicator()
+                            }
+
+                            is AsyncImagePainter.State.Success -> {
+                                Image(
+                                    painter = painter,
+                                    contentDescription = "Profile Picture",
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .padding(dimens.size6)
+                                        .size(dimens.size60)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            else -> {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = "error"
+                                )
+                            }
+                        }
+
+                        Text(
+                            text = "Salam, ${profileState.userData?.fullName ?: "User"}",
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
                         Icon(
-                            modifier = Modifier,
-                            painter = painterResource(id = R.drawable.profile),
-                            contentDescription = "Profile",
+                            painter = painterResource(id = R.drawable.arrowright),
+                            contentDescription = "ArrowRight",
+                            modifier = Modifier.weight(0.1f)
                         )
                     }
                 }
-                Spacer(modifier = Modifier.width(dimens.size15))
-                when (state) {
-                    AuthState.Unauthenticated -> {
+
+            }
+        }
+
+        AuthState.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        AuthState.Unauthenticated -> {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Absolute.SpaceBetween
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate(Login)
+                        }
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .padding(
+                                    dimens.size10
+                                )
+                                .size(dimens.size60)
+                                .fillMaxSize(),
+                            shape = CircleShape,
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    modifier = Modifier,
+                                    painter = painterResource(id = R.drawable.profile),
+                                    contentDescription = "Profile",
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(dimens.size15))
                         Text(
                             text = stringResource(R.string.login),
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
-
-                    AuthState.Authenticated -> {
-                        Text(
-                            text = "Salam User",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-
-                    else -> {
-                        Text(text = "")
-                    }
                 }
             }
         }
-
+        else -> Unit
     }
 }

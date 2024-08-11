@@ -79,7 +79,9 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.play.services.location)
     implementation(libs.transportation.consumer)
-    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v351)
@@ -89,6 +91,16 @@ dependencies {
     implementation(libs.androidx.material.android)
 
     implementation(libs.androidx.material.icons.extended.android)
+
+
+    /*
+    FireBase
+     */
+    implementation (libs.play.services.auth)
+    implementation(libs.firebase.auth.ktx)
+    implementation (libs.firebase.database)
+    platform(libs.firebase.bom.v2821)
+
 
     //window size
     implementation(libs.androidx.window)

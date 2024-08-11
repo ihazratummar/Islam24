@@ -1,11 +1,11 @@
 package com.hazrat.islam24.auth
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.hazrat.islam24.auth.presentation.AuthEvent
+import androidx.lifecycle.viewModelScope
+import com.hazrat.islam24.auth.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -14,40 +14,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val auth: FirebaseAuth
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    private val _authState = MutableLiveData<AuthState>()
-    val authState: LiveData<AuthState> = _authState
-
+    val authState: LiveData<AuthState> = profileRepository.authState
 
     init {
-        checkAuthStatus()
-    }
-
-    private fun checkAuthStatus() {
-        if (auth.currentUser == null) {
-            _authState.value = AuthState.Unauthenticated
-        } else {
-            _authState.value = AuthState.Authenticated
+        viewModelScope.launch {
+            profileRepository.networkObserver()
+            profileRepository.checkAuthStatus()
         }
-    }
-
-    fun onEvent(event:AuthEvent){
-        when(event){
-            AuthEvent.SignOut -> {
-                signOut()
-                _authState.value = AuthState.Unauthenticated
-            }
-
-            AuthEvent.Refresh -> {
-                checkAuthStatus()
-            }
-        }
-    }
-
-
-    private fun signOut(){
-        auth.signOut()
     }
 }

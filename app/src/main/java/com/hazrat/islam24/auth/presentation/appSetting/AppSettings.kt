@@ -18,11 +18,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,11 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.presentation.AuthEvent
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectThemeDialog
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Languages
+import kotlinx.coroutines.launch
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -47,18 +50,17 @@ import com.hazrat.islam24.util.Languages
 @Composable
 fun AppSettingScreen(
     navController: NavController,
-    state: AuthState,
-    authEvent: (AuthEvent) -> Unit,
+    authState: AuthState,
     appSettingState: AppSettingState,
     appSettingEvent: (AppSettingEvent) -> Unit,
     appSettingStateTheme: AppSettingState,
     appSettingEventTheme: (AppSettingEvent) -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        authEvent(AuthEvent.Refresh)
-    }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState)},
         containerColor = MaterialTheme.colorScheme.surfaceDim,
         topBar = {
             TopAppBar(
@@ -75,7 +77,6 @@ fun AppSettingScreen(
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
-                        authEvent(AuthEvent.Refresh)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.backicon),
@@ -143,13 +144,20 @@ fun AppSettingScreen(
             }
             item {
                 Spacer(modifier = Modifier.height(dimens.size10))
-                if (state == AuthState.Authenticated) {
+                if (authState == AuthState.Authenticated || authState == AuthState.Loading) {
                     SettingItemCard(
                         painter = painterResource(id = R.drawable.logout),
                         text = stringResource(R.string.logout),
                         onClick = {
-                            authEvent(AuthEvent.SignOut)
-                            authEvent(AuthEvent.Refresh)
+                            appSettingEvent(AppSettingEvent.SignOut)
+                            if (authState is AuthState.Error){
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = "Check Internet Connection",
+                                        actionLabel = ""
+                                    )
+                                }
+                            }
                         },
                         iconColor = MaterialTheme.colorScheme.error,
                         cardContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
