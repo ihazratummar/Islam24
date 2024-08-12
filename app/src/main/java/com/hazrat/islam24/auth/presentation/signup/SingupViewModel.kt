@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -142,13 +143,13 @@ class SingupViewModel @Inject constructor(
         }
     }
 
-    private fun signup(name: String, email: String, password: String, confirmPassword: String) {
+    private suspend fun signup(name: String, email: String, password: String, confirmPassword: String) {
         if (name.isEmpty() && email.isEmpty() && password.isEmpty() && confirmPassword.isEmpty()) {
             _authState.value = AuthState.Error("Please fill all fields")
             return
         }
         _authState.value = AuthState.Loading
-
+        delay(1000L)
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -165,10 +166,18 @@ class SingupViewModel @Inject constructor(
                             _authState.value = AuthState.Authenticated
                         }
                         .addOnFailureListener { e ->
-                            _authState.value = AuthState.Error(e.message.toString())
+                            viewModelScope.launch {
+                                _authState.value = AuthState.Loading
+                                delay(1000L)
+                                _authState.value = AuthState.Error(e.message.toString())
+                            }
                         }
                 } else {
-                    _authState.value = AuthState.Error(it.exception?.message.toString())
+                    viewModelScope.launch {
+                        _authState.value = AuthState.Loading
+                        delay(1000L)
+                        _authState.value = AuthState.Error(it.exception?.message.toString())
+                    }
                 }
             }
     }

@@ -20,6 +20,8 @@ sealed interface AppSettingEvent {
     data object OpenAppSetting : AppSettingEvent
 
     data object SignOut: AppSettingEvent
+
+    data object RefreshAuth: AppSettingEvent
 }
 
 enum class Themes {

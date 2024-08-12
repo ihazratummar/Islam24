@@ -1,10 +1,8 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,6 +44,7 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.ProfileDetailsScreen
 import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
+import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
 
 /**
@@ -94,22 +93,25 @@ private fun ProfileComponent(
         modifier = Modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.Center
     ) {
-        SettingCard(
+        ProfileScreenItemCard(
             painter = painterResource(id = R.drawable.settings),
             text = stringResource(id = R.string.setting),
-            onClick = { navController.navigate(ProfileSettingScreen){
-                popUpTo(ProfileSettingScreen){
-                    inclusive = true
-                    saveState = true
+            onClick = {
+                navController.navigate(ProfileSettingScreen) {
+                    popUpTo(ProfileSettingScreen) {
+                        inclusive = true
+                        saveState = false
+                    }
+                    launchSingleTop = true
                 }
-            } }
+            }
         )
-        SettingCard(
+        ProfileScreenItemCard(
             painter = painterResource(id = R.drawable.like),
             text = stringResource(id = R.string.rate),
             onClick = {}
         )
-        SettingCard(
+        ProfileScreenItemCard(
             painter = painterResource(id = R.drawable.share),
             text = stringResource(id = R.string.invite_a_friend),
             onClick = {
@@ -121,7 +123,7 @@ private fun ProfileComponent(
 }
 
 @Composable
-private fun SettingCard(
+private fun ProfileScreenItemCard(
     painter: Painter,
     text: String,
     onClick: () -> Unit = {}
@@ -172,7 +174,7 @@ private fun ProfileHeader(
     profileState: ProfileState,
 ) {
     when (state) {
-        AuthState.Authenticated -> {
+        is AuthState.Authenticated -> {
             val imageUri = profileState.userData?.profilePictureUrl
             val painter = rememberAsyncImagePainter(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -185,20 +187,22 @@ private fun ProfileHeader(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        navController.navigate(ProfileDetailsScreen){
-                            popUpTo(ProfileDetailsScreen){
+                        navController.navigate(ProfileDetailsScreen) {
+                            popUpTo(ProfileDetailsScreen) {
                                 inclusive = true
                                 saveState = true
                             }
                         }
                     },
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             ) {
-                Column {
-                    Log.d("ProfileScreen", "ProfileHeader: ${painter.state.painter}")
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -208,6 +212,7 @@ private fun ProfileHeader(
                     ) {
                         when (painter.state) {
                             is AsyncImagePainter.State.Loading -> {
+
                                 CircularProgressIndicator()
                             }
 
@@ -217,7 +222,7 @@ private fun ProfileHeader(
                                     contentDescription = "Profile Picture",
                                     modifier = Modifier
                                         .wrapContentSize()
-                                        .padding(dimens.size6)
+                                        .padding(horizontal = dimens.size10)
                                         .size(dimens.size60)
                                         .clip(CircleShape),
                                     contentScale = ContentScale.Crop
@@ -231,7 +236,7 @@ private fun ProfileHeader(
                                 )
                             }
                         }
-
+                        Spacer(modifier = Modifier.width(dimens.size10))
                         Text(
                             text = "Salam, ${profileState.userData?.fullName ?: "User"}",
                             overflow = TextOverflow.Ellipsis,
@@ -244,66 +249,84 @@ private fun ProfileHeader(
                         )
                     }
                 }
-
             }
         }
 
-        AuthState.Loading -> {
-            CircularProgressIndicator()
+        is AuthState.Loading -> {
+            ProfileCard(
+                text = "Salam, ${profileState.userData?.fullName ?: "User"}",
+                onClick = {},
+                modifier = Modifier.profileCardShimmerEffect()
+            )
         }
 
-        AuthState.Unauthenticated -> {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Absolute.SpaceBetween
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            navController.navigate(Login)
-                        }
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .padding(
-                                    dimens.size10
-                                )
-                                .size(dimens.size60)
-                                .fillMaxSize(),
-                            shape = CircleShape,
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Icon(
-                                    modifier = Modifier,
-                                    painter = painterResource(id = R.drawable.profile),
-                                    contentDescription = "Profile",
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.width(dimens.size15))
-                        Text(
-                            text = stringResource(R.string.login),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                }
-            }
+        is AuthState.Unauthenticated -> {
+            ProfileCard(
+                text = stringResource(R.string.login),
+                onClick = { navController.navigate(Login) },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
         }
         else -> Unit
+    }
+}
+
+@Composable
+fun ProfileCard(
+    modifier: Modifier = Modifier,
+    text: String,
+    onClick: () -> Unit,
+    containerColor: Color = Color.Transparent
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.size10),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Card(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(horizontal = dimens.size10)
+                    .size(dimens.size60)
+                    .clip(CircleShape),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.profile),
+                        contentDescription = "error",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(dimens.size10))
+            Text(
+                text = text,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.arrowright),
+                contentDescription = "ArrowRight",
+                modifier = Modifier.weight(0.1f)
+            )
+        }
     }
 }

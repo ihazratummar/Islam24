@@ -26,7 +26,6 @@ class ProfileViewModel @Inject constructor(
         profileRepository.checkAuthStatus()
     }
     val authState: LiveData<AuthState> = profileRepository.authState
-
     fun onEvent(event: ProfileEvent) {
         when (event) {
             ProfileEvent.RateUs -> {

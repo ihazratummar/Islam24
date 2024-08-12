@@ -112,7 +112,13 @@ class AppSettingViewModel @Inject constructor(
             }
 
             AppSettingEvent.SignOut -> {
-                profileRepository.signOut()
+                viewModelScope.launch {
+                    profileRepository.signOut()
+                }
+            }
+
+            AppSettingEvent.RefreshAuth -> {
+                profileRepository.checkAuthStatus()
             }
         }
     }

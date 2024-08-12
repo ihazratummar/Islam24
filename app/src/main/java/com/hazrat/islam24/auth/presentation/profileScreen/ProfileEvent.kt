@@ -10,4 +10,6 @@ import com.hazrat.islam24.auth.model.UserData
 sealed interface ProfileEvent {
     data object InviteFriend : ProfileEvent
     data object RateUs : ProfileEvent
+
 }
+

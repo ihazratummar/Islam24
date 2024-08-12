@@ -18,12 +18,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -38,6 +41,8 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectThemeDialog
+import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
+import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Languages
 import kotlinx.coroutines.launch
@@ -56,11 +61,38 @@ fun AppSettingScreen(
     appSettingStateTheme: AppSettingState,
     appSettingEventTheme: (AppSettingEvent) -> Unit
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Error -> {
+                coroutineScope.launch {
+                    snackBarHostState.showSnackbar(
+                        message = authState.message,
+                        duration = SnackbarDuration.Short,
+                        withDismissAction = true
+                    )
+                }
+            }
+            else -> Unit
+        }
+    }
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState)},
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) { data ->
+                Snackbar(
+                    modifier = Modifier,
+                    snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    actionColor = MaterialTheme.colorScheme.primary,
+                    shape = MaterialTheme.shapes.medium,
+                    actionOnNewLine = false,
+                    dismissActionContentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
+        },
         containerColor = MaterialTheme.colorScheme.surfaceDim,
         topBar = {
             TopAppBar(
@@ -116,9 +148,8 @@ fun AppSettingScreen(
                                 appSettingEvent(AppSettingEvent.ClickLanguageDialog)
                             },
                             selectedText = when (appSettingState.currentLanguage) {
-                                Languages.ENGLISH-> stringResource(R.string.english)
+                                Languages.ENGLISH -> stringResource(R.string.english)
                                 Languages.BENGALI -> stringResource(R.string.bengali)
-                                else -> ""
                             }
                         )
                         SettingItemCard(
@@ -127,7 +158,7 @@ fun AppSettingScreen(
                             onClick = {
                                 appSettingEventTheme(AppSettingEvent.ClickThemeDialog)
                             },
-                            selectedText = when(appSettingStateTheme.currentTheme){
+                            selectedText = when (appSettingStateTheme.currentTheme) {
                                 Themes.DARK -> stringResource(R.string.dark)
                                 Themes.LIGHT -> stringResource(R.string.light)
                             }
@@ -144,24 +175,33 @@ fun AppSettingScreen(
             }
             item {
                 Spacer(modifier = Modifier.height(dimens.size10))
-                if (authState == AuthState.Authenticated || authState == AuthState.Loading) {
-                    SettingItemCard(
-                        painter = painterResource(id = R.drawable.logout),
-                        text = stringResource(R.string.logout),
-                        onClick = {
-                            appSettingEvent(AppSettingEvent.SignOut)
-                            if (authState is AuthState.Error){
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar(
-                                        message = "Check Internet Connection",
-                                        actionLabel = ""
-                                    )
-                                }
-                            }
-                        },
-                        iconColor = MaterialTheme.colorScheme.error,
-                        cardContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                    )
+                when (authState) {
+                    is AuthState.Authenticated , is AuthState.Error -> {
+                        SettingItemCard(
+                            painter = painterResource(id = R.drawable.logout),
+                            text = stringResource(R.string.logout),
+                            onClick = {
+                                appSettingEvent(AppSettingEvent.SignOut)
+                            },
+                            iconColor = MaterialTheme.colorScheme.error,
+                            cardContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                        )
+                    }
+
+                    AuthState.Loading -> {
+                        SettingItemCard(
+                            modifier = Modifier.logOutCardShimmerEffect(),
+                            painter = painterResource(id = R.drawable.logout),
+                            text = stringResource(R.string.logout),
+                            onClick = {
+                                appSettingEvent(AppSettingEvent.SignOut)
+                            },
+                            iconColor = MaterialTheme.colorScheme.error,
+                            cardContainerColor = Color.Transparent
+                        )
+                    }
+
+                    else -> Unit
                 }
             }
         }
@@ -178,6 +218,7 @@ fun AppSettingScreen(
 
 @Composable
 private fun SettingItemCard(
+    modifier: Modifier = Modifier,
     painter: Painter,
     text: String,
     onClick: () -> Unit = {},
@@ -186,7 +227,7 @@ private fun SettingItemCard(
     selectedText: String = ""
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = dimens.size5),

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
+import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -14,23 +15,22 @@ import kotlinx.coroutines.flow.StateFlow
 interface ProfileRepository {
     val profileState: StateFlow<ProfileState>
     val authState: LiveData<AuthState>
+    val profileActionState: LiveData<ProfileAction>
     fun inviteFriend()
     fun rateUs()
     fun updateProfilePicture(uri: Uri)
-    fun updateName(name: UserData)
+    suspend fun updateName(userData: UserData)
     fun fetchUserData()
     fun checkAuthStatus()
     fun clickNameUpdateDialog()
     fun updateNameValue(name: String)
     fun clickBioUpdateDialog()
     fun updateBioValue(bio: String)
-    fun updateBio(bio: UserData)
-
-    fun refreshProfilePicture()
-    fun refreshName()
-    fun refreshBio()
+    suspend fun updateBio(userData: UserData)
 
     suspend fun networkObserver()
 
-    fun signOut()
+    suspend fun signOut()
+
+    fun refreshProfile()
 }

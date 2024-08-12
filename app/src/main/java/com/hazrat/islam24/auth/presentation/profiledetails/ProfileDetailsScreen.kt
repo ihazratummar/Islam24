@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -34,6 +35,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +67,7 @@ import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Dimens
+import kotlinx.coroutines.launch
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -72,12 +79,42 @@ fun ProfileDetailsScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     profileState: ProfileState,
-    profileDetailsEvent: (ProfileDetailsEvent) -> Unit
+    profileDetailsEvent: (ProfileDetailsEvent) -> Unit,
+    profileAction: ProfileAction
 ) {
-//    LaunchedEffect(profileState.userData?.fullName) {
-//        profileDetailsEvent(ProfileDetailsEvent.RefreshProfileBio)
-//    }
+    val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(profileAction) {
+        when (profileAction) {
+            is ProfileAction.Error -> {
+                coroutineScope.launch {
+                    snackBarHostState.showSnackbar(
+                        message = profileAction.errorMessage,
+                        duration = SnackbarDuration.Short,
+                        withDismissAction = true
+                    )
+                }
+            }
+            else -> Unit
+        }
+        profileDetailsEvent(ProfileDetailsEvent.Refresh)
+    }
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) { data ->
+                Snackbar(
+                    modifier = Modifier,
+                    snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    actionColor = MaterialTheme.colorScheme.primary,
+                    shape = MaterialTheme.shapes.medium,
+                    actionOnNewLine = false,
+                    dismissActionContentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
+        },
         topBar = {
             TopAppBar(
                 title = { Text(text = "Profile") },
@@ -112,22 +149,22 @@ fun ProfileDetailsScreen(
                         profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog)
                     },
                     label = stringResource(id = R.string.name),
-                    value = profileState.userData?.fullName?:"Not set"
+                    value = if (profileState.userData?.fullName == null) "Not Set" else profileState.userData.fullName
                 )
                 ProfileDataCards(
                     onClick = {},
                     label = stringResource(id = R.string.emal),
-                    value = profileState.userData?.email?:"Not set"
+                    value = if (profileState.userData?.email == null) "Not Set" else profileState.userData.email
                 )
                 ProfileDataCards(
-                    onClick = {profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog)},
+                    onClick = { profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog) },
                     label = stringResource(id = R.string.bio),
-                    value = profileState.userData?.bio?:"Not set"
+                    value = if (profileState.userData?.bio == null) "Not Set" else profileState.userData.bio
                 )
             }
         }
         if (profileState.isNameDialogOpen) {
-            UpdateNameDialog(
+            UpdateDataDetails(
                 label = "Change name",
                 value = profileState.userData?.fullName ?: "",
                 onValueChange = { profileDetailsEvent(ProfileDetailsEvent.NameValue(it)) },
@@ -141,11 +178,12 @@ fun ProfileDetailsScreen(
                     )
                     profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog)
                 },
-                onDismiss = { profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog) }
+                onDismiss = { profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog) },
+                profileAction = profileAction
             )
         }
         if (profileState.isBioDialogOpen) {
-            UpdateNameDialog(
+            UpdateDataDetails(
                 label = "Change bio",
                 value = profileState.userData?.bio ?: "",
                 onValueChange = { profileDetailsEvent(ProfileDetailsEvent.NewBio(it)) },
@@ -159,7 +197,10 @@ fun ProfileDetailsScreen(
                     )
                     profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog)
                 },
-                onDismiss = { profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog) }
+                onDismiss = {
+                    profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog)
+                },
+                profileAction = profileAction
             )
         }
     }
@@ -167,20 +208,23 @@ fun ProfileDetailsScreen(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun UpdateNameDialog(
+private fun UpdateDataDetails(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
     onClick: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    profileAction: ProfileAction
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize().imePadding()
+            .fillMaxSize()
+            .imePadding()
             .statusBarsPadding(),
         contentAlignment = Alignment.BottomCenter
     ) {
         ModalBottomSheet(
+            modifier = Modifier.imePadding(),
             onDismissRequest = {
                 onDismiss()
             },
@@ -207,20 +251,9 @@ private fun UpdateNameDialog(
                     }
                 )
                 Spacer(modifier = Modifier.height(dimens.size30))
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth().padding(vertical = dimens.size10)
-                        .imePadding(),
-                    onClick = {
-                        onClick()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                ) {
-                    Text(text = "Save")
-                }
+                ButtonClick(
+                    onClick = onClick
+                )
                 Spacer(modifier = Modifier.height(dimens.size30))
             }
         }
@@ -228,10 +261,33 @@ private fun UpdateNameDialog(
 }
 
 @Composable
+private fun ButtonClick(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    containerColor: Color = MaterialTheme.colorScheme.primaryContainer
+) {
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(dimens.size60),
+        onClick = {
+            onClick()
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+        shape = RoundedCornerShape(dimens.size10)
+    ) {
+        Text(text = "Save")
+    }
+}
+
+@Composable
 private fun ProfileDataCards(
     onClick: () -> Unit,
     label: String,
-    value: String,
+    value: String
 ) {
     Card(
         modifier = Modifier
@@ -239,6 +295,7 @@ private fun ProfileDataCards(
             .fillMaxWidth()
             .clickable {
                 onClick()
+
             },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
@@ -282,9 +339,6 @@ private fun ProfilePicture(
     profileDetailsEvent: (ProfileDetailsEvent) -> Unit,
     dimens: Dimens
 ) {
-    LaunchedEffect(profileState.userData?.profilePictureUrl) {
-        profileDetailsEvent(ProfileDetailsEvent.RefreshProfilePicture)
-    }
     val imageUri = remember { mutableStateOf(profileState.userData?.profilePictureUrl) }
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)

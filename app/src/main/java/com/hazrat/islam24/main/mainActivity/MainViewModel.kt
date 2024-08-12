@@ -86,9 +86,11 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             fetchDataFromDB()
+            profileRepository.networkObserver()
         }
         observeNetworkStatus()
         profileRepository.checkAuthStatus()
+
 
     }
 

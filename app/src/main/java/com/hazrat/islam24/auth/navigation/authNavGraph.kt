@@ -11,7 +11,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.AuthViewModel
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingScreen
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
@@ -20,6 +19,7 @@ import com.hazrat.islam24.auth.presentation.login.AuthLoginScreen
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
+import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsScreen
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
@@ -44,10 +44,20 @@ fun NavGraphBuilder.authNavGraph(
             val loginEvent = loginViewModel::onEvent
             val authState by loginViewModel.authState.observeAsState(initial = AuthState.Loading)
             AuthLoginScreen(
-                navController = navController,
                 state = loginState,
                 loginEvent = loginEvent,
-                authState = authState
+                authState = authState,
+                navigateToSignup = {
+                    navController.navigate(SignUp)
+                },
+                navigateToProfile = {
+                    navController.navigate(ProfileScreen) {
+                        popUpTo(Login) { inclusive = true }
+                    }
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
             )
         }
         composable<SignUp> {
@@ -56,10 +66,26 @@ fun NavGraphBuilder.authNavGraph(
             val signUpEvent = singUpViewModel::onEvent
             val authState by singUpViewModel.authState.observeAsState(initial = AuthState.Loading)
             AuthSignupScreen(
-                navController = navController,
                 signUpState = signUpState,
                 onEvent = signUpEvent,
-                authState = authState
+                authState = authState,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                navigateToLogin = {
+                    navController.navigate(Login){
+                        popUpTo(SignUp){
+                            inclusive = true
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                navigateToProfile = {
+                    navController.navigate(ProfileScreen) {
+                        popUpTo(SignUp) { inclusive = true }
+                    }
+                }
             )
         }
         composable<ProfileScreen> {
@@ -92,10 +118,12 @@ fun NavGraphBuilder.authNavGraph(
             val profileDetailsViewModel = hiltViewModel<ProfileDetailsViewModel>()
             val appSettingState1 by profileDetailsViewModel.profileState.collectAsState()
             val profileDetailsEvent = profileDetailsViewModel::onEvent
+            val profileAction by profileDetailsViewModel.profileActionState.observeAsState(initial = ProfileAction.Idle)
             ProfileDetailsScreen(
                 navController = navController,
                 profileState = appSettingState1,
-                profileDetailsEvent = profileDetailsEvent
+                profileDetailsEvent = profileDetailsEvent,
+                profileAction = profileAction
             )
         }
     }
