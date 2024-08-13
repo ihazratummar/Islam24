@@ -1,6 +1,8 @@
 package com.hazrat.islam24.util
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.VibrationEffect
@@ -39,4 +41,10 @@ fun NavController.popUpTo(destination: String) = navigate(destination) {
         saveState = true
     }
     restoreState = true
+}
+
+fun Context.getActivity(): Activity? = when(this){
+    is Activity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }

@@ -1,14 +1,18 @@
 package com.hazrat.islam24.auth.repository
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
@@ -18,10 +22,12 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
+import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError
 import com.hazrat.islam24.util.error.UserDataSuccess
+import com.hazrat.islam24.util.getActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +52,7 @@ class ProfileRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    private val connectivityObserver: ConnectivityObserver
+    private val connectivityObserver: ConnectivityObserver,
 ) : ProfileRepository {
 
     private val _authState = MutableLiveData<AuthState>()
@@ -75,9 +81,18 @@ class ProfileRepositoryImpl @Inject constructor(
         context.startActivity(shareIntent)
     }
 
-    override fun rateUs() {
-        TODO("Not yet implemented")
+
+
+    override fun rateUs(activity: Activity) {
+        val reviewManager = ReviewManagerFactory.create(context)
+        reviewManager.requestReviewFlow()
+            .addOnCompleteListener { manager ->
+                if (manager.isSuccessful) {
+                    reviewManager.launchReviewFlow(activity, manager.result)
+                }
+            }
     }
+
 
     override fun updateProfilePicture(uri: Uri) {
         val compressUri = compressImage(context, uri) ?: uri

@@ -19,8 +19,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 60
-        versionName = "1.5.6"
+        versionCode = 67
+        versionName = "1.1.8 beta-18"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -148,7 +148,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-//    implementation (libs.accompanist.systemuicontroller.v0270)
 
     //Observe
     implementation (libs.androidx.activity.compose)

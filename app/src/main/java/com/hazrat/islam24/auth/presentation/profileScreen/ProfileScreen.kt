@@ -1,5 +1,6 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.ProfileDetailsScreen
 import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
+import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.ui.theme.dimens
 
 /**
@@ -89,6 +91,7 @@ private fun ProfileComponent(
     navController: NavController,
     profileEvent: (ProfileEvent) -> Unit
 ) {
+    val activity: Activity = LocalContext.current  as MainActivity
     Column(
         modifier = Modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.Center
@@ -109,7 +112,7 @@ private fun ProfileComponent(
         ProfileScreenItemCard(
             painter = painterResource(id = R.drawable.like),
             text = stringResource(id = R.string.rate),
-            onClick = {}
+            onClick = {profileEvent(ProfileEvent.RateUs(activity))}
         )
         ProfileScreenItemCard(
             painter = painterResource(id = R.drawable.share),

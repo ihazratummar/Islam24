@@ -1,5 +1,6 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
+import android.app.Activity
 import android.net.Uri
 import com.hazrat.islam24.auth.model.UserData
 
@@ -9,7 +10,7 @@ import com.hazrat.islam24.auth.model.UserData
 
 sealed interface ProfileEvent {
     data object InviteFriend : ProfileEvent
-    data object RateUs : ProfileEvent
+    data class RateUs(val activity: Activity) : ProfileEvent
 
 }
 
