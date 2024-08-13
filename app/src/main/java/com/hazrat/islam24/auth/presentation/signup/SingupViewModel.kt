@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.model.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -19,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SingupViewModel @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val fireStore: FirebaseFirestore
 ) : ViewModel() {
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
@@ -59,7 +63,7 @@ class SingupViewModel @Inject constructor(
                 val password = _state.value.password
                 val confirmPassword = _state.value.confirmPassword
                 viewModelScope.launch {
-                    singup(
+                    signup(
                         name = name,
                         email = email,
                         password = password,
@@ -139,19 +143,41 @@ class SingupViewModel @Inject constructor(
         }
     }
 
-    private fun singup(name: String, email: String, password: String, confirmPassword: String) {
+    private suspend fun signup(name: String, email: String, password: String, confirmPassword: String) {
         if (name.isEmpty() && email.isEmpty() && password.isEmpty() && confirmPassword.isEmpty()) {
             _authState.value = AuthState.Error("Please fill all fields")
             return
         }
         _authState.value = AuthState.Loading
-
+        delay(1000L)
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    _authState.value = AuthState.Authenticated
+                    val user = auth.currentUser
+                    val userId = auth.currentUser?.uid ?: ""
+                    val userDate = UserData(
+                        userId = user?.uid?:"",
+                        fullName = name,
+                        email = email
+                    )
+                    fireStore.collection("user").document(userId)
+                        .set(userDate)
+                        .addOnCompleteListener {
+                            _authState.value = AuthState.Authenticated
+                        }
+                        .addOnFailureListener { e ->
+                            viewModelScope.launch {
+                                _authState.value = AuthState.Loading
+                                delay(1000L)
+                                _authState.value = AuthState.Error(e.message.toString())
+                            }
+                        }
                 } else {
-                    _authState.value = AuthState.Error(it.exception?.message.toString())
+                    viewModelScope.launch {
+                        _authState.value = AuthState.Loading
+                        delay(1000L)
+                        _authState.value = AuthState.Error(it.exception?.message.toString())
+                    }
                 }
             }
     }

@@ -1,5 +1,6 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
+import com.hazrat.islam24.auth.presentation.AuthEvent
 import com.hazrat.islam24.util.Languages
 
 /**
@@ -17,6 +18,10 @@ sealed interface AppSettingEvent {
     data object ClickThemeDialog : AppSettingEvent
 
     data object OpenAppSetting : AppSettingEvent
+
+    data object SignOut: AppSettingEvent
+
+    data object RefreshAuth: AppSettingEvent
 }
 
 enum class Themes {

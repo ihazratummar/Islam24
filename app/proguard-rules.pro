@@ -54,3 +54,29 @@
 # Logging
 -keep class com.hazrat.islam24.core.data.entity.** { *; }
 -keep class com.hazrat.islam24.core.domain.model.** { *; }
+-keep class com.hazrat.islam24.auth.model.** { *; }
+
+# Firebase
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
+
+# Firebase Firestore
+-keep class com.google.firebase.firestore.** { *; }
+-dontwarn com.google.firebase.firestore.**
+
+# Firebase Auth
+-keep class com.google.firebase.auth.** { *; }
+-dontwarn com.google.firebase.auth.**
+
+# Firebase Storage
+-keep class com.google.firebase.storage.** { *; }
+-dontwarn com.google.firebase.storage.**
+
+# Kotlin Serialization
+-keep class kotlinx.serialization.** { *; }
+-dontwarn kotlinx.serialization.**
+
+# Ensure that metadata related to Kotlin reflection is kept
+-keepclassmembers class kotlin.Metadata { *; }
