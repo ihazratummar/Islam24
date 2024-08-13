@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +19,9 @@ import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
 import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.util.error.Result
+import com.hazrat.islam24.util.error.UserDataError
+import com.hazrat.islam24.util.error.UserDataSuccess
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +32,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
@@ -160,42 +163,71 @@ class ProfileRepositoryImpl @Inject constructor(
                 isNameDialogOpen = !it.isNameDialogOpen
             )
         }
-        _profileActionState.value = ProfileAction.Idle
     }
 
-    override suspend fun updateName(userData: UserData) {
-        if (_networkStatus.value == ConnectivityObserver.Status.Available) {
-            _profileActionState.value = ProfileAction.Loading
-            val userId = auth.currentUser?.uid ?: return
-            fireStore.collection("user").document(userId)
-                .update(
-                    mapOf(
-                        "fullName" to userData.fullName,
-                    )
-                )
-                .addOnSuccessListener {
-                    _profileState.update {
-                        it.copy(
-                            userData = userData.copy(
-                                fullName = userData.fullName,
-                                email = _profileState.value.userData?.email,
-                                bio = _profileState.value.userData?.bio
+    override suspend fun updateName(userData: UserData): Result<UserDataSuccess, UserDataError> {
+        return try {
+            if (_networkStatus.value == ConnectivityObserver.Status.Available) {
+                val userId =
+                    auth.currentUser?.uid ?: return Result.Error(UserDataError.INVALID_USER_ID)
 
-                            )
+                // Using await() to handle the Firestore update asynchronously
+                fireStore.collection("user").document(userId)
+                    .update("fullName", userData.fullName)
+                    .await()
+
+                // Update local state
+                _profileState.update {
+                    it.copy(
+                        userData = userData.copy(
+                            fullName = userData.fullName,
+                            email = _profileState.value.userData?.email,
+                            bio = _profileState.value.userData?.bio
                         )
-                    }
-                    _profileActionState.value = ProfileAction.Success
+                    )
                 }
-                .addOnFailureListener { e ->
-                    _profileActionState.value = ProfileAction.Error(e.message.toString())
-                    _profileActionState.value = ProfileAction.Idle
-                }
-        } else {
-            _profileActionState.value = ProfileAction.Loading
-            delay(1000L)
-            _profileActionState.value = ProfileAction.Error("Check Internet Connection")
+
+                return Result.Success(data = UserDataSuccess.SUCCESS_NAME_UPDATE)
+            } else {
+                delay(1000L)
+                return Result.Error(UserDataError.NO_INTERNET)
+            }
+        } catch (e: Exception) {
+            return Result.Error(UserDataError.UNKNOWN_ERROR)
         }
     }
+
+    override suspend fun updateBio(userData: UserData): Result<UserDataSuccess, UserDataError> {
+        return try {
+            if (_networkStatus.value == ConnectivityObserver.Status.Available) {
+                val userId =
+                    auth.currentUser?.uid ?: return Result.Error(UserDataError.INVALID_USER_ID)
+                fireStore.collection("user").document(userId)
+                    .update(
+                        mapOf(
+                            "bio" to userData.bio,
+                        )
+                    ).await()
+                _profileState.update {
+                    it.copy(
+                        userData = userData.copy(
+                            bio = userData.bio,
+                            fullName = _profileState.value.userData?.fullName,
+                            email = _profileState.value.userData?.email,
+                            profilePictureUrl = _profileState.value.userData?.profilePictureUrl
+                        )
+                    )
+                }
+                return Result.Success(data = UserDataSuccess.SUCCESS_BIO_UPDATE)
+            } else {
+                delay(1000L)
+                return Result.Error(UserDataError.NO_INTERNET)
+            }
+        } catch (e: Exception) {
+            return Result.Error(UserDataError.UNKNOWN_ERROR)
+        }
+    }
+
 
     override fun updateNameValue(name: String) {
         _profileState.update {
@@ -209,14 +241,12 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-
     override fun clickBioUpdateDialog() {
         _profileState.update {
             it.copy(
                 isBioDialogOpen = !it.isBioDialogOpen
             )
         }
-        _profileActionState.value = ProfileAction.Idle
     }
 
     override fun updateBioValue(bio: String) {
@@ -228,39 +258,6 @@ class ProfileRepositoryImpl @Inject constructor(
                     fullName = _profileState.value.userData?.fullName
                 )
             )
-        }
-    }
-
-    override suspend fun updateBio(userData: UserData) {
-        _profileActionState.value = ProfileAction.Loading
-        if (_networkStatus.value == ConnectivityObserver.Status.Available) {
-            val userId = auth.currentUser?.uid ?: return
-            fireStore.collection("user").document(userId)
-                .update(
-                    mapOf(
-                        "bio" to userData.bio,
-                    )
-                )
-                .addOnSuccessListener {
-                    _profileState.update {
-                        it.copy(
-                            userData = userData.copy(
-                                bio = userData.bio,
-                                fullName = _profileState.value.userData?.fullName,
-                                email = _profileState.value.userData?.email,
-                                profilePictureUrl = _profileState.value.userData?.profilePictureUrl
-                            )
-                        )
-                    }
-                    _profileActionState.value = ProfileAction.Success
-                }
-                .addOnFailureListener { e ->
-                    _profileActionState.value = ProfileAction.Error(e.message.toString())
-                }
-        } else {
-            _profileActionState.value = ProfileAction.Loading
-            delay(1000L)
-            _profileActionState.value = ProfileAction.Error("Check Internet Connection")
         }
     }
 

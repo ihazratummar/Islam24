@@ -80,38 +80,51 @@ fun ProfileDetailsScreen(
     modifier: Modifier = Modifier,
     profileState: ProfileState,
     profileDetailsEvent: (ProfileDetailsEvent) -> Unit,
-    profileAction: ProfileAction
+    userEvent: UserEvent?
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(profileAction) {
-        when (profileAction) {
-            is ProfileAction.Error -> {
-                coroutineScope.launch {
-                    snackBarHostState.showSnackbar(
-                        message = profileAction.errorMessage,
-                        duration = SnackbarDuration.Short,
-                        withDismissAction = true
-                    )
+    val context = LocalContext.current
+    LaunchedEffect(userEvent) {
+        userEvent?.let {
+            when (it) {
+                is UserEvent.Error -> {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = it.error.asString(context),
+                            duration = SnackbarDuration.Short,
+                            withDismissAction = true
+                        )
+                    }
+                }
+
+                is UserEvent.Success -> {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = it.success.asString(context),
+                            duration = SnackbarDuration.Short,
+                            withDismissAction = true
+                        )
+                    }
                 }
             }
-            else -> Unit
         }
-        profileDetailsEvent(ProfileDetailsEvent.Refresh)
     }
+    val containerColor = if (userEvent is UserEvent.Error) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primaryContainer
+    val contextColor = if (userEvent is UserEvent.Error) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onPrimaryContainer
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState) { data ->
                 Snackbar(
                     modifier = Modifier,
                     snackbarData = data,
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    containerColor = containerColor,
+                    contentColor = contextColor,
                     actionColor = MaterialTheme.colorScheme.primary,
                     shape = MaterialTheme.shapes.medium,
                     actionOnNewLine = false,
-                    dismissActionContentColor = MaterialTheme.colorScheme.onErrorContainer
+                    dismissActionContentColor = contextColor
                 )
             }
         },
@@ -178,8 +191,7 @@ fun ProfileDetailsScreen(
                     )
                     profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog)
                 },
-                onDismiss = { profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog) },
-                profileAction = profileAction
+                onDismiss = { profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog) }
             )
         }
         if (profileState.isBioDialogOpen) {
@@ -199,8 +211,7 @@ fun ProfileDetailsScreen(
                 },
                 onDismiss = {
                     profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog)
-                },
-                profileAction = profileAction
+                }
             )
         }
     }
@@ -213,8 +224,7 @@ private fun UpdateDataDetails(
     value: String,
     onValueChange: (String) -> Unit,
     onClick: () -> Unit,
-    onDismiss: () -> Unit,
-    profileAction: ProfileAction
+    onDismiss: () -> Unit
 ) {
     Box(
         modifier = Modifier

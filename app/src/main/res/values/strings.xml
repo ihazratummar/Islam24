@@ -39,5 +39,12 @@
     <string name="name">Name</string>
     <string name="emal">Email</string>
     <string name="bio">Bio</string>
+    <string name="check_internet">No internet connection</string>
+    <string name="invalid_name">"Invalid name "</string>
+    <string name="invalid_bio">Invalid Bio</string>
+    <string name="user_id">Invalid UserID</string>
+    <string name="unknown_error">Error unknown</string>
+    <string name="success_name_update">Name update successful</string>
+    <string name="success_bio_update">Bio update successful</string>
 
 </resources>
