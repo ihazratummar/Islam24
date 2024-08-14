@@ -44,7 +44,7 @@ class LocationNameRepositoryImpl @Inject constructor(
                 // Return the locationName
                 locationName
             } catch (e: Exception) {
-                null // Return null if there's an error
+                null
             }
         }
     }
