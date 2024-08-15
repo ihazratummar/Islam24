@@ -46,5 +46,7 @@
     <string name="unknown_error">Error unknown</string>
     <string name="success_name_update">Name update successful</string>
     <string name="success_bio_update">Bio update successful</string>
+    <string name="juristic_method">Juristic Method</string>
+    <string name="determining_the_time_of_asr_the_method_of_the_jurists">Determining the time of \'Asr - the method of the jurists</string>
 
 </resources>

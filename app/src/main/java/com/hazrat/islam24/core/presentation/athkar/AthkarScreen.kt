@@ -1,6 +1,5 @@
 package com.hazrat.islam24.core.presentation.athkar
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.domain.model.athkar.tabItems
 import com.hazrat.islam24.core.presentation.athkar.components.EveningContent
@@ -34,7 +32,9 @@ import com.hazrat.islam24.core.presentation.athkar.components.MorningContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AthkarScreen(navController: NavController) {
+fun AthkarScreen(
+    onBackClick: () -> Unit
+) {
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
@@ -59,7 +59,7 @@ fun AthkarScreen(navController: NavController) {
                 )
             }, navigationIcon = {
                 IconButton(onClick = {
-                    navController.popBackStack()
+                    onBackClick()
                 }) {
 
                     Icon(
