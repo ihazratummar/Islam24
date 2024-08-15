@@ -22,10 +22,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
+import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(navController: NavController) {
+fun CalendarScreen(
+    navController: NavController,
+    hijriCalendarEntity: List<HijriCalendarEntity>,
+    gregorianToHijriEntity: List<GregorianToHijriEntity>
+) {
 
     var toggleCalendar by remember { mutableStateOf(false) }
     Scaffold(
@@ -65,7 +71,10 @@ fun CalendarScreen(navController: NavController) {
         ) {
             item {
                 if (!toggleCalendar) {
-                    CalendarHomeScreen()
+                    CalendarHomeScreen(
+                        hijriCalendarEntity = hijriCalendarEntity,
+                        gregorianToHijriEntity = gregorianToHijriEntity
+                    )
                 } else {
                     CalendarScreen()
                 }

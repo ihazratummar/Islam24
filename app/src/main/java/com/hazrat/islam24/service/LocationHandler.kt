@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ import javax.inject.Inject
 
 class LocationHandler @Inject constructor (
     @ApplicationContext private val context: Context,
-    private val locationRepository: LocationRepositoryImpl,
+    private val locationRepository: LocationRepository,
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ) {
 

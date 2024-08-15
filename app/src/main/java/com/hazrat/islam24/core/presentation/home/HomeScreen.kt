@@ -14,28 +14,30 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.home.component.BackGroundCard
 import com.hazrat.islam24.core.presentation.home.component.LazyVerticalGridCardIcons
 import com.hazrat.islam24.core.presentation.home.component.TimeLocationCard
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
-import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     navigateToPrayerTime: () -> Unit,
-    viewModel: MainViewModel = hiltViewModel()
+    prayerTimes: List<PrayerTimeEntity>,
+    locationName: List<LocationDetailsEntity>,
+    locationUpdate:() -> Unit
 ) {
-    val prayerTimes by viewModel.prayerTimes.collectAsState()
-    val locationName by viewModel.locationName.collectAsState()
+    LaunchedEffect(Unit) {
+        locationUpdate()
+    }
     LazyColumn(
         modifier = Modifier
     ) {

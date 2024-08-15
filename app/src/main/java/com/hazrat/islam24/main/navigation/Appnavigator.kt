@@ -36,10 +36,14 @@ import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
+import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
+import com.hazrat.islam24.core.presentation.namesofallah.NamesViewmodel
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
+import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
+import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
@@ -68,47 +72,84 @@ fun AppNavigator(
             exitTransition = { ExitTransition.None }
         ) {
             composable<HomeScreen> {
-                HomeScreen(navController, navigateToPrayerTime = {
-                    navController.navigate(PrayerTimeScreen) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                val viewModel: MainViewModel = hiltViewModel()
+                val prayerTimes by viewModel.prayerTimes.collectAsState()
+                val locationName by viewModel.locationName.collectAsState()
+                HomeScreen(
+                    navController, navigateToPrayerTime = {
+                        navController.navigate(PrayerTimeScreen) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                })
+                    },
+                    prayerTimes = prayerTimes,
+                    locationName = locationName,
+                    locationUpdate = { viewModel.fetchData() }
+                )
             }
             composable<PrayerTimeScreen> {
-                val viewModel: MainViewModel = hiltViewModel()
-                PrayerTimeScreen(viewModel, navController)
+                val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
+                val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
+                PrayerTimeScreen(
+                    navController = navController,
+                    event = prayerTimeViewModel::onEvent,
+                    prayerTimes = prayerTimes
+                )
             }
             composable<QiblaDirectionScreen> {
                 val viewModel: QiblaViewModel = hiltViewModel()
-                val mainViewModel: MainViewModel = hiltViewModel()
-                val locationName by mainViewModel.locationName.collectAsState()
+                val locationName by viewModel.locationName.collectAsState()
                 val state by viewModel.qiblaState.collectAsState()
-                val qiblaDirection = state.qiblaDirection
-                val currentDirection = state.currentDirection
                 QiblaScreen(
                     navController = navController,
-                    currentDirection = currentDirection,
-                    qiblaDirection = qiblaDirection,
-                    locationName = locationName
+                    locationName = locationName,
+                    state = state,
+                    isFacingQibla = viewModel.isFacingQibla()
                 )
 
             }
             composable<NamesOfAllahScreen> {
-                val viewModel: MainViewModel = hiltViewModel()
-                NamesOfAllahScreen(viewModel, navController)
+                val viewModel: NamesViewmodel = hiltViewModel()
+                val names by viewModel.names.collectAsState()
+                NamesOfAllahScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    nameEntity = names
+                )
             }
             composable<PrayerSetting> {
-                PrayerSetting(navController = navController)
+                val prayerTimeSettingViewmodel: PrayerSettingViewModel = hiltViewModel()
+                val prayerTimeEntity by prayerTimeSettingViewmodel.prayerTime.collectAsState()
+                val prayerSettingState by prayerTimeSettingViewmodel.state.collectAsState()
+                PrayerSetting(
+                    prayerTimeEntity = prayerTimeEntity,
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    state = prayerSettingState,
+                    event = prayerTimeSettingViewmodel::onEvent
+                )
             }
             composable<CalendarScreen> {
-                CalendarScreen(navController)
+                val viewModel: CalendarViewModel = hiltViewModel()
+                val hijriCalendarEntity by viewModel.hijriCalendarEntity.collectAsState()
+                val gregorianToHijriEntity by viewModel.gregorianToHijriEntity.collectAsState()
+                CalendarScreen(
+                    hijriCalendarEntity = hijriCalendarEntity,
+                    navController = navController,
+                    gregorianToHijriEntity = gregorianToHijriEntity
+                )
             }
             composable<AthkarScreen> {
-                AthkarScreen(navController)
+                AthkarScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
             }
             authNavGraph(
                 navController = navController,
