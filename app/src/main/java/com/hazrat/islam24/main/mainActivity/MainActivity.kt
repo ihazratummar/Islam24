@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
@@ -49,6 +50,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var permissionsManager: PermissionsManager
 
     private val appSettingViewModel by viewModels<AppSettingViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
     /**
      * Called when the activity is starting. This is where most initialization should go.
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this contains the data it most recently supplied in onSaveInstanceState(Bundle).
@@ -56,7 +58,6 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Enable edge-to-edge display
         enableEdgeToEdge()
 

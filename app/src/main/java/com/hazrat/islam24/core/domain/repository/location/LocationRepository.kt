@@ -29,4 +29,6 @@ interface LocationRepository {
      * @return A LocationEntity object representing the saved location, or null if no location is saved.
      */
     suspend fun getLocation(): LocationEntity?
+
+    suspend fun checkAndUpdateLocation()
 }

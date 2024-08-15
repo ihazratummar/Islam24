@@ -6,7 +6,7 @@
     <string name="calendar">ক্যালেন্ডার</string>
     <string name="athkar">জিকির</string>
     <string name="next_prayer" translatable="true">পরবর্তী %1$s</string>
-    <string name="prayer_times">নামাজের সময়</string>
+    <string name="prayer_times">নামাজের সময় নির্ধারণের পদ্ধতি </string>
     <string name="fajr">ফজর</string>
     <string name="sunrise">সূর্যোদয়</string>
     <string name="dhuhr">যোহর</string>
@@ -44,4 +44,6 @@
     <string name="unknown_error">Error unknown</string>
     <string name="success_name_update">Name update successful</string>
     <string name="success_bio_update">Bio update successful</string>
+    <string name="juristic_method">ফিকাহবিদদের পদ্ধতি</string>
+    <string name="determining_the_time_of_asr_the_method_of_the_jurists">আসরের সময় নির্ধারণ - ফিকাহবিদদের পদ্ধতি </string>
 </resources>
