@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.database.NamesDataBase
 import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
+import com.hazrat.islam24.core.data.manager.NetworkRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.NamesRepository
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.network.NamesApi
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.ContextUtils
@@ -15,6 +17,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.annotation.Signed
 import javax.inject.Singleton
 
 
@@ -61,6 +64,15 @@ object AppModule {
     @Provides
     fun provideContextUtil(@ApplicationContext context: Context): Context {
         return  ContextUtils(context)
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideNetworkRepository(
+        networkConnectivityObserver: ConnectivityObserver,
+    ): NetworkRepository {
+        return NetworkRepositoryImpl(networkConnectivityObserver)
     }
 
 }

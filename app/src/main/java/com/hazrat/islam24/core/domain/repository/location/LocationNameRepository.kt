@@ -3,12 +3,16 @@ package com.hazrat.islam24.core.domain.repository.location
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
 interface LocationNameRepository {
+
+
+    val locationName: StateFlow<List<LocationDetailsEntity>>
 
     /**
      * Retrieves the current location name.
@@ -30,4 +34,8 @@ interface LocationNameRepository {
      * @return A Flow representing the list of LocationDetailsEntity objects containing location details.
      */
     fun getLocationDetails(): Flow<List<LocationDetailsEntity>>
+
+    suspend fun locationName()
+
+
 }

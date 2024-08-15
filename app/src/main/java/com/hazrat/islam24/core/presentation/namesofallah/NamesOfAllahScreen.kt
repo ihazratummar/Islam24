@@ -31,7 +31,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,22 +40,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.NameEntity
-import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NamesOfAllahScreen(
-    viewModel: MainViewModel = hiltViewModel(),
-    navController: NavController
+    onBackClick: () -> Unit = {},
+    nameEntity: List<NameEntity>
 ) {
 
-    val names by viewModel.names.collectAsState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -72,7 +67,7 @@ fun NamesOfAllahScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }
+                    IconButton(onClick = { onBackClick() }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.backicon),
@@ -87,7 +82,7 @@ fun NamesOfAllahScreen(
         LazyColumn(
             modifier = Modifier.padding(padding)
         ) {
-            items(names) { name ->
+            items(nameEntity) { name ->
                 NameCard(name = name)
             }
         }

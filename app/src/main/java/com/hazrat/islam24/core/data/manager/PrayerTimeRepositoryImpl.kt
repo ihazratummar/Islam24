@@ -5,6 +5,8 @@ package com.hazrat.islam24.core.data.manager
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.entity.LocationEntity
@@ -20,9 +22,14 @@ import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import com.hazrat.islam24.util.DateUtil.timeStringToLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -33,7 +40,12 @@ class PrayerTimeRepositoryImpl @Inject constructor(
     private val prayerSettingRepository: PrayerSettingRepository,
     private val prayerTimeDao: PrayerTimeDao,
     private val context: Context
-): PrayerTimeRepository {
+) : PrayerTimeRepository {
+
+
+    private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
+    override val prayerTimes = _prayerTimes.asStateFlow()
+
     private suspend fun getApiParameterForMonth(): ApiResponse? {
         return try {
             val location: LocationEntity? = locationRepository.getLocation()
@@ -41,13 +53,14 @@ class PrayerTimeRepositoryImpl @Inject constructor(
             val longitude = location?.longitude ?: 88.011
             val methodList = prayerSettingRepository.getCalculationMethod().firstOrNull()
             val juristicList = prayerSettingRepository.getJuristicMethod().firstOrNull()
-            val methodValue = methodList?.method?:1
-            val schoolValue = juristicList?.school?:0
+            val methodValue = methodList?.method ?: 1
+            val schoolValue = juristicList?.school ?: 0
 
             val year = DateUtil.getCurrentYear()
             val month = DateUtil.getCurrentMonth()
 
-            val apiResponse = api.getPrayerTimes(year, month, "$latitude", "$longitude", methodValue, schoolValue)
+            val apiResponse =
+                api.getPrayerTimes(year, month, "$latitude", "$longitude", methodValue, schoolValue)
             apiResponse.data.forEach { apiDataForDay ->
                 val prayerTimeEntity = convertApiResponseToEntity(apiDataForDay)
                 updatePrayerTime(prayerTimeEntity)
@@ -85,10 +98,10 @@ class PrayerTimeRepositoryImpl @Inject constructor(
             gregorianDay = date.gregorian.day,
             gregorianWeekday = date.gregorian.weekday.en,
             gregorianMonthNum = date.gregorian.month.number,
-            gregorianMonthName =date.gregorian.month.en,
+            gregorianMonthName = date.gregorian.month.en,
             gregorianYear = date.gregorian.year,
             hijriDate = date.hijri.date,
-            hijriDay =date.hijri.day,
+            hijriDay = date.hijri.day,
             hijriWeekdayEn = date.hijri.weekday.en,
             hijriWeekdayEr = date.hijri.weekday.ar,
             hijriMonthAr = date.hijri.month.ar,
@@ -128,32 +141,50 @@ class PrayerTimeRepositoryImpl @Inject constructor(
         prayerTimeDao.insertAllPrayerTimes(prayerTimes)
         return prayerTimes
     }
-    override fun getAllPrayer(): Flow<List<PrayerTimeEntity>> = prayerTimeDao.getAllPrayer().flowOn(Dispatchers.IO)
-        .conflate()
-    override suspend fun deletePrayerTime(prayerTimeEntity: List<PrayerTimeEntity>) = prayerTimeDao.deletePrayerTime(prayerTimeEntity)
+
+    override fun getAllPrayer(): Flow<List<PrayerTimeEntity>> =
+        prayerTimeDao.getAllPrayer().flowOn(Dispatchers.IO)
+            .conflate()
+
+    override suspend fun deletePrayerTime(prayerTimeEntity: List<PrayerTimeEntity>) =
+        prayerTimeDao.deletePrayerTime(prayerTimeEntity)
 
     override suspend fun deleteAllPrayer() = prayerTimeDao.deleteAllPrayer()
-    private suspend fun updatePrayerTime(prayerTime: PrayerTimeEntity) = prayerTimeDao.updatePrayerTime(prayerTime)
+    private suspend fun updatePrayerTime(prayerTime: PrayerTimeEntity) =
+        prayerTimeDao.updatePrayerTime(prayerTime)
 
     override fun sharePrayerTimes(prayerTimes: List<PrayerTimeEntity>) {
-        val today  = getCurrentDay() - 1
+        val today = getCurrentDay() - 1
         val prayerTimeIndex = prayerTimes[today]
-        val text = "Today's prayer times\n ${prayerTimeIndex.gregorianDate}// ${prayerTimeIndex.hijriDate}\n\n"+
-                "${context.getString(R.string.fajr)}: ${dateLongToString(prayerTimeIndex.fajrTime)}\n"+
-                "${context.getString(R.string.dhuhr)}: ${dateLongToString(prayerTimeIndex.dhuhrTime)}\n"+
-                "${context.getString(R.string.asr)}: ${dateLongToString(prayerTimeIndex.asrTime)}\n"+
-                "${context.getString(R.string.maghrib)}: ${dateLongToString(prayerTimeIndex.maghribTime)}\n"+
-                "${context.getString(R.string.isha_a)}: ${dateLongToString(prayerTimeIndex.ishaTime)}\n\n"+
-                "For More Visit, https://play.google.com/store/apps/details?id=com.hazrat.islam24"
+        val text =
+            "Today's prayer times\n ${prayerTimeIndex.gregorianDate}// ${prayerTimeIndex.hijriDate}\n\n" +
+                    "${context.getString(R.string.fajr)}: ${dateLongToString(prayerTimeIndex.fajrTime)}\n" +
+                    "${context.getString(R.string.dhuhr)}: ${dateLongToString(prayerTimeIndex.dhuhrTime)}\n" +
+                    "${context.getString(R.string.asr)}: ${dateLongToString(prayerTimeIndex.asrTime)}\n" +
+                    "${context.getString(R.string.maghrib)}: ${dateLongToString(prayerTimeIndex.maghribTime)}\n" +
+                    "${context.getString(R.string.isha_a)}: ${dateLongToString(prayerTimeIndex.ishaTime)}\n\n" +
+                    "For More Visit, https://play.google.com/store/apps/details?id=com.hazrat.islam24"
         val intent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT,text)
+            putExtra(Intent.EXTRA_TEXT, text)
             type = "text/plain"
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
-        val shareIntent = Intent.createChooser(intent,null).apply {
+        val shareIntent = Intent.createChooser(intent, null).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(shareIntent)
     }
+
+    override suspend fun getAllPrayerTimes() {
+        getAllPrayer().distinctUntilChanged()
+            .collectLatest { prayerList: List<PrayerTimeEntity> ->
+                if (prayerList.isEmpty()) {
+                    getApiParameterForMonth()
+                } else {
+                    _prayerTimes.value = prayerList
+                }
+            }
+    }
+
 }

@@ -40,6 +40,9 @@ class AppSettingViewModel @Inject constructor(
         )
     )
     val appSettingState = _state.asStateFlow()
+
+
+
     val authState: LiveData<AuthState> = profileRepository.authState
     init {
         profileRepository.checkAuthStatus()
