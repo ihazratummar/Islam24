@@ -12,18 +12,14 @@ import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.core.network.GregorianToHijriApi
 import com.hazrat.islam24.core.network.HijriCalendarApi
-import com.hazrat.islam24.util.Constants.GTH_BASE_URL
 import com.hazrat.islam24.util.Constants.HIJRI_CALENDAR_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module

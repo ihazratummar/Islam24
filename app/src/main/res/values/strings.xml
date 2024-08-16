@@ -5,18 +5,9 @@
     <string name="app_name" translatable="true">Islam 24</string>
     <string name="view_salat_times">View Times</string>
     <string name="names">Names</string>
-    <string name="tasbih">Tasbih</string>
     <string name="calendar">Calendar</string>
     <string name="athkar">Zikir</string>
     <string name="next_prayer" translatable="true">Next %1$s</string>
-    <string name="total_count">Total Count: %1$s</string>
-    <string name="round">Round: %1$s</string>
-    <string name="tasbihTarget">Target : %1$s</string>
-    <string name="set_tasbih_count">Set Tasbih Count</string>
-    <string name="cancel">Cancel</string>
-    <string name="select">Select</string>
-    <string name="click_to_start">Click to Start</string>
-    <string name="reset">Reset</string>
     <string name="prayer_times">Prayer Times</string>
     <string name="fajr">Fajr</string>
     <string name="sunrise">Sunrise</string>
@@ -26,10 +17,36 @@
     <string name="isha_a">Isha\'a</string>
     <string name="prayer_setting">PRAYER SETTING</string>
     <string name="calculation_method">Calculation Method</string>
-    <string name="juristic_method">Prayer Method</string>
     <string name="now">NOW</string>
     <string name="qibla">Qibla</string>
-    <string name="tasbihnames" translatable="false">Tasbih NAmes</string>
     <string name="prayertimesandlocation">Prayer Times and Location</string>
+    <string name="language">Language</string>
+    <string name="invite_friend">Assalamualaikum, I\'m inviting you to download one of the best Islamic apps without any ads or interruptions: https://play.google.com/store/apps/details?id=com.hazrat.islam24</string>
+    <string name="setting">Setting</string>
+    <string name="rate">Rate us</string>
+    <string name="invite_a_friend">Invite a friend</string>
+    <string name="app_setting">App Settings</string>
+    <string name="theme">Theme</string>
+    <string name="login">Login</string>
+    <string name="select_language">Select language</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
+    <string name="english">English</string>
+    <string name="bengali">Bangla</string>
+    <string name="system_seeting">System Setting</string>
+    <string name="logout">Logout</string>
+    <string name="name">Name</string>
+    <string name="emal">Email</string>
+    <string name="bio">Bio</string>
+    <string name="check_internet">No internet connection</string>
+    <string name="invalid_name">"Invalid name "</string>
+    <string name="invalid_bio">Invalid Bio</string>
+    <string name="user_id">Invalid UserID</string>
+    <string name="unknown_error">Error unknown</string>
+    <string name="success_name_update">Name update successful</string>
+    <string name="success_bio_update">Bio update successful</string>
+    <string name="juristic_method">Juristic Method</string>
+    <string name="determining_the_time_of_asr_the_method_of_the_jurists">Determining the time of \'Asr - the method of the jurists</string>
 
 </resources>

@@ -5,21 +5,19 @@ import androidx.room.Room
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.database.NamesDataBase
 import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
+import com.hazrat.islam24.core.data.manager.NetworkRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.NamesRepository
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.network.NamesApi
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.Constants.BASE_URL_NAME
+import com.hazrat.islam24.util.ContextUtils
 import com.hazrat.islam24.util.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
+import javax.annotation.Signed
 import javax.inject.Singleton
 
 
@@ -59,6 +57,22 @@ object AppModule {
         @ApplicationContext context: Context
     ): ConnectivityObserver {
         return NetworkConnectivityObserver(context)
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideContextUtil(@ApplicationContext context: Context): Context {
+        return  ContextUtils(context)
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideNetworkRepository(
+        networkConnectivityObserver: ConnectivityObserver,
+    ): NetworkRepository {
+        return NetworkRepositoryImpl(networkConnectivityObserver)
     }
 
 }

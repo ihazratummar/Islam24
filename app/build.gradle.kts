@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
+    alias(libs.plugins.kotlin.serialization)
 
 }
 
@@ -16,16 +18,16 @@ android {
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 58
-        versionName = "1.5.4"
+        targetSdk= 34
+        versionCode = 67
+        versionName = "1.1.8 beta-18"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
         configurations.all {
-            resolutionStrategy { force("androidx.work:work-runtime:2.9.0") }
+            resolutionStrategy { force ("androidx.work:work-runtime:2.9.0") }
         }
     }
 
@@ -51,7 +53,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
     }
-    buildFeatures {
+    buildFeatures{
         compose = true
     }
 
@@ -62,13 +64,14 @@ android {
     }
     ndkVersion = "26.1.10909125"
 
+
 }
 
 dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx.v281)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.ui)
     implementation(libs.ui.graphics)
@@ -76,7 +79,9 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.play.services.location)
     implementation(libs.transportation.consumer)
-    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v351)
@@ -87,14 +92,24 @@ dependencies {
 
     implementation(libs.androidx.material.icons.extended.android)
 
+
+    /*
+    FireBase
+     */
+    implementation (libs.play.services.auth)
+    implementation(libs.firebase.auth.ktx)
+    implementation (libs.firebase.database)
+    platform(libs.firebase.bom.v2821)
+
+
     //window size
     implementation(libs.androidx.window)
 
     //Splash Api
-    implementation(libs.androidx.core.splashscreen)
+    implementation (libs.androidx.core.splashscreen)
 
     //Compose Navigation
-    implementation(libs.androidx.navigation.compose)
+    implementation (libs.androidx.navigation.compose)
 
     //Dagger Hilt
     implementation(libs.hilt.android)
@@ -102,25 +117,29 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     //Retrofit
-    implementation(libs.retrofit)
+    implementation (libs.retrofit)
     implementation(libs.converter.gson)
 
 
     //Kotlinx Serialization
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation (libs.kotlinx.serialization.json)
+    implementation (libs.retrofit2.kotlinx.serialization.converter)
 
     //Coil
     implementation(libs.coil.compose)
 
+    //Datastore
+    implementation (libs.androidx.datastore.preferences)
 
     //Compose Foundation
-    implementation(libs.androidx.foundation)
+    implementation (libs.androidx.foundation)
 
+    //Accompanist
+    implementation (libs.accompanist.systemuicontroller)
 
     //paging3
-    implementation(libs.androidx.paging.runtime.ktx)
-    implementation(libs.androidx.paging.compose)
+    implementation (libs.androidx.paging.runtime.ktx)
+    implementation (libs.androidx.paging.compose)
 
     //Room
 
@@ -129,19 +148,20 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+
     //Observe
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose.v281)
-    implementation(libs.androidx.runtime.livedata)
+    implementation (libs.androidx.activity.compose)
+    implementation (libs.androidx.lifecycle.viewmodel.compose.v281)
+    implementation (libs.androidx.runtime.livedata)
 
     implementation(libs.androidx.viewpager2)
 
 
-    implementation(libs.androidx.runtime)
-    implementation(libs.androidx.compose.ui.ui)
-    implementation(libs.androidx.animation.core)
+    implementation (libs.androidx.runtime)
+    implementation (libs.androidx.compose.ui.ui)
+    implementation (libs.androidx.animation.core)
 
-    implementation(libs.logging.interceptor)
+    implementation (libs.logging.interceptor)
     implementation(libs.onesignal)
 
     //Google Play Store Update
@@ -150,8 +170,8 @@ dependencies {
     implementation(libs.review)
     implementation(libs.review.ktx)
 
-    implementation(libs.kotlinx.collections.immutable)
+    //dataStorePreference
+    implementation(libs.androidx.preference.ktx)
 }
-
 
 

@@ -70,7 +70,7 @@ class LocationRepositoryImpl @Inject constructor(
     /**
      * Checks if a location is already saved and updates the current location if necessary.
      */
-    private suspend fun checkAndUpdateLocation() {
+    override suspend fun checkAndUpdateLocation() {
         val location: LocationEntity? = locationDao.getLocation()
         if (location == null) {
             startLocationUpdates()

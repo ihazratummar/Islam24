@@ -1,7 +1,5 @@
 package com.hazrat.islam24.auth.presentation.signup
 
-import com.hazrat.islam24.auth.presentation.AuthEvent
-
 /**
  * @author Hazrat Ummar Shaikh
  */

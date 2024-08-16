@@ -1,15 +1,17 @@
 package com.hazrat.islam24.core.data.manager
 
-import android.util.Log
-import com.hazrat.islam24.core.network.LocationNameApi
-import com.hazrat.islam24.core.data.entity.LocationEntity
-import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.dao.LocationNameDao
+import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.core.data.entity.LocationEntity
 import com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
 import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
-import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
+import com.hazrat.islam24.core.network.LocationNameApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,7 +21,13 @@ class LocationNameRepositoryImpl @Inject constructor(
     private val locationRepository: LocationRepositoryImpl,
     private val locationNameDao: LocationNameDao
 ) : LocationNameRepository {
-    override suspend fun getLocationName():LocationNameFinder {
+
+
+    private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
+    override val locationName = _locationName.asStateFlow()
+
+
+    override suspend fun getLocationName(): LocationNameFinder {
 
         val location: LocationEntity? = locationRepository.getLocation()
         val lat = location?.latitude ?: 24.628
@@ -46,7 +54,7 @@ class LocationNameRepositoryImpl @Inject constructor(
                 // Return the locationName
                 locationName
             } catch (e: Exception) {
-                null // Return null if there's an error
+                null
             }
         }
     }
@@ -62,4 +70,18 @@ class LocationNameRepositoryImpl @Inject constructor(
         locationNameDao.saveLocationDetails(locationDetailsEntity)
         getLocationName()
     }
+
+
+    override suspend fun locationName() {
+        getLocationDetails().distinctUntilChanged()
+            .collectLatest { locationName: List<LocationDetailsEntity> ->
+                if (locationName.isEmpty()) {
+                    fetchLocationName()
+                } else {
+                    _locationName.value = locationName
+                }
+            }
+
+    }
+
 }

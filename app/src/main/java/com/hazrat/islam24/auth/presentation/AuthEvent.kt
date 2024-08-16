@@ -7,7 +7,4 @@ package com.hazrat.islam24.auth.presentation
 sealed interface AuthEvent {
 
     data object SignOut: AuthEvent
-
-    data object Refresh: AuthEvent
-
 }

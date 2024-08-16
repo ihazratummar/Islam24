@@ -6,6 +6,7 @@ plugins {
     id ("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
     alias(libs.plugins.android.room) apply false
     alias(libs.plugins.google.devtools.ksp) apply false
+    alias(libs.plugins.google.gms.google.services) apply false
 }
 
 buildscript {

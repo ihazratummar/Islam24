@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,11 +23,11 @@ import javax.inject.Inject
 
 class LocationHandler @Inject constructor (
     @ApplicationContext private val context: Context,
-    private val locationRepository: LocationRepositoryImpl,
+    private val locationRepository: LocationRepository,
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ) {
 
-    fun getCurrentLocation(onLocationReceived: (Location) -> Unit, onLocationError: () -> Unit) {
+    private fun getCurrentLocation(onLocationReceived: (Location) -> Unit, onLocationError: () -> Unit) {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 if (ActivityCompat.checkSelfPermission(
@@ -37,13 +38,6 @@ class LocationHandler @Inject constructor (
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     return
                 }
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
@@ -63,7 +57,6 @@ class LocationHandler @Inject constructor (
                 onLocationError()
             }
         } else {
-            // Permissions need to be requested via the Activity
             onLocationError()
         }
     }

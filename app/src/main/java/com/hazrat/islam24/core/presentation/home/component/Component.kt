@@ -22,8 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -36,7 +34,6 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
-import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil
@@ -81,43 +78,41 @@ fun TimeLocationCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(MaterialTheme.dimens.size5)
-            .height(MaterialTheme.dimens.size200)
+            .padding(dimens.size5)
+            .height(dimens.size200)
             .clickable(
                 onClick = { navigateToPrayerTime() },
                 onClickLabel = stringResource(id = R.string.prayertimesandlocation)
             ),
-        shape = RoundedCornerShape(MaterialTheme.dimens.size30),
+        shape = RoundedCornerShape(dimens.size30),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val today = getCurrentDay()
             val index = today -1
+            Log.d("Today", "$index")
             if (index in prayerTimeEntity.indices) {
                 HomePrayerTimeCardAnimation(
                     modifier = Modifier
                         .fillMaxSize(),
                     prayerTimeEntity = prayerTimeEntity[index]
+
                 )
-            }else{
-                HomePrayerTimeCardAnimation(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    prayerTimeEntity = prayerTimeEntity[1]
-                )
+
             }
+
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(MaterialTheme.dimens.size10)
+                    .padding(dimens.size10)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(0.5f)
                         .padding(
-                            start = MaterialTheme.dimens.size20,
-                            bottom = MaterialTheme.dimens.size15
+                            start = dimens.size20,
+                            bottom = dimens.size15
                         ),
                     verticalArrangement = Arrangement.Bottom
                 ) {
@@ -136,17 +131,17 @@ fun TimeLocationCard(
                         .fillMaxHeight()
                         .weight(0.5f)
                         .padding(
-                            start = MaterialTheme.dimens.size5,
-                            bottom = MaterialTheme.dimens.size15,
-                            end = MaterialTheme.dimens.size10,
-                            top = MaterialTheme.dimens.size20
+                            start = dimens.size5,
+                            bottom = dimens.size15,
+                            end = dimens.size10,
+                            top = dimens.size20
                         ),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.End
                 ) {
 
                     LocationName(locationDetailsEntity)
-                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
+                    Spacer(modifier = Modifier.height(dimens.size8))
                     val grday = getCurrentDay()
                     val hijriday = viewModel.getHijriDay()
                     if (isPrayerTime(prayerTimeEntity, grday, hijriday)) {
@@ -174,8 +169,8 @@ fun BackGroundCard() {
         modifier = Modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(
-            bottomEnd = MaterialTheme.dimens.size50,
-            bottomStart = MaterialTheme.dimens.size50
+            bottomEnd = dimens.size50,
+            bottomStart = dimens.size50
         ),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
@@ -186,11 +181,11 @@ fun BackGroundCard() {
                 .fillMaxSize()
                 .clip(
                     shape = RoundedCornerShape(
-                        bottomStart = MaterialTheme.dimens.size50,
-                        bottomEnd = MaterialTheme.dimens.size50
+                        bottomStart = dimens.size50,
+                        bottomEnd = dimens.size50
                     )
                 )
-                .size(MaterialTheme.dimens.size300),
+                .size(dimens.size300),
             colorFilter = ColorFilter.colorMatrix(colorMatrix = ColorMatrix())
         )
     }

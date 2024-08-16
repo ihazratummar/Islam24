@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,20 +54,16 @@ import com.hazrat.islam24.util.vibrateDevice
  * QiblaScreen is a composable function that displays a compass indicating the Qibla direction.
  * It also vibrates the device when the user faces the Qibla.
  *
- * @param modifier The modifier to be applied to the QiblaScreen.
  * @param navController The NavHostController for navigation.
- * @param qiblaDirection The direction of the Qibla in degrees.
- * @param currentDirection The current direction of the device in degrees.
  */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QiblaScreen(
-    modifier: Modifier = Modifier,
     navController: NavController,
-    qiblaDirection: Float,
-    currentDirection: Float,
     locationName: List<LocationDetailsEntity>,
+    state: QiblaState,
+    isFacingQibla: Boolean = false
 ) {
 
 
@@ -76,28 +73,13 @@ fun QiblaScreen(
     val qiblaIconBitmap =
         remember { drawableToBitmap(context, R.drawable.qiblaiconpoint).asImageBitmap() }
     val needleBitmap = remember { drawableToBitmap(context, R.drawable.needles).asImageBitmap() }
-    val goldQaba = remember { drawableToBitmap(context, R.drawable.goldqaba).asImageBitmap() }
-
-    val minTolerance = 2.9f // Adjusted tolerance range
-    val maxTolerance = 3.8f // Adjusted tolerance range
-
-    val directionDifference = qiblaDirection - currentDirection
-    val normalizedDifference = (directionDifference + 360) % 360
 
 
-    val isFacingQibla = (
-            (normalizedDifference in 0.0..maxTolerance.toDouble()) ||
-                    (normalizedDifference >= 360 - minTolerance && normalizedDifference <= 360)
-            )
-
-    var hasVibrated by remember { mutableStateOf(false) }
-
-    // Vibrate when facing Qibla and not already vibrated
-    if (isFacingQibla && !hasVibrated) {
+    if (isFacingQibla && !state.hasVibrated) {
         vibrateDevice(context, 200)
-        hasVibrated = true // Set to true to prevent continuous vibration
+        state.hasVibrated = true // Set to true to prevent continuous vibration
     } else if (!isFacingQibla) {
-        hasVibrated = false // Reset when not facing Qibla
+        state.hasVibrated = false // Reset when not facing Qibla
     }
 
     Scaffold(
@@ -129,12 +111,12 @@ fun QiblaScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(MaterialTheme.dimens.size30)
+                .padding(dimens.size30)
                 .statusBarsPadding(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            Spacer(modifier = Modifier.height(MaterialTheme.dimens.size10))
+            Spacer(modifier = Modifier.height(dimens.size10))
             if (locationName.isNotEmpty()) {
                 LocationName(locationName.first())
             }
@@ -148,31 +130,31 @@ fun QiblaScreen(
             ) {
 
                 Text(
-                    text = "Qibla: ${qiblaDirection.toInt()}°",
+                    text = "Qibla: ${state.qiblaDirection.toInt()}°",
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = Hidaya
                 )
                 if (isFacingQibla) {
                     Icon(
-                        modifier = Modifier.size(MaterialTheme.dimens.size60),
+                        modifier = Modifier.size(dimens.size60),
                         painter = painterResource(id = R.drawable.goldqaba),
                         contentDescription = null,
                         tint = Color.Unspecified
                     )
                 } else {
                     Icon(
-                        modifier = Modifier.size(MaterialTheme.dimens.size30),
+                        modifier = Modifier.size(dimens.size30),
                         painter = painterResource(id = R.drawable.arrowup),
                         contentDescription = null
                     )
                 }
 
-                Spacer(modifier = Modifier.height(MaterialTheme.dimens.size40))
+                Spacer(modifier = Modifier.height(dimens.size40))
                 Box(
                     modifier = Modifier
                         .fillMaxHeight(0.5f)
-                        .padding(MaterialTheme.dimens.size10)
+                        .padding(dimens.size10)
                 ) {
                     // Canvas for compass
                     Canvas(modifier = Modifier.fillMaxSize()) {
@@ -180,7 +162,7 @@ fun QiblaScreen(
                         val compassRadius = size.minDimension / 2.5f
 
                         // Rotate the entire compass background image
-                        rotate(degrees = -currentDirection, pivot = compassCenter) {
+                        rotate(degrees = -state.currentDirection, pivot = compassCenter) {
                             drawImage(
                                 image = compassBgBitmap,
                                 topLeft = Offset(
@@ -190,7 +172,7 @@ fun QiblaScreen(
                             )
                         }
                         // Draw the Qibla direction needle
-                        rotate(degrees = qiblaDirection - currentDirection, pivot = compassCenter) {
+                        rotate(degrees = state.qiblaDirection - state.currentDirection, pivot = compassCenter) {
                             val needleStartY = compassCenter.y - needleBitmap.height / 1.1f
                             drawImage(
                                 image = needleBitmap,
@@ -199,7 +181,6 @@ fun QiblaScreen(
                                     needleStartY
                                 )
                             )
-
                             // Draw the Qibla icon
                             if (!isFacingQibla) {
                                 drawImage(

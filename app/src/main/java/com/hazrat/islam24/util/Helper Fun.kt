@@ -1,6 +1,8 @@
 package com.hazrat.islam24.util
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.VibrationEffect
@@ -9,9 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
 
 fun vibrate(vibrator: Vibrator) {
     vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -42,4 +41,10 @@ fun NavController.popUpTo(destination: String) = navigate(destination) {
         saveState = true
     }
     restoreState = true
+}
+
+fun Context.getActivity(): Activity? = when(this){
+    is Activity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }

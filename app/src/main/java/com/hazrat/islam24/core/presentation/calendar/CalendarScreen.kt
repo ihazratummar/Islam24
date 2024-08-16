@@ -1,11 +1,9 @@
 package com.hazrat.islam24.core.presentation.calendar
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -13,19 +11,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
+import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(navController: NavController) {
+fun CalendarScreen(
+    navController: NavController,
+    hijriCalendarEntity: List<HijriCalendarEntity>,
+    gregorianToHijriEntity: List<GregorianToHijriEntity>
+) {
+
+    var toggleCalendar by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -46,6 +54,14 @@ fun CalendarScreen(navController: NavController) {
                         )
                     }
                 },
+                actions = {
+                    IconButton(onClick = { toggleCalendar = !toggleCalendar }) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarToday,
+                            contentDescription = "calendar"
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
             )
         }
@@ -54,7 +70,14 @@ fun CalendarScreen(navController: NavController) {
             modifier = Modifier.padding(it)
         ) {
             item {
-                CalendarHomeScreen()
+                if (!toggleCalendar) {
+                    CalendarHomeScreen(
+                        hijriCalendarEntity = hijriCalendarEntity,
+                        gregorianToHijriEntity = gregorianToHijriEntity
+                    )
+                } else {
+                    CalendarScreen()
+                }
             }
         }
     }
