@@ -38,4 +38,7 @@ interface ProfileRepository {
     suspend fun signOut()
 
     fun refreshProfile()
+
+    fun openRatingDialog()
+    fun goToRate()
 }
