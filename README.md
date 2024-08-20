@@ -57,7 +57,7 @@ Discover a seamless and intuitive Islamic app crafted to enhance your spiritual 
 
 The icons used in this app are sourced from the following Figma icon packs:
 
-- [Stratis UI Icons - 1000+ Free Figma Icons](https://www.figma.com/community/file/1095420755676542792) by Stratis UI
-- [Icons - Free Icons 65,000+](https://www.figma.com/community/file/935922336294406610) by Various Designers
+- [Stratis UI Icons - 1000+ Free Figma Icons](https://www.figma.com/design/4cMgtPKTUF4Kzz3QZxGRsq/Stratis-UI-Icons---1000%2B-Free-Figma-icons-(Community)?m=auto&t=wHGViASVSJGGHiyq-1) by Stratis UI
+- [Icons - Free Icons 65,000+](https://www.figma.com/design/TLNLk6CMdno4Uf3dJgo4hX/Icons---Free-Icons-65%2C000-(Community)?m=auto&t=wHGViASVSJGGHiyq-1) by Various Designers
 
 We greatly appreciate the work of these creators in making these icons available to the community.
