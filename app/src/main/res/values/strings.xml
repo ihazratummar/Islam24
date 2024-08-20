@@ -48,5 +48,7 @@
     <string name="success_bio_update">Bio update successful</string>
     <string name="juristic_method">Juristic Method</string>
     <string name="determining_the_time_of_asr_the_method_of_the_jurists">Determining the time of \'Asr - the method of the jurists</string>
+    <string name="thank_you_for_your_feedback_we_appreciate_your_input">Thank you for your feedback. We appreciate your input.</string>
+    <string name="thank_you_for_your_positive_feedback_we_d_love_for_you_to_rate_us">Thank you for your positive feedback! We\'d love for you to rate us.</string>
 
 </resources>

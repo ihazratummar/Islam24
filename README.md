@@ -49,3 +49,15 @@ Discover a seamless and intuitive Islamic app crafted to enhance your spiritual 
 4. ![User Profile](https://img.icons8.com/?size=30&id=qVcjfxtIiPix&format=png&color=000000) **User Profile:** Customize your profile within the app.
 5. ![Nearby Halal Places](https://img.icons8.com/?size=30&id=37713&format=png&color=000000) **Nearby Halal Places:** Find Halal restaurants and shops near you.
 6. ![Nearby Masjids](https://img.icons8.com/?size=30&id=rRRmNzuBSYaF&format=png&color=000000) **Nearby Masjids:** Locate the closest Masjids for prayer.
+
+
+---
+
+## Credits
+
+The icons used in this app are sourced from the following Figma icon packs:
+
+- [Stratis UI Icons - 1000+ Free Figma Icons](https://www.figma.com/design/4cMgtPKTUF4Kzz3QZxGRsq/Stratis-UI-Icons---1000%2B-Free-Figma-icons-(Community)?m=auto&t=wHGViASVSJGGHiyq-1) by Stratis UI
+- [Icons - Free Icons 65,000+](https://www.figma.com/design/TLNLk6CMdno4Uf3dJgo4hX/Icons---Free-Icons-65%2C000-(Community)?m=auto&t=wHGViASVSJGGHiyq-1) by Various Designers
+
+We greatly appreciate the work of these creators in making these icons available to the community.

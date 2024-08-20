@@ -46,4 +46,6 @@
     <string name="success_bio_update">Bio update successful</string>
     <string name="juristic_method">ফিকাহবিদদের পদ্ধতি</string>
     <string name="determining_the_time_of_asr_the_method_of_the_jurists">আসরের সময় নির্ধারণ - ফিকাহবিদদের পদ্ধতি </string>
+    <string name="thank_you_for_your_feedback_we_appreciate_your_input">আপনার মতামতের জন্য ধন্যবাদ। আমরা আপনার মতামতকে গুরুত্ব দিচ্ছি।</string>
+    <string name="thank_you_for_your_positive_feedback_we_d_love_for_you_to_rate_us">আপনার ইতিবাচক মতামতের জন্য ধন্যবাদ! আমাদের রেট করতে আপনার অনুরোধ করছি।</string>
 </resources>
