@@ -90,13 +90,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun fetchData(){
+    fun fetchData() {
         viewModelScope.launch {
-            locationRepository.checkAndUpdateLocation()
-            locationNameRepository.getLocationName()
-            locationNameRepository.fetchLocationName()
+            networkStatus.collect { status ->
+                if (status == ConnectivityObserver.Status.Available) {
+                    locationRepository.checkAndUpdateLocation()
+                    locationNameRepository.getLocationName()
+                    locationNameRepository.fetchLocationName()
+                }
+            }
         }
     }
+
     private fun fetchInitialData() {
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()

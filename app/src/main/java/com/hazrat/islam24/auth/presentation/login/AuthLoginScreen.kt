@@ -226,8 +226,7 @@ private fun LoginButton(
     Button(
         onClick = onLoginClick,
         modifier = modifier
-            .fillMaxWidth()
-            .imePadding(),
+            .fillMaxWidth(),
         colors = ButtonColors(
             containerColor = containerColor,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,

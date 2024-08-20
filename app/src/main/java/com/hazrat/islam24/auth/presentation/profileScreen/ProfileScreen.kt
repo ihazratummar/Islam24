@@ -1,6 +1,7 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +21,13 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +48,7 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.ProfileDetailsScreen
 import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
+import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.ui.theme.dimens
@@ -83,15 +87,23 @@ fun ProfileScreen(
                 profileEvent = profileEvent
             )
         }
+
+        if (profileState.isRatingDialogOpen) {
+            Log.d("ProfileScreen", "Rating dialog is open ${profileState.isRatingDialogOpen}")
+            RatingBottomSheet(profileEvent)
+        }
+
     }
 }
+
+
 
 @Composable
 private fun ProfileComponent(
     navController: NavController,
     profileEvent: (ProfileEvent) -> Unit
 ) {
-    val activity: Activity = LocalContext.current  as MainActivity
+    val activity: Activity = LocalContext.current as MainActivity
     Column(
         modifier = Modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.Center
@@ -107,19 +119,22 @@ private fun ProfileComponent(
                     }
                     launchSingleTop = true
                 }
-            }
+            },
+            trailingIcon = painterResource(id = R.drawable.chevron_right)
         )
         ProfileScreenItemCard(
             painter = painterResource(id = R.drawable.like),
             text = stringResource(id = R.string.rate),
-            onClick = {profileEvent(ProfileEvent.RateUs(activity))}
+            onClick = { profileEvent(ProfileEvent.RateUs(activity)) },
+            trailingIcon = painterResource(id = R.drawable.chevron_right)
         )
         ProfileScreenItemCard(
             painter = painterResource(id = R.drawable.share),
             text = stringResource(id = R.string.invite_a_friend),
             onClick = {
                 profileEvent(ProfileEvent.InviteFriend)
-            }
+            },
+            trailingIcon = painterResource(id = R.drawable.chevron_right)
         )
 
     }
@@ -129,7 +144,8 @@ private fun ProfileComponent(
 private fun ProfileScreenItemCard(
     painter: Painter,
     text: String,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    trailingIcon:Painter
 ) {
     Card(
         modifier = Modifier
@@ -165,6 +181,8 @@ private fun ProfileScreenItemCard(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(painter = trailingIcon, contentDescription = "trailingIcon" )
             }
         }
     }
@@ -270,6 +288,7 @@ private fun ProfileHeader(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer
             )
         }
+
         else -> Unit
     }
 }
