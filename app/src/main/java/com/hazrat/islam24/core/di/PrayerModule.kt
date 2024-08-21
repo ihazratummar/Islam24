@@ -21,6 +21,7 @@ import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingReposit
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.network.LocationNameApi
 import com.hazrat.islam24.core.network.PrayerTimeApi
+import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,11 +43,19 @@ object PrayerModule {
         locationRepository: LocationRepositoryImpl,
         prayerSettingRepository: PrayerSettingRepository,
         prayerTimeDao: PrayerTimeDao,
-        @ApplicationContext context: Context
-    ) : PrayerTimeRepository = PrayerTimeRepositoryImpl(api, locationRepository, prayerSettingRepository, prayerTimeDao, context)
+        @ApplicationContext context: Context,
+        connectivityObserver: ConnectivityObserver
+    ): PrayerTimeRepository = PrayerTimeRepositoryImpl(
+        api = api,
+        locationRepository = locationRepository,
+        prayerSettingRepository = prayerSettingRepository,
+        prayerTimeDao = prayerTimeDao,
+        context = context,
+        connectivityObserver = connectivityObserver
+    )
 
 
-//    /prayer time database
+    //    /prayer time database
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): PrayerDatabase {
@@ -63,9 +72,6 @@ object PrayerModule {
     fun providePrayerTimeDao(appDatabase: PrayerDatabase): PrayerTimeDao {
         return appDatabase.prayerTimeDao()
     }
-
-
-
 
 
     @Provides
@@ -93,7 +99,6 @@ object PrayerModule {
         ).fallbackToDestructiveMigration()
             .build()
     }
-
 
 
     @Singleton
