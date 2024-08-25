@@ -331,6 +331,7 @@ class ProfileRepositoryImpl @Inject constructor(
     override suspend fun networkObserver() {
         connectivityObserver.observer().onEach { status ->
             _networkStatus.value = status
+            Log.d("ProfileNetworkObserver", "Network Status: $status")
         }.launchIn(repositoryScope)
 
     }

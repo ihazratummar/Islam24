@@ -117,7 +117,7 @@ class LocationHandler @Inject constructor (
                 onLocationReceived = { location ->
                     CoroutineScope(Dispatchers.IO).launch {
                         locationRepository.saveLocation(location.latitude, location.longitude)
-                        Log.e("LocationHandler", "Saved")
+                        Log.d("LocationHandler", "Saved")
                     }
                 },
                 onLocationError = {
