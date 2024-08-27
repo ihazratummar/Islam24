@@ -17,3 +17,5 @@ app/google-services.json
 /app/google-services.json
 .idea
 .kotlin
+.idea/
+.kotlin/errors
