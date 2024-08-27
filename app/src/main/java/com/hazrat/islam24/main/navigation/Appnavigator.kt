@@ -96,7 +96,7 @@ fun AppNavigator(
                 PrayerTimeScreen(
                     navController = navController,
                     event = prayerTimeViewModel::onEvent,
-                    prayerTimes = prayerTimes
+                    prayerTimes = prayerTimes,
                 )
             }
             composable<QiblaDirectionScreen> {

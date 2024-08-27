@@ -11,6 +11,8 @@ import com.hazrat.islam24.auth.model.UserData
 sealed interface ProfileEvent {
     data object InviteFriend : ProfileEvent
     data class RateUs(val activity: Activity) : ProfileEvent
+    data object OpenRatingDialog: ProfileEvent
+    data object GoToRate: ProfileEvent
 
 }
 

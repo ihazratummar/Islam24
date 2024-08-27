@@ -1,6 +1,7 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
 import android.app.Activity
+import android.content.pm.PackageManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -45,6 +47,7 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.ProfileDetailsScreen
 import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
+import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.ui.theme.dimens
@@ -83,45 +86,63 @@ fun ProfileScreen(
                 profileEvent = profileEvent
             )
         }
+
+        if (profileState.isRatingDialogOpen) {
+            RatingBottomSheet(profileEvent)
+        }
     }
 }
+
+
 
 @Composable
 private fun ProfileComponent(
     navController: NavController,
     profileEvent: (ProfileEvent) -> Unit
 ) {
-    val activity: Activity = LocalContext.current  as MainActivity
-    Column(
+    val activity: Activity = LocalContext.current as MainActivity
+    val context = LocalContext.current
+    LazyColumn(
         modifier = Modifier.fillMaxHeight(),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ProfileScreenItemCard(
-            painter = painterResource(id = R.drawable.settings),
-            text = stringResource(id = R.string.setting),
-            onClick = {
-                navController.navigate(ProfileSettingScreen) {
-                    popUpTo(ProfileSettingScreen) {
-                        inclusive = true
-                        saveState = false
+        item {
+            ProfileScreenItemCard(
+                painter = painterResource(id = R.drawable.settings),
+                text = stringResource(id = R.string.setting),
+                onClick = {
+                    navController.navigate(ProfileSettingScreen) {
+                        popUpTo(ProfileSettingScreen) {
+                            inclusive = true
+                            saveState = false
+                        }
+                        launchSingleTop = true
                     }
-                    launchSingleTop = true
-                }
+                },
+                trailingIcon = painterResource(id = R.drawable.chevron_right)
+            )
+            ProfileScreenItemCard(
+                painter = painterResource(id = R.drawable.like),
+                text = stringResource(id = R.string.rate),
+                onClick = { profileEvent(ProfileEvent.RateUs(activity)) },
+                trailingIcon = painterResource(id = R.drawable.chevron_right)
+            )
+            ProfileScreenItemCard(
+                painter = painterResource(id = R.drawable.share),
+                text = stringResource(id = R.string.invite_a_friend),
+                onClick = {
+                    profileEvent(ProfileEvent.InviteFriend)
+                },
+                trailingIcon = painterResource(id = R.drawable.chevron_right)
+            )
+        }
+        item {
+            val versionName = context.packageName?.let {
+                context.packageManager.getPackageInfo(it, PackageManager.GET_META_DATA).versionName
             }
-        )
-        ProfileScreenItemCard(
-            painter = painterResource(id = R.drawable.like),
-            text = stringResource(id = R.string.rate),
-            onClick = {profileEvent(ProfileEvent.RateUs(activity))}
-        )
-        ProfileScreenItemCard(
-            painter = painterResource(id = R.drawable.share),
-            text = stringResource(id = R.string.invite_a_friend),
-            onClick = {
-                profileEvent(ProfileEvent.InviteFriend)
-            }
-        )
-
+            Text(text = "$versionName")
+        }
     }
 }
 
@@ -129,7 +150,8 @@ private fun ProfileComponent(
 private fun ProfileScreenItemCard(
     painter: Painter,
     text: String,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    trailingIcon:Painter
 ) {
     Card(
         modifier = Modifier
@@ -165,6 +187,8 @@ private fun ProfileScreenItemCard(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(painter = trailingIcon, contentDescription = "trailingIcon" )
             }
         }
     }
@@ -270,6 +294,7 @@ private fun ProfileHeader(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer
             )
         }
+
         else -> Unit
     }
 }

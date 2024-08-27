@@ -6,7 +6,7 @@ package com.hazrat.islam24.core.data.manager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.lifecycle.viewModelScope
+import androidx.compose.runtime.mutableStateOf
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.entity.LocationEntity
@@ -16,11 +16,14 @@ import com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.Data
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.network.PrayerTimeApi
+import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import com.hazrat.islam24.util.DateUtil.timeStringToLong
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +32,9 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -39,12 +44,16 @@ class PrayerTimeRepositoryImpl @Inject constructor(
     private val locationRepository: LocationRepositoryImpl,
     private val prayerSettingRepository: PrayerSettingRepository,
     private val prayerTimeDao: PrayerTimeDao,
-    private val context: Context
+    private val context: Context,
+    private val connectivityObserver: ConnectivityObserver
 ) : PrayerTimeRepository {
 
 
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
     override val prayerTimes = _prayerTimes.asStateFlow()
+
+
+    private val _networkStatus = mutableStateOf(ConnectivityObserver.Status.Unavailable)
 
     private suspend fun getApiParameterForMonth(): ApiResponse? {
         return try {
@@ -180,11 +189,24 @@ class PrayerTimeRepositoryImpl @Inject constructor(
         getAllPrayer().distinctUntilChanged()
             .collectLatest { prayerList: List<PrayerTimeEntity> ->
                 if (prayerList.isEmpty()) {
-                    getApiParameterForMonth()
+                    if (_networkStatus.value == ConnectivityObserver.Status.Available){
+                        getApiParameterForMonth()
+                    }
                 } else {
                     _prayerTimes.value = prayerList
                 }
             }
     }
 
+
+
+
+    private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    override suspend fun networkObserver() {
+        connectivityObserver.observer().onEach { status ->
+            _networkStatus.value = status
+            Log.d("PrayerNetworkObserver", "Network Status: $status")
+        }.launchIn(repositoryScope)
+    }
 }

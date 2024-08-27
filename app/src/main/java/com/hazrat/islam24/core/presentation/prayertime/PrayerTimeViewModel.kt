@@ -38,6 +38,7 @@ class PrayerTimeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             repository.getAllPrayerTimes()
+            repository.networkObserver()
         }
     }
 }

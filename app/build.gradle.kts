@@ -19,8 +19,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 67
-        versionName = "1.1.8 beta-18"
+        versionCode = 65
+        versionName = "1.6.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -173,5 +173,4 @@ dependencies {
     //dataStorePreference
     implementation(libs.androidx.preference.ktx)
 }
-
 

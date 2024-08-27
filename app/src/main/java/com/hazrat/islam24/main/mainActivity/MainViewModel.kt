@@ -1,15 +1,12 @@
 package com.hazrat.islam24.main.mainActivity
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
-import com.hazrat.islam24.core.data.manager.NetworkRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
@@ -18,19 +15,13 @@ import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
-import com.hazrat.islam24.util.error.MainActivityError
-import com.hazrat.islam24.util.error.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,7 +30,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val prayerTimeRepository: PrayerTimeRepository,
     private val locationNameRepository: LocationNameRepository,
-    private val connectivityObserver: ConnectivityObserver,
     private val namesRepository: NamesRepositoryImpl,
     private val gregorianToHijriRepository: GregorianToHijriRepository,
     private val hijriCalendarRepository: HijriCalendarRepository,
@@ -58,7 +48,6 @@ class MainViewModel @Inject constructor(
     /**
      * network check
      */
-//    private val _networkStatus = mutableStateOf(ConnectivityObserver.Status.Unavailable)
     private val networkStatus: StateFlow<ConnectivityObserver.Status> =
         networkRepository.networkStatus
 
@@ -71,8 +60,11 @@ class MainViewModel @Inject constructor(
             fetchDataFromDB()
             networkRepository.observeNetworkStatus()
             profileRepository.networkObserver()
+            prayerTimeRepository.networkObserver()
             networkStatus.collect { status ->
+                Log.d("MainViewModelNetworkStatus", "Current network status: $status")
                 if (status == ConnectivityObserver.Status.Available) {
+                    Log.d("MainViewModelNetworkStatus", "Network available, fetching initial data.")
                     fetchInitialData()
                 }
             }
@@ -87,16 +79,22 @@ class MainViewModel @Inject constructor(
             getAllPrayerTimes()
             locationNameRepository.locationName()
             locationNameRepository.getLocationDetails()
+
         }
     }
 
-    fun fetchData(){
+    fun fetchData() {
         viewModelScope.launch {
-            locationRepository.checkAndUpdateLocation()
-            locationNameRepository.getLocationName()
-            locationNameRepository.fetchLocationName()
+            networkStatus.collect { status ->
+                if (status == ConnectivityObserver.Status.Available) {
+                    locationRepository.checkAndUpdateLocation()
+                    locationNameRepository.getLocationName()
+                    locationNameRepository.fetchLocationName()
+                }
+            }
         }
     }
+
     private fun fetchInitialData() {
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
