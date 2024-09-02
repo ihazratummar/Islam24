@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name" translatable="true">Islam 24</string>
     <string name="view_salat_times">সময় দেখুন</string>
-    <string name="names">আল্লাহর নাম</string>
+    <string name="names">আসমা উল হুসনা</string>
     <string name="calendar">ক্যালেন্ডার</string>
     <string name="athkar">জিকির</string>
     <string name="next_prayer" translatable="true">পরবর্তী %1$s</string>

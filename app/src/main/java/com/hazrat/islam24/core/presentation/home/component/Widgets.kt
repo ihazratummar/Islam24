@@ -74,7 +74,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
         stringResource(id = R.string.qibla)
     )
 
-    Box(modifier = Modifier.height(dimens.size300).fillMaxWidth()) {
+    Box(modifier = Modifier.height(dimens.size150).fillMaxWidth()) {
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Fixed(4),

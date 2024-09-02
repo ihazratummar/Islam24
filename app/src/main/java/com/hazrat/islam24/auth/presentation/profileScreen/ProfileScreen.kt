@@ -222,7 +222,7 @@ private fun ProfileHeader(
                         }
                     },
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             ) {
@@ -291,7 +291,7 @@ private fun ProfileHeader(
             ProfileCard(
                 text = stringResource(R.string.login),
                 onClick = { navController.navigate(Login) },
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
             )
         }
 
