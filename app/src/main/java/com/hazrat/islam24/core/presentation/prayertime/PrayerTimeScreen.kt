@@ -257,7 +257,7 @@ private fun PrayerTime(
     val currentTime = System.currentTimeMillis()
 
 
-    val isFajrTime = currentTime in (data.fajrTime + 1)..(data.sunriseTime)
+    val isFajrTime = currentTime in (data.fajrTime + 1)..(data.sunriseTime- 300000)
     val isSunriseTime = currentTime in (data.sunriseTime + 1)..(data.sunriseTime)
     val isDhuhrTime = currentTime in (data.dhuhrTime + 1)..(data.dhuhrTime + 3600000)
     val isAsrTime = currentTime in (data.asrTime + 1)..(data.maghribTime - 600000)

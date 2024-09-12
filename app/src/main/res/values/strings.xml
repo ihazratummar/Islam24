@@ -4,7 +4,7 @@
 
     <string name="app_name" translatable="true">Islam 24</string>
     <string name="view_salat_times">View Times</string>
-    <string name="names">Names</string>
+    <string name="names">Asma Ul Husna</string>
     <string name="calendar">Calendar</string>
     <string name="athkar">Zikir</string>
     <string name="next_prayer" translatable="true">Next %1$s</string>

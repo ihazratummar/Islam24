@@ -23,9 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,9 +37,12 @@ import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
 import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.ui.theme.Hidaya
+import com.hazrat.islam24.ui.theme.Poppins
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -89,7 +94,7 @@ fun TimeLocationCard(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val today = getCurrentDay()
-            val index = today -1
+            val index = today - 1
             Log.d("Today", "$index")
             if (index in prayerTimeEntity.indices) {
                 HomePrayerTimeCardAnimation(
@@ -152,7 +157,7 @@ fun TimeLocationCard(
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     } else {
-                        DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
+                        DisplayCurrentPrayerTime(prayerTimeEntity, hijriday)
                     }
                 }
             }
@@ -190,3 +195,52 @@ fun BackGroundCard() {
         )
     }
 }
+
+
+@Composable
+fun RamadanCard() {
+    val currentDay = LocalDate.now()
+    val targetDate = LocalDate.of(2025, 3, 2)
+    val daysRemaining = ChronoUnit.DAYS.between(currentDay, targetDate)
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(dimens.size100)
+            .padding(horizontal = dimens.size15),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .paint(
+                    painter = painterResource(id = R.drawable.ramadan),
+                    alpha = 0.3f,
+                    alignment = Alignment.Center,
+                    sizeToIntrinsics = true,
+                    contentScale = ContentScale.FillHeight
+                )
+                .padding(horizontal = dimens.size30)
+        ) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterStart),
+                text = "Ramadan",
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = Poppins,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                text = "$daysRemaining days",
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = Hidaya
+            )
+        }
+    }
+}
+
+
