@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
@@ -79,9 +80,11 @@ class MainActivity : ComponentActivity() {
             Islam24Theme(
                 darkTheme = appSettingState.isDarkMode
             ) {
+                val zakatViewModel by viewModels<ZakatViewModel>()
                 NavGraph(
                     appSettingState = appSettingState,
-                    appSettingEvent = appSettingViewModel::onAppSettingEvent
+                    appSettingEvent = appSettingViewModel::onAppSettingEvent,
+                    zakatViewModel = zakatViewModel
 
                 )
             }

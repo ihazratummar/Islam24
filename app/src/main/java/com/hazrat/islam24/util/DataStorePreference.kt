@@ -3,6 +3,8 @@ package com.hazrat.islam24.util
 import android.content.Context
 import android.media.MediaFormat.KEY_LANGUAGE
 import com.hazrat.islam24.auth.presentation.appSetting.Themes
+import com.hazrat.islam24.util.Constants.KEY_SORT_BY
+import com.hazrat.islam24.core.presentation.zakat.DateType
 
 object DataStorePreference {
 
@@ -42,6 +44,19 @@ object DataStorePreference {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val themeName = pref.getString(KEY_THEME_NAME, Themes.DARK.name) ?: Themes.DARK.name
         return Themes.valueOf(themeName)
+    }
+
+
+    fun setSortType(context: Context, sortType: DateType){
+        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        pref.edit().putString(KEY_SORT_BY, sortType.name).apply()
+    }
+
+    fun getSortType(context: Context): DateType {
+        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sortType = pref.getString(KEY_SORT_BY, DateType.DATE_DESC.name)
+        return DateType.valueOf(sortType!!)
+
     }
 
 }
