@@ -14,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.hazrat.islam24.R
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -28,7 +30,7 @@ fun TotalDebtInfo(
     Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text(text = "Debt") },
+                title = { Text(text = stringResource(R.string.debt)) },
                 navigationIcon = { IconButton(onClick = { onBack() }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null )
                 } }
@@ -44,15 +46,14 @@ fun TotalDebtInfo(
             item {
                 // Main definition
                 Text(
-                    text = "Total Debt on You refers to the total amount you owe to others, including personal loans, credit card debt, mortgages, or any other financial obligations. " +
-                            "When calculating Zakat, it is essential to consider this amount, as it can be deducted from your total assets. This ensures that Zakat is only paid on the net wealth that you truly own after accounting for your debts.",
+                    text = stringResource(R.string.debtinfo),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 // Additional explanation
                 Text(
-                    text = "If you have any outstanding loans or debts, reduce the total amount of debt from your assets before calculating Zakat. This provides an accurate picture of your net wealth, ensuring that Zakat is only paid on the wealth free from obligations.",
+                    text = stringResource(R.string.debtinfo1),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )

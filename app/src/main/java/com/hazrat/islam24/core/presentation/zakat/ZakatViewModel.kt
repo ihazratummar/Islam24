@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -442,7 +444,8 @@ fun calculateSilverPrice(silverPrice: String?): String {
     val silverPriceOneTola = silverPrice?.toDoubleOrNull()?.times(11.6638)
     val silverNisabAmount = silverPriceOneTola?.times(52.50)
     val finalAmount = silverNisabAmount?.minus(1)
-    val decimalFormat = DecimalFormat("#.##")
+    val decimalFormatSymbols = DecimalFormatSymbols(Locale.US)
+    val decimalFormat = DecimalFormat("#.##", decimalFormatSymbols)
     return decimalFormat.format(finalAmount)
 }
 

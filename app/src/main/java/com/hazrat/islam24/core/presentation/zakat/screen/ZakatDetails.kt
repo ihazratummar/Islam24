@@ -14,8 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.hazrat.islam24.R
 import com.hazrat.islam24.core.domain.model.zakat.ZakatEntity
-import com.hazrat.islam24.core.presentation.zakat.ZakatEvent
 import com.hazrat.islam24.util.DateUtil.getDateFromLong
 
 /**
@@ -62,34 +63,34 @@ fun ZakatDetails(
         ) {
             item {
                 CalculateItems(
-                    text = "Money",
+                    text = stringResource(R.string.money),
                     amount = "${zakatEntity.money}",
                     infoNavigation = {
                         moneyInfoNav()
                     }
                 )
                 CalculateItems(
-                    text = "Gold",
+                    text = stringResource(R.string.gold),
                     amount = "${zakatEntity.gold}",
                     infoNavigation = { goldInfoNav() }
                 )
                 CalculateItems(
-                    text = "Silver",
+                    text = stringResource(R.string.silver),
                     amount = "${zakatEntity.silver}",
                     infoNavigation = { silverInfoNav() }
                 )
                 CalculateItems(
-                    text = "Trade Amount",
+                    text = stringResource(R.string.trade_amount),
                     amount = "${zakatEntity.tradeAmount}",
                 )
                 CalculateItems(
-                    text = "Monthly Living Cost",
+                    text = stringResource(R.string.monthly_living_cost),
                     amount = "${zakatEntity.monthCost}",
                     infoNavigation = { monthInfoNav() },
                     fontColor = MaterialTheme.colorScheme.error
                 )
                 CalculateItems(
-                    text = "Total Debt on you",
+                    text = stringResource(R.string.total_debt_on_you),
                     amount = "${zakatEntity.debt}",
                     infoNavigation = { totalDebtInfoNav() },
                     fontColor = MaterialTheme.colorScheme.error

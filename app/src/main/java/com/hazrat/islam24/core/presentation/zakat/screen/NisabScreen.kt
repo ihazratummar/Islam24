@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -72,13 +71,16 @@ fun NisabScreen(
                 .padding(10.dp)
                 .padding(innerPadding),
         ) {
-            Text(text = "Nisab is a threshold, referring to the minimum amount of wealth")
+            Text(text = stringResource(R.string.nisab_is_a_threshold_referring_to_the_minimum_amount_of_wealth))
             val nisabAmount = 11.66638 * 52.50
             val roundAmount = String.format(Locale.getDefault(), "%.2f", nisabAmount)
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "The nisab threshold for silver is ${roundAmount}gm (52.50 Tola/Vori) or the cash equivalent")
+            Text(text = stringResource(
+                R.string.the_nisab_threshold_for_silver_is_gm_52_50_tola_vori_or_the_cash_equivalent,
+                roundAmount
+            ))
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "To calculate nisab, enter the current value of silver/gm:")
+            Text(text = stringResource(R.string.to_calculate_nisab_enter_the_current_value_of_silver_gm))
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(

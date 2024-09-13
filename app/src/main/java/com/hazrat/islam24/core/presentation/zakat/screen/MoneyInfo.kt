@@ -16,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.hazrat.islam24.R
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -30,7 +32,7 @@ fun MoneyInfo(
     Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text(text = "Money") },
+                title = { Text(text = stringResource(id = R.string.money)) },
                 navigationIcon = { IconButton(onClick = { onBack() }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null )
                 } }
@@ -39,33 +41,34 @@ fun MoneyInfo(
     ){ innderpadding ->
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth().padding(innderpadding)
+                .fillMaxWidth()
+                .padding(innderpadding)
                 .padding(16.dp)
         ) {
             item {
 
                 // Main description
                 Text(
-                    text = "Zakat on money should be calculated at 2.5% of your total monetary assets as on the date of valuation. This includes various forms of wealth that are liquid or easily accessible, such as:",
+                    text = stringResource(R.string.moneyinfo),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 // Bullet Points for different types of money
-                Text(text = "• Hand Cash (Local Currency)", style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(R.string.hand_cash_local_currency), style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "• Bank Cash (Savings and Current Accounts)", style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(R.string.bank_cash_savings_and_current_accounts), style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "• International Currency (Foreign Money in Your Possession)", style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(R.string.international_currency_foreign_money_in_your_possession), style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "• Digital Currency (e.g., Cryptocurrencies, E-Wallets)", style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(R.string.digital_currency_e_g_cryptocurrencies_e_wallets), style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "• Loans Given (Money owed to you by others)", style = MaterialTheme.typography.bodyLarge)
+                Text(text = stringResource(R.string.loans_given_money_owed_to_you_by_others), style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Conclusion
                 Text(
-                    text = "Ensure you include all liquid assets when calculating Zakat on your money. The total amount should be valued at 2.5%.",
+                    text = stringResource(R.string.moneyinfo1),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )

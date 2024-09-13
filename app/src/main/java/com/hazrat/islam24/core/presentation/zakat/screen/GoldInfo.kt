@@ -18,7 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.hazrat.islam24.R
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -32,7 +34,7 @@ fun GoldInfo(
     Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text(text = "Gold") },
+                title = { Text(text = stringResource(id = R.string.gold)) },
                 navigationIcon = { IconButton(onClick = { onBack() }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null )
                 } }
@@ -47,8 +49,7 @@ fun GoldInfo(
         ) {
             item {
                 Text(
-                    text = "Zakat on Gold should be calculated at 2.5% of the current market value of the gold you own as on the date of valuation. " +
-                            "This applies to gold in all forms, whether it's jewelry, coins, or bars, provided it reaches or exceeds the Nisab threshold.",
+                    text = stringResource(R.string.goldinfo),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )

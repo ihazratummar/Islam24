@@ -1,5 +1,6 @@
 package com.hazrat.islam24.core.presentation.zakat.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.BottomAppBar
@@ -41,12 +41,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.text.isDigitsOnly
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.presentation.zakat.ZakatEvent
 import com.hazrat.islam24.core.presentation.zakat.ZakatState
@@ -69,16 +70,19 @@ fun CalculationScreen(
     totalDebtInfoNav: () -> Unit = {},
     onSaveClick: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Zakat Calculator") },
+                title = { Text(text = stringResource(R.string.zakat_calculator)) },
                 actions = {
                     TextButton(
                         onClick = {
                             zakatEvent(ZakatEvent.SaveZakat)
                             onSaveClick()
                             zakatEvent(ZakatEvent.ResetAllState)
+                            Toast.makeText(context,
+                                context.getString(R.string.done), Toast.LENGTH_SHORT).show()
                         },
                         enabled = zakatState.money != "0.0" || zakatState.gold != "0.0" ||
                                 zakatState.silver != "0.0" || zakatState.tradeAmount != "0.0"
@@ -121,7 +125,7 @@ fun CalculationScreen(
             ) {
                 item {
                     CalculateItems(
-                        text = "Money",
+                        text = stringResource(R.string.money),
                         amount = zakatState.money,
                         onClick = { zakatEvent(ZakatEvent.OpenMoneyDialog) },
                         infoNavigation = {
@@ -129,31 +133,31 @@ fun CalculationScreen(
                         }
                     )
                     CalculateItems(
-                        text = "Gold",
+                        text = stringResource(R.string.gold),
                         amount = zakatState.gold,
                         onClick = { zakatEvent(ZakatEvent.OpenGoldDialog) },
                         infoNavigation = { goldInfoNav() }
                     )
                     CalculateItems(
-                        text = "Silver",
+                        text = stringResource(R.string.silver),
                         amount = zakatState.silver,
                         onClick = { zakatEvent(ZakatEvent.OpenSilverDialog) },
                         infoNavigation = { silverInfoNav() }
                     )
                     CalculateItems(
-                        text = "Trade Amount",
+                        text = stringResource(R.string.trade_amount),
                         amount = zakatState.tradeAmount,
                         onClick = { zakatEvent(ZakatEvent.OpenTradeAmountDialog) }
                     )
                     CalculateItems(
-                        text = "Monthly Living Cost",
+                        text = stringResource(R.string.monthly_living_cost),
                         amount = zakatState.monthCost,
                         onClick = { zakatEvent(ZakatEvent.OpenMonthCostDialog) },
                         infoNavigation = { monthInfoNav() },
                         fontColor = MaterialTheme.colorScheme.error
                     )
                     CalculateItems(
-                        text = "Total Debt on you",
+                        text = stringResource(R.string.total_debt_on_you),
                         amount = zakatState.debt,
                         onClick = { zakatEvent(ZakatEvent.OpenDebtDialog) },
                         infoNavigation = { totalDebtInfoNav() },
@@ -173,15 +177,15 @@ fun CalculationScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     BottomBarItem(
-                        text = "Nisab",
+                        text = stringResource(R.string.nisab),
                         amount = zakatState.nisabAmount
                     )
                     BottomBarItem(
-                        text = "Total Asset",
+                        text = stringResource(R.string.total_asset1),
                         amount = "${zakatState.totalAsset}"
                     )
                     BottomBarItem(
-                        text = "Zakat Amount",
+                        text = stringResource(R.string.zakat_amount1),
                         amount = "${zakatState.zakatAmount}"
                     )
                 }

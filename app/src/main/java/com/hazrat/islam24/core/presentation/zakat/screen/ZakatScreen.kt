@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
@@ -93,7 +94,7 @@ fun ZakatScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "Start Calculation", fontWeight = FontWeight.SemiBold )
+                        Text(text = stringResource(R.string.start_calculation), fontWeight = FontWeight.SemiBold )
                         Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
                     }
                 }
@@ -125,11 +126,11 @@ fun ZakatScreen(
                                         fontWeight = FontWeight.SemiBold
                                     )
                                     Text(
-                                        text = "Total Assets: ${it.totalAsset}",
+                                        text = stringResource(R.string.total_assets, it.totalAsset),
                                         fontWeight = FontWeight.SemiBold
                                     )
                                     Text(
-                                        text = "Zakat Amount: ${it.zakatAmount}",
+                                        text = stringResource(R.string.zakat_amount, it.zakatAmount),
                                         fontWeight = FontWeight.SemiBold
                                     )
                                 }
