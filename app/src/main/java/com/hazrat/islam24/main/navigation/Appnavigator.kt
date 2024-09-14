@@ -46,7 +46,9 @@ import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
+import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
 import com.hazrat.islam24.ui.theme.dimens
 import kotlinx.serialization.Serializable
 
@@ -54,7 +56,8 @@ import kotlinx.serialization.Serializable
 @Composable
 fun AppNavigator(
     appSettingState: AppSettingState,
-    appSettingEvent: (AppSettingEvent) -> Unit
+    appSettingEvent: (AppSettingEvent) -> Unit,
+    zakatViewModel: ZakatViewModel
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -155,6 +158,10 @@ fun AppNavigator(
                 navController = navController,
                 appSettingState = appSettingState,
                 appSettingEvent = appSettingEvent
+            )
+            zakatNavGraph(
+                navController = navController,
+                zakatViewModel = zakatViewModel
             )
         }
     }
