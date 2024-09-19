@@ -79,11 +79,15 @@ fun PrayerTimeCard(
     time: String,
     countDownText: String,
     isPrayerTime: Boolean,
-    isNow: String
+    isNow: String,
+    onClick: () -> Unit = {}
 ) {
 
     Card(
         modifier = Modifier
+            .clickable {
+                onClick()
+            }
             .padding(
                 horizontal = dimens.size10,
                 vertical = dimens.size4

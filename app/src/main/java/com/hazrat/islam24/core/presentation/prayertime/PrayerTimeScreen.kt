@@ -41,6 +41,11 @@ import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
 import com.hazrat.islam24.main.navigation.CalendarScreen
 import com.hazrat.islam24.main.navigation.PrayerSetting
+import com.hazrat.islam24.main.navigation.nvgraph.AsrSetting
+import com.hazrat.islam24.main.navigation.nvgraph.DhuhrSetting
+import com.hazrat.islam24.main.navigation.nvgraph.FajrSetting
+import com.hazrat.islam24.main.navigation.nvgraph.IshaSetting
+import com.hazrat.islam24.main.navigation.nvgraph.MaghribSetting
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
@@ -239,6 +244,7 @@ fun PrayerTimesDay(
                 asrCountDown,
                 maghribCountDown,
                 ishaCountDown,
+                navController = navController
             )
         }
     }
@@ -253,6 +259,7 @@ private fun PrayerTime(
     asrCountDown: String,
     maghribCountDown: String,
     ishaCountDown: String,
+    navController: NavController
 ) {
     val currentTime = System.currentTimeMillis()
 
@@ -276,6 +283,9 @@ private fun PrayerTime(
         countDownText = if (prayerDay && isNextFajrTime) fajrCountDown else "",
         isPrayerTime = isFajrTime,
         isNow = if (isFajrTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(FajrSetting)
+        }
 
     )
     PrayerTimeCard(
@@ -292,7 +302,10 @@ private fun PrayerTime(
         time = dateLongToString(data.dhuhrTime),
         countDownText = if (prayerDay && isNextDhurTime) dhuhrCountDown else "",
         isPrayerTime = isDhuhrTime,
-        isNow = if (isDhuhrTime) stringResource(id = R.string.now) else ""
+        isNow = if (isDhuhrTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(DhuhrSetting)
+        }
     )
     PrayerTimeCard(
         icon = R.drawable.asr,
@@ -301,6 +314,9 @@ private fun PrayerTime(
         countDownText = if (prayerDay && isNextAsrTime) asrCountDown else "",
         isPrayerTime = isAsrTime,
         isNow = if (isAsrTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(AsrSetting)
+        }
     )
     PrayerTimeCard(
         icon = R.drawable.maghrib,
@@ -309,6 +325,9 @@ private fun PrayerTime(
         countDownText = if (prayerDay && isNextMaghribTime) maghribCountDown else "",
         isPrayerTime = isMaghribTime,
         isNow = if (isMaghribTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(MaghribSetting)
+        }
     )
     PrayerTimeCard(
         icon = R.drawable.isha,
@@ -317,6 +336,9 @@ private fun PrayerTime(
         countDownText = if (prayerDay && isNextIshaTime) ishaCountDown else "",
         isPrayerTime = isIshaTime,
         isNow = if (isIshaTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(IshaSetting)
+        }
     )
 }
 

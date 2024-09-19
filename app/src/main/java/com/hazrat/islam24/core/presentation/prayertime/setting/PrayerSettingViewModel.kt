@@ -11,6 +11,7 @@ import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
+import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -28,7 +29,8 @@ class PrayerSettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val repository: PrayerSettingRepository,
     private val prayerTimeRepository: PrayerTimeRepository,
-    private val networkRepository: NetworkRepository
+    private val networkRepository: NetworkRepository,
+    private val prayerAlarmManager: PrayerAlarmManager,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PrayerSettingState())
@@ -91,7 +93,6 @@ class PrayerSettingViewModel @Inject constructor(
                     if (networkStatus.value == ConnectivityObserver.Status.Available){
                         repository.insertJuristicMethod(
                             PrayerJuristicEntity(school = event.value)
-
                         )
                         prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
                     }else{

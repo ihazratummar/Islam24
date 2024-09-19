@@ -11,13 +11,13 @@ import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.network.NamesApi
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.ContextUtils
+import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.annotation.Signed
 import javax.inject.Singleton
 
 
@@ -73,6 +73,13 @@ object AppModule {
         networkConnectivityObserver: ConnectivityObserver,
     ): NetworkRepository {
         return NetworkRepositoryImpl(networkConnectivityObserver)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideDataStorePreference(@ApplicationContext context: Context): DataStorePreference {
+        return DataStorePreference(context)
     }
 
 }
