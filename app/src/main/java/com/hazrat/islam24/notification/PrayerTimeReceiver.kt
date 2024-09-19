@@ -184,7 +184,7 @@ class PrayerTimeReceiver : BroadcastReceiver() {
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(false)
+            .setAutoCancel(true)
             .setContentIntent(pendingIntent)
     }
 
