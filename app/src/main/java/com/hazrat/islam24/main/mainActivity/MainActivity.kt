@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
             locationManager.getLastKnownLocation()
         }
         permissionsManager.requestPermission()
-
+        permissionsManager.requestExactAlarmPermission()
         notificationHelper.notificationChannel()
         setContent {
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()

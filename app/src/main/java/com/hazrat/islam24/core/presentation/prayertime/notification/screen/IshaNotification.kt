@@ -50,9 +50,6 @@ fun IshaNotification(
     onBackClick: () -> Unit,
     notificationState: NotificationState
 ) {
-    val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -72,17 +69,6 @@ fun IshaNotification(
                     }
                 }
             )
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState) { data ->
-                Snackbar(
-                    modifier = Modifier,
-                    snackbarData = data,
-                    actionColor = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.medium,
-                    actionOnNewLine = false,
-                )
-            }
         }
     ) { paddingValues ->
         Column(
@@ -112,19 +98,6 @@ fun IshaNotification(
                         checked = notificationState.isIshaNotification,
                         onCheckedChange = {
                             notificationEvent(NotificationEvent.ToggleIshaNotification)
-                            coroutineScope.launch {
-                                if (it) {
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.isha_notification_enabled),
-                                        withDismissAction = true
-                                    )
-                                }else{
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.isha_notification_disabled),
-                                        withDismissAction = true
-                                    )
-                                }
-                            }
                         }
                     ) {
                         Icon(

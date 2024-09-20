@@ -22,8 +22,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -48,9 +51,7 @@ fun FajrNotification(
     onBackClick: () -> Unit,
     notificationState: NotificationState
 ) {
-    val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -70,17 +71,6 @@ fun FajrNotification(
                     }
                 }
             )
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState) { data ->
-                Snackbar(
-                    modifier = Modifier,
-                    snackbarData = data,
-                    actionColor = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.medium,
-                    actionOnNewLine = false,
-                )
-            }
         }
     ) { paddingValues ->
         Column(
@@ -110,19 +100,6 @@ fun FajrNotification(
                         checked = notificationState.isFajrNotification,
                         onCheckedChange = {
                             notificationEvent(NotificationEvent.ToggleFajrNotification)
-                            coroutineScope.launch {
-                                if (it) {
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.fajr_notification_enabled),
-                                        withDismissAction = true
-                                    )
-                                }else{
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.fajr_notification_disabled),
-                                        withDismissAction = true
-                                    )
-                                }
-                            }
                         }
                     ) {
                         Icon(
