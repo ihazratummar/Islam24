@@ -1,6 +1,5 @@
 package com.hazrat.islam24.main.mainActivity
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,19 +7,22 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
+import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
+import com.hazrat.islam24.main.navigation.nvgraph.PrayerTime
+import com.hazrat.islam24.notification.NotificationHelper
+import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
 import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.islam24.ui.theme.Islam24Theme
-import com.hazrat.islam24.util.DataStorePreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,7 +34,7 @@ import javax.inject.Inject
  */
 
 /**
- * @author Hazrat Ummar Shaikh
+ * Author: Hazrat Ummar Shaikh
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -47,11 +49,18 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var locationHandler: LocationHandler
 
+    @Inject
+    lateinit var notificationHelper: NotificationHelper
+
+    @Inject
+    lateinit var prayerAlarmManager: PrayerAlarmManager
+
     // Permissions manager, initialized in onCreate
     private lateinit var permissionsManager: PermissionsManager
 
     private val appSettingViewModel by viewModels<AppSettingViewModel>()
     private val mainViewModel by viewModels<MainViewModel>()
+
     /**
      * Called when the activity is starting. This is where most initialization should go.
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this contains the data it most recently supplied in onSaveInstanceState(Bundle).
@@ -73,10 +82,12 @@ class MainActivity : ComponentActivity() {
         permissionsManager.onPermissionGranted = {
             locationManager.getLastKnownLocation()
         }
-        permissionsManager.checkAndRequestLocationPermission()
+        permissionsManager.requestPermission()
 
+        notificationHelper.notificationChannel()
         setContent {
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
+            val navController = rememberNavController()
             Islam24Theme(
                 darkTheme = appSettingState.isDarkMode
             ) {
@@ -85,7 +96,6 @@ class MainActivity : ComponentActivity() {
                     appSettingState = appSettingState,
                     appSettingEvent = appSettingViewModel::onAppSettingEvent,
                     zakatViewModel = zakatViewModel
-
                 )
             }
         }

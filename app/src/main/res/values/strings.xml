@@ -92,5 +92,21 @@
     <string name="debtinfo1">If you have any outstanding loans or debts, reduce the total amount of debt from your assets before calculating Zakat. This provides an accurate picture of your net wealth, ensuring that Zakat is only paid on the wealth free from obligations.</string>
     <string name="ramadan">Ramadan</string>
     <string name="days">%1$s days</string>
+    <string name="asr_notification">Asr Notification</string>
+    <string name="asr_notification_enabled">Asr Notification Enabled</string>
+    <string name="asr_notification_disabled">Asr Notification Disabled</string>
+    <string name="dhuhr_notification">Dhuhr Notification</string>
+    <string name="dhuhr_notification_enabled">Dhuhr Notification Enabled</string>
+    <string name="dhuhr_notification_disabled">Dhuhr Notification Disabled</string>
+    <string name="fajr_notification">Fajr Notification</string>
+    <string name="fajr_notification_enabled">Fajr Notification Enabled</string>
+    <string name="fajr_notification_disabled">Fajr Notification Disabled</string>
+    <string name="isha_notification">Isha Notification</string>
+    <string name="isha_notification_enabled">Isha Notification Enabled</string>
+    <string name="isha_notification_disabled">Isha Notification Disabled</string>
+    <string name="maghrib_notification">Maghrib Notification</string>
+    <string name="maghrib_notification_enabled">Maghrib Notification Enabled</string>
+    <string name="maghrib_notification_disabled">Maghrib Notification Disabled</string>
+    <string name="notification">Notification</string>
 
 </resources>

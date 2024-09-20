@@ -40,14 +40,14 @@ import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesViewmodel
-import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
-import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreen
+import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
 import com.hazrat.islam24.ui.theme.dimens
 import kotlinx.serialization.Serializable
@@ -93,15 +93,7 @@ fun AppNavigator(
                     locationUpdate = { viewModel.fetchData() }
                 )
             }
-            composable<PrayerTimeScreen> {
-                val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
-                val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
-                PrayerTimeScreen(
-                    navController = navController,
-                    event = prayerTimeViewModel::onEvent,
-                    prayerTimes = prayerTimes,
-                )
-            }
+            prayerNav(navController)
             composable<QiblaDirectionScreen> {
                 val viewModel: QiblaViewModel = hiltViewModel()
                 val locationName by viewModel.locationName.collectAsState()
@@ -226,8 +218,7 @@ private fun BottomBar(navController: NavHostController) {
 @Serializable
 data object HomeScreen
 
-@Serializable
-data object PrayerTimeScreen
+
 
 @Serializable
 data object ProfileScreen

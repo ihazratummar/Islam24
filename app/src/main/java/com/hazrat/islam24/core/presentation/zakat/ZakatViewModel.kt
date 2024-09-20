@@ -31,11 +31,12 @@ import javax.inject.Inject
 @HiltViewModel
 class ZakatViewModel @Inject constructor(
     private val repository: ZakatRepository,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val dataStorePreference: DataStorePreference
 ) : ViewModel() {
 
 
-    private val _sortType = MutableStateFlow(DataStorePreference.getSortType(context))
+    private val _sortType = MutableStateFlow(dataStorePreference.getSortType())
     private val _state = MutableStateFlow(ZakatState(zakatEntity = emptyList()))
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -402,7 +403,7 @@ class ZakatViewModel @Inject constructor(
                 val newSortType =
                     if (_sortType.value == DateType.DATE_DESC) DateType.DATE_ASC else DateType.DATE_DESC
                 _sortType.value = newSortType
-                DataStorePreference.setSortType(context, newSortType)
+                dataStorePreference.setSortType(newSortType)
             }
 
             is ZakatEvent.DeleteZakat -> {
