@@ -1,5 +1,6 @@
 package com.hazrat.islam24.main.mainActivity
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,7 +24,9 @@ import com.hazrat.islam24.service.LocationManager
 import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.islam24.ui.theme.Islam24Theme
+import com.hazrat.islam24.util.LocaleHelper
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 import javax.inject.Inject
 
 // MainActivity.kt
@@ -120,5 +123,11 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         updateManager.onDestroy()
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val locale = Locale.getDefault()
+        val wrappedContext = LocaleHelper.wrap(newBase, locale)
+        super.attachBaseContext(wrappedContext)
     }
 }
