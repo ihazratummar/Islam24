@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
+import com.hazrat.islam24.auth.presentation.login.LoginEvent
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Dimens
@@ -201,19 +202,14 @@ fun AuthSignupScreen(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done,
                     trailingIcon = {
-                        val image =
-                            if (signUpState.confirmPasswordVisible) painterResource(id = R.drawable.eyeopen)
-                            else painterResource(id = R.drawable.eyeclose)
-                        IconButton(onClick = {
-                            onEvent(SingupEvent.OnConfirmPasswordVisibilityChanged)
-                        }) {
-                            Icon(
-                                painter = image,
-                                contentDescription = if (signUpState.confirmPasswordVisible) "Hide Password" else "Show Password",
-                                modifier = Modifier.size(dimens.size20),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        Text(
+                            text = if (signUpState.passwordVisible) "Hide" else "Show",
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.clickable {
+                                onEvent(SingupEvent.OnConfirmPasswordVisibilityChanged)
+                            },
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     },
                     visualTransformation = if (signUpState.confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
                 )

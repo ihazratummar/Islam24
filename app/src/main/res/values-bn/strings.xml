@@ -90,4 +90,20 @@
     <string name="debtinfo1">যদি আপনার কোনো বকেয়া ঋণ বা দেনা থাকে, তাহলে যাকাত হিসাব করার আগে আপনার সম্পদ থেকে মোট ঋণের পরিমাণ কমিয়ে ফেলুন। এটি আপনার নিট সম্পদের একটি সঠিক চিত্র প্রদান করে, নিশ্চিত করে যে জাকাত শুধুমাত্র বাধ্যবাধকতামুক্ত সম্পদের উপর প্রদান করা হয়।</string>
     <string name="ramadan">রমজান</string>
     <string name="days">%1$s দিন</string>
+    <string name="asr_notification">আসরের নোটিফিকেশন</string>
+    <string name="asr_notification_enabled">আসর নোটিফিকেশন সক্রিয় করা হয়েছে</string>
+    <string name="asr_notification_disabled">আসর নোটিফিকেশন নিষ্ক্রিয়</string>
+    <string name="dhuhr_notification">যোহর নোটিফিকেশন </string>
+    <string name="dhuhr_notification_enabled">যোহর নোটিফিকেশন সক্রিয় করা হয়েছে</string>
+    <string name="dhuhr_notification_disabled">যোহর নোটিফিকেশন নিষ্ক্রিয়</string>
+    <string name="fajr_notification">ফজর নোটিফিকেশন</string>
+    <string name="fajr_notification_enabled">ফজর নোটিফিকেশন সক্রিয় করা হয়েছে</string>
+    <string name="fajr_notification_disabled">ফজর নোটিফিকেশন নিষ্ক্রিয়</string>
+    <string name="isha_notification">ইশা নোটিফিকেশন</string>
+    <string name="isha_notification_enabled">ইশা নোটিফিকেশন সক্রিয় করা হয়েছে</string>
+    <string name="isha_notification_disabled">ইশা নোটিফিকেশন নিষ্ক্রিয়</string>
+    <string name="maghrib_notification">মাগরিব নোটিফিকেশন</string>
+    <string name="maghrib_notification_enabled">মাগরিব নোটিফিকেশন সক্রিয় করা হয়েছে</string>
+    <string name="maghrib_notification_disabled">মাগরিব নোটিফিকেশন নিষ্ক্রিয়</string>
+    <string name="notification">নোটিফিকেশন</string>
 </resources>
