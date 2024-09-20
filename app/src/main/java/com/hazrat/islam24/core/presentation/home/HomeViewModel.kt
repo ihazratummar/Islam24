@@ -19,14 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val prayerTimeRepository: PrayerTimeRepository,
-    private val locationNameRepository: LocationNameRepository,
+//    private val locationNameRepository: LocationNameRepository,
 ):ViewModel() {
-    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
+//    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
     val prayerTimes: StateFlow<List<PrayerTimeEntity>> = prayerTimeRepository.prayerTimes
 
     init {
         viewModelScope.launch {
-            locationNameRepository.locationName()
+//            locationNameRepository.locationName()
             prayerTimeRepository.getAllPrayerTimes()
         }
     }

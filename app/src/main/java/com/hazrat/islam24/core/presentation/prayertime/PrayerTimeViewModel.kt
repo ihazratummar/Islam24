@@ -71,6 +71,7 @@ class PrayerTimeViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun onNotificationEvent(notificationEvent: NotificationEvent) {
         when (notificationEvent) {
             NotificationEvent.ToggleFajrNotification -> {
@@ -210,6 +211,20 @@ class PrayerTimeViewModel @Inject constructor(
                     }
                 }else{
                     openAppSettings()
+                }
+            }
+
+            NotificationEvent.RefreshNotificationState -> {
+                viewModelScope.launch {
+                    _notificationState.update {
+                        it.copy(
+                            isFajrNotification = dataStorePreference.getFajrNotification(),
+                            isDhuhrNotification = dataStorePreference.getDhuhrNotification(),
+                            isAsrNotification = dataStorePreference.getAsrNotification(),
+                            isMaghribNotification = dataStorePreference.getMaghribNotification(),
+                            isIshaNotification = dataStorePreference.getIshaNotification()
+                        )
+                    }
                 }
             }
         }

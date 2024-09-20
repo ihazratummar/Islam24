@@ -61,7 +61,7 @@ import com.hazrat.islam24.util.vibrateDevice
 @Composable
 fun QiblaScreen(
     navController: NavController,
-    locationName: List<LocationDetailsEntity>,
+//    locationName: List<LocationDetailsEntity>,
     state: QiblaState,
     isFacingQibla: Boolean = false
 ) {
@@ -117,9 +117,9 @@ fun QiblaScreen(
             horizontalAlignment = Alignment.Start
         ) {
             Spacer(modifier = Modifier.height(dimens.size10))
-            if (locationName.isNotEmpty()) {
-                LocationName(locationName.first())
-            }
+//            if (locationName.isNotEmpty()) {
+//                LocationName(locationName.first())
+//            }
 
 
             Column(

@@ -29,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val prayerTimeRepository: PrayerTimeRepository,
-    private val locationNameRepository: LocationNameRepository,
+//    private val locationNameRepository: LocationNameRepository,
     private val namesRepository: NamesRepositoryImpl,
     private val gregorianToHijriRepository: GregorianToHijriRepository,
     private val hijriCalendarRepository: HijriCalendarRepository,
@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(
         networkRepository.networkStatus
 
 
-    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
+//    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
 
 
     init {
@@ -77,8 +77,8 @@ class MainViewModel @Inject constructor(
     private fun fetchDataFromDB() {
         viewModelScope.launch {
             getAllPrayerTimes()
-            locationNameRepository.locationName()
-            locationNameRepository.getLocationDetails()
+//            locationNameRepository.locationName()
+//            locationNameRepository.getLocationDetails()
 
         }
     }
@@ -88,8 +88,8 @@ class MainViewModel @Inject constructor(
             networkStatus.collect { status ->
                 if (status == ConnectivityObserver.Status.Available) {
                     locationRepository.checkAndUpdateLocation()
-                    locationNameRepository.getLocationName()
-                    locationNameRepository.fetchLocationName()
+//                    locationNameRepository.getLocationName()
+//                    locationNameRepository.fetchLocationName()
                 }
             }
         }
@@ -99,12 +99,12 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-            locationNameRepository.fetchLocationName()
+//            locationNameRepository.fetchLocationName()
             gregorianToHijriRepository.getGregorianToHijriDate()
             hijriCalendarRepository.getHijriCalendarFromApi()
             namesRepository.getAllahNamesFromApi()
             locationRepository.checkAndUpdateLocation()
-            locationNameRepository.getLocationName()
+//            locationNameRepository.getLocationName()
         }
     }
 

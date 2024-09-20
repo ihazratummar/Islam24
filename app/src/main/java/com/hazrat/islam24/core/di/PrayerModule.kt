@@ -12,14 +12,11 @@ import com.hazrat.islam24.core.data.dao.PrayerSettingDao
 import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.database.LocationDatabase
 import com.hazrat.islam24.core.data.database.PrayerDatabase
-import com.hazrat.islam24.core.data.manager.LocationNameRepositoryImpl
-import com.hazrat.islam24.core.data.manager.PrayerTimeRepositoryImpl
-import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
-import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
+import com.hazrat.islam24.core.data.manager.PrayerTimeRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.core.network.LocationNameApi
 import com.hazrat.islam24.core.network.PrayerTimeApi
 import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.Module
@@ -74,13 +71,13 @@ object PrayerModule {
     }
 
 
-    @Provides
-    @Singleton
-    fun provideLocationNameRepository(
-        api: LocationNameApi,
-        locationRepository: LocationRepositoryImpl,
-        locationNameDao: LocationNameDao
-    ): LocationNameRepository = LocationNameRepositoryImpl(api, locationRepository, locationNameDao)
+//    @Provides
+//    @Singleton
+//    fun provideLocationNameRepository(
+//        api: LocationNameApi,
+//        locationRepository: LocationRepositoryImpl,
+//        locationNameDao: LocationNameDao
+//    ): LocationNameRepository = LocationNameRepositoryImpl(api, locationRepository, locationNameDao)
 
     @Singleton
     @Provides

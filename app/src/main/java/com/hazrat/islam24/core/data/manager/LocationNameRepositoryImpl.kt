@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class LocationNameRepositoryImpl @Inject constructor(
+class LocationNameRepositoryImpl (
     private val locationNameApi: LocationNameApi,
     private val locationRepository: LocationRepositoryImpl,
     private val locationNameDao: LocationNameDao

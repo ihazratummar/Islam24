@@ -62,16 +62,16 @@ object RetrofitModule {
             .create(PrayerTimeApi::class.java)
     }
 
-    @Singleton
-    @Provides
-    fun provideLocationNameApi(): LocationNameApi {
-        return Retrofit.Builder()
-            .baseUrl(LOCATION_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(LocationNameApi::class.java)
-    }
+//    @Singleton
+//    @Provides
+//    fun provideLocationNameApi(): LocationNameApi {
+//        return Retrofit.Builder()
+//            .baseUrl(LOCATION_BASE_URL)
+//            .client(okHttpClient)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(LocationNameApi::class.java)
+//    }
 
     @Singleton
     @Provides
