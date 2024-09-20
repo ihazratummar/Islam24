@@ -19,8 +19,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 65
-        versionName = "1.6.3"
+        versionCode = 68
+        versionName = "1.6.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -150,7 +150,6 @@ dependencies {
 
 
     //Observe
-    implementation (libs.androidx.activity.compose)
     implementation (libs.androidx.lifecycle.viewmodel.compose.v281)
     implementation (libs.androidx.runtime.livedata)
 

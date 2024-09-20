@@ -28,4 +28,9 @@ object Constants {
 
     /** oneSignal key */
     const val ONESIGNAL_APP_ID = "43011754-fa2a-4dbd-af0b-de8d96f6e8d4"
+
+
+    const val NISAB_DATABASE_NAME = "nisab_db"
+    const val PREF_NAME = "note_preference"
+    const val KEY_SORT_BY = "sort_type"
 }

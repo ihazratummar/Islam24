@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.hazrat.islam24.R
 import com.hazrat.islam24.ui.theme.dimens
 
 
@@ -79,11 +80,16 @@ fun PrayerTimeCard(
     time: String,
     countDownText: String,
     isPrayerTime: Boolean,
-    isNow: String
+    onClick: () -> Unit = {},
+    isNotification: Boolean = false
 ) {
 
     Card(
         modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
             .padding(
                 horizontal = dimens.size10,
                 vertical = dimens.size4
@@ -112,69 +118,45 @@ fun PrayerTimeCard(
                 .fillMaxWidth()
                 .padding(
                     horizontal = dimens.size10,
-                    vertical = dimens.size15
+                    vertical = dimens.size30
                 ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(dimens.size5)
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.End
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = icon),
-                        contentDescription = "Icon",
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(dimens.size30)
-                    )
-                    Spacer(modifier = Modifier.width(dimens.size10))
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(start = dimens.size10)
-                    )
-                }
-                Text(
-                    text = isNow,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(start = dimens.size10)
-                )
-            }
-            Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Text(
-                        text = countDownText,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(start = dimens.size10)
-                    )
-                    Spacer(modifier = Modifier.width(dimens.size40))
-                    Text(
-                        text = time,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(start = dimens.size10)
-                    )
-                }
-                Text(
-                    text = "",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(start = dimens.size10)
-                )
-            }
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = "Icon",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(dimens.size30)
+            )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(start = dimens.size10)
+            )
+
+            Spacer(modifier = Modifier.weight(0.5f))
+            Text(
+                text = countDownText,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(start = dimens.size10)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = time,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(start = dimens.size10)
+            )
+            Spacer(modifier = Modifier.width(dimens.size10))
+            Icon(
+                painter = if (isNotification) painterResource(R.drawable.notificationonn) else painterResource(R.drawable.notificationoff),
+                contentDescription = "Icon",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(dimens.size20)
+            )
         }
     }
 }

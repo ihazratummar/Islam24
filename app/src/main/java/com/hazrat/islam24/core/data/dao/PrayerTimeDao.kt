@@ -60,4 +60,20 @@ interface PrayerTimeDao {
      */
     @Update
     suspend fun updatePrayerTime(prayerTime: PrayerTimeEntity)
+
+
+    @Query("SELECT `Fajr Time` FROM prayer_times WHERE day= :day")
+    fun getFajrTimeForTheDay(day: Int) : Long
+
+    @Query("SELECT `Dhuhr Time` FROM prayer_times WHERE day= :day")
+    fun getDhuhrTimeForTheDay(day: Int) : Long
+
+    @Query("SELECT AsrTime FROM prayer_times WHERE day= :day")
+    fun getAsrTimeForTheDay(day: Int) : Long
+
+    @Query("SELECT `Maghrib Time` FROM prayer_times WHERE day= :day")
+    fun getMaghribTimeForTheDay(day: Int) : Long
+
+    @Query("SELECT `Isha Time` FROM prayer_times WHERE day= :day")
+    fun getIshaTimeForTheDay(day: Int) : Long
 }
