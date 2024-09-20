@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -83,7 +84,6 @@ fun PrayerTimeCard(
     onClick: () -> Unit = {},
     isNotification: Boolean = false
 ) {
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,8 +98,7 @@ fun PrayerTimeCard(
             CardDefaults.cardColors(
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-
-                )
+            )
         } else {
             CardDefaults.cardColors(
                 containerColor = Color.Transparent
@@ -153,13 +152,14 @@ fun PrayerTimeCard(
             Spacer(modifier = Modifier.width(dimens.size10))
             Icon(
                 painter = if (isNotification) painterResource(R.drawable.notificationonn) else painterResource(R.drawable.notificationoff),
-                contentDescription = "Icon",
+                contentDescription = "Notification Icon",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(dimens.size20)
             )
         }
     }
 }
+
 
 
 @Composable

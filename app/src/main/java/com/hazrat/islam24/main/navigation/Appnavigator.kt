@@ -77,7 +77,7 @@ fun AppNavigator(
             composable<HomeScreen> {
                 val viewModel: MainViewModel = hiltViewModel()
                 val prayerTimes by viewModel.prayerTimes.collectAsState()
-                val locationName by viewModel.locationName.collectAsState()
+//                val locationName by viewModel.locationName.collectAsState()
                 HomeScreen(
                     navController, navigateToPrayerTime = {
                         navController.navigate(PrayerTimeScreen) {
@@ -89,18 +89,18 @@ fun AppNavigator(
                         }
                     },
                     prayerTimes = prayerTimes,
-                    locationName = locationName,
+//                    locationName = locationName,
                     locationUpdate = { viewModel.fetchData() }
                 )
             }
             prayerNav(navController)
             composable<QiblaDirectionScreen> {
                 val viewModel: QiblaViewModel = hiltViewModel()
-                val locationName by viewModel.locationName.collectAsState()
+//                val locationName by viewModel.locationName.collectAsState()
                 val state by viewModel.qiblaState.collectAsState()
                 QiblaScreen(
                     navController = navController,
-                    locationName = locationName,
+//                    locationName = locationName,
                     state = state,
                     isFacingQibla = viewModel.isFacingQibla()
                 )

@@ -79,7 +79,7 @@ fun isPrayerTime(
 fun TimeLocationCard(
     prayerTimeEntity: List<PrayerTimeEntity>,
     navigateToPrayerTime: () -> Unit,
-    locationDetailsEntity: LocationDetailsEntity,
+//    locationDetailsEntity: LocationDetailsEntity,
     viewModel: MainViewModel = hiltViewModel(),
 ) {
     Card(
@@ -147,7 +147,7 @@ fun TimeLocationCard(
                     horizontalAlignment = Alignment.End
                 ) {
 
-                    LocationName(locationDetailsEntity)
+//                    LocationName(locationDetailsEntity)
                     Spacer(modifier = Modifier.height(dimens.size8))
                     val grday = getCurrentDay()
                     val hijriday = viewModel.getHijriDay()

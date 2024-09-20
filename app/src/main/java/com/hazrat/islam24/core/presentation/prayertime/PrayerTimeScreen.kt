@@ -62,6 +62,7 @@ fun PrayerTimeScreen(
     prayerTimes: List<PrayerTimeEntity>,
     notificationState: NotificationState
 ) {
+
     ShowData(
         navController = navController,
         event = event,

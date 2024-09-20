@@ -61,7 +61,10 @@ fun IshaNotification(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onBackClick() }) {
+                    IconButton(onClick = {
+                        onBackClick()
+                        notificationEvent(NotificationEvent.RefreshNotificationState)
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.backicon),
                             contentDescription = "BackClick"
@@ -101,7 +104,9 @@ fun IshaNotification(
                         }
                     ) {
                         Icon(
-                            painter = if (notificationState.isIshaNotification) painterResource(id = R.drawable.toggleon) else painterResource(id = R.drawable.toggleoff),
+                            painter = if (notificationState.isIshaNotification) painterResource(id = R.drawable.toggleon) else painterResource(
+                                id = R.drawable.toggleoff
+                            ),
                             contentDescription = "Notification",
                             modifier = Modifier.size(dimens.size40)
                         )
