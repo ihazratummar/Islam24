@@ -15,8 +15,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.app.ActivityCompat
+import javax.inject.Inject
 
-class PermissionsManager(private val activity: ComponentActivity) {
+class PermissionsManager (private val activity: ComponentActivity) {
 
     private var requestPermissionLauncher: ActivityResultLauncher<String> =
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -89,6 +90,18 @@ class PermissionsManager(private val activity: ComponentActivity) {
         } else {
             // Then, request notification permission
             requestNotificationPermission()
+        }
+    }
+    private val REQUEST_CODE_SCHEDULE_EXACT_ALARM = 100
+    fun requestExactAlarmPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(Manifest.permission.SCHEDULE_EXACT_ALARM),
+                    REQUEST_CODE_SCHEDULE_EXACT_ALARM
+                )
+            }
         }
     }
 }
