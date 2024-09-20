@@ -40,6 +40,7 @@
 -dontwarn androidx.sqlite.db.**
 -dontwarn androidx.arch.core.executor.**
 -dontwarn androidx.lifecycle.**
+-keep class androidx.core.** { *; }
 
 # Keep classes accessed via reflection
 -keep class * { @androidx.room.Entity *; }

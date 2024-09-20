@@ -25,7 +25,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
-
     private val logging = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
     }
@@ -34,12 +33,15 @@ object RetrofitModule {
         var response = chain.proceed(chain.request())
         var tryCount = 0
         val maxLimit = 3 // Number of retries
+
         while (!response.isSuccessful && tryCount < maxLimit) {
             tryCount++
+            response.close() // Close the previous response before retrying
             response = chain.proceed(chain.request())
         }
         response
     }
+
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(logging)
@@ -49,8 +51,6 @@ object RetrofitModule {
         .readTimeout(5, TimeUnit.MINUTES)
         .build()
 
-
-    //Prayer Time Api
     @Singleton
     @Provides
     fun providePrayerApi(): PrayerTimeApi {
@@ -62,8 +62,6 @@ object RetrofitModule {
             .create(PrayerTimeApi::class.java)
     }
 
-
-    //LocationApi Name
     @Singleton
     @Provides
     fun provideLocationNameApi(): LocationNameApi {
@@ -74,7 +72,6 @@ object RetrofitModule {
             .build()
             .create(LocationNameApi::class.java)
     }
-
 
     @Singleton
     @Provides
@@ -87,7 +84,6 @@ object RetrofitModule {
             .create(NamesApi::class.java)
     }
 
-
     @Singleton
     @Provides
     fun provideGregorianToHijriApi(): GregorianToHijriApi {
@@ -98,5 +94,4 @@ object RetrofitModule {
             .build()
             .create(GregorianToHijriApi::class.java)
     }
-
 }

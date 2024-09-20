@@ -4,8 +4,15 @@ package com.hazrat.islam24.core.presentation.prayertime
 
 
 import android.Manifest
+import android.app.AlarmManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +23,7 @@ import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
 import com.hazrat.islam24.notification.PrayerAlarmManager
+import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -66,111 +74,169 @@ class PrayerTimeViewModel @Inject constructor(
     fun onNotificationEvent(notificationEvent: NotificationEvent) {
         when (notificationEvent) {
             NotificationEvent.ToggleFajrNotification -> {
-                _notificationState.update {
-                    it.copy(
-                        isFajrNotification = !it.isFajrNotification
-                    )
-                }
-                viewModelScope.launch {
-                    dataStorePreference.setFajrNotification(
-                        _notificationState.value.isFajrNotification
-                    )
-                }
-                if (_notificationState.value.isFajrNotification) {
-                    val today = getCurrentDay()
-                    if (ActivityCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        prayerAlarmManager.setFajrPrayerAlarm(prayerTimes.value[today - 1].fajrTime)
+                if (checkExactAlarmPermission()) {
+                    _notificationState.update {
+                        it.copy(
+                            isFajrNotification = !it.isFajrNotification
+                        )
+                    }
+                    viewModelScope.launch {
+                        dataStorePreference.setFajrNotification(
+                            _notificationState.value.isFajrNotification
+                        )
+                    }
+                    if (_notificationState.value.isFajrNotification) {
+                        val today = getCurrentDay()
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            prayerAlarmManager.setFajrPrayerAlarm(prayerTimes.value[today - 1].fajrTime)
+                        }
+                    } else {
+                        prayerAlarmManager.cancelFajrAlarm()
                     }
                 } else {
-                    prayerAlarmManager.cancelFajrAlarm()
+                    openAppSettings()
                 }
             }
 
             NotificationEvent.ToggleDhuhrNotification -> {
-                _notificationState.update {
-                    it.copy(
-                        isDhuhrNotification = !it.isDhuhrNotification
-                    )
-                }
-                viewModelScope.launch {
-                    dataStorePreference.setDhuhrNotification(_notificationState.value.isDhuhrNotification)
-                }
-                if (_notificationState.value.isDhuhrNotification) {
-                    val today = getCurrentDay()
-                    if (ActivityCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        prayerAlarmManager.setDhuhrPrayerAlarm(prayerTimes.value[today - 1].dhuhrTime)
+                if (checkExactAlarmPermission()) {
+                    _notificationState.update {
+                        it.copy(
+                            isDhuhrNotification = !it.isDhuhrNotification
+                        )
                     }
-                } else {
-                    prayerAlarmManager.cancelDhuhrAlarm()
+                    viewModelScope.launch {
+                        dataStorePreference.setDhuhrNotification(_notificationState.value.isDhuhrNotification)
+                    }
+                    if (_notificationState.value.isDhuhrNotification) {
+                        val today = getCurrentDay()
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            prayerAlarmManager.setDhuhrPrayerAlarm(prayerTimes.value[today - 1].dhuhrTime)
+                        }
+                    } else {
+                        prayerAlarmManager.cancelDhuhrAlarm()
+                    }
+                }else{
+                    openAppSettings()
                 }
             }
 
             NotificationEvent.ToggleAsrNotification -> {
-                _notificationState.update {
-                    it.copy(
-                        isAsrNotification = !it.isAsrNotification
-                    )
-                }
-                viewModelScope.launch {
-                    dataStorePreference.setAsrNotification(_notificationState.value.isAsrNotification)
-                }
-                if (_notificationState.value.isAsrNotification) {
-                    val today = getCurrentDay()
-                    if (ActivityCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        prayerAlarmManager.setAsrPrayerAlarm(prayerTimes.value[today - 1].asrTime)
+                if (checkExactAlarmPermission()) {
+
+                    _notificationState.update {
+                        it.copy(
+                            isAsrNotification = !it.isAsrNotification
+                        )
                     }
-                } else {
-                    prayerAlarmManager.cancelAsrAlarm()
+                    viewModelScope.launch {
+                        dataStorePreference.setAsrNotification(_notificationState.value.isAsrNotification)
+                    }
+                    if (_notificationState.value.isAsrNotification) {
+                        val today = getCurrentDay()
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            prayerAlarmManager.setAsrPrayerAlarm(prayerTimes.value[today - 1].asrTime)
+                        }
+                    } else {
+                        prayerAlarmManager.cancelAsrAlarm()
+                    }
+                }else{
+                    openAppSettings()
                 }
             }
+
             NotificationEvent.ToggleMaghribNotification -> {
-                _notificationState.update {
-                    it.copy(
-                        isMaghribNotification = !it.isMaghribNotification
-                    )
-                }
-                viewModelScope.launch {
-                    dataStorePreference.setMaghribNotification(_notificationState.value.isMaghribNotification)
-                }
-                if (_notificationState.value.isMaghribNotification) {
-                    val today = getCurrentDay()
-                    if (ActivityCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        prayerAlarmManager.setMaghribPrayerAlarm(prayerTimes.value[today - 1].maghribTime)
+                if (checkExactAlarmPermission()) {
+
+                    _notificationState.update {
+                        it.copy(
+                            isMaghribNotification = !it.isMaghribNotification
+                        )
                     }
-                } else {
-                    prayerAlarmManager.cancelMaghribAlarm()
+                    viewModelScope.launch {
+                        dataStorePreference.setMaghribNotification(_notificationState.value.isMaghribNotification)
+                    }
+                    if (_notificationState.value.isMaghribNotification) {
+                        val today = getCurrentDay()
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            prayerAlarmManager.setMaghribPrayerAlarm(prayerTimes.value[today - 1].maghribTime)
+                        }
+                    } else {
+                        prayerAlarmManager.cancelMaghribAlarm()
+                    }
+                }else{
+                    openAppSettings()
                 }
             }
+
             NotificationEvent.ToggleIshaNotification -> {
-                _notificationState.update {
-                    it.copy(
-                        isIshaNotification = !it.isIshaNotification
-                    )
-                }
-                viewModelScope.launch {
-                    dataStorePreference.setIshaNotification(_notificationState.value.isIshaNotification)
-                }
-                if (_notificationState.value.isIshaNotification) {
-                    val today = getCurrentDay()
-                    if (ActivityCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        prayerAlarmManager.setIshaPrayerAlarm(prayerTimes.value[today - 1].ishaTime)
+                if (checkExactAlarmPermission()) {
+
+                    _notificationState.update {
+                        it.copy(
+                            isIshaNotification = !it.isIshaNotification
+                        )
                     }
-                } else {
-                    prayerAlarmManager.cancelIshaAlarm()
+                    viewModelScope.launch {
+                        dataStorePreference.setIshaNotification(_notificationState.value.isIshaNotification)
+                    }
+                    if (_notificationState.value.isIshaNotification) {
+                        val today = getCurrentDay()
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            prayerAlarmManager.setIshaPrayerAlarm(prayerTimes.value[today - 1].ishaTime)
+                        }
+                    } else {
+                        prayerAlarmManager.cancelIshaAlarm()
+                    }
+                }else{
+                    openAppSettings()
                 }
             }
         }
     }
+
+    private fun checkExactAlarmPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            return alarmManager.canScheduleExactAlarms()
+        }
+        return true
+    }
+
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllPrayerTimes()
             repository.networkObserver()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun openAppSettings() {
+        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+            data = Uri.parse("package:${context.packageName}")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
     }
 }
