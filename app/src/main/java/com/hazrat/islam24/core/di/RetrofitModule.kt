@@ -1,13 +1,13 @@
 package com.hazrat.islam24.core.di
 
-import com.hazrat.islam24.core.network.GregorianToHijriApi
-import com.hazrat.islam24.core.network.LocationNameApi
-import com.hazrat.islam24.core.network.NamesApi
-import com.hazrat.islam24.core.network.PrayerTimeApi
+import com.hazrat.islam24.core.api.GregorianToHijriApi
+import com.hazrat.islam24.core.api.LocationNameApi
+import com.hazrat.islam24.core.api.NamesApi
+import com.hazrat.islam24.core.api.PrayerTimeApi
 import com.hazrat.islam24.util.Constants.BASE_URL
 import com.hazrat.islam24.util.Constants.BASE_URL_NAME
 import com.hazrat.islam24.util.Constants.GTH_BASE_URL
-import com.hazrat.islam24.util.Constants.LOCATION_BASE_URL
+import com.hazrat.islam24.util.Constants.LOCATION_IQ_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,16 +62,16 @@ object RetrofitModule {
             .create(PrayerTimeApi::class.java)
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideLocationNameApi(): LocationNameApi {
-//        return Retrofit.Builder()
-//            .baseUrl(LOCATION_BASE_URL)
-//            .client(okHttpClient)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//            .create(LocationNameApi::class.java)
-//    }
+    @Singleton
+    @Provides
+    fun provideLocationNameApi(): LocationNameApi {
+        return Retrofit.Builder()
+            .baseUrl(LOCATION_IQ_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(LocationNameApi::class.java)
+    }
 
     @Singleton
     @Provides

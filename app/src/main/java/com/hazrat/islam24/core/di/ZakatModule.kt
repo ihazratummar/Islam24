@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.hazrat.islam24.core.data.dao.ZakatDao
 import com.hazrat.islam24.core.data.database.ZakatDatabase
-import com.hazrat.islam24.core.data.manager.ZakatRepositoryImpl
+import com.hazrat.islam24.core.data.repository.ZakatRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import com.hazrat.islam24.util.Constants.NISAB_DATABASE_NAME
 import dagger.Module

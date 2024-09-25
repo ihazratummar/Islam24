@@ -32,7 +32,7 @@ fun HomeScreen(
     navController: NavController,
     navigateToPrayerTime: () -> Unit,
     prayerTimes: List<PrayerTimeEntity>,
-//    locationName: List<LocationDetailsEntity>,
+    locationName: List<LocationDetailsEntity>,
     locationUpdate:() -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -54,8 +54,8 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.Top
                 ) {
                     Spacer(modifier = Modifier.height(dimens.size100))
-                    if (prayerTimes.isNotEmpty() ) {
-                        TimeLocationCard(prayerTimes, navigateToPrayerTime,)
+                    if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
+                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationDetailsEntity = locationName.first())
                     } else {
                         Box(
                             modifier = Modifier

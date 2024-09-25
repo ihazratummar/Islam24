@@ -1,4 +1,4 @@
-package com.hazrat.islam24.core.network
+package com.hazrat.islam24.core.api
 
 import com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
 import retrofit2.http.GET
@@ -23,8 +23,9 @@ interface LocationNameApi {
      */
     @GET("reverse")
     suspend fun getLocationName(
-        @Query("format") format: String = "json",
+        @Query("key") key: String,
         @Query("lat") lat: Double,
-        @Query("lon") lon: Double
+        @Query("lon") lon: Double,
+        @Query("format") format: String = "json",
     ): LocationNameFinder
 }

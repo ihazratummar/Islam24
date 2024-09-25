@@ -1,6 +1,6 @@
 //PrayerTimeRepositoryImpl.kt
 
-package com.hazrat.islam24.core.data.manager
+package com.hazrat.islam24.core.data.repository
 
 
 import android.content.Context
@@ -15,7 +15,7 @@ import com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.ApiRespon
 import com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.Data
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.core.network.PrayerTimeApi
+import com.hazrat.islam24.core.api.PrayerTimeApi
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.dateLongToString
@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject

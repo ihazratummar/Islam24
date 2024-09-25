@@ -1,4 +1,4 @@
-package com.hazrat.islam24.core.data.manager
+package com.hazrat.islam24.core.data.repository
 
 import android.annotation.SuppressLint
 import android.location.Location
