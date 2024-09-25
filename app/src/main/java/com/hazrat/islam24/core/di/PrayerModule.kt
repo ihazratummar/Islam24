@@ -6,18 +6,17 @@ import android.content.Context
 import android.util.Log
 import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.hazrat.islam24.core.api.PrayerTimeApi
 import com.hazrat.islam24.core.data.dao.LocationDao
-import com.hazrat.islam24.core.data.dao.LocationNameDao
 import com.hazrat.islam24.core.data.dao.PrayerSettingDao
 import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.database.LocationDatabase
 import com.hazrat.islam24.core.data.database.PrayerDatabase
-import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
-import com.hazrat.islam24.core.data.manager.PrayerTimeRepositoryImpl
+import com.hazrat.islam24.core.data.repository.LocationRepositoryImpl
+import com.hazrat.islam24.core.data.repository.PrayerTimeRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.core.network.PrayerTimeApi
 import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.Module
 import dagger.Provides
@@ -32,7 +31,7 @@ import javax.inject.Singleton
 object PrayerModule {
 
 
-    ///prayerTime repository
+//    /prayerTime repository
     @Singleton
     @Provides
     fun providePrayerTimeRepository(
@@ -71,31 +70,7 @@ object PrayerModule {
     }
 
 
-//    @Provides
-//    @Singleton
-//    fun provideLocationNameRepository(
-//        api: LocationNameApi,
-//        locationRepository: LocationRepositoryImpl,
-//        locationNameDao: LocationNameDao
-//    ): LocationNameRepository = LocationNameRepositoryImpl(api, locationRepository, locationNameDao)
 
-    @Singleton
-    @Provides
-    fun provideLocationNameDao(locationDatabase: LocationDatabase): LocationNameDao {
-        return locationDatabase.locationNameDao()
-    }
-
-
-    @Singleton
-    @Provides
-    fun provideLocationDatabase(@ApplicationContext context: Context): LocationDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            LocationDatabase::class.java,
-            "location_database"
-        ).fallbackToDestructiveMigration()
-            .build()
-    }
 
 
     @Singleton

@@ -1,4 +1,4 @@
-package com.hazrat.islam24.core.network
+package com.hazrat.islam24.core.api
 
 import com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse
 import retrofit2.http.GET

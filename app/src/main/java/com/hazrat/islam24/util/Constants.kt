@@ -20,6 +20,10 @@ object Constants {
     /** Base URL for location-related services */
     const val LOCATION_BASE_URL = "https://nominatim.openstreetmap.org"
 
+    /** Location IQ Api Key */
+    const val LOCATION_IQ_BASE_URL = "https://us1.locationiq.com/v1/"
+    const val LOCATION_IQ_API_KEY = "pk.20293ab6b36cd4949fff87a3a97a3c49"
+
     /** Base URL for retrieving Gregorian to Hijri conversion data */
     const val GTH_BASE_URL = "https://api.aladhan.com/"
 

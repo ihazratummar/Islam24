@@ -31,14 +31,14 @@ class QiblaViewModel @Inject constructor(
     @ApplicationContext context: Context,
     locationManager: LocationManager,
     compassSensorManager: CompassSensorManager,
-//    locationNameRepository: LocationNameRepository
+    locationNameRepository: LocationNameRepository
 ) : ViewModel() {
 
 
     private val _qiblaState = MutableStateFlow(QiblaState())
     val qiblaState = _qiblaState.asStateFlow()
 
-//    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
+    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
 
     init {
         locationManager.onLocationReceived = { location ->
