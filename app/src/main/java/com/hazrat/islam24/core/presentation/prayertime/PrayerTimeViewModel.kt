@@ -61,7 +61,7 @@ class PrayerTimeViewModel @Inject constructor(
             isIshaNotification = dataStorePreference.getIshaNotification()
         )
     )
-    val notificationState = _notificationState.asStateFlow()
+    val notificationState= _notificationState.asStateFlow()
 
     fun onEvent(prayerEvent: PrayerEvent) {
         when (prayerEvent) {
