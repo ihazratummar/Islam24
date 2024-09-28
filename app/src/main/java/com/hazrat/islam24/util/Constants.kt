@@ -17,9 +17,6 @@ object Constants {
     /** Base URL for the Aladhan API */
     const val BASE_URL = "https://api.aladhan.com/v1/calendar/"
 
-    /** Base URL for location-related services */
-    const val LOCATION_BASE_URL = "https://nominatim.openstreetmap.org"
-
     /** Location IQ Api Key */
     const val LOCATION_IQ_BASE_URL = "https://us1.locationiq.com/v1/"
     const val LOCATION_IQ_API_KEY = "pk.20293ab6b36cd4949fff87a3a97a3c49"
@@ -35,6 +32,5 @@ object Constants {
 
 
     const val NISAB_DATABASE_NAME = "nisab_db"
-    const val PREF_NAME = "note_preference"
     const val KEY_SORT_BY = "sort_type"
 }

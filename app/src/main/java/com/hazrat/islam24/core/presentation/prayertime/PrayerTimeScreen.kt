@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -49,6 +50,7 @@ import com.hazrat.islam24.main.navigation.nvgraph.FajrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.IshaSetting
 import com.hazrat.islam24.main.navigation.nvgraph.MaghribSetting
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
@@ -59,15 +61,13 @@ import kotlinx.coroutines.delay
 fun PrayerTimeScreen(
     navController: NavController,
     event: (PrayerEvent) -> Unit,
-    prayerTimes: List<PrayerTimeEntity>,
-    notificationState: NotificationState
+    prayerTimes: List<PrayerTimeEntity>
 ) {
 
     ShowData(
         navController = navController,
         event = event,
-        prayerTimes = prayerTimes,
-        notificationState = notificationState
+        prayerTimes = prayerTimes
     )
 
 }
@@ -79,7 +79,6 @@ fun ShowData(
     navController: NavController,
     event: (PrayerEvent) -> Unit,
     prayerTimes: List<PrayerTimeEntity>,
-    notificationState: NotificationState
 ) {
     val methods = prayerTimes.firstOrNull()
     Scaffold(
@@ -150,8 +149,6 @@ fun ShowData(
                 ViewPager(
                     prayerTimes = prayerTimes,
                     navController = navController,
-                    prayerEvent = event,
-                    notificationState = notificationState
                 )
             }
 
@@ -164,8 +161,6 @@ fun ShowData(
 fun ViewPager(
     prayerTimes: List<PrayerTimeEntity>,
     navController: NavController,
-    prayerEvent: (PrayerEvent) -> Unit = {},
-    notificationState: NotificationState
 ) {
 
     val todayDay = getCurrentDay()
@@ -193,8 +188,7 @@ fun ViewPager(
         state = pagerState,
     ) { page ->
         PrayerTimesDay(
-            prayerTimes[page], navController,
-            notificationState = notificationState
+            prayerTimes[page], navController
         )
     }
 }
@@ -204,8 +198,7 @@ fun ViewPager(
 @Composable
 fun PrayerTimesDay(
     data: PrayerTimeEntity,
-    navController: NavController,
-    notificationState: NotificationState
+    navController: NavController
 ) {
     val gregorianDay = data.gregorianDay.toInt()
 
@@ -254,8 +247,7 @@ fun PrayerTimesDay(
                 asrCountDown,
                 maghribCountDown,
                 ishaCountDown,
-                navController = navController,
-                notificationState = notificationState
+                navController = navController
             )
         }
     }
@@ -270,13 +262,13 @@ private fun PrayerTime(
     asrCountDown: String,
     maghribCountDown: String,
     ishaCountDown: String,
-    navController: NavController,
-    notificationState: NotificationState
+    navController: NavController
 ) {
 
 
     val currentTime = System.currentTimeMillis()
-
+    val context = LocalContext.current
+    val dataStorePreference = DataStorePreference(context = context)
 
     val isFajrTime = currentTime in (data.fajrTime + 1)..(data.sunriseTime - 300000)
     val isSunriseTime = currentTime in (data.sunriseTime + 1)..(data.sunriseTime)
@@ -299,7 +291,7 @@ private fun PrayerTime(
         onClick = {
             navController.navigate(FajrSetting)
         },
-        isNotification = notificationState.isFajrNotification
+        isNotification = dataStorePreference.getFajrNotification()
 
     )
     PrayerTimeCard(
@@ -318,7 +310,7 @@ private fun PrayerTime(
         onClick = {
             navController.navigate(DhuhrSetting)
         },
-        isNotification = notificationState.isDhuhrNotification
+        isNotification = dataStorePreference.getDhuhrNotification()
     )
     PrayerTimeCard(
         icon = R.drawable.asr,
@@ -329,7 +321,7 @@ private fun PrayerTime(
         onClick = {
             navController.navigate(AsrSetting)
         },
-        isNotification = notificationState.isAsrNotification
+        isNotification = dataStorePreference.getAsrNotification()
     )
     PrayerTimeCard(
         icon = R.drawable.maghrib,
@@ -340,7 +332,7 @@ private fun PrayerTime(
         onClick = {
             navController.navigate(MaghribSetting)
         },
-        isNotification = notificationState.isMaghribNotification
+        isNotification = dataStorePreference.getMaghribNotification()
     )
     PrayerTimeCard(
         icon = R.drawable.isha,
@@ -351,7 +343,7 @@ private fun PrayerTime(
         onClick = {
             navController.navigate(IshaSetting)
         },
-        isNotification = notificationState.isIshaNotification
+        isNotification = dataStorePreference.getIshaNotification()
     )
 }
 
