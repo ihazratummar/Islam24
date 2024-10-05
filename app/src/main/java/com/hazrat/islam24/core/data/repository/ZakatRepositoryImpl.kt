@@ -1,4 +1,4 @@
-package com.hazrat.islam24.core.data.manager
+package com.hazrat.islam24.core.data.repository
 
 import com.hazrat.islam24.core.data.dao.ZakatDao
 import com.hazrat.islam24.core.domain.model.zakat.NisabEntity

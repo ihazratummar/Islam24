@@ -49,9 +49,9 @@ class QiblaViewModel @Inject constructor(
             val qiblaDirection =
                 calculateQiblaDirection(location.latitude, location.longitude).toFloat()
             updateQiblaDirection(qiblaDirection)
-            viewModelScope.launch {
-                locationNameRepository.locationName()
-            }
+//            viewModelScope.launch {
+//                locationNameRepository.locationName()
+//            }
         }
 
         // Handle compass direction changes

@@ -1,5 +1,7 @@
 package com.hazrat.islam24.core.presentation.prayertime.notification
 
+import com.hazrat.islam24.core.presentation.prayertime.PrayerEvent
+
 /**
  * @author Hazrat Ummar Shaikh
  */
@@ -11,6 +13,8 @@ sealed interface NotificationEvent {
     data object ToggleAsrNotification : NotificationEvent
     data object ToggleMaghribNotification : NotificationEvent
     data object ToggleIshaNotification : NotificationEvent
+
+    data object RefreshNotificationState: NotificationEvent
 
 
 }

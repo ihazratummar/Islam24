@@ -50,9 +50,6 @@ fun MaghribNotification(
     onBackClick: () -> Unit,
     notificationState: NotificationState
 ) {
-    val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -64,7 +61,10 @@ fun MaghribNotification(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onBackClick() }) {
+                    IconButton(onClick = {
+                        onBackClick()
+                        notificationEvent(NotificationEvent.RefreshNotificationState)
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.backicon),
                             contentDescription = "BackClick"
@@ -72,17 +72,6 @@ fun MaghribNotification(
                     }
                 }
             )
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState) { data ->
-                Snackbar(
-                    modifier = Modifier,
-                    snackbarData = data,
-                    actionColor = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.medium,
-                    actionOnNewLine = false,
-                )
-            }
         }
     ) { paddingValues ->
         Column(
@@ -112,23 +101,12 @@ fun MaghribNotification(
                         checked = notificationState.isMaghribNotification,
                         onCheckedChange = {
                             notificationEvent(NotificationEvent.ToggleMaghribNotification)
-                            coroutineScope.launch {
-                                if (it) {
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.maghrib_notification_enabled),
-                                        withDismissAction = true
-                                    )
-                                }else{
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.maghrib_notification_disabled),
-                                        withDismissAction = true
-                                    )
-                                }
-                            }
                         }
                     ) {
                         Icon(
-                            painter = if (notificationState.isMaghribNotification) painterResource(id = R.drawable.toggleon) else painterResource(id = R.drawable.toggleoff),
+                            painter = if (notificationState.isMaghribNotification) painterResource(
+                                id = R.drawable.toggleon
+                            ) else painterResource(id = R.drawable.toggleoff),
                             contentDescription = "Notification",
                             modifier = Modifier.size(dimens.size40)
                         )

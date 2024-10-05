@@ -55,7 +55,7 @@ fun HomeScreen(
                 ) {
                     Spacer(modifier = Modifier.height(dimens.size100))
                     if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
-                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
+                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationDetailsEntity = locationName.first())
                     } else {
                         Box(
                             modifier = Modifier

@@ -50,10 +50,6 @@ fun DhuhrNotification(
     onBackClick: () -> Unit,
     notificationState: NotificationState
 ) {
-
-    val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -65,7 +61,10 @@ fun DhuhrNotification(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onBackClick() }) {
+                    IconButton(onClick = {
+                        onBackClick()
+                        notificationEvent(NotificationEvent.RefreshNotificationState)
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.backicon),
                             contentDescription = "BackClick"
@@ -73,17 +72,6 @@ fun DhuhrNotification(
                     }
                 }
             )
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState) { data ->
-                Snackbar(
-                    modifier = Modifier,
-                    snackbarData = data,
-                    actionColor = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.medium,
-                    actionOnNewLine = false,
-                )
-            }
         }
     ) { paddingValues ->
         Column(
@@ -113,23 +101,12 @@ fun DhuhrNotification(
                         checked = notificationState.isDhuhrNotification,
                         onCheckedChange = {
                             notificationEvent(NotificationEvent.ToggleDhuhrNotification)
-                            coroutineScope.launch {
-                                if (it) {
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.dhuhr_notification_enabled),
-                                        withDismissAction = true
-                                    )
-                                }else{
-                                    snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.dhuhr_notification_disabled),
-                                        withDismissAction = true
-                                    )
-                                }
-                            }
                         }
                     ) {
                         Icon(
-                            painter = if (notificationState.isDhuhrNotification) painterResource(id = R.drawable.toggleon) else painterResource(id = R.drawable.toggleoff),
+                            painter = if (notificationState.isDhuhrNotification) painterResource(id = R.drawable.toggleon) else painterResource(
+                                id = R.drawable.toggleoff
+                            ),
                             contentDescription = "Notification",
                             modifier = Modifier.size(dimens.size40)
                         )
