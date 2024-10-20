@@ -1,6 +1,12 @@
 package com.hazrat.islam24.auth.api
 
 
+import com.hazrat.islam24.auth.model.RequestOtpBody
+import com.hazrat.islam24.auth.model.RequestOtpResponse
+import com.hazrat.islam24.auth.model.ResetPasswordBody
+import com.hazrat.islam24.auth.model.ResetPasswordResponse
+import com.hazrat.islam24.auth.model.VerifyOtpBody
+import com.hazrat.islam24.auth.model.VerifyOtpResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -22,11 +28,5 @@ interface VercelApi {
     suspend fun resetPassword(@Body body: ResetPasswordBody): Response<ResetPasswordResponse>
 }
 
-data class RequestOtpBody(val email: String)
-data class VerifyOtpBody(val email: String, val otp: String)
-data class ResetPasswordBody(val email: String, val new_password: String)
 
-data class RequestOtpResponse(val message: String)
-data class VerifyOtpResponse(val message: String)
-data class ResetPasswordResponse(val message: String)
 

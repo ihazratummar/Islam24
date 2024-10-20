@@ -2,10 +2,10 @@ package com.hazrat.islam24.auth.repository
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import com.hazrat.islam24.auth.api.RequestOtpBody
-import com.hazrat.islam24.auth.api.ResetPasswordBody
 import com.hazrat.islam24.auth.api.VercelApi
-import com.hazrat.islam24.auth.api.VerifyOtpBody
+import com.hazrat.islam24.auth.model.RequestOtpBody
+import com.hazrat.islam24.auth.model.ResetPasswordBody
+import com.hazrat.islam24.auth.model.VerifyOtpBody
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.error.ForgetPasswordError
 import com.hazrat.islam24.util.error.ForgetPasswordSuccess
