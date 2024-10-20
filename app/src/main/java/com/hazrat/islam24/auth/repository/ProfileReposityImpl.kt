@@ -2,14 +2,12 @@ package com.hazrat.islam24.auth.repository
 
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -22,12 +20,10 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
-import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError
 import com.hazrat.islam24.util.error.UserDataSuccess
-import com.hazrat.islam24.util.getActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

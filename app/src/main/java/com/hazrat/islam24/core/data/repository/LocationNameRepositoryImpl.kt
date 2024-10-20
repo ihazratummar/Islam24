@@ -129,10 +129,6 @@ class LocationNameRepositoryImpl @Inject constructor(
     override fun getLocationDetails(): Flow<List<LocationDetailsEntity>> =
         locationNameDao.getLocationDetails().flowOn(Dispatchers.IO)
 
-    private suspend fun deleteOtherLocationDetails() {
-        locationNameDao.deleteOtherLocationDetails()
-    }
-
     private suspend fun saveLocation(locationDetailsEntity: LocationDetailsEntity) {
         locationNameDao.saveLocationDetails(locationDetailsEntity)
     }

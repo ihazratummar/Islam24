@@ -165,7 +165,7 @@ data object Zakat
 data object ZakatScreen
 
 @Serializable
-data class ZakatDetailsScreen(val zakatId: Int)
+data class ZakatDetailsScreen(val zakatId: String)
 
 @Serializable
 data object NisabScreen

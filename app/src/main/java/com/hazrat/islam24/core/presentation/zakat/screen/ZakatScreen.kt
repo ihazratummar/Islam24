@@ -44,7 +44,7 @@ fun ZakatScreen(
     zakatState: ZakatState,
     zakatEvent: (ZakatEvent) -> Unit,
     onNewAddClick: () -> Unit = {},
-    openZakat:(Int) -> Unit ={},
+    openZakat:(String) -> Unit ={},
     onBackClick:() -> Unit = {}
 
     ) {

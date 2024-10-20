@@ -67,13 +67,17 @@ class PrayerTimeRepositoryImpl @Inject constructor(
             val year = DateUtil.getCurrentYear()
             val month = DateUtil.getCurrentMonth()
 
-            val apiResponse =
-                api.getPrayerTimes(year, month, "$latitude", "$longitude", methodValue, schoolValue)
-            apiResponse.data.forEach { apiDataForDay ->
-                val prayerTimeEntity = convertApiResponseToEntity(apiDataForDay)
-                updatePrayerTime(prayerTimeEntity)
+            if (_networkStatus.value == ConnectivityObserver.Status.Available){
+                val apiResponse =
+                    api.getPrayerTimes(year, month, "$latitude", "$longitude", methodValue, schoolValue)
+                apiResponse.data.forEach { apiDataForDay ->
+                    val prayerTimeEntity = convertApiResponseToEntity(apiDataForDay)
+                    updatePrayerTime(prayerTimeEntity)
+                }
+                apiResponse
+            }else{
+                null
             }
-            apiResponse
         } catch (e: HttpException) {
             null
         } catch (e: IOException) {

@@ -1,6 +1,5 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
-import com.hazrat.islam24.auth.presentation.AuthEvent
 import com.hazrat.islam24.util.Languages
 
 /**
