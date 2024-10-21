@@ -8,9 +8,12 @@ import androidx.room.PrimaryKey
 data class NameEntity(
     @PrimaryKey
     val number: Int,
-    val enDec: String,
-    val meaning:String,
+    val enDesc: String,
+    val enMeaning:String,
     val found:String,
     val name: String,
-    val transliteration: String
+    val transliteration: String,
+    val bnTransliteration: String,
+    val bnMeaning: String,
+    val bnDec: String?
 )

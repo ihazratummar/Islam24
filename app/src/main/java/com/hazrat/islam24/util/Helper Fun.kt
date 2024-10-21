@@ -5,8 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.VibrationEffect
 import android.os.Vibrator
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import java.util.Locale
 
 
 fun drawableToBitmap(context: Context, drawableId: Int): Bitmap {
@@ -26,3 +29,9 @@ fun vibrateDevice(context: Context, vibrateTime: Long) {
     }
 }
 
+@Composable
+fun getSystemLanguage(): String {
+    val context = LocalContext.current
+    val locale: Locale = context.resources.configuration.locales[0]
+    return locale.language
+}
