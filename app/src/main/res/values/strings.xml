@@ -108,5 +108,11 @@
     <string name="maghrib_notification_enabled">Maghrib Notification Enabled</string>
     <string name="maghrib_notification_disabled">Maghrib Notification Disabled</string>
     <string name="notification">Notification</string>
+    <string name="email_sent_successfully">Otp send successfully check your email.</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="email_verified_successfully">Email verified successfully</string>
+    <string name="invalid_otp">Invalid OTP</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="password_reset_successfully">Password reset successful</string>
 
 </resources>

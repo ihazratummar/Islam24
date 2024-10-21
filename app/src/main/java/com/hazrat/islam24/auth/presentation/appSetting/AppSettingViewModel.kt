@@ -1,6 +1,5 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
-import com.hazrat.islam24.util.ContextUtils
 import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.changeLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel

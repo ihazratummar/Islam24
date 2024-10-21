@@ -12,11 +12,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
-import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
-import com.hazrat.islam24.main.navigation.nvgraph.PrayerTime
 import com.hazrat.islam24.notification.NotificationHelper
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.service.LocationHandler
@@ -62,7 +60,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var permissionsManager: PermissionsManager
 
     private val appSettingViewModel by viewModels<AppSettingViewModel>()
-    private val mainViewModel by viewModels<MainViewModel>()
 
     /**
      * Called when the activity is starting. This is where most initialization should go.

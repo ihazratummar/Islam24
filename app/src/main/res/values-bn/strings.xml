@@ -106,4 +106,10 @@
     <string name="maghrib_notification_enabled">মাগরিব নোটিফিকেশন সক্রিয় করা হয়েছে</string>
     <string name="maghrib_notification_disabled">মাগরিব নোটিফিকেশন নিষ্ক্রিয়</string>
     <string name="notification">নোটিফিকেশন</string>
+    <string name="email_sent_successfully">Otp send successfully check your email.</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="email_verified_successfully">Email verified successfully</string>
+    <string name="invalid_otp">Invalid OTP</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="password_reset_successfully">Password reset successful</string>
 </resources>

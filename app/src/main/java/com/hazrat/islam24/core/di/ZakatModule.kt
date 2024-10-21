@@ -2,6 +2,8 @@ package com.hazrat.islam24.core.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.hazrat.islam24.core.data.dao.ZakatDao
 import com.hazrat.islam24.core.data.database.ZakatDatabase
 import com.hazrat.islam24.core.data.repository.ZakatRepositoryImpl
@@ -21,7 +23,7 @@ object ZakatModule {
 
     @Singleton
     @Provides
-    fun provideNisabDatabase(@ApplicationContext context: Context) : ZakatDatabase {
+    fun provideNisabDatabase(@ApplicationContext context: Context): ZakatDatabase {
         return Room.databaseBuilder(
             context,
             ZakatDatabase::class.java,
@@ -31,8 +33,13 @@ object ZakatModule {
 
     @Provides
     @Singleton
-    fun provideRepository(dao: ZakatDao): ZakatRepository {
-        return ZakatRepositoryImpl(dao)
+    fun provideRepository(
+        dao: ZakatDao,
+        auth: FirebaseAuth,
+        fireStore: FirebaseFirestore,
+        @ApplicationContext context: Context
+    ): ZakatRepository {
+        return ZakatRepositoryImpl(dao = dao, auth = auth, fireStore = fireStore, context = context)
     }
 
     @Provides

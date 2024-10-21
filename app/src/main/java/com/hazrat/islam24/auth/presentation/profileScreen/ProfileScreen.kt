@@ -1,7 +1,6 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
 import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -28,16 +27,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -99,7 +94,6 @@ fun ProfileScreen(
 }
 
 
-
 @Composable
 private fun ProfileComponent(
     navController: NavController,
@@ -127,6 +121,7 @@ private fun ProfileComponent(
                 },
                 trailingIcon = painterResource(id = R.drawable.chevron_right)
             )
+
             ProfileScreenItemCard(
                 painter = painterResource(id = R.drawable.like),
                 text = stringResource(id = R.string.rate),
@@ -150,12 +145,13 @@ private fun ProfileComponent(
         }
     }
 }
+
 @Composable
 private fun ProfileScreenItemCard(
     painter: Painter,
     text: String,
     onClick: () -> Unit = {},
-    trailingIcon:Painter
+    trailingIcon: Painter
 ) {
     Card(
         modifier = Modifier
@@ -164,11 +160,11 @@ private fun ProfileScreenItemCard(
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        ),
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(dimens.size10)
         ) {
             Row(
@@ -192,7 +188,7 @@ private fun ProfileScreenItemCard(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Icon(painter = trailingIcon, contentDescription = "trailingIcon" )
+                Icon(painter = trailingIcon, contentDescription = "trailingIcon")
             }
         }
     }
@@ -233,59 +229,52 @@ private fun ProfileHeader(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(vertical = dimens.size20),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimens.size20),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        when (painter.state) {
-                            is AsyncImagePainter.State.Loading -> {
-
-                                CircularProgressIndicator()
-                            }
-
-                            is AsyncImagePainter.State.Success -> {
-                                Image(
-                                    painter = painter,
-                                    contentDescription = "Profile Picture",
-                                    modifier = Modifier
-                                        .wrapContentSize()
-                                        .padding(horizontal = dimens.size10)
-                                        .size(dimens.size60)
-                                        .clip(CircleShape),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-
-                            else -> {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = "error"
-                                )
-                            }
+                    when (painter.state) {
+                        is AsyncImagePainter.State.Loading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .padding(horizontal = dimens.size10)
+                                    .size(dimens.size100)
+                                    .clip(CircleShape)
+                                    .wrapContentSize()
+                            )
                         }
-                        Spacer(modifier = Modifier.width(dimens.size10))
-                        Text(
-                            text = "Salam, ${profileState.userData?.fullName ?: "User"}",
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrowright),
-                            contentDescription = "ArrowRight",
-                            modifier = Modifier.weight(0.1f)
-                        )
+                        is AsyncImagePainter.State.Success -> {
+                            Image(
+                                painter = painter,
+                                contentDescription = "Profile Picture",
+                                modifier = Modifier
+                                    .padding(horizontal = dimens.size10)
+                                    .size(dimens.size100)
+                                    .clip(CircleShape)
+                                    .wrapContentSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        else -> {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "error"
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.width(dimens.size10))
+                    Text(
+                        text = "Saalam, ${profileState.userData?.fullName ?: "User"}",
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
             }
         }
 
         is AuthState.Loading -> {
             ProfileCard(
-                text = "Salam, ${profileState.userData?.fullName ?: "User"}",
+                text = "Saalam, ${profileState.userData?.fullName ?: "User"}",
                 onClick = {},
                 modifier = Modifier.profileCardShimmerEffect()
             )

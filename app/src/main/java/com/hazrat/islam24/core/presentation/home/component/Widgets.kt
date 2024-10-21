@@ -48,7 +48,6 @@ import com.hazrat.islam24.main.navigation.NamesOfAllahScreen
 import com.hazrat.islam24.main.navigation.QiblaDirectionScreen
 import com.hazrat.islam24.main.navigation.nvgraph.Zakat
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.Dimens
 import okhttp3.internal.immutableListOf
 
 @Composable

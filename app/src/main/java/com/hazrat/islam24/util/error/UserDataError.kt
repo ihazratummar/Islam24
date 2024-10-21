@@ -16,3 +16,17 @@ enum class UserDataSuccess {
     SUCCESS_NAME_UPDATE,
     SUCCESS_BIO_UPDATE
 }
+
+enum class ForgetPasswordSuccess{
+    SUCCESS_EMAIL_SENT,
+    SUCCESS_EMAIL_VERIFIED,
+    SUCCESS_PASSWORD_RESET
+}
+
+enum class ForgetPasswordError: Error{
+    NO_INTERNET,
+    INVALID_EMAIL,
+    INVALID_OTP,
+    INVALID_PASSWORD,
+    UNKNOWN_ERROR
+}

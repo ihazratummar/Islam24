@@ -42,7 +42,6 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectThemeDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
-import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Languages
 import kotlinx.coroutines.launch
