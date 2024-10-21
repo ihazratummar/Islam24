@@ -1,12 +1,14 @@
 package com.hazrat.islam24.core.data.repository
 
 
+import android.util.Log
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.entity.NameEntity
 import com.hazrat.islam24.core.domain.model.namesofallah.En
 import com.hazrat.islam24.core.domain.model.namesofallah.NameOfAllahData
 import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.api.NamesApi
+import com.hazrat.islam24.core.domain.model.namesofallah.Bn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -46,6 +48,7 @@ class NamesRepositoryImpl @Inject constructor(
                     remoteNames
                 }
             } catch (e: Exception) {
+                Log.e("NamesRepositoryImpl", "Error fetching names: ${e.message}")
                 // Handle exceptions and return an empty list
                 emptyList()
             }
@@ -60,12 +63,15 @@ class NamesRepositoryImpl @Inject constructor(
      */
     private fun nameDataToEntity(data: NameOfAllahData): NameEntity {
         return NameEntity(
-            enDec = data.en.desc,
-            meaning = data.en.meaning,
+            enDesc = data.en.desc,
+            enMeaning = data.en.meaning,
             found = data.found,
             name = data.name,
             number = data.number,
-            transliteration = data.transliteration
+            transliteration = data.transliteration,
+            bnTransliteration = data.bntransliteration,
+            bnDec = data.bn.desc,
+            bnMeaning = data.bn.meaning
         )
     }
 
@@ -77,11 +83,13 @@ class NamesRepositoryImpl @Inject constructor(
      */
     private fun nameEntityToData(entity: NameEntity): NameOfAllahData {
         return NameOfAllahData(
-            en = En(entity.enDec, entity.meaning),
+            en = En(entity.enDesc, entity.enMeaning),
             found = entity.found,
             name = entity.name,
             number = entity.number,
-            transliteration = entity.transliteration
+            transliteration = entity.transliteration,
+            bntransliteration = entity.bnTransliteration,
+            bn = Bn(desc = entity.bnDec?:"", meaning = entity.bnMeaning)
         )
     }
 
