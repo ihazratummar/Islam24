@@ -1,4 +1,4 @@
-package com.hazrat.islam24.core.data.manager
+package com.hazrat.islam24.core.data.repository
 
 
 import com.hazrat.islam24.core.data.dao.NameDao
@@ -6,7 +6,7 @@ import com.hazrat.islam24.core.data.entity.NameEntity
 import com.hazrat.islam24.core.domain.model.namesofallah.En
 import com.hazrat.islam24.core.domain.model.namesofallah.NameOfAllahData
 import com.hazrat.islam24.core.domain.repository.NamesRepository
-import com.hazrat.islam24.core.network.NamesApi
+import com.hazrat.islam24.core.api.NamesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

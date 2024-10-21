@@ -11,6 +11,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
+import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.AppNavigator
 import com.hazrat.islam24.main.navigation.HomeScreen
 import kotlinx.serialization.Serializable
@@ -19,7 +20,8 @@ import kotlinx.serialization.Serializable
 @Composable
 fun NavGraph(
     appSettingState: AppSettingState,
-    appSettingEvent : (AppSettingEvent) -> Unit
+    appSettingEvent : (AppSettingEvent) -> Unit,
+    zakatViewModel: ZakatViewModel
 ) {
     val navController = rememberNavController()
 
@@ -31,7 +33,8 @@ fun NavGraph(
             composable<HomeScreen> {
                 AppNavigator(
                     appSettingState = appSettingState,
-                    appSettingEvent = appSettingEvent
+                    appSettingEvent = appSettingEvent,
+                    zakatViewModel = zakatViewModel
                 )
             }
         }

@@ -40,14 +40,14 @@ Discover a seamless and intuitive Islamic app crafted to enhance your spiritual 
 4. ![Tasbih](https://img.icons8.com/?size=30&id=pL3eOc0xrPsO&format=png&color=000000) **Tasbih:** Digital counter for your Tasbih needs.
 5. ![Qibla Direction](https://img.icons8.com/?size=30&id=22lwhESSqHNw&format=png&color=000000) **Qibla Direction:** Easy-to-use Qibla compass to find the direction of the Kaaba.
 6.  [User Profile](https://img.icons8.com/?size=30&id=qVcjfxtIiPix&format=png&color=000000) **User Profile:** Customize your profile within the app.
+7.  [Zakat Calculator](https://img.icons8.com/?size=30&id=cp8BMs7vNblP&format=png&color=000000) **Zakat Calculator:** Calculate your Zakat with ease.
 ---
 
 **Upcoming Features:**
-1. ![Zakat Calculator](https://img.icons8.com/?size=30&id=cp8BMs7vNblP&format=png&color=000000) **Zakat Calculator:** Calculate your Zakat with ease.
-2. ![Duas](https://img.icons8.com/?size=30&id=wJfaXYIQCMLt&format=png&color=000000) **Duas:** A comprehensive collection of daily Duas.
-3. ![Islamic Quiz](https://img.icons8.com/?size=30&id=WPrc6tXLWBBQ&format=png&color=000000) **Islamic Quiz:** Test your knowledge with Islamic quizzes.
-4![Nearby Halal Places](https://img.icons8.com/?size=30&id=37713&format=png&color=000000) **Nearby Halal Places:** Find Halal restaurants and shops near you.
-5![Nearby Masjids](https://img.icons8.com/?size=30&id=rRRmNzuBSYaF&format=png&color=000000) **Nearby Masjids:** Locate the closest Masjids for prayer.
+1. ![Duas](https://img.icons8.com/?size=30&id=wJfaXYIQCMLt&format=png&color=000000) **Duas:** A comprehensive collection of daily Duas.
+2. ![Islamic Quiz](https://img.icons8.com/?size=30&id=WPrc6tXLWBBQ&format=png&color=000000) **Islamic Quiz:** Test your knowledge with Islamic quizzes.
+3. ![Nearby Halal Places](https://img.icons8.com/?size=30&id=37713&format=png&color=000000) **Nearby Halal Places:** Find Halal restaurants and shops near you.
+4. ![Nearby Masjids](https://img.icons8.com/?size=30&id=rRRmNzuBSYaF&format=png&color=000000) **Nearby Masjids:** Locate the closest Masjids for prayer.
 
 
 ---

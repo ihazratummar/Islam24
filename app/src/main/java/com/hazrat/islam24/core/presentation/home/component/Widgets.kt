@@ -46,6 +46,7 @@ import com.hazrat.islam24.main.navigation.AthkarScreen
 import com.hazrat.islam24.main.navigation.CalendarScreen
 import com.hazrat.islam24.main.navigation.NamesOfAllahScreen
 import com.hazrat.islam24.main.navigation.QiblaDirectionScreen
+import com.hazrat.islam24.main.navigation.nvgraph.Zakat
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Dimens
 import okhttp3.internal.immutableListOf
@@ -58,23 +59,28 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
         R.drawable.calendar,
         R.drawable.athkar,
         R.drawable.qibla,
+        R.drawable.zakat
     )
 
     val names = immutableListOf(
         stringResource(R.string.names),
         stringResource(R.string.calendar),
         stringResource(R.string.athkar),
-        stringResource(id = R.string.qibla)
+        stringResource(id = R.string.qibla),
+        stringResource(id = R.string.zakat)
     )
 
     val onClickLabel = immutableListOf(
         stringResource(R.string.names),
         stringResource(R.string.calendar),
         stringResource(R.string.athkar),
-        stringResource(id = R.string.qibla)
+        stringResource(id = R.string.qibla),
+        stringResource(id = R.string.zakat)
     )
 
-    Box(modifier = Modifier.height(dimens.size150).fillMaxWidth()) {
+    Box(modifier = Modifier
+        .height(dimens.size200)
+        .fillMaxWidth()) {
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Fixed(4),
@@ -82,6 +88,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
         ) {
             items(names.size) { index ->
                 Column(
+                    modifier = Modifier.padding(vertical = dimens.size10),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -93,28 +100,38 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                             .clickable(
                                 onClick = {
                                     when (index) {
-                                        0 -> navController.navigate(NamesOfAllahScreen){
+                                        0 -> navController.navigate(NamesOfAllahScreen) {
                                             popUpTo(navController.graph.findStartDestination().id) {
                                                 saveState = true
                                             }
                                             launchSingleTop = true
                                             restoreState = false
                                         }
-                                        1 -> navController.navigate(CalendarScreen){
+
+                                        1 -> navController.navigate(CalendarScreen) {
                                             popUpTo(navController.graph.findStartDestination().id) {
                                                 saveState = true
                                             }
                                             launchSingleTop = true
                                             restoreState = true
                                         }
-                                        2 -> navController.navigate(AthkarScreen){
+
+                                        2 -> navController.navigate(AthkarScreen) {
                                             popUpTo(navController.graph.findStartDestination().id) {
                                                 saveState = true
                                             }
                                             launchSingleTop = true
                                             restoreState = true
                                         }
-                                        3 -> navController.navigate(QiblaDirectionScreen){
+
+                                        3 -> navController.navigate(QiblaDirectionScreen) {
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                        4-> navController.navigate(Zakat){
                                             popUpTo(navController.graph.findStartDestination().id) {
                                                 saveState = true
                                             }

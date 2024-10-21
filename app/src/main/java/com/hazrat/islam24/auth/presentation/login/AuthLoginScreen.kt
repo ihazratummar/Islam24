@@ -73,9 +73,11 @@ fun AuthLoginScreen(
             is AuthState.Authenticated -> {
                 navigateToProfile()
             }
+
             is AuthState.Error -> {
                 Toast.makeText(context, authState.message, Toast.LENGTH_LONG).show()
             }
+
             else -> Unit
         }
 //        loginEvent(LoginEvent.Refresh)
@@ -155,18 +157,14 @@ fun AuthLoginScreen(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done,
                     trailingIcon = {
-                        val image =
-                            if (state.passwordVisible) painterResource(id = R.drawable.eyeopen)
-                            else painterResource(id = R.drawable.eyeclose)
-                        IconButton(onClick = { loginEvent(LoginEvent.OnPasswordVisibilityChanged) }
-                        ) {
-                            Icon(
-                                painter = image,
-                                contentDescription = if (state.passwordVisible) "Hide Password" else "Show Password",
-                                modifier = Modifier.size(20.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        Text(
+                            text = if (state.passwordVisible) "Hide" else "Show",
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.clickable {
+                                loginEvent(LoginEvent.OnPasswordVisibilityChanged)
+                            },
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     },
                     visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
                 )

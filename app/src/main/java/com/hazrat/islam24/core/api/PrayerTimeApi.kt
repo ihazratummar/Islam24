@@ -1,6 +1,6 @@
 //PrayerTimeApi.kt
 
-package com.hazrat.islam24.core.network
+package com.hazrat.islam24.core.api
 import com.hazrat.islam24.core.domain.model.prayertime.prayertimemodel.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Path

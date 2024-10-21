@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
+import com.hazrat.islam24.core.data.repository.NamesRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
@@ -99,7 +99,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-            locationNameRepository.fetchLocationName()
+//            locationNameRepository.fetchLocationName()
             gregorianToHijriRepository.getGregorianToHijriDate()
             hijriCalendarRepository.getHijriCalendarFromApi()
             namesRepository.getAllahNamesFromApi()

@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +42,7 @@ import com.hazrat.islam24.ui.theme.Hidaya
 import com.hazrat.islam24.ui.theme.Poppins
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -202,7 +204,9 @@ fun RamadanCard() {
     val currentDay = LocalDate.now()
     val targetDate = LocalDate.of(2025, 3, 2)
     val daysRemaining = ChronoUnit.DAYS.between(currentDay, targetDate)
-
+    // Retrieve the current device locale
+    val locale = LocalContext.current.resources.configuration.locales[0]
+    val formattedDaysRemaining = NumberFormat.getInstance(locale).format(daysRemaining)
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -226,7 +230,7 @@ fun RamadanCard() {
         ) {
             Text(
                 modifier = Modifier.align(Alignment.CenterStart),
-                text = "Ramadan",
+                text = stringResource(R.string.ramadan),
                 style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = Poppins,
@@ -234,7 +238,7 @@ fun RamadanCard() {
             )
             Text(
                 modifier = Modifier.align(Alignment.CenterEnd),
-                text = "$daysRemaining days",
+                text = stringResource(R.string.days, formattedDaysRemaining),
                 style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = Hidaya
