@@ -296,7 +296,7 @@ private fun SignupButton(
                 )
             )
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = ButtonColors(
             containerColor = containerColor,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,

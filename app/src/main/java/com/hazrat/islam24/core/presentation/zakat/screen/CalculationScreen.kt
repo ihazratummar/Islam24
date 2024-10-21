@@ -397,7 +397,6 @@ fun CalculateItems(
 @Composable
 private fun BottomBarItem(
     text: String,
-    onClick: () -> Unit = {},
     amount: String = "0.0"
 ) {
     Card(

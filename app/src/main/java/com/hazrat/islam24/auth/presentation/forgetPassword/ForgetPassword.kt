@@ -147,7 +147,7 @@ fun ForgetPassword(
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .padding(dimens.size20),
@@ -411,8 +411,7 @@ private fun ButtonLoading(modifier: Modifier = Modifier) {
 @Composable
 fun OtpInputField(
     otp: String,
-    onOtpChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onOtpChanged: (String) -> Unit
 ) {
     BasicTextField(
         value = otp,

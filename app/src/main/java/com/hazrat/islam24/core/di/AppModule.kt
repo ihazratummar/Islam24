@@ -10,7 +10,6 @@ import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.api.NamesApi
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.ContextUtils
 import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.NetworkConnectivityObserver
 import dagger.Module
@@ -59,12 +58,6 @@ object AppModule {
         return NetworkConnectivityObserver(context)
     }
 
-
-    @Singleton
-    @Provides
-    fun provideContextUtil(@ApplicationContext context: Context): Context {
-        return  ContextUtils(context)
-    }
 
 
     @Singleton

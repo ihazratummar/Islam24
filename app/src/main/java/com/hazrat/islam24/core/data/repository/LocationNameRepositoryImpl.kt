@@ -84,6 +84,7 @@ class LocationNameRepositoryImpl @Inject constructor(
                 response.body() ?: throw Exception("Empty response body")
             } else {
                 // Handle errors based on the status code
+
                 throw handleApiError(response.code(), errorMessage = response.message())
             }
         } catch (e: LocationError) {
