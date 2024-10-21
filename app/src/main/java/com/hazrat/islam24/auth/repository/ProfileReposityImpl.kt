@@ -2,14 +2,12 @@ package com.hazrat.islam24.auth.repository
 
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -22,12 +20,10 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
-import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError
 import com.hazrat.islam24.util.error.UserDataSuccess
-import com.hazrat.islam24.util.getActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,15 +78,50 @@ class ProfileRepositoryImpl @Inject constructor(
     }
 
 
-
     override fun rateUs(activity: Activity) {
         val reviewManager = ReviewManagerFactory.create(context)
-        reviewManager.requestReviewFlow()
-            .addOnCompleteListener { manager ->
-                if (manager.isSuccessful) {
-                    reviewManager.launchReviewFlow(activity, manager.result)
-                }
+        val request = reviewManager.requestReviewFlow()
+
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                reviewManager.launchReviewFlow(activity, reviewInfo)
+                    .addOnCompleteListener { launchTask ->
+                        Log.d("ProfileRepositoryImpl", "rateUs: ${launchTask.result}")
+                        if (launchTask.exception == null) {
+                            _profileState.update {
+                                it.copy(
+                                    isRatingDialogOpen = true
+                                )
+                            }
+                        }
+                    }
             }
+        }
+    }
+
+    override fun openRatingDialog() {
+        _profileState.update {
+            it.copy(
+                isRatingDialogOpen = !it.isRatingDialogOpen
+            )
+        }
+    }
+
+    override fun goToRate() {
+        val intent: Intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(
+                "https://play.google.com/store/apps/details?id=${context.packageName}"
+            )
+            setPackage("com.android.vending")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
+        _profileState.update {
+            it.copy(
+                isRatingDialogOpen = false
+            )
+        }
     }
 
 
@@ -115,7 +146,6 @@ class ProfileRepositoryImpl @Inject constructor(
                             )
                         }
                     }
-
             }
         }
             .addOnFailureListener { e ->
@@ -184,7 +214,8 @@ class ProfileRepositoryImpl @Inject constructor(
         return try {
             if (_networkStatus.value == ConnectivityObserver.Status.Available) {
                 val userId =
-                    auth.currentUser?.uid ?: return Result.Error(UserDataError.INVALID_USER_ID)
+                    auth.currentUser?.uid
+                        ?: return Result.Error(UserDataError.INVALID_USER_ID)
 
                 // Using await() to handle the Firestore update asynchronously
                 fireStore.collection("user").document(userId)
@@ -216,7 +247,8 @@ class ProfileRepositoryImpl @Inject constructor(
         return try {
             if (_networkStatus.value == ConnectivityObserver.Status.Available) {
                 val userId =
-                    auth.currentUser?.uid ?: return Result.Error(UserDataError.INVALID_USER_ID)
+                    auth.currentUser?.uid
+                        ?: return Result.Error(UserDataError.INVALID_USER_ID)
                 fireStore.collection("user").document(userId)
                     .update(
                         mapOf(
@@ -295,6 +327,7 @@ class ProfileRepositoryImpl @Inject constructor(
     override suspend fun networkObserver() {
         connectivityObserver.observer().onEach { status ->
             _networkStatus.value = status
+            Log.d("ProfileNetworkObserver", "Network Status: $status")
         }.launchIn(repositoryScope)
 
     }

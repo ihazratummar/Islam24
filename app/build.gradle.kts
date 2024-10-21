@@ -19,8 +19,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 34
-        versionCode = 67
-        versionName = "1.1.8 beta-18"
+        versionCode = 75
+        versionName = "1.6.13"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -71,27 +71,26 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx.v281)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.compose)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.play.services.location)
-    implementation(libs.transportation.consumer)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
-
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v351)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
     debugImplementation(libs.ui.tooling)
-    implementation(libs.androidx.material.android)
-
+    implementation(libs.transportation.consumer)
+    androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.androidx.junit.v115)
     implementation(libs.androidx.material.icons.extended.android)
 
+
+
+
+
+    implementation(libs.play.services.location)
 
     /*
     FireBase
@@ -100,6 +99,8 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation (libs.firebase.database)
     platform(libs.firebase.bom.v2821)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
 
     //window size
@@ -150,7 +151,6 @@ dependencies {
 
 
     //Observe
-    implementation (libs.androidx.activity.compose)
     implementation (libs.androidx.lifecycle.viewmodel.compose.v281)
     implementation (libs.androidx.runtime.livedata)
 
@@ -173,5 +173,4 @@ dependencies {
     //dataStorePreference
     implementation(libs.androidx.preference.ktx)
 }
-
 

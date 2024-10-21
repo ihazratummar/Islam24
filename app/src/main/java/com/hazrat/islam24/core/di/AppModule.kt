@@ -4,20 +4,19 @@ import android.content.Context
 import androidx.room.Room
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.database.NamesDataBase
-import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
-import com.hazrat.islam24.core.data.manager.NetworkRepositoryImpl
+import com.hazrat.islam24.core.data.repository.NamesRepositoryImpl
+import com.hazrat.islam24.core.data.repository.NetworkRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
-import com.hazrat.islam24.core.network.NamesApi
+import com.hazrat.islam24.core.api.NamesApi
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.ContextUtils
+import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.annotation.Signed
 import javax.inject.Singleton
 
 
@@ -60,12 +59,6 @@ object AppModule {
     }
 
 
-    @Singleton
-    @Provides
-    fun provideContextUtil(@ApplicationContext context: Context): Context {
-        return  ContextUtils(context)
-    }
-
 
     @Singleton
     @Provides
@@ -74,5 +67,13 @@ object AppModule {
     ): NetworkRepository {
         return NetworkRepositoryImpl(networkConnectivityObserver)
     }
+
+
+    @Provides
+    @Singleton
+    fun provideDataStorePreference(@ApplicationContext context: Context): DataStorePreference {
+        return DataStorePreference(context)
+    }
+
 
 }

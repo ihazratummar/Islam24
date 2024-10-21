@@ -13,7 +13,6 @@ import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -117,7 +116,7 @@ class LocationHandler @Inject constructor (
                 onLocationReceived = { location ->
                     CoroutineScope(Dispatchers.IO).launch {
                         locationRepository.saveLocation(location.latitude, location.longitude)
-                        Log.e("LocationHandler", "Saved")
+                        Log.d("LocationHandler", "Saved")
                     }
                 },
                 onLocationError = {

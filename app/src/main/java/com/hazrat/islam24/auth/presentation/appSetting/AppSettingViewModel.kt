@@ -1,6 +1,5 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
-import com.hazrat.islam24.util.ContextUtils
 import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.changeLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,14 +27,15 @@ import javax.inject.Inject
 @HiltViewModel
 class AppSettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val dataStorePreference: DataStorePreference
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
         AppSettingState(
-            currentLanguage = DataStorePreference.getLanguage(context = context),
-            isDarkMode = DataStorePreference.getThemeMode(context),
-            currentTheme = DataStorePreference.getThemeName(context),
+            currentLanguage = dataStorePreference.getLanguage(),
+            isDarkMode = dataStorePreference.getThemeMode(),
+            currentTheme = dataStorePreference.getThemeName(),
         )
     )
     val appSettingState = _state.asStateFlow()
@@ -66,7 +65,7 @@ class AppSettingViewModel @Inject constructor(
                             currentLanguage = newLanguage,
                         )
                     }
-                    DataStorePreference.setLanguage(context = context, language = newLanguage)
+                    dataStorePreference.setLanguage( language = newLanguage)
                     changeLanguage(language = newLanguage, context = context)
                 }
             }
@@ -80,8 +79,8 @@ class AppSettingViewModel @Inject constructor(
                                     currentTheme = Themes.DARK
                                 )
                             }
-                            DataStorePreference.setThemeMode(context, true)
-                            DataStorePreference.setThemeName(context, Themes.DARK)
+                            dataStorePreference.setThemeMode( true)
+                            dataStorePreference.setThemeName( Themes.DARK)
                         }
 
                         Themes.LIGHT -> {
@@ -91,8 +90,8 @@ class AppSettingViewModel @Inject constructor(
                                     currentTheme = Themes.LIGHT
                                 )
                             }
-                            DataStorePreference.setThemeMode(context, false)
-                            DataStorePreference.setThemeName(context, Themes.LIGHT)
+                            dataStorePreference.setThemeMode( false)
+                            dataStorePreference.setThemeName( Themes.LIGHT)
                         }
                     }
                 }

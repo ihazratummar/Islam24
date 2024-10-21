@@ -6,6 +6,7 @@ data class ProfileState(
     val userData: UserData ? = null,
     val isNameDialogOpen: Boolean = false,
     val isBioDialogOpen: Boolean = false,
+    val isRatingDialogOpen: Boolean = false
 )
 
 

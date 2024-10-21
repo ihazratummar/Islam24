@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -41,16 +38,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
-import com.hazrat.islam24.core.presentation.home.component.generalShimmerEffect
-import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.Dimens
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -64,7 +56,8 @@ fun AuthLoginScreen(
     authState: AuthState,
     navigateToSignup: () -> Unit,
     navigateToProfile: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    navigateToForgotPassword: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -73,9 +66,11 @@ fun AuthLoginScreen(
             is AuthState.Authenticated -> {
                 navigateToProfile()
             }
+
             is AuthState.Error -> {
                 Toast.makeText(context, authState.message, Toast.LENGTH_LONG).show()
             }
+
             else -> Unit
         }
 //        loginEvent(LoginEvent.Refresh)
@@ -155,18 +150,14 @@ fun AuthLoginScreen(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done,
                     trailingIcon = {
-                        val image =
-                            if (state.passwordVisible) painterResource(id = R.drawable.eyeopen)
-                            else painterResource(id = R.drawable.eyeclose)
-                        IconButton(onClick = { loginEvent(LoginEvent.OnPasswordVisibilityChanged) }
-                        ) {
-                            Icon(
-                                painter = image,
-                                contentDescription = if (state.passwordVisible) "Hide Password" else "Show Password",
-                                modifier = Modifier.size(20.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        Text(
+                            text = if (state.passwordVisible) "Hide" else "Show",
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.clickable {
+                                loginEvent(LoginEvent.OnPasswordVisibilityChanged)
+                            },
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     },
                     visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
                 )
@@ -190,6 +181,16 @@ fun AuthLoginScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(dimens.size15))
+                Text(
+                    text = "Forgotten Password?",
+                    fontFamily = FontFamily(Font(R.font.nunitoregular)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        navigateToForgotPassword.invoke()
+                    }
+                )
+                Spacer(modifier = Modifier.height(dimens.size30))
                 Row {
                     Text(
                         text = "Don't have an account?",
@@ -226,8 +227,7 @@ private fun LoginButton(
     Button(
         onClick = onLoginClick,
         modifier = modifier
-            .fillMaxWidth()
-            .imePadding(),
+            .fillMaxWidth(),
         colors = ButtonColors(
             containerColor = containerColor,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,

@@ -1,6 +1,7 @@
 package com.hazrat.islam24.core.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,19 +11,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.navigation.NavController
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.home.component.BackGroundCard
 import com.hazrat.islam24.core.presentation.home.component.LazyVerticalGridCardIcons
+import com.hazrat.islam24.core.presentation.home.component.RamadanCard
 import com.hazrat.islam24.core.presentation.home.component.TimeLocationCard
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
@@ -55,20 +55,15 @@ fun HomeScreen(
                 ) {
                     Spacer(modifier = Modifier.height(dimens.size100))
                     if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
-                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationName.first())
+                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationDetailsEntity = locationName.first())
                     } else {
-                        Card(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(dimens.size200)
-                                .shimmerEffect(),
-                            shape = RoundedCornerShape(dimens.size30),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Transparent
-                            ),
-                        ) {
-
-                        }
+                                .shimmerEffect()
+                                .clip(shape = RoundedCornerShape(dimens.size30)),
+                        )
                     }
                 }
             }
@@ -83,5 +78,10 @@ fun HomeScreen(
                 LazyVerticalGridCardIcons(navController)
             }
         }
+        item {
+            Spacer(modifier = Modifier.height(dimens.size15))
+            RamadanCard()
+        }
     }
 }
+

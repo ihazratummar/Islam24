@@ -84,6 +84,11 @@ object DateUtil {
         return date.time
     }
 
+    fun getDateFromLong(dateLong: Long, format: String = "dd/MM/yyyy"): String {
+        val date = Date(dateLong)
+        val dateFormat = SimpleDateFormat(format, Locale.getDefault())
+        return dateFormat.format(date)
+    }
 
     fun dateLongToString(dateLong: Long, format: String = "hh:mm a"): String {
         val formatter =SimpleDateFormat(format, Locale.getDefault())
