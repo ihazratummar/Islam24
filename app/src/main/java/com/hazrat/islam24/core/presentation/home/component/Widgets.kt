@@ -159,7 +159,7 @@ fun LazyVerticalGridCardIcons(navController: NavController) {
                     Text(
                         names[index],
                         color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.labelMedium
                     )
                 }
 

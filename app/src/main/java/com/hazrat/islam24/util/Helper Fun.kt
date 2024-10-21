@@ -7,10 +7,13 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.VibrationEffect
 import android.os.Vibrator
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import java.util.Locale
 
 fun vibrate(vibrator: Vibrator) {
     vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -47,4 +50,12 @@ fun Context.getActivity(): Activity? = when(this){
     is Activity -> this
     is ContextWrapper -> baseContext.getActivity()
     else -> null
+}
+
+
+@Composable
+fun getSystemLanguage(): String {
+    val context = LocalContext.current
+    val locale: Locale = context.resources.configuration.locales[0]
+    return locale.language
 }
