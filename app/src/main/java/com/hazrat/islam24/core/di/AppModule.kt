@@ -2,6 +2,7 @@ package com.hazrat.islam24.core.di
 
 import android.content.Context
 import androidx.room.Room
+import com.hazrat.islam24.core.api.AthkarApiCall
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.database.NamesDataBase
 import com.hazrat.islam24.core.data.repository.NamesRepositoryImpl
@@ -9,6 +10,10 @@ import com.hazrat.islam24.core.data.repository.NetworkRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.api.NamesApi
+import com.hazrat.islam24.core.data.dao.AthkarDao
+import com.hazrat.islam24.core.data.database.AthkarDatabase
+import com.hazrat.islam24.core.data.repository.AthkarRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.AthkarRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.NetworkConnectivityObserver
@@ -31,7 +36,9 @@ object AppModule {
         NamesRepositoryImpl(api, nameDao)
 
 
-
+    /*
+    name database
+     */
     @Singleton
     @Provides
     fun provideNamesDatabase(@ApplicationContext context: Context): NamesDataBase {
@@ -48,6 +55,31 @@ object AppModule {
     fun provideNameDao(dataBase: NamesDataBase): NameDao {
         return dataBase.nameDao()
     }
+
+
+    /*
+    Athkar database
+     */
+    @Singleton
+    @Provides
+    fun provideAthkarDatabase(@ApplicationContext context: Context): AthkarDatabase {
+        return Room.databaseBuilder(
+            context.applicationContext,
+            AthkarDatabase::class.java,
+            "athkar_database"
+        ).fallbackToDestructiveMigration()
+            .build()
+    }
+    @Singleton
+    @Provides
+    fun provideAthkarDao(dataBase: AthkarDatabase): AthkarDao {
+        return dataBase.athkarDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideAthkarRepository(api: AthkarApiCall, dao: AthkarDao): AthkarRepository =
+        AthkarRepositoryImpl(api, dao)
 
 
     @Singleton
@@ -74,6 +106,4 @@ object AppModule {
     fun provideDataStorePreference(@ApplicationContext context: Context): DataStorePreference {
         return DataStorePreference(context)
     }
-
-
 }

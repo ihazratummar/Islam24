@@ -48,9 +48,8 @@ fun HomeScreen(
                 BackGroundCard()
                 Column(
                     modifier = Modifier
-                        .statusBarsPadding()
                         .fillMaxSize()
-                        .padding(dimens.size10),
+                        .padding(vertical = dimens.size40, horizontal = dimens.size10),
                     verticalArrangement = Arrangement.Top
                 ) {
                     Spacer(modifier = Modifier.height(dimens.size100))
@@ -72,7 +71,7 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimens.size10),
+                    .padding(horizontal = dimens.size5),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LazyVerticalGridCardIcons(navController)

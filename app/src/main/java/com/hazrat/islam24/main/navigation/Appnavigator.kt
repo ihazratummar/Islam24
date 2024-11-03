@@ -35,6 +35,7 @@ import com.hazrat.islam24.auth.navigation.authNavGraph
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
+import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
@@ -140,10 +141,11 @@ fun AppNavigator(
                 )
             }
             composable<AthkarScreen> {
+                val viewModel: AthkarViewModel = hiltViewModel()
+                val athkarEntity by viewModel.athkarList.collectAsState()
                 AthkarScreen(
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
+                    athkar = athkarEntity,
+                    onBackClick = { navController.popBackStack() }
                 )
             }
             authNavGraph(
