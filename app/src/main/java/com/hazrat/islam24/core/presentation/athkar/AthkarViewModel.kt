@@ -1,0 +1,30 @@
+package com.hazrat.islam24.core.presentation.athkar
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.hazrat.islam24.core.data.entity.AthkarDataEntity
+import com.hazrat.islam24.core.data.entity.NameEntity
+import com.hazrat.islam24.core.domain.repository.AthkarRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+/**
+* @author Hazrat Ummar Shaikh
+*/
+
+@HiltViewModel
+class AthkarViewModel @Inject constructor(
+    private val athkarRepository: AthkarRepository
+): ViewModel(){
+    private val _athkarList = MutableStateFlow<List<AthkarDataEntity>>(emptyList())
+    val athkarList = _athkarList.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _athkarList.value = athkarRepository.getAthkarFromDb()
+        }
+    }
+}

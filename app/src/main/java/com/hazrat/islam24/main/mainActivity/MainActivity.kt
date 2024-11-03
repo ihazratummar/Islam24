@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
@@ -90,7 +91,6 @@ class MainActivity : ComponentActivity() {
         notificationHelper.notificationChannel()
         setContent {
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
-            val navController = rememberNavController()
             Islam24Theme(
                 darkTheme = appSettingState.isDarkMode
             ) {

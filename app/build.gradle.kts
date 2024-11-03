@@ -13,12 +13,12 @@ plugins {
 
 android {
     namespace = "com.hazrat.islam24"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        targetSdk= 34
+        targetSdk= 35
         versionCode = 75
         versionName = "1.6.13"
 

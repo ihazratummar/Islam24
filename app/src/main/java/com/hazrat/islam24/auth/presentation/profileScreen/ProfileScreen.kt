@@ -74,7 +74,6 @@ fun ProfileScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
                 .padding(
-                    top = dimens.size40,
                     start = dimens.size20,
                     end = dimens.size10
                 ),

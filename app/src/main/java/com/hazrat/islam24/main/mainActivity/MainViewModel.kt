@@ -7,6 +7,7 @@ import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.data.repository.NamesRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.AthkarRepository
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
@@ -35,7 +36,8 @@ class MainViewModel @Inject constructor(
     private val hijriCalendarRepository: HijriCalendarRepository,
     private val profileRepository: ProfileRepository,
     private val locationRepository: LocationRepository,
-    private val networkRepository: NetworkRepository
+    private val networkRepository: NetworkRepository,
+    private val athkarRepository: AthkarRepository
 ) : ViewModel() {
 
 
@@ -79,6 +81,7 @@ class MainViewModel @Inject constructor(
             getAllPrayerTimes()
             locationNameRepository.locationName()
             locationNameRepository.getLocationDetails()
+            athkarRepository.getAthkarFromDb()
 
         }
     }
@@ -105,6 +108,7 @@ class MainViewModel @Inject constructor(
             namesRepository.getAllahNamesFromApi()
             locationRepository.checkAndUpdateLocation()
             locationNameRepository.getLocationName()
+            athkarRepository.getAthkarFromApi()
         }
     }
 

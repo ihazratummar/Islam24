@@ -13,6 +13,7 @@ object Constants {
 
     /** Base URL for retrieving the names of Allah */
     const val BASE_URL_NAME = "https://raw.githubusercontent.com/ihazratummar/99-Names-Of-Allah/main/"
+    const val ATHKAR_BASE_URL_NAME = "https://raw.githubusercontent.com/ihazratummar/Muslim-Dua/refs/heads/main/"
 
     /** Base URL for the Aladhan API */
     const val BASE_URL = "https://api.aladhan.com/v1/calendar/"

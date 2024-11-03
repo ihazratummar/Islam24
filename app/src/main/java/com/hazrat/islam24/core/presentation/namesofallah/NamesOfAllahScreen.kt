@@ -76,7 +76,7 @@ fun NamesOfAllahScreen(
                         )
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         }
     ) { padding ->
