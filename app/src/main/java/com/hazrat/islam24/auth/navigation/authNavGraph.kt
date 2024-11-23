@@ -24,7 +24,7 @@ import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsScreen
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
-import com.hazrat.islam24.main.navigation.ProfileScreen
+import com.hazrat.islam24.main.navigation.MainRoute
 import kotlinx.serialization.Serializable
 
 /**
@@ -37,7 +37,7 @@ fun NavGraphBuilder.authNavGraph(
     appSettingState: AppSettingState,
     appSettingEvent: (AppSettingEvent) -> Unit
 ) {
-    navigation<Auth>(startDestination = ProfileScreen) {
+    navigation<Auth>(startDestination = MainRoute.ProfileScreen) {
         composable<Login> {
             val loginViewModel = hiltViewModel<LoginViewModel>()
             val loginState by loginViewModel.loginState.collectAsState()
@@ -51,7 +51,7 @@ fun NavGraphBuilder.authNavGraph(
                     navController.navigate(SignUp)
                 },
                 navigateToProfile = {
-                    navController.navigate(ProfileScreen) {
+                    navController.navigate(MainRoute.ProfileScreen) {
                         popUpTo(Login) { inclusive = true }
                     }
                 },
@@ -82,13 +82,13 @@ fun NavGraphBuilder.authNavGraph(
                     }
                 },
                 navigateToProfile = {
-                    navController.navigate(ProfileScreen) {
+                    navController.navigate(MainRoute.ProfileScreen) {
                         popUpTo(SignUp) { inclusive = true }
                     }
                 }
             )
         }
-        composable<ProfileScreen> {
+        composable<MainRoute.ProfileScreen> {
             val profileViewModel = hiltViewModel<ProfileViewModel>()
             val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
             val profileState by profileViewModel.profileState.collectAsState()

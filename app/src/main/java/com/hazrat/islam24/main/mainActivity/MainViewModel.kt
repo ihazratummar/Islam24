@@ -1,5 +1,6 @@
 package com.hazrat.islam24.main.mainActivity
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +18,7 @@ import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +39,8 @@ class MainViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val locationRepository: LocationRepository,
     private val networkRepository: NetworkRepository,
-    private val athkarRepository: AthkarRepository
+    private val athkarRepository: AthkarRepository,
+    @ApplicationContext context: Context
 ) : ViewModel() {
 
 
@@ -50,29 +53,22 @@ class MainViewModel @Inject constructor(
     /**
      * network check
      */
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
-        networkRepository.networkStatus
-
 
     val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
 
+    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
+        networkRepository.networkStatus
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             fetchDataFromDB()
-            networkRepository.observeNetworkStatus()
-            profileRepository.networkObserver()
-            prayerTimeRepository.networkObserver()
             networkStatus.collect { status ->
-                Log.d("MainViewModelNetworkStatus", "Current network status: $status")
                 if (status == ConnectivityObserver.Status.Available) {
-                    Log.d("MainViewModelNetworkStatus", "Network available, fetching initial data.")
                     fetchInitialData()
                 }
             }
         }
         profileRepository.checkAuthStatus()
-        Log.d("mainViewModel", "Network status: ${networkStatus.value}")
 
     }
 
@@ -86,29 +82,17 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun fetchData() {
-        viewModelScope.launch {
-            networkStatus.collect { status ->
-                if (status == ConnectivityObserver.Status.Available) {
-                    locationRepository.checkAndUpdateLocation()
-                    locationNameRepository.getLocationName()
-                    locationNameRepository.fetchLocationName()
-                }
-            }
-        }
-    }
-
     private fun fetchInitialData() {
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-//            locationNameRepository.fetchLocationName()
             gregorianToHijriRepository.getGregorianToHijriDate()
             hijriCalendarRepository.getHijriCalendarFromApi()
             namesRepository.getAllahNamesFromApi()
             locationRepository.checkAndUpdateLocation()
             locationNameRepository.getLocationName()
             athkarRepository.getAthkarFromApi()
+            locationNameRepository.fetchLocationName()
         }
     }
 

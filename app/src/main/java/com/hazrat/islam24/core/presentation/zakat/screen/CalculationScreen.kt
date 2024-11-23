@@ -170,7 +170,9 @@ fun CalculationScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
-                    .align(Alignment.BottomCenter)
+                    .align(Alignment.BottomCenter),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -375,7 +377,7 @@ fun CalculateItems(
                 onClick()
             },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
         Row(
@@ -403,7 +405,7 @@ private fun BottomBarItem(
     Card(
         modifier = Modifier.padding(vertical = 1.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = Color.Transparent
         ),
         shape = RoundedCornerShape(2.dp)
     ) {

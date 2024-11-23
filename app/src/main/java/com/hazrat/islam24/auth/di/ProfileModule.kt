@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.auth.repository.ProfileRepositoryImpl
-import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,9 +26,12 @@ object ProfileModule {
         auth: FirebaseAuth,
         firestore: FirebaseFirestore,
         storage: FirebaseStorage,
-        connectivityObserver: ConnectivityObserver
+        networkRepository: NetworkRepository
     ): ProfileRepository {
-        return ProfileRepositoryImpl(context = context, auth = auth, fireStore = firestore, storage = storage, connectivityObserver = connectivityObserver)
+        return ProfileRepositoryImpl(
+            context = context, auth = auth, fireStore = firestore,
+            storage = storage, networkRepository = networkRepository
+        )
     }
 
 }

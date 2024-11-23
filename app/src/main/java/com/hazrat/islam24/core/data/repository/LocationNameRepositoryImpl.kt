@@ -1,5 +1,6 @@
 package com.hazrat.islam24.core.data.repository
 
+import android.accounts.NetworkErrorException
 import android.util.Log
 import com.hazrat.islam24.core.api.LocationNameApi
 import com.hazrat.islam24.core.data.dao.LocationNameDao
@@ -8,6 +9,7 @@ import com.hazrat.islam24.core.data.entity.LocationEntity
 import com.hazrat.islam24.core.data.error.LocationError
 import com.hazrat.islam24.core.domain.model.locationmodel.Address
 import com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.util.Constants.LOCATION_IQ_API_KEY
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +27,8 @@ import kotlin.math.abs
 class LocationNameRepositoryImpl @Inject constructor(
     private val locationNameApi: LocationNameApi,
     private val locationRepository: LocationRepositoryImpl,
-    private val locationNameDao: LocationNameDao
+    private val locationNameDao: LocationNameDao,
+    private val networkRepository: NetworkRepository
 ) : LocationNameRepository {
 
     private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
@@ -39,6 +42,7 @@ class LocationNameRepositoryImpl @Inject constructor(
     private val latThreshold = 0.6
 
     override suspend fun getLocationName(): LocationNameFinder {
+
         return try {
             val location: LocationEntity? = locationRepository.getLocation()
             val lat = location?.latitude ?: 24.628
@@ -96,8 +100,6 @@ class LocationNameRepositoryImpl @Inject constructor(
             LocationNameFinder(address = Address(village = null, city = null, town = null, suburb = null))
         }
     }
-
-
 
 
     override suspend fun fetchLocationName(): String? {

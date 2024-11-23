@@ -2,7 +2,6 @@ package com.hazrat.islam24.core.presentation.prayertime
 
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,22 +27,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
-import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
-import com.hazrat.islam24.main.navigation.CalendarScreen
-import com.hazrat.islam24.main.navigation.PrayerSetting
+import com.hazrat.islam24.main.navigation.MainRoute
 import com.hazrat.islam24.main.navigation.nvgraph.AsrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.DhuhrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.FajrSetting
@@ -114,7 +109,7 @@ fun ShowData(
                     }
                     IconButton(
                         modifier = Modifier.padding(end = dimens.size20),
-                        onClick = { navController.navigate(PrayerSetting) }
+                        onClick = { navController.navigate(MainRoute.PrayerSetting) }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.settings),
@@ -231,7 +226,7 @@ fun PrayerTimesDay(
         item {
             PrayerDateCard(
                 modifier = Modifier.clickable {
-                    navController.navigate(CalendarScreen)
+                    navController.navigate(MainRoute.CalendarScreen)
                 },
                 enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",
                 hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear} ${data.hijriab}"

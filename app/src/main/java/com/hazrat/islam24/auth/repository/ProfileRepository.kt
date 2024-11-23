@@ -32,9 +32,6 @@ interface ProfileRepository {
     fun clickBioUpdateDialog()
     fun updateBioValue(bio: String)
     suspend fun updateBio(userData: UserData):Result<UserDataSuccess, UserDataError>
-
-    suspend fun networkObserver()
-
     suspend fun signOut()
 
     fun refreshProfile()

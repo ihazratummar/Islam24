@@ -1,12 +1,15 @@
 package com.hazrat.islam24.core.data.repository
 
+import android.util.Log
+import com.hazrat.islam24.core.api.GregorianToHijriApi
 import com.hazrat.islam24.core.data.dao.GregorianToHijriDao
 import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
-import com.hazrat.islam24.core.api.GregorianToHijriApi
 import com.hazrat.islam24.util.DateUtil
 import kotlinx.coroutines.flow.Flow
+import retrofit2.HttpException
+import java.io.IOException
 
 /**
  * Implementation of the GregorianToHijriRepository interface.
@@ -26,7 +29,7 @@ class GregorianToHijriRepositoryImpl(
      * @return The GregorianToHijriResponse containing the current Hijri date.
      * @throws Exception if an error occurs during the API call or data processing.
      */
-    override suspend fun getGregorianToHijriDate(): GregorianToHijriResponse {
+    override suspend fun getGregorianToHijriDate(): GregorianToHijriResponse? {
         val date = DateUtil.getCurrentDate()
         try {
             val response = api.getGtoHDate(date)
@@ -34,11 +37,18 @@ class GregorianToHijriRepositoryImpl(
                 saveResponseToDatabase(response)
                 return response
             } else {
-                // Handle error cases appropriately
-                throw Exception("Failed to get Hijri date: ${response.status}")
+                Log.e("GregorianToHijriRepositoryImpl", "Error fetching GregorianToHijri: ${response.status}")
+                return null
             }
         } catch (e: Exception) {
-            throw e
+            Log.e("GregorianToHijriRepositoryImpl", "Error fetching GregorianToHijri: ${e.message}")
+            return null
+        }catch (e: IOException){
+            Log.e("GregorianToHijriRepositoryImpl", "Error fetching GregorianToHijri: ${e.message}")
+            return null
+        }catch (e: HttpException) {
+            Log.e("GregorianToHijriRepositoryImpl", "Error fetching GregorianToHijri: ${e.message}")
+            return  null
         }
     }
 
