@@ -9,6 +9,7 @@ import com.hazrat.islam24.core.domain.model.athkar.MorningAkhtarData
 import com.hazrat.islam24.core.domain.repository.AthkarRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import javax.inject.Inject
 
 /**
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class AthkarRepositoryImpl @Inject constructor(
     private val api: AthkarApiCall,
     private val athkarDao: AthkarDao
-): AthkarRepository {
+) : AthkarRepository {
 
     override suspend fun getAthkarFromApi(): List<AthkarApiModel> {
         return withContext(Dispatchers.IO) {
@@ -39,7 +40,12 @@ class AthkarRepositoryImpl @Inject constructor(
                         athkarDao.insertAthkar(entities)
 
                         // Convert the API response data to the return type
-                        return@withContext apiData.map { AthkarApiModel(listOf(it), status = "success") }
+                        return@withContext apiData.map {
+                            AthkarApiModel(
+                                listOf(it),
+                                status = "success"
+                            )
+                        }
                     } else {
                         emptyList()
                     }
@@ -47,10 +53,11 @@ class AthkarRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 // Handle the exception (log, rethrow, etc.)
                 emptyList()
+            } catch (e: HttpException) {
+                emptyList()
             }
         }
     }
-
 
 
     override suspend fun getAthkarFromDb(): List<AthkarDataEntity> {
@@ -74,7 +81,7 @@ class AthkarRepositoryImpl @Inject constructor(
     }
 
 
-    private fun athkarEntityToData(entity: AthkarDataEntity) : AthkarApiModel {
+    private fun athkarEntityToData(entity: AthkarDataEntity): AthkarApiModel {
         val morningAkhtarData = MorningAkhtarData(
             bismillah = entity.bismillah,
             arabicText = entity.arabicText,

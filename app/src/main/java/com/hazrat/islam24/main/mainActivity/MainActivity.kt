@@ -3,17 +3,17 @@ package com.hazrat.islam24.main.mainActivity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.notification.NotificationHelper
@@ -57,10 +57,14 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var prayerAlarmManager: PrayerAlarmManager
 
+    @Inject
+    lateinit var networkRepository: NetworkRepository
+
     // Permissions manager, initialized in onCreate
     private lateinit var permissionsManager: PermissionsManager
 
     private val appSettingViewModel by viewModels<AppSettingViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -88,6 +92,7 @@ class MainActivity : ComponentActivity() {
         notificationHelper.notificationChannel()
         setContent {
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
+            val networkStatus by networkRepository.networkStatus.collectAsState()
             Islam24Theme(
                 darkTheme = appSettingState.isDarkMode
             ) {
@@ -97,6 +102,7 @@ class MainActivity : ComponentActivity() {
                     appSettingEvent = appSettingViewModel::onAppSettingEvent,
                     zakatViewModel = zakatViewModel
                 )
+                Log.d("MainActivityNetworkStatus", "$networkStatus")
             }
         }
         // Check for app updates
@@ -104,6 +110,7 @@ class MainActivity : ComponentActivity() {
 
         // Show location permission dialog if needed
         locationHandler.showLocationPermissionDialog(this)
+        networkRepository.observeNetworkStatus()
     }
 
     /**

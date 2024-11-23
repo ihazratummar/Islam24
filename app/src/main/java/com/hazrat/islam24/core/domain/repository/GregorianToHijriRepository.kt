@@ -13,7 +13,7 @@ interface GregorianToHijriRepository {
      *
      * @return A GregorianToHijriResponse object representing the converted date.
      */
-    suspend fun getGregorianToHijriDate(): GregorianToHijriResponse
+    suspend fun getGregorianToHijriDate(): GregorianToHijriResponse?
 
     /**
      * Retrieves all Gregorian to Hijri conversion entities from the database.

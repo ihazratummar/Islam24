@@ -42,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.NameEntity
+import com.hazrat.islam24.core.presentation.common.OfflineCard
 import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.getSystemLanguage
@@ -83,8 +84,14 @@ fun NamesOfAllahScreen(
         LazyColumn(
             modifier = Modifier.padding(padding)
         ) {
-            items(nameEntity) { name ->
-                NameCard(name = name)
+            if (nameEntity.isNotEmpty()){
+                items(nameEntity) { name ->
+                    NameCard(name = name)
+                }
+            }else{
+                items(99){
+                    OfflineCard()
+                }
             }
         }
     }
