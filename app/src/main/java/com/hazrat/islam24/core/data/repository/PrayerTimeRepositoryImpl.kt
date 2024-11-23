@@ -61,7 +61,7 @@ class PrayerTimeRepositoryImpl @Inject constructor(
             val year = DateUtil.getCurrentYear()
             val month = DateUtil.getCurrentMonth()
 
-            if (_networkStatus.value == ConnectivityObserver.Status.Available){
+            if (networkStatus.value == ConnectivityObserver.Status.Available){
                 val apiResponse =
                     api.getPrayerTimes(year, month, "$latitude", "$longitude", methodValue, schoolValue)
                 apiResponse.data.forEach { apiDataForDay ->
