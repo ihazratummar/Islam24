@@ -9,6 +9,7 @@ import com.hazrat.islam24.auth.repository.ForgetPasswordRepository
 import com.hazrat.islam24.auth.repository.ForgetPasswordRepositoryImpl
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.auth.repository.ProfileRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.Module
 import dagger.Provides
@@ -31,9 +32,12 @@ object ProfileModule {
         auth: FirebaseAuth,
         firestore: FirebaseFirestore,
         storage: FirebaseStorage,
-        connectivityObserver: ConnectivityObserver
+        networkRepository: NetworkRepository
     ): ProfileRepository {
-        return ProfileRepositoryImpl(context = context, auth = auth, fireStore = firestore, storage = storage, connectivityObserver = connectivityObserver)
+        return ProfileRepositoryImpl(
+            context = context, auth = auth, fireStore = firestore,
+            storage = storage, networkRepository = networkRepository
+        )
     }
 
     @Singleton

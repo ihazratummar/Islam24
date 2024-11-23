@@ -10,7 +10,6 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -18,13 +17,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.util.CompactDimens
 import com.hazrat.islam24.util.CompactMediumDimens
 import com.hazrat.islam24.util.CompactSmallDimens
+import com.hazrat.islam24.util.Dimens
 import com.hazrat.islam24.util.ExpandedDimens
 import com.hazrat.islam24.util.MediumDimens
-import com.hazrat.islam24.main.mainActivity.MainActivity
-import com.hazrat.islam24.util.Dimens
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -103,18 +102,6 @@ private val darkScheme = darkColorScheme(
 )
 
 
-
-@Immutable
-data class ColorFamily(
-    val color: Color,
-    val onColor: Color,
-    val colorContainer: Color,
-    val onColorContainer: Color
-)
-
-val unspecified_scheme = ColorFamily(
-    Color.Unspecified, Color.Unspecified, Color.Unspecified, Color.Unspecified
-)
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable

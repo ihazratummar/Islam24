@@ -92,7 +92,7 @@ fun TimeLocationCard(
                 onClickLabel = stringResource(id = R.string.prayertimesandlocation)
             ),
         shape = RoundedCornerShape(dimens.size30),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val today = getCurrentDay()
@@ -213,7 +213,7 @@ fun RamadanCard() {
             .height(dimens.size100)
             .padding(horizontal = dimens.size15),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
         Box(
@@ -232,7 +232,7 @@ fun RamadanCard() {
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = stringResource(R.string.ramadan),
                 style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold
             )
@@ -240,7 +240,7 @@ fun RamadanCard() {
                 modifier = Modifier.align(Alignment.CenterEnd),
                 text = stringResource(R.string.days, formattedDaysRemaining),
                 style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontFamily = Hidaya
             )
         }
