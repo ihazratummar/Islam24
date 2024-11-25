@@ -38,8 +38,7 @@ import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
-import com.hazrat.islam24.main.navigation.CalendarScreen
-import com.hazrat.islam24.main.navigation.PrayerSetting
+import com.hazrat.islam24.main.navigation.MainRoute
 import com.hazrat.islam24.main.navigation.nvgraph.AsrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.DhuhrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.FajrSetting
@@ -110,7 +109,7 @@ fun ShowData(
                     }
                     IconButton(
                         modifier = Modifier.padding(end = dimens.size20),
-                        onClick = { navController.navigate(PrayerSetting) }
+                        onClick = { navController.navigate(MainRoute.PrayerSetting) }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.settings),
@@ -227,7 +226,7 @@ fun PrayerTimesDay(
         item {
             PrayerDateCard(
                 modifier = Modifier.clickable {
-                    navController.navigate(CalendarScreen)
+                    navController.navigate(MainRoute.CalendarScreen)
                 },
                 enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",
                 hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear} ${data.hijriab}"

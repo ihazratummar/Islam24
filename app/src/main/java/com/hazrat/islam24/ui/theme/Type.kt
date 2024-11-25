@@ -29,6 +29,12 @@ val Arabic = FontFamily(
     )
 )
 
+val Indopak = FontFamily(
+    fonts = listOf(
+        Font(R.font.uthmanic)
+    )
+)
+
 val Hidaya = FontFamily(
     fonts = listOf(
         Font(R.font.hidayatullah)
