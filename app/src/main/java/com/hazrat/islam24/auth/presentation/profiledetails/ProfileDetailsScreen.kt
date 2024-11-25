@@ -4,8 +4,11 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -111,8 +114,10 @@ fun ProfileDetailsScreen(
             }
         }
     }
-    val containerColor = if (userEvent is UserEvent.Error) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primaryContainer
-    val contextColor = if (userEvent is UserEvent.Error) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onPrimaryContainer
+    val containerColor =
+        if (userEvent is UserEvent.Error) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primaryContainer
+    val contextColor =
+        if (userEvent is UserEvent.Error) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onPrimaryContainer
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState) { data ->
@@ -165,7 +170,6 @@ fun ProfileDetailsScreen(
                     value = if (profileState.userData?.fullName == null) "Not Set" else profileState.userData.fullName
                 )
                 ProfileDataCards(
-                    onClick = {},
                     label = stringResource(id = R.string.emal),
                     value = if (profileState.userData?.email == null) "Not Set" else profileState.userData.email
                 )
@@ -273,8 +277,7 @@ private fun UpdateDataDetails(
 @Composable
 private fun ButtonClick(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    containerColor: Color = MaterialTheme.colorScheme.primaryContainer
+    onClick: () -> Unit
 ) {
     Button(
         modifier = modifier
@@ -284,8 +287,8 @@ private fun ButtonClick(
             onClick()
         },
         colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         shape = RoundedCornerShape(dimens.size10)
     ) {
@@ -293,9 +296,10 @@ private fun ButtonClick(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ProfileDataCards(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     label: String,
     value: String
 ) {
@@ -303,10 +307,11 @@ private fun ProfileDataCards(
         modifier = Modifier
             .padding(dimens.size6)
             .fillMaxWidth()
-            .clickable {
-                onClick()
-
-            },
+            .combinedClickable(
+                onClick = { onClick() },
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant

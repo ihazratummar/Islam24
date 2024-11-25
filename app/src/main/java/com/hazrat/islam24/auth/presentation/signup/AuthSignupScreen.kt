@@ -78,7 +78,7 @@ fun AuthSignupScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { /*TODO*/ },
+            TopAppBar(title = {  },
                 navigationIcon = {
                     IconButton(onClick = {
                         onBackClick()
@@ -166,19 +166,14 @@ fun AuthSignupScreen(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Next,
                     trailingIcon = {
-                        val image =
-                            if (signUpState.passwordVisible) painterResource(id = R.drawable.eyeopen)
-                            else painterResource(id = R.drawable.eyeclose)
-                        IconButton(onClick = {
-                            onEvent(SingupEvent.OnPasswordVisibilityChanged)
-                        }) {
-                            Icon(
-                                painter = image,
-                                contentDescription = if (signUpState.passwordVisible) "Hide Password" else "Show Password",
-                                modifier = Modifier.size(dimens.size20),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        Text(
+                            text = if (signUpState.passwordVisible) "Hide" else "Show",
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.clickable {
+                                onEvent(SingupEvent.OnPasswordVisibilityChanged)
+                            },
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     },
                     visualTransformation = if (signUpState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
                 )
@@ -200,7 +195,7 @@ fun AuthSignupScreen(
                     imeAction = ImeAction.Done,
                     trailingIcon = {
                         Text(
-                            text = if (signUpState.passwordVisible) "Hide" else "Show",
+                            text = if (signUpState.confirmPasswordVisible) "Hide" else "Show",
                             style = MaterialTheme.typography.labelSmall,
                             modifier = Modifier.clickable {
                                 onEvent(SingupEvent.OnConfirmPasswordVisibilityChanged)
@@ -232,25 +227,11 @@ fun AuthSignupScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(dimens.size35))
-                when (authState) {
-                    is AuthState.Loading -> {
-                        SignupButton(
-                            modifier = Modifier.profileCardShimmerEffect(),
-                            onEvent = onEvent,
-                            signUpState = signUpState,
-                            authState = authState,
-                            containerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent
-                        )
-                    }
-                    else ->{
-                        SignupButton(
-                            onEvent = onEvent,
-                            signUpState = signUpState,
-                            authState = authState
-                        )
-                    }
-                }
+                SignupButton(
+                    onEvent = onEvent,
+                    signUpState = signUpState,
+                    authState = authState
+                )
                 Spacer(modifier = Modifier.height(dimens.size15))
                 Row {
                     Text(
@@ -281,9 +262,7 @@ private fun SignupButton(
     modifier: Modifier = Modifier,
     onEvent: (SingupEvent) -> Unit,
     signUpState: SingupState,
-    authState: AuthState,
-    containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    disabledContainerColor: Color = MaterialTheme.colorScheme.surfaceContainer
+    authState: AuthState
 ) {
     Button(
         onClick = {
@@ -296,11 +275,12 @@ private fun SignupButton(
                 )
             )
         },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
+            .let { if (authState == AuthState.Loading) it.profileCardShimmerEffect() else it },
         colors = ButtonColors(
-            containerColor = containerColor,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            disabledContainerColor = disabledContainerColor,
+            containerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.surfaceContainer,
             disabledContentColor = MaterialTheme.colorScheme.onSurface,
         ),
         enabled = signUpState.isFormValid && signUpState.isPasswordValid && authState != AuthState.Loading,
