@@ -3,7 +3,7 @@ package com.hazrat.islam24.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Royal Green Theme Colors
- val royalGreenLight = Color(0xFF2C7259) // Example of royal green
+ val royalGreenLight = Color(0xFF15382C) // Example of royal green
  val royalGreenDark = Color(0xFF5BF5B6) // Darker shade for dark mode
 
 //light colors

@@ -21,6 +21,8 @@ import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
+import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
 import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError
 import com.hazrat.islam24.util.error.UserDataSuccess
@@ -142,12 +144,55 @@ class ProfileRepositoryImpl @Inject constructor(
                                 )
                             )
                         }
+                        saveProfilePictureLocally(uri = uri)
                     }
             }
         }
             .addOnFailureListener { e ->
                 _authState.value = AuthState.Error(e.message.toString())
             }
+    }
+
+    private fun saveProfilePictureLocally(uri: Uri) {
+        val directory = context.createDirectory()
+
+        // Define the file name as a static name ("profile_picture.jpg")
+        val fileName = "profile_picture.jpg"
+        val file = File(directory, fileName)
+
+        // If the file already exists, delete it before saving the new one
+        if (file.exists()) {
+            val deleted = file.delete()  // Delete the old file before saving the new one
+            if (!deleted) {
+                Log.e("ProfilePicture", "Failed to delete existing file.")
+                return
+            }
+        }
+
+        try {
+            // Download the image file from Firebase Storage using the URL provided
+            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri.toString())
+
+            // Use getFile() to download the file to local storage
+            val localFile = File.createTempFile(PROFILE_PICTURE, "jpg", context.cacheDir) // Create a temp file in cache
+
+            storageRef.getFile(localFile).addOnSuccessListener {
+                // After download is complete, copy the downloaded file to the desired location
+                localFile.copyTo(file, overwrite = true)
+                Log.d("ProfilePicture", "Profile picture saved successfully to ${file.absolutePath}")
+            }.addOnFailureListener { e ->
+                Log.e("ProfilePicture", "Failed to download image from Firebase", e)
+            }
+        } catch (e: Exception) {
+            Log.e("ProfilePicture", "Error saving profile picture", e)
+        }
+    }
+
+    fun Context.createDirectory(): File{
+        val directory = filesDir
+        val file  = File(directory, INTERNALSTORAGEPICTUREFOLDER)
+        if (!file.exists()) file.mkdirs()
+        return file
     }
 
     private fun compressImage(context: Context, uri: Uri): Uri? {

@@ -96,7 +96,6 @@ fun AuthSignupScreen(
             contentPadding = paddingValues,
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
                 .padding(horizontal = dimens.size20),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -246,6 +245,7 @@ fun AuthSignupScreen(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary,
                         textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.clickable {
                             navigateToLogin()
                         }

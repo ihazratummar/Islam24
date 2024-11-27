@@ -33,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +62,8 @@ import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardS
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.getCacheProfilePicture
+import com.hazrat.islam24.util.toUri
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -212,13 +215,16 @@ private fun ProfileHeader(
 ) {
     when (state) {
         is AuthState.Authenticated -> {
-            val imageUri = profileState.userData?.profilePictureUrl
+            val context = LocalContext.current
+            val cacheFile = getCacheProfilePicture(context = context)
+            val imageUri = remember { mutableStateOf(cacheFile?.toUri()?.toString() ) }
             val painter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUri)
+                model = ImageRequest.Builder(context)
+                    .data(imageUri.value )
                     .size(Size.ORIGINAL)
                     .crossfade(true)
                     .build()
+
             )
             MainTopProfileCard(
                 painter = painter,
@@ -343,6 +349,7 @@ fun MainTopProfileCard(
                 }
 
                 else -> {
+
                     if (!isLoggedIn) {
                         Box(
                             modifier = Modifier.fillMaxSize()
@@ -389,6 +396,14 @@ fun MainTopProfileCard(
                                 }
                             }
                         }
+                    }else{
+                        Icon(
+                            painter = painterResource(R.drawable.profile),
+                            contentDescription = "error",
+                            modifier = Modifier
+                                .padding(start = dimens.size10)
+                                .size(dimens.size80)
+                        )
                     }
                 }
             }

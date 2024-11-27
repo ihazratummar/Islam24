@@ -6,8 +6,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -47,13 +50,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -67,9 +73,12 @@ import coil.size.Size
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
+import com.hazrat.islam24.auth.presentation.component.ZoomedProfileImage
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Dimens
+import com.hazrat.islam24.util.getCacheProfilePicture
+import com.hazrat.islam24.util.toUri
 import kotlinx.coroutines.launch
 
 /**
@@ -152,13 +161,22 @@ fun ProfileDetailsScreen(
         modifier = Modifier,
         containerColor = MaterialTheme.colorScheme.surfaceDim
     ) { paddingValues ->
+        var showImagePreview by remember { mutableStateOf(false) }
+        var activeImage by remember { mutableStateOf<String?>(null) }
         LazyColumn(
             modifier = modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
         ) {
             item {
-                ProfilePicture(profileState, profileDetailsEvent, dimens)
+                ProfilePicture(
+                    profileDetailsEvent = profileDetailsEvent,
+                    onImageDragStart = {imageUri ->
+                        activeImage = imageUri
+                        showImagePreview  = true
+                    },
+                    onImageDragEnd = { showImagePreview = false }
+                )
                 Spacer(modifier = Modifier.height(dimens.size50))
             }
             item {
@@ -178,8 +196,13 @@ fun ProfileDetailsScreen(
                     label = stringResource(id = R.string.bio),
                     value = if (profileState.userData?.bio == null) "Not Set" else profileState.userData.bio
                 )
+
             }
         }
+        ZoomedProfileImage(
+            imageUri = activeImage,
+            isVisible = showImagePreview
+        )
         if (profileState.isNameDialogOpen) {
             UpdateDataDetails(
                 label = "Change name",
@@ -348,16 +371,20 @@ private fun ProfileDataCards(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ProfilePicture(
-    profileState: ProfileState,
     profileDetailsEvent: (ProfileDetailsEvent) -> Unit,
-    dimens: Dimens
+    onImageDragStart: (String?) -> Unit = {},
+    onImageDragEnd: () -> Unit = {}
 ) {
-    val imageUri = remember { mutableStateOf(profileState.userData?.profilePictureUrl) }
+    val context = LocalContext.current
+    val cacheFile = getCacheProfilePicture(context = context)
+    val imageUri = remember { mutableStateOf(cacheFile?.toUri()?.toString()) }
+
     val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(imageUri.value ?: profileState.userData?.profilePictureUrl)
+        model = ImageRequest.Builder(context)
+            .data(imageUri.value)
             .size(Size.ORIGINAL)
             .crossfade(true)
             .build()
@@ -377,18 +404,15 @@ private fun ProfilePicture(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Card(
+        Box(
             modifier = Modifier
-                .width(dimens.size150)
-                .height(dimens.size150)
-                .clickable {
-                    launcher.launch("image/*")
-                },
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent,
-            ),
-            shape = CircleShape,
-            border = BorderStroke(dimens.size5, color = MaterialTheme.colorScheme.primary)
+                .combinedClickable(
+                    onClick = { launcher.launch("image/*") },
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
+                .size(dimens.size150),
+            contentAlignment = Alignment.Center
         ) {
             when (painter.state) {
                 is AsyncImagePainter.State.Loading -> {
@@ -396,22 +420,48 @@ private fun ProfilePicture(
                 }
 
                 is AsyncImagePainter.State.Success -> {
-                    Image(
-                        painter = painter,
-                        contentDescription = "Profile Picture",
+                    Card(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentSize()
-                            .padding(dimens.size6)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
+                            .size(dimens.size150)
+                            .pointerInput(Unit) {
+                                detectDragGesturesAfterLongPress(
+                                    onDragStart = { onImageDragStart.invoke(imageUri.value) },
+                                    onDragEnd = { onImageDragEnd.invoke() },
+                                    onDragCancel = { onImageDragEnd.invoke() },
+                                    onDrag = { _, _ -> }
+                                )
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent,
+                        ),
+                        shape = CircleShape,
+                        border = BorderStroke(
+                            dimens.size5,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .wrapContentSize()
+                                .padding(dimens.size6)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
 
                 else -> {
                     Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "error"
+                        painter = painterResource(R.drawable.profile),
+                        contentDescription = "error",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .size(
+                                dimens.size150
+                            )
                     )
                 }
             }
