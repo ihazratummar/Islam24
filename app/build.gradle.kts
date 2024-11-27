@@ -20,7 +20,7 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 35
-        versionCode = 76
+        versionCode = 78
         versionName = "1.6.14"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
