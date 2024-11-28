@@ -194,7 +194,7 @@ sealed class HomePageNavIcons(
         HomePageNavIcons(icons = R.drawable.allah_logo, name = R.string.names, route = MainRoute.NamesOfAllahScreen)
 
     data object Calendar :
-        HomePageNavIcons(icons = R.drawable.calendar, name = R.string.calendar,  route = MainRoute.CalendarScreen)
+        HomePageNavIcons(icons = R.drawable.calendaricon, name = R.string.calendar,  route = MainRoute.CalendarScreen)
 
     data object Athkar :
         HomePageNavIcons(icons = R.drawable.athkar, name = R.string.athkar,  route = MainRoute.AthkarScreen)
