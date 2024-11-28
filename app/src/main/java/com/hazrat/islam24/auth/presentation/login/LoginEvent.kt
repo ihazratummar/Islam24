@@ -1,7 +1,5 @@
 package com.hazrat.islam24.auth.presentation.login
 
-import com.hazrat.islam24.auth.presentation.signup.SingupEvent
-
 /**
  * @author Hazrat Ummar Shaikh
  */
@@ -14,9 +12,7 @@ sealed interface  LoginEvent {
 
     data class SetPassword(val password: String): LoginEvent
 
-    object OnPasswordVisibilityChanged: LoginEvent
+    data object OnPasswordVisibilityChanged: LoginEvent
 
-    object Refresh : LoginEvent {
-
-    }
+    data object Refresh : LoginEvent
 }

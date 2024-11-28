@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -31,21 +33,36 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.R
+import com.hazrat.islam24.auth.navigation.authNavGraph
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
+import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
+import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
+import com.hazrat.islam24.core.presentation.home.component.HomePageNavIcons
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
-import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
+import com.hazrat.islam24.core.presentation.namesofallah.NamesViewmodel
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
+import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
+import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreen
+import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
+import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
 import com.hazrat.islam24.ui.theme.dimens
 import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun AppNavigator() {
+fun AppNavigator(
+    appSettingState: AppSettingState,
+    appSettingEvent: (AppSettingEvent) -> Unit,
+    zakatViewModel: ZakatViewModel
+) {
     val navController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -56,58 +73,104 @@ fun AppNavigator() {
         val bottomPadding = it.calculateBottomPadding()
         NavHost(
             navController = navController,
-            startDestination = HomeScreen,
+            startDestination = MainRoute.HomeScreen,
             modifier = Modifier.padding(bottom = bottomPadding),
-            enterTransition = { EnterTransition.None},
-            exitTransition = { ExitTransition.None}
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None }
         ) {
-            composable<HomeScreen> {
-                HomeScreen(navController, navigateToPrayerTime = {
-                    navController.navigate(PrayerTimeScreen) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                })
-            }
-            composable<PrayerTimeScreen> {
+            composable<MainRoute.HomeScreen> {
                 val viewModel: MainViewModel = hiltViewModel()
-                PrayerTimeScreen(viewModel, navController)
-            }
-            composable<QiblaDirectionScreen> {
-                val viewModel: QiblaViewModel = hiltViewModel()
-                val mainViewModel: MainViewModel = hiltViewModel()
-                val locationName by mainViewModel.locationName.collectAsState()
-                val state by viewModel.qiblaState.collectAsState()
-                val qiblaDirection = state.qiblaDirection
-                val currentDirection = state.currentDirection
-                QiblaScreen(
-                    navController = navController,
-                    currentDirection = currentDirection,
-                    qiblaDirection = qiblaDirection,
-                    locationName = locationName
+                val prayerTimes by viewModel.prayerTimes.collectAsState()
+                val locationName by viewModel.locationName.collectAsState()
+                HomeScreen(
+                    navigateToPrayerTime = {
+                        navController.navigate(PrayerTimeScreen) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }, prayerTimes = prayerTimes,
+                    locationName = locationName,
+                    onWidgetClick = {homeWidgetNav ->
+                        navController.navigate(homeWidgetNav.route){
+                            popUpTo(navController.graph.findStartDestination().id){
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
-            composable<NamesOfAllahScreen> {
-                val viewModel: MainViewModel = hiltViewModel()
-                NamesOfAllahScreen(viewModel, navController)
+            prayerNav(navController)
+            composable<MainRoute.QiblaDirectionScreen> {
+                val viewModel: QiblaViewModel = hiltViewModel()
+                val locationName by viewModel.locationName.collectAsState()
+                val state by viewModel.qiblaState.collectAsState()
+                QiblaScreen(
+                    navController = navController,
+                    locationName = locationName,
+                    state = state,
+                    isFacingQibla = viewModel.isFacingQibla()
+                )
+
             }
-            composable<PrayerSetting> {
-                PrayerSetting(navController = navController)
+            composable<MainRoute.NamesOfAllahScreen> {
+                val viewModel: NamesViewmodel = hiltViewModel()
+                val names by viewModel.names.collectAsState()
+                NamesOfAllahScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    nameEntity = names
+                )
             }
-            composable<CalendarScreen> {
-                CalendarScreen(navController)
+            composable<MainRoute.PrayerSetting> {
+                val prayerTimeSettingViewmodel: PrayerSettingViewModel = hiltViewModel()
+                val prayerTimeEntity by prayerTimeSettingViewmodel.prayerTime.collectAsState()
+                val prayerSettingState by prayerTimeSettingViewmodel.state.collectAsState()
+                PrayerSetting(
+                    prayerTimeEntity = prayerTimeEntity,
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    state = prayerSettingState,
+                    event = prayerTimeSettingViewmodel::onEvent
+                )
             }
-            composable<AthkarScreen> {
-                AthkarScreen(navController)
+            composable<MainRoute.CalendarScreen> {
+                val viewModel: CalendarViewModel = hiltViewModel()
+                val hijriCalendarEntity by viewModel.hijriCalendarEntity.collectAsState()
+                val gregorianToHijriEntity by viewModel.gregorianToHijriEntity.collectAsState()
+                CalendarScreen(
+                    hijriCalendarEntity = hijriCalendarEntity,
+                    navController = navController,
+                    gregorianToHijriEntity = gregorianToHijriEntity
+                )
             }
-//            authNavGraph(navController)
+            composable<MainRoute.AthkarScreen> {
+                val viewModel: AthkarViewModel = hiltViewModel()
+                val athkarEntity by viewModel.athkarList.collectAsState()
+                AthkarScreen(
+                    athkar = athkarEntity,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+            authNavGraph(
+                navController = navController,
+                appSettingState = appSettingState,
+                appSettingEvent = appSettingEvent
+            )
+            zakatNavGraph(
+                navController = navController,
+                zakatViewModel = zakatViewModel
+            )
         }
     }
 
 }
+
 
 @Composable
 private fun BottomBar(navController: NavHostController) {
@@ -115,7 +178,7 @@ private fun BottomBar(navController: NavHostController) {
         listOf(
             ContentDestination.Home,
             ContentDestination.PrayerTime,
-//            ContentDestination.Profile
+            ContentDestination.Profile
         )
     }
     val backStackState by navController.currentBackStackEntryAsState()
@@ -125,7 +188,7 @@ private fun BottomBar(navController: NavHostController) {
     if (isBottomBarVisible) {
         NavigationBar(
             containerColor = Color.Transparent,
-            tonalElevation = MaterialTheme.dimens.size10
+            tonalElevation = dimens.size10
         ) {
             bottomNavigationItem.forEach { screen ->
                 val isSelected =
@@ -145,7 +208,7 @@ private fun BottomBar(navController: NavHostController) {
                         Icon(
                             painter = painterResource(id = screen.icon),
                             contentDescription = screen.name,
-                            modifier = Modifier.size(if (isSelected) MaterialTheme.dimens.size50 / 1.1f else MaterialTheme.dimens.size40 / 1.1f)
+                            modifier = Modifier.size(dimens.size35)
                         )
                     },
                     label = { Text(text = screen.name) },
@@ -153,53 +216,62 @@ private fun BottomBar(navController: NavHostController) {
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         selectedTextColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.outline,
+                        unselectedIconColor = MaterialTheme.colorScheme.secondary,
                         unselectedTextColor = MaterialTheme.colorScheme.outline,
                         indicatorColor = Color.Transparent
                     ),
+                    interactionSource = remember { MutableInteractionSource() },
                 )
             }
         }
     }
 }
 
-
 @Serializable
-data object HomeScreen
+sealed class MainRoute{
 
-@Serializable
-data object PrayerTimeScreen
 
-@Serializable
-data object ProfileScreen
+    @Serializable
+    data object HomeScreen : MainRoute()
 
-@Serializable
-data object QiblaDirectionScreen
+    @Serializable
+    data object ProfileScreen : MainRoute()
 
-@Serializable
-data object PrayerSetting
+    @Serializable
+    data object QiblaDirectionScreen : MainRoute()
 
-@Serializable
-data object CalendarScreen
+    @Serializable
+    data object PrayerSetting : MainRoute()
 
-@Serializable
-data object NamesOfAllahScreen
+    @Serializable
+    data object CalendarScreen: MainRoute()
 
-@Serializable
-data object AthkarScreen
+    @Serializable
+    data object NamesOfAllahScreen: MainRoute()
+
+    @Serializable
+    data object AthkarScreen: MainRoute()
+
+    @Serializable
+    data object ZakatScreen : MainRoute()
+}
+
+
+
+
 
 @Serializable
 sealed class ContentDestination<T>(val name: String, @DrawableRes val icon: Int, val route: T) {
 
     @Serializable
     data object Home :
-        ContentDestination<HomeScreen>("Home", R.drawable.naviconhome, HomeScreen)
+        ContentDestination<MainRoute.HomeScreen>("Home", R.drawable.naviconhome, MainRoute.HomeScreen)
 
     @Serializable
     data object PrayerTime :
         ContentDestination<PrayerTimeScreen>("PrayerTime", R.drawable.pray, PrayerTimeScreen)
 
-//    @Serializable
-//    data object Profile :
-//        ContentDestination<ProfileScreen>("Profile", R.drawable.profile, ProfileScreen)
+    @Serializable
+    data object Profile :
+        ContentDestination<MainRoute.ProfileScreen>("Profile", R.drawable.profile, MainRoute.ProfileScreen)
 }

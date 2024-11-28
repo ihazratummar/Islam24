@@ -2,9 +2,7 @@ package com.hazrat.islam24.core.domain.repository.location
 
 import android.location.Location
 import androidx.lifecycle.LiveData
-import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.LocationEntity
-import kotlinx.coroutines.flow.Flow
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -31,4 +29,6 @@ interface LocationRepository {
      * @return A LocationEntity object representing the saved location, or null if no location is saved.
      */
     suspend fun getLocation(): LocationEntity?
+
+    suspend fun checkAndUpdateLocation()
 }

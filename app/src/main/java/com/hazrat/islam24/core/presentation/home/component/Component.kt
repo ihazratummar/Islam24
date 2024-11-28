@@ -22,12 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,11 +37,14 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.common.LocationName
-import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
 import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.ui.theme.Hidaya
+import com.hazrat.islam24.ui.theme.Poppins
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.DateUtil
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import java.text.NumberFormat
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -81,18 +85,18 @@ fun TimeLocationCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(MaterialTheme.dimens.size5)
-            .height(MaterialTheme.dimens.size200)
+            .padding(dimens.size5)
+            .height(dimens.size200)
             .clickable(
                 onClick = { navigateToPrayerTime() },
                 onClickLabel = stringResource(id = R.string.prayertimesandlocation)
             ),
-        shape = RoundedCornerShape(MaterialTheme.dimens.size30),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+        shape = RoundedCornerShape(dimens.size30),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            val today = DateUtil.getCurrentDay()
-            val index = today -1
+            val today = getCurrentDay()
+            val index = today - 1
             Log.d("Today", "$index")
             if (index in prayerTimeEntity.indices) {
                 HomePrayerTimeCardAnimation(
@@ -107,15 +111,15 @@ fun TimeLocationCard(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(MaterialTheme.dimens.size10)
+                    .padding(dimens.size10)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(0.5f)
                         .padding(
-                            start = MaterialTheme.dimens.size20,
-                            bottom = MaterialTheme.dimens.size15
+                            start = dimens.size20,
+                            bottom = dimens.size15
                         ),
                     verticalArrangement = Arrangement.Bottom
                 ) {
@@ -134,17 +138,17 @@ fun TimeLocationCard(
                         .fillMaxHeight()
                         .weight(0.5f)
                         .padding(
-                            start = MaterialTheme.dimens.size5,
-                            bottom = MaterialTheme.dimens.size15,
-                            end = MaterialTheme.dimens.size10,
-                            top = MaterialTheme.dimens.size20
+                            start = dimens.size5,
+                            bottom = dimens.size15,
+                            end = dimens.size10,
+                            top = dimens.size20
                         ),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.End
                 ) {
 
                     LocationName(locationDetailsEntity)
-                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.size8))
+                    Spacer(modifier = Modifier.height(dimens.size8))
                     val grday = getCurrentDay()
                     val hijriday = viewModel.getHijriDay()
                     if (isPrayerTime(prayerTimeEntity, grday, hijriday)) {
@@ -155,7 +159,7 @@ fun TimeLocationCard(
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     } else {
-                        DisplayCurrentPrayerTime(prayerTimeEntity, grday, hijriday)
+                        DisplayCurrentPrayerTime(prayerTimeEntity, hijriday)
                     }
                 }
             }
@@ -172,8 +176,8 @@ fun BackGroundCard() {
         modifier = Modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(
-            bottomEnd = MaterialTheme.dimens.size50,
-            bottomStart = MaterialTheme.dimens.size50
+            bottomEnd = dimens.size50,
+            bottomStart = dimens.size50
         ),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
@@ -184,12 +188,63 @@ fun BackGroundCard() {
                 .fillMaxSize()
                 .clip(
                     shape = RoundedCornerShape(
-                        bottomStart = MaterialTheme.dimens.size50,
-                        bottomEnd = MaterialTheme.dimens.size50
+                        bottomStart = dimens.size50,
+                        bottomEnd = dimens.size50
                     )
                 )
-                .size(MaterialTheme.dimens.size300),
+                .size(dimens.size300),
             colorFilter = ColorFilter.colorMatrix(colorMatrix = ColorMatrix())
         )
     }
 }
+
+
+@Composable
+fun RamadanCard() {
+    val currentDay = LocalDate.now()
+    val targetDate = LocalDate.of(2025, 3, 2)
+    val daysRemaining = ChronoUnit.DAYS.between(currentDay, targetDate)
+    // Retrieve the current device locale
+    val locale = LocalContext.current.resources.configuration.locales[0]
+    val formattedDaysRemaining = NumberFormat.getInstance(locale).format(daysRemaining)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(dimens.size100)
+            .padding(horizontal = dimens.size15),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .paint(
+                    painter = painterResource(id = R.drawable.ramadan),
+                    alpha = 0.3f,
+                    alignment = Alignment.Center,
+                    sizeToIntrinsics = true,
+                    contentScale = ContentScale.FillHeight
+                )
+                .padding(horizontal = dimens.size30)
+        ) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterStart),
+                text = stringResource(R.string.ramadan),
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                fontFamily = Poppins,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                text = stringResource(R.string.days, formattedDaysRemaining),
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                fontFamily = Hidaya
+            )
+        }
+    }
+}
+
+

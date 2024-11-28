@@ -1,13 +1,15 @@
 package com.hazrat.islam24.auth.presentation.login
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -20,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val zakatRepository: ZakatRepository
 ) : ViewModel() {
 
 
@@ -37,6 +40,7 @@ class LoginViewModel @Inject constructor(
 
     init {
         checkAuthStatus()
+
     }
 
     private fun checkAuthStatus() {
@@ -44,15 +48,18 @@ class LoginViewModel @Inject constructor(
             _authState.value = AuthState.Unauthenticated
         } else {
             _authState.value = AuthState.Authenticated
+            syncData()
         }
     }
 
     fun onEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.Login -> {
-                val email = _loginState.value.email
-                val password = _loginState.value.password
-                login(email, password)
+                viewModelScope.launch {
+                    val email = _loginState.value.email
+                    val password = _loginState.value.password
+                    login(email, password)
+                }
 
             }
 
@@ -91,12 +98,13 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun login(email: String, password: String) {
+    private suspend fun login(email: String, password: String) {
         if (!isLoginFormValid(_loginState.value)) {
             _authState.value = AuthState.Error("Please fill all fields")
             return
         }
         _authState.value = AuthState.Loading
+        delay(2000L)
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -107,13 +115,27 @@ class LoginViewModel @Inject constructor(
                             password = ""
                         )
                     }
+                    syncData()
                 } else {
-                    _authState.value =
-                        AuthState.Error(task.exception?.message ?: "Authentication failed")
+                    viewModelScope.launch {
+                        _authState.value = AuthState.Loading
+                        delay(1000L)
+                        _authState.value =
+                            AuthState.Error(task.exception?.message ?: "Authentication failed")
+                    }
                 }
-
-            }.addOnFailureListener { e ->
-                _authState.value = AuthState.Error(e.message ?: "Authentication failed")
             }
+            .addOnFailureListener { e ->
+                viewModelScope.launch {
+                    _authState.value = AuthState.Loading
+                    delay(1000L)
+                    _authState.value = AuthState.Error(e.message ?: "Authentication failed")
+                }
+            }
+    }
+    private fun syncData(){
+        viewModelScope.launch (SupervisorJob()){
+            zakatRepository.syncData()
+        }
     }
 }

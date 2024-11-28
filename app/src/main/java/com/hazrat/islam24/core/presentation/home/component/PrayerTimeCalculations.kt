@@ -12,11 +12,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.util.DateUtil.formatLocalTime
+import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -89,10 +89,11 @@ fun DisplayCurrentPrayerName(
 @Composable
 fun DisplayCurrentPrayerTime(
     data: List<PrayerTimeEntity>,
-    gregorianDay: Int,
     hijriDay: String
 ) {
-    var currentTime by remember { mutableStateOf(LocalTime.now()) }
+    var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    val currentDate = LocalDate.now()
+    var previousPrayerName by remember { mutableStateOf<String?>(null) }
 
     // Launch a coroutine to update the current time every second
     DisposableEffect(Unit) {
@@ -100,7 +101,7 @@ fun DisplayCurrentPrayerTime(
         val job = coroutineScope.launch {
             while (true) {
                 delay(1000)
-                currentTime = LocalTime.now()
+                currentTime = System.currentTimeMillis()
             }
         }
 
@@ -108,11 +109,23 @@ fun DisplayCurrentPrayerTime(
             job.cancel()
         }
     }
+    val currentDayPrayer = data.firstOrNull { it.day == currentDate.dayOfMonth }
+    Log.d("PrayerTime", "Current Prayer Day: $currentDayPrayer")
 
+    val currentPrayerName: String? = currentDayPrayer?.let { prayerTimes ->
+        when (currentTime) {
+            in (prayerTimes.fajrTime + 1)..prayerTimes.sunriseTime - 300000 -> stringResource(id = R.string.now)
+            in (prayerTimes.dhuhrTime + 1)..prayerTimes.dhuhrTime + 3600000 -> stringResource(id = R.string.now)
+            in (prayerTimes.asrTime + 1)..prayerTimes.maghribTime - 600000 -> stringResource(id = R.string.now)
+            in (prayerTimes.maghribTime + 1)..prayerTimes.ishaTime - 600000 -> stringResource(id = R.string.now)
+            in (prayerTimes.ishaTime + 1)..prayerTimes.midnightTime -> stringResource(id = R.string.now)
+            else -> null
+        }
+    }
+
+    val gregorianDay = getCurrentDay()
     // Find the prayer times for the current day
-    val currentDayPrayerTimes =
-        data.find { it.gregorianDay == gregorianDay.toString() && it.hijriDay == hijriDay }
-
+    val currentDayPrayerTimes = data.find { it.gregorianDay.toInt() == gregorianDay && it.hijriDay == hijriDay }
     val prayerTimes = mapOf(
         stringResource(id = R.string.fajr) to currentDayPrayerTimes?.fajrTime?.let {
             Instant.ofEpochMilli(
@@ -141,24 +154,36 @@ fun DisplayCurrentPrayerTime(
         },
     )
 
+    val currentLocalTime = Instant.ofEpochMilli(currentTime)
+        .atZone(ZoneId.systemDefault())
+        .toLocalTime()
     val nextPrayer = prayerTimes
         .filterValues { it != null }
-        .filterValues { it!! > currentTime }
+        .filterValues { it!! > currentLocalTime }
         .minByOrNull { it.value ?: LocalTime.MAX }
 
-    nextPrayer?.let { (prayerName, time) ->
-        Column {
-            Text(
-                text = stringResource(R.string.next_prayer, prayerName),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            formatLocalTime(time)?.let {
+
+    if (currentPrayerName != null){
+        Text(
+            text = currentPrayerName,
+            color = MaterialTheme.colorScheme.onBackground,
+            style =  MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.SemiBold)
+    }else{
+        nextPrayer?.let { (prayerName, time) ->
+            Column {
                 Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = stringResource(R.string.next_prayer, prayerName),
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                formatLocalTime(time)?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
         }
     }

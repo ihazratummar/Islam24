@@ -1,10 +1,11 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 /**
@@ -13,10 +14,30 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    private val _authState = MutableLiveData<AuthState>()
-    val authState: LiveData<AuthState> = _authState
 
+    val profileState: StateFlow<ProfileState> = profileRepository.profileState
+    init {
+        profileRepository.checkAuthStatus()
+    }
+    val authState: LiveData<AuthState> = profileRepository.authState
+    fun onEvent(event: ProfileEvent) {
+        when (event) {
+            is ProfileEvent.RateUs -> {
+                profileRepository.rateUs(event.activity)
+            }
+            ProfileEvent.InviteFriend -> {
+                profileRepository.inviteFriend()
+            }
+
+            ProfileEvent.OpenRatingDialog -> {
+                profileRepository.openRatingDialog()
+            }
+            ProfileEvent.GoToRate -> {
+                profileRepository.goToRate()
+            }
+        }
+    }
 }

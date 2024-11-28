@@ -1,31 +1,30 @@
 package com.hazrat.islam24.main.mainActivity
 
+import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
-import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
+import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
-import com.hazrat.islam24.core.data.entity.NameEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.data.manager.LocationNameRepositoryImpl
-import com.hazrat.islam24.core.data.manager.NamesRepositoryImpl
+import com.hazrat.islam24.core.data.repository.NamesRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.AthkarRepository
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
+import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
+import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,123 +32,67 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val prayerTimeRepository: PrayerTimeRepository,
-    private val locationNameRepository: LocationNameRepositoryImpl,
-    private val connectivityObserver: ConnectivityObserver,
+    private val locationNameRepository: LocationNameRepository,
     private val namesRepository: NamesRepositoryImpl,
     private val gregorianToHijriRepository: GregorianToHijriRepository,
     private val hijriCalendarRepository: HijriCalendarRepository,
+    private val profileRepository: ProfileRepository,
+    private val locationRepository: LocationRepository,
+    private val networkRepository: NetworkRepository,
+    private val athkarRepository: AthkarRepository,
+    @ApplicationContext context: Context
 ) : ViewModel() {
-    /**
-     * splash screen condition
-     */
-    private val _splashCondition = mutableStateOf(true)
-    val splashCondition: State<Boolean> = _splashCondition
 
 
     /**
      * prayer time
      */
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
-    val prayerTimes = _prayerTimes.asStateFlow()
+    val prayerTimes: StateFlow<List<PrayerTimeEntity>> = _prayerTimes.asStateFlow()
 
     /**
      * network check
      */
-    private val _networkStatus = mutableStateOf(ConnectivityObserver.Status.Unavailable)
-    val networkStatus: State<ConnectivityObserver.Status> = _networkStatus
 
-    /**
-     * allah' names
-     */
-    private val _names = MutableStateFlow<List<NameEntity>>(emptyList())
-    val names = _names.asStateFlow()
+    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
 
-    /**
-     * calenar
-     */
-    private val _hijriDate = MutableStateFlow<List<GregorianToHijriEntity>>(emptyList())
-    val hijriDate = _hijriDate.asStateFlow()
-
-    private val _hijriCalendar = MutableStateFlow<List<HijriCalendarEntity>>(emptyList())
-    val hijriCalendar = _hijriCalendar.asStateFlow()
-
-
-    /**
-     * Location name
-     */
-    private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())
-    val locationName = _locationName.asStateFlow()
-
-
+    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
+        networkRepository.networkStatus
 
     init {
-        viewModelScope.launch {
-            delay(300)
-            _splashCondition.value = false
+        viewModelScope.launch(Dispatchers.IO) {
             fetchDataFromDB()
+            networkStatus.collect { status ->
+                if (status == ConnectivityObserver.Status.Available) {
+                    fetchInitialData()
+                }
+            }
         }
-        observeNetworkStatus()
+        profileRepository.checkAuthStatus()
 
     }
 
     private fun fetchDataFromDB() {
         viewModelScope.launch {
-            fetchHijriDate()
-            fetchHijriCalendar()
             getAllPrayerTimes()
-            locationName()
+            locationNameRepository.locationName()
             locationNameRepository.getLocationDetails()
-            _names.value = namesRepository.getAllahNamesFromDatabase()
-        }
-    }
+            athkarRepository.getAthkarFromDb()
 
-    private fun observeNetworkStatus() {
-        connectivityObserver.observer().onEach { status ->
-            _networkStatus.value = status
-            if (status == ConnectivityObserver.Status.Available) {
-                fetchInitialData()
-            }
-        }.launchIn(viewModelScope)
+        }
     }
 
     private fun fetchInitialData() {
         viewModelScope.launch {
             prayerTimeRepository.getAllPrayer()
             prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
-            locationNameRepository.fetchLocationName()
             gregorianToHijriRepository.getGregorianToHijriDate()
             hijriCalendarRepository.getHijriCalendarFromApi()
             namesRepository.getAllahNamesFromApi()
-        }
-    }
-
-    /**
-     * calendar function from db
-     */
-    private fun fetchHijriDate() {
-        viewModelScope.launch {
-            gregorianToHijriRepository.gregorianToHijriEntity().distinctUntilChanged()
-                .collectLatest { hijriDay: List<GregorianToHijriEntity> ->
-                    if (hijriDay.isEmpty()) {
-                        Log.d("testing", ": Empty list ")
-                    } else {
-                        _hijriDate.value = hijriDay
-                    }
-                }
-        }
-    }
-
-    private fun fetchHijriCalendar() {
-        viewModelScope.launch {
-            hijriCalendarRepository.getCalendarList().distinctUntilChanged()
-                .collectLatest { calenderList: List<HijriCalendarEntity> ->
-                    if (calenderList.isEmpty()) {
-                        Log.d("testing", ": Empty list ")
-                    } else {
-                        _hijriCalendar.value = calenderList
-                        Log.d("testing", ": Empty list $calenderList")
-                    }
-                }
+            locationRepository.checkAndUpdateLocation()
+            locationNameRepository.getLocationName()
+            athkarRepository.getAthkarFromApi()
+            locationNameRepository.fetchLocationName()
         }
     }
 
@@ -176,27 +119,6 @@ class MainViewModel @Inject constructor(
                         Log.d("testing", ": Empty list ")
                     } else {
                         _prayerTimes.value = prayerList
-                    }
-                }
-        }
-    }
-
-    /**
-     *  Location Name from db
-     */
-    private fun locationName() {
-        viewModelScope.launch(Dispatchers.IO) {
-            locationNameRepository.getLocationDetails().distinctUntilChanged()
-                .collectLatest { locationName: List<LocationDetailsEntity> ->
-                    if (locationName.isEmpty()) {
-                        if (_networkStatus.value == ConnectivityObserver.Status.Available){
-                            locationNameRepository.fetchLocationName()
-                        }else{
-                            return@collectLatest
-                        }
-                        Log.d("LocationNameStatus", "Location list empty")
-                    } else {
-                        _locationName.value = locationName
                     }
                 }
         }

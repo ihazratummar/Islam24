@@ -1,7 +1,6 @@
 package com.hazrat.islam24.core.presentation.calendar
 
 import android.icu.util.IslamicCalendar
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,25 +31,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.R
+import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
+import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import com.hazrat.islam24.core.presentation.calendar.component.HijriMonth
 import com.hazrat.islam24.core.presentation.calendar.component.WeekDay
-import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.dimens
 
 @Composable
-fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
-    val hijriCalendar by viewModel.hijriCalendar.collectAsState()
-    val calendar = hijriCalendar.firstOrNull()
-
-    val hijriDay by viewModel.hijriDate.collectAsState()
-    val hijriDayNew = hijriDay.firstOrNull()
+fun CalendarHomeScreen(
+    hijriCalendarEntity: List<HijriCalendarEntity>,
+    gregorianToHijriEntity: List<GregorianToHijriEntity>
+) {
+    val calendar = hijriCalendarEntity.firstOrNull()
+    val hijriDayNew = gregorianToHijriEntity.firstOrNull()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(MaterialTheme.dimens.size10),
+            .padding(dimens.size10),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -62,7 +60,7 @@ fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
-        }else{
+        } else {
             Text(text = "Loading")
         }
         HijriCalendar()
@@ -70,16 +68,14 @@ fun CalendarHomeScreen(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun HijriCalendar(modifier: Modifier = Modifier) {
+fun HijriCalendar() {
     val calendar by remember { mutableStateOf(IslamicCalendar()) }
 
-    val month by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH )) }
+    val month by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH)) }
 
-    Log.d("Month ", "$month")
-
-    var currentMonthNumber by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH )) }
+    var currentMonthNumber by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH)) }
     var year by remember { mutableIntStateOf(calendar.get(IslamicCalendar.YEAR)) }
-    var lastDayOfMonth by remember { mutableIntStateOf(calendar.getActualMaximum(IslamicCalendar.DAY_OF_MONTH )) }
+    var lastDayOfMonth by remember { mutableIntStateOf(calendar.getActualMaximum(IslamicCalendar.DAY_OF_MONTH)) }
     var firstDayOfWeek by remember { mutableIntStateOf(getFirstDayOfWeek(calendar)) }
     var totalDays by remember { mutableIntStateOf(lastDayOfMonth) }
 
@@ -91,14 +87,15 @@ fun HijriCalendar(modifier: Modifier = Modifier) {
         firstDayOfWeek = getFirstDayOfWeek(calendar)
         totalDays = lastDayOfMonth
     }
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         HijriMonthNavigation(
             currentMonth = currentMonthNumber,
             year = year,
             onPrevMonth = {
-                currentMonthNumber = (currentMonthNumber - 1 + HijriMonth.entries.size) % HijriMonth.entries.size
+                currentMonthNumber =
+                    (currentMonthNumber - 1 + HijriMonth.entries.size) % HijriMonth.entries.size
                 if (currentMonthNumber == HijriMonth.entries.size - 1) {
                     year--
                 }
@@ -113,7 +110,7 @@ fun HijriCalendar(modifier: Modifier = Modifier) {
             }
         )
         HijriWeekDaysHeader()
-        Spacer(modifier = Modifier.height(MaterialTheme.dimens.size4))
+        Spacer(modifier = Modifier.height(dimens.size4))
         DaysGrid(
             firstDayOfWeek = firstDayOfWeek,
             totalDays = totalDays
@@ -141,7 +138,7 @@ fun HijriMonthNavigation(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(MaterialTheme.dimens.size10),
+            .padding(dimens.size10),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -150,9 +147,9 @@ fun HijriMonthNavigation(
             contentDescription = "Previous Month",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
-                .size(MaterialTheme.dimens.size35)
+                .size(dimens.size35)
                 .clip(CircleShape)
-                .padding(MaterialTheme.dimens.size4)
+                .padding(dimens.size4)
                 .clickable {
                     onPrevMonth()
                 }
@@ -167,17 +164,15 @@ fun HijriMonthNavigation(
             contentDescription = "Previous Month",
             tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
-                .size(MaterialTheme.dimens.size35)
+                .size(dimens.size35)
                 .clip(CircleShape)
-                .padding(MaterialTheme.dimens.size4)
+                .padding(dimens.size4)
                 .clickable {
                     onNextMonth()
                 }
         )
     }
 }
-
-
 
 
 @Composable
@@ -196,10 +191,6 @@ fun HijriWeekDaysHeader() {
         }
     }
 }
-
-
-
-
 
 
 @Composable
@@ -227,10 +218,10 @@ fun DaysGrid(
                             modifier = Modifier
                                 .weight(1f)
                                 .aspectRatio(1f)
-                                .padding(MaterialTheme.dimens.size4)
+                                .padding(dimens.size4)
                                 .background(
                                     color = Color.Transparent,
-                                    shape = RoundedCornerShape(MaterialTheme.dimens.size10)
+                                    shape = RoundedCornerShape(dimens.size10)
                                 ),
                             contentAlignment = Alignment.Center
                         ) {

@@ -10,6 +10,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * @author Hazrat Ummar Shaikh
+ */
+
+
+
 class NetworkConnectivityObserver @Inject constructor(
     context: Context
 ) : ConnectivityObserver{

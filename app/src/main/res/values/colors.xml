@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- home_page colors -->
-	///prayer colors
-	<color name="primary">#054E05</color>
-	<color name="background_color">#E7FCE6</color>
-	<color name="text">#031600</color>
-
+    ///prayer colors
 
 
 </resources>

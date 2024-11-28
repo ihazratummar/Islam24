@@ -11,7 +11,7 @@ import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 @Database(
     entities = [PrayerTimeEntity::class,
         PrayerCalculationEntity::class, PrayerJuristicEntity::class],
-    version = 11,
+    version = 13,
     exportSchema = false
 )
 abstract class PrayerDatabase : RoomDatabase() {
