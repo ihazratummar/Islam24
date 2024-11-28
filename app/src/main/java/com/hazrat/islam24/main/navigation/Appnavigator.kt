@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -41,7 +40,6 @@ import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
 import com.hazrat.islam24.core.presentation.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
-import com.hazrat.islam24.core.presentation.home.component.HomePageNavIcons
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesViewmodel
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
@@ -109,10 +107,12 @@ fun AppNavigator(
                 val locationName by viewModel.locationName.collectAsState()
                 val state by viewModel.qiblaState.collectAsState()
                 QiblaScreen(
-                    navController = navController,
                     locationName = locationName,
                     state = state,
-                    isFacingQibla = viewModel.isFacingQibla()
+                    isFacingQibla = viewModel.isFacingQibla(),
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
                 )
 
             }
@@ -144,8 +144,8 @@ fun AppNavigator(
                 val hijriCalendarEntity by viewModel.hijriCalendarEntity.collectAsState()
                 val gregorianToHijriEntity by viewModel.gregorianToHijriEntity.collectAsState()
                 CalendarScreen(
+                    onBackClick = {navController.popBackStack()},
                     hijriCalendarEntity = hijriCalendarEntity,
-                    navController = navController,
                     gregorianToHijriEntity = gregorianToHijriEntity
                 )
             }

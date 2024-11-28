@@ -128,8 +128,7 @@ class ProfileRepositoryImpl @Inject constructor(
         val compressUri = compressImage(context, uri) ?: uri
         val userId = auth.currentUser?.uid ?: return
         val storageRef = storage.reference
-        val uuid = UUID.randomUUID()
-        val imageRef = storageRef.child("image/$userId/$uuid")
+        val imageRef = storageRef.child("image/$userId/profile_image")
         val uploadTask = imageRef.putFile(compressUri)
         uploadTask.addOnSuccessListener {
             imageRef.downloadUrl.addOnSuccessListener { uri ->
@@ -153,7 +152,7 @@ class ProfileRepositoryImpl @Inject constructor(
             }
     }
 
-    private fun saveProfilePictureLocally(uri: Uri) {
+    override fun saveProfilePictureLocally(uri: Uri) {
         val directory = context.createDirectory()
 
         // Define the file name as a static name ("profile_picture.jpg")
@@ -185,6 +184,23 @@ class ProfileRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("ProfilePicture", "Error saving profile picture", e)
+        }
+    }
+
+    fun deleteProfilePictureLocally() {
+        val directory = context.createDirectory() // Ensure this points to the same directory
+        val fileName = "profile_picture.jpg"
+        val file = File(directory, fileName)
+
+        if (file.exists()) {
+            val deleted = file.delete()
+            if (deleted) {
+                Log.d("ProfilePicture", "Profile picture deleted successfully from ${file.absolutePath}")
+            } else {
+                Log.e("ProfilePicture", "Failed to delete profile picture from ${file.absolutePath}")
+            }
+        } else {
+            Log.w("ProfilePicture", "Profile picture file does not exist. No action taken.")
         }
     }
 
@@ -356,6 +372,7 @@ class ProfileRepositoryImpl @Inject constructor(
             delay(2000)
             auth.signOut()
             _authState.value = AuthState.Unauthenticated
+            deleteProfilePictureLocally()
         } else {
             _authState.value = AuthState.Loading
             delay(2000)

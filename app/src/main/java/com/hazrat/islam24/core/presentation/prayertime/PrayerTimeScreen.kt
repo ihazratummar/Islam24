@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.presentation.common.PrayerTimeTopBar
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
@@ -76,80 +78,48 @@ fun ShowData(
     prayerTimes: List<PrayerTimeEntity>,
 ) {
     val methods = prayerTimes.firstOrNull()
-    Scaffold(
-        modifier = Modifier,
-        containerColor = Color.Transparent,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.prayer_times),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(
-                        modifier = Modifier,
-                        onClick = { event(PrayerEvent.SharePrayer) }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.share),
-                            contentDescription = "Setting Icon",
-                            modifier = Modifier,
-                            tint = MaterialTheme.colorScheme.onBackground
 
-                        )
-                    }
-                    IconButton(
-                        modifier = Modifier.padding(end = dimens.size20),
-                        onClick = { navController.navigate(MainRoute.PrayerSetting) }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.settings),
-                            contentDescription = "Setting Icon",
-                            modifier = Modifier,
-                            tint = MaterialTheme.colorScheme.onBackground
 
-                        )
-                    }
-
-                },
-                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val today = getCurrentDay()
+        val index = today - 1
+        if (index in prayerTimes.indices) {
+            PrayerTimeScreenAnimation(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimens.size250),
+                prayerTimeEntity = prayerTimes[index]
 
             )
         }
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            val today = getCurrentDay()
-            val index = today - 1
-            if (index in prayerTimes.indices) {
-                PrayerTimeScreenAnimation(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimens.size250),
-                    prayerTimeEntity = prayerTimes[index]
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Spacer(Modifier.height(dimens.size30))
+            PrayerTimeTopBar(
+                header = stringResource(R.string.prayer_times),
+                subText = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
+                onFirstActionClick = {
+                    event(PrayerEvent.SharePrayer)
+                },
+                onSecondActionClick = {
+                    navController.navigate(MainRoute.PrayerSetting)
+                },
+                firstActionIcon = painterResource(id = R.drawable.share),
+                secondActionIcon = painterResource(id = R.drawable.settings)
+            )
 
-                )
-            }
-            Column(
-                modifier = Modifier.padding(it)
-            ) {
-                ViewPager(
-                    prayerTimes = prayerTimes,
-                    navController = navController,
-                )
-            }
-
+            ViewPager(
+                prayerTimes = prayerTimes,
+                navController = navController,
+            )
         }
     }
+
 }
+
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable

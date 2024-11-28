@@ -17,3 +17,9 @@ buildscript {
         classpath(libs.hilt.android.gradle.plugin)
     }
 }
+
+configurations.all {
+    resolutionStrategy{
+        force (libs.androidx.compose.bom)
+    }
+}
