@@ -51,5 +51,4 @@ interface PrayerTimeRepository {
 
     suspend fun getAllPrayerTimes()
 
-    suspend fun networkObserver()
 }

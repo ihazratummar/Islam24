@@ -4,16 +4,17 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,137 +35,91 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntSize
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.hazrat.islam24.R
-import com.hazrat.islam24.main.navigation.AthkarScreen
-import com.hazrat.islam24.main.navigation.CalendarScreen
-import com.hazrat.islam24.main.navigation.NamesOfAllahScreen
-import com.hazrat.islam24.main.navigation.QiblaDirectionScreen
-import com.hazrat.islam24.main.navigation.nvgraph.Zakat
+import com.hazrat.islam24.main.navigation.MainRoute
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.Dimens
-import okhttp3.internal.immutableListOf
+
 
 @Composable
-fun LazyVerticalGridCardIcons(navController: NavController) {
-
-    val icons = immutableListOf(
-        R.drawable.allah_logo,
-        R.drawable.calendar,
-        R.drawable.athkar,
-        R.drawable.qibla,
-        R.drawable.zakat
+fun LazyVerticalGridCardIcons(
+    onClick: (HomePageNavIcons) -> Unit
+) {
+    val navIcons = listOf(
+        HomePageNavIcons.AsmaUlHusna,
+        HomePageNavIcons.Calendar,
+        HomePageNavIcons.Athkar,
+        HomePageNavIcons.Qibla,
+        HomePageNavIcons.Zakat,
     )
 
-    val names = immutableListOf(
-        stringResource(R.string.names),
-        stringResource(R.string.calendar),
-        stringResource(R.string.athkar),
-        stringResource(id = R.string.qibla),
-        stringResource(id = R.string.zakat)
-    )
-
-    val onClickLabel = immutableListOf(
-        stringResource(R.string.names),
-        stringResource(R.string.calendar),
-        stringResource(R.string.athkar),
-        stringResource(id = R.string.qibla),
-        stringResource(id = R.string.zakat)
-    )
-
-    Box(modifier = Modifier
-        .height(dimens.size200)
-        .fillMaxWidth()) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth(),
-            columns = GridCells.Fixed(4),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimens.size200),
+            columns = GridCells.Fixed(5),
             horizontalArrangement = Arrangement.Center
         ) {
-            items(names.size) { index ->
-                Column(
-                    modifier = Modifier.padding(vertical = dimens.size10),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .width(dimens.size60)
-                            .height(dimens.size60)
-                            .padding(dimens.size1)
-                            .clickable(
-                                onClick = {
-                                    when (index) {
-                                        0 -> navController.navigate(NamesOfAllahScreen) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = false
-                                        }
-
-                                        1 -> navController.navigate(CalendarScreen) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-
-                                        2 -> navController.navigate(AthkarScreen) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-
-                                        3 -> navController.navigate(QiblaDirectionScreen) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                        4-> navController.navigate(Zakat){
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    }
-                                },
-                                onClickLabel = onClickLabel[index]
-                            )
-                            .clip(RoundedCornerShape(dimens.size8)),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer
-                        )
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = icons[index]),
-                            contentDescription = null,
-                            tint = Color.Unspecified,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(dimens.size5)
-                        )
-                    }
-                    Text(
-                        names[index],
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.labelSmall
+            navIcons.forEach {
+                item {
+                    HomeWidgetsIcons(
+                        icons = it.icons,
+                        names = it.name,
+                        onClick = { onClick(it) }
                     )
                 }
-
             }
         }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun HomeWidgetsIcons(
+    icons: Int,
+    names: Int,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(vertical = dimens.size10),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Card(
+            modifier = Modifier
+                .size(dimens.size60)
+                .padding(dimens.size1)
+                .combinedClickable(
+                    onClick = { onClick() },
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
+                .clip(RoundedCornerShape(dimens.size8)),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
+        ) {
+            Icon(
+                painter = painterResource(icons),
+                contentDescription = names.toString(),
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .size(dimens.size60)
+                    .padding(dimens.size1)
+            )
+        }
+        Text(
+            text = stringResource(names),
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.labelMedium
+        )
     }
 }
 
@@ -184,10 +139,11 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     background(
         brush = Brush.linearGradient(
             colors = listOf(
-                Color(0xD71F581F),
-                Color(0xFA277006),
-                Color(0xD71F581F),
-            ),
+                Color(0xEE155242),
+                Color(0xFD258971),
+                Color(0xE9155242),
+
+                ),
             start = Offset(startOffsetX, 0F),
             end = Offset(
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
@@ -226,4 +182,26 @@ fun Modifier.generalShimmerEffect(): Modifier = composed {
     ).onGloballyPositioned {
         size = it.size
     }
+}
+
+
+sealed class HomePageNavIcons(
+    val icons: Int,
+    val name: Int,
+    val route:  MainRoute
+) {
+    data object AsmaUlHusna :
+        HomePageNavIcons(icons = R.drawable.allah_logo, name = R.string.names, route = MainRoute.NamesOfAllahScreen)
+
+    data object Calendar :
+        HomePageNavIcons(icons = R.drawable.calendar, name = R.string.calendar,  route = MainRoute.CalendarScreen)
+
+    data object Athkar :
+        HomePageNavIcons(icons = R.drawable.athkar, name = R.string.athkar,  route = MainRoute.AthkarScreen)
+
+    data object Qibla :
+        HomePageNavIcons(icons = R.drawable.qibla, name = R.string.qibla, route = MainRoute.QiblaDirectionScreen)
+
+    data object Zakat :
+        HomePageNavIcons(icons = R.drawable.zakat, name = R.string.zakat, route = MainRoute.ZakatScreen)
 }

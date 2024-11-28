@@ -1,3 +1,4 @@
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -6,23 +7,29 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
 
 }
 
 android {
     namespace = "com.hazrat.islam24"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        targetSdk= 34
-        versionCode = 74
-        versionName = "1.6.12"
+        targetSdk= 35
+        versionCode = 78
+        versionName = "1.6.14"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "LOCATION_IQ_API_KEY", properties.getProperty("LOCATION_IQ_API_KEY"))
+        buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -44,17 +51,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
     }
     buildFeatures{
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -71,27 +79,26 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx.v281)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.compose)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.play.services.location)
-    implementation(libs.transportation.consumer)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
-
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v351)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
     debugImplementation(libs.ui.tooling)
-    implementation(libs.androidx.material.android)
-
+    implementation(libs.transportation.consumer)
+    androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.androidx.junit.v115)
     implementation(libs.androidx.material.icons.extended.android)
 
+
+
+
+
+    implementation(libs.play.services.location)
 
     /*
     FireBase
@@ -100,6 +107,8 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation (libs.firebase.database)
     platform(libs.firebase.bom.v2821)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
 
     //window size
@@ -148,6 +157,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    //Room Encryption
+    implementation( libs.android.database.sqlcipher)
+    implementation( libs.androidx.sqlite)
+
 
     //Observe
     implementation (libs.androidx.lifecycle.viewmodel.compose.v281)
@@ -171,5 +184,7 @@ dependencies {
 
     //dataStorePreference
     implementation(libs.androidx.preference.ktx)
-}
 
+    //Cloudy for blurring effect
+    implementation(libs.cloudy)
+}

@@ -3,6 +3,7 @@ package com.hazrat.islam24.core.presentation.prayertime.setting
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.data.entity.PrayerCalculationEntity
@@ -54,7 +55,6 @@ class PrayerSettingViewModel @Inject constructor(
         getCalculationMethod()
         viewModelScope.launch (Dispatchers.IO){
             prayerTimeRepository.getAllPrayerTimes()
-            networkRepository.observeNetworkStatus()
         }
         Log.d("PrayerSettingViewModel", "Network status: ${networkStatus.value}")
     }

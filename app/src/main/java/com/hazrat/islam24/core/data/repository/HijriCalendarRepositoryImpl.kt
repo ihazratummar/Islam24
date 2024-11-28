@@ -1,5 +1,6 @@
 package com.hazrat.islam24.core.data.repository
 
+import android.util.Log
 import com.hazrat.islam24.core.data.dao.GregorianToHijriDao
 import com.hazrat.islam24.core.data.dao.HijriCalendarDao
 import com.hazrat.islam24.core.domain.model.hijricalendar.Data
@@ -13,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.HttpException
+import java.io.IOException
 
 /**
  * Implementation of the HijriCalendarRepository interface.
@@ -34,24 +37,35 @@ class HijriCalendarRepositoryImpl(
      * @return The HijriCalendarResponse containing the retrieved Hijri calendar data.
      * @throws IllegalStateException if the GregorianToHijriEntity list is null or empty.
      */
-    override suspend fun getHijriCalendarFromApi(): HijriCalendarResponse {
+    override suspend fun getHijriCalendarFromApi(): HijriCalendarResponse? {
         val dataList: List<GregorianToHijriEntity> = gregorianToHijriEntity().firstOrNull()
             ?: throw IllegalStateException("GregorianToHijriEntity list is null or empty")
+        try {
+            if (dataList.isNotEmpty()) {
+                val singleData = dataList.first()
+                val month = singleData.monthNumber
+                val year = singleData.year
 
-        if (dataList.isNotEmpty()) {
-            val singleData = dataList.first()
-            val month = singleData.monthNumber
-            val year = singleData.year
-
-            val apiResponse = api.getHijriCalendar(month, year)
-            apiResponse.data.forEach { apiDates ->
-                val hijriCalendarEntity = convertApiResponseToEntity(apiDates)
-                insertCalendarList(hijriCalendarEntity)
+                val apiResponse = api.getHijriCalendar(month, year)
+                apiResponse.data.forEach { apiDates ->
+                    val hijriCalendarEntity = convertApiResponseToEntity(apiDates)
+                    insertCalendarList(hijriCalendarEntity)
+                }
+                return apiResponse
+            } else {
+                Log.e("HijriCalendarRepositoryImpl", "Error fetching HijriCalendar")
+                // Handle the case when GregorianToHijriEntity list is empty
+                return null
             }
-            return apiResponse
-        } else {
-            // Handle the case when GregorianToHijriEntity list is empty
-            throw IllegalStateException("GregorianToHijriEntity list is empty")
+        }catch (e:Exception){
+            Log.e("HijriCalendarRepositoryImpl", "Error fetching HijriCalendar: ${e.message}")
+            return null
+        }catch (e:IOException){
+            Log.e("HijriCalendarRepositoryImpl", "Error fetching HijriCalendar: ${e.message}")
+            return null
+        }catch (e:HttpException){
+            Log.e("HijriCalendarRepositoryImpl", "Error fetching HijriCalendar: ${e.message}")
+            return null
         }
     }
 

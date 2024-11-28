@@ -2,7 +2,6 @@ package com.hazrat.islam24.auth.presentation.profiledetails
 
 import android.net.Uri
 import com.hazrat.islam24.auth.model.UserData
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
 
 /**
  * @author Hazrat Ummar Shaikh

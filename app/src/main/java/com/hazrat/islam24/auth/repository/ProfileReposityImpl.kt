@@ -2,14 +2,11 @@ package com.hazrat.islam24.auth.repository
 
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -22,21 +19,18 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
-import com.hazrat.islam24.main.mainActivity.MainActivity
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
+import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
 import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError
 import com.hazrat.islam24.util.error.UserDataSuccess
-import com.hazrat.islam24.util.getActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.tasks.await
 import java.io.File
@@ -52,7 +46,7 @@ class ProfileRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    private val connectivityObserver: ConnectivityObserver,
+    private val networkRepository: NetworkRepository,
 ) : ProfileRepository {
 
     private val _authState = MutableLiveData<AuthState>()
@@ -61,7 +55,7 @@ class ProfileRepositoryImpl @Inject constructor(
     private val _profileState = MutableStateFlow(ProfileState())
     override val profileState = _profileState.asStateFlow()
 
-    private val _networkStatus = mutableStateOf(ConnectivityObserver.Status.Unavailable)
+    private val networkStatus: StateFlow<ConnectivityObserver.Status> = networkRepository.networkStatus
 
 
     private val _profileActionState = MutableLiveData<ProfileAction>()
@@ -128,7 +122,8 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-
+    //TODO()
+    // Save Profile Pic In Local Data as Cache When User Upload On Firebase
     override fun updateProfilePicture(uri: Uri) {
         val compressUri = compressImage(context, uri) ?: uri
         val userId = auth.currentUser?.uid ?: return
@@ -149,12 +144,55 @@ class ProfileRepositoryImpl @Inject constructor(
                                 )
                             )
                         }
+                        saveProfilePictureLocally(uri = uri)
                     }
             }
         }
             .addOnFailureListener { e ->
                 _authState.value = AuthState.Error(e.message.toString())
             }
+    }
+
+    private fun saveProfilePictureLocally(uri: Uri) {
+        val directory = context.createDirectory()
+
+        // Define the file name as a static name ("profile_picture.jpg")
+        val fileName = "profile_picture.jpg"
+        val file = File(directory, fileName)
+
+        // If the file already exists, delete it before saving the new one
+        if (file.exists()) {
+            val deleted = file.delete()  // Delete the old file before saving the new one
+            if (!deleted) {
+                Log.e("ProfilePicture", "Failed to delete existing file.")
+                return
+            }
+        }
+
+        try {
+            // Download the image file from Firebase Storage using the URL provided
+            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri.toString())
+
+            // Use getFile() to download the file to local storage
+            val localFile = File.createTempFile(PROFILE_PICTURE, "jpg", context.cacheDir) // Create a temp file in cache
+
+            storageRef.getFile(localFile).addOnSuccessListener {
+                // After download is complete, copy the downloaded file to the desired location
+                localFile.copyTo(file, overwrite = true)
+                Log.d("ProfilePicture", "Profile picture saved successfully to ${file.absolutePath}")
+            }.addOnFailureListener { e ->
+                Log.e("ProfilePicture", "Failed to download image from Firebase", e)
+            }
+        } catch (e: Exception) {
+            Log.e("ProfilePicture", "Error saving profile picture", e)
+        }
+    }
+
+    fun Context.createDirectory(): File{
+        val directory = filesDir
+        val file  = File(directory, INTERNALSTORAGEPICTUREFOLDER)
+        if (!file.exists()) file.mkdirs()
+        return file
     }
 
     private fun compressImage(context: Context, uri: Uri): Uri? {
@@ -216,7 +254,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateName(userData: UserData): Result<UserDataSuccess, UserDataError> {
         return try {
-            if (_networkStatus.value == ConnectivityObserver.Status.Available) {
+            if (networkStatus.value == ConnectivityObserver.Status.Available) {
                 val userId =
                     auth.currentUser?.uid
                         ?: return Result.Error(UserDataError.INVALID_USER_ID)
@@ -249,7 +287,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateBio(userData: UserData): Result<UserDataSuccess, UserDataError> {
         return try {
-            if (_networkStatus.value == ConnectivityObserver.Status.Available) {
+            if (networkStatus.value == ConnectivityObserver.Status.Available) {
                 val userId =
                     auth.currentUser?.uid
                         ?: return Result.Error(UserDataError.INVALID_USER_ID)
@@ -313,7 +351,7 @@ class ProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun signOut() {
-        if (_networkStatus.value == ConnectivityObserver.Status.Available) {
+        if (networkStatus.value == ConnectivityObserver.Status.Available) {
             _authState.value = AuthState.Loading
             delay(2000)
             auth.signOut()
@@ -325,14 +363,7 @@ class ProfileRepositoryImpl @Inject constructor(
             delay(2000)
             _authState.value = AuthState.Authenticated
         }
-    }
 
-    private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    override suspend fun networkObserver() {
-        connectivityObserver.observer().onEach { status ->
-            _networkStatus.value = status
-            Log.d("ProfileNetworkObserver", "Network Status: $status")
-        }.launchIn(repositoryScope)
 
     }
 

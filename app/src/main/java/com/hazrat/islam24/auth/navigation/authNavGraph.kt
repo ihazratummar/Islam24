@@ -15,6 +15,8 @@ import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingScreen
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPassword
+import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.islam24.auth.presentation.login.AuthLoginScreen
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
@@ -24,7 +26,7 @@ import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsScreen
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
-import com.hazrat.islam24.main.navigation.ProfileScreen
+import com.hazrat.islam24.main.navigation.MainRoute
 import kotlinx.serialization.Serializable
 
 /**
@@ -37,7 +39,7 @@ fun NavGraphBuilder.authNavGraph(
     appSettingState: AppSettingState,
     appSettingEvent: (AppSettingEvent) -> Unit
 ) {
-    navigation<Auth>(startDestination = ProfileScreen) {
+    navigation<Auth>(startDestination = MainRoute.ProfileScreen) {
         composable<Login> {
             val loginViewModel = hiltViewModel<LoginViewModel>()
             val loginState by loginViewModel.loginState.collectAsState()
@@ -51,12 +53,15 @@ fun NavGraphBuilder.authNavGraph(
                     navController.navigate(SignUp)
                 },
                 navigateToProfile = {
-                    navController.navigate(ProfileScreen) {
+                    navController.navigate(MainRoute.ProfileScreen) {
                         popUpTo(Login) { inclusive = true }
                     }
                 },
                 onBackClick = {
                     navController.popBackStack()
+                },
+                navigateToForgotPassword = {
+                    navController.navigate(ForgettingPassword)
                 }
             )
         }
@@ -73,8 +78,8 @@ fun NavGraphBuilder.authNavGraph(
                     navController.popBackStack()
                 },
                 navigateToLogin = {
-                    navController.navigate(Login){
-                        popUpTo(SignUp){
+                    navController.navigate(Login) {
+                        popUpTo(SignUp) {
                             inclusive = true
                             saveState = true
                         }
@@ -82,13 +87,13 @@ fun NavGraphBuilder.authNavGraph(
                     }
                 },
                 navigateToProfile = {
-                    navController.navigate(ProfileScreen) {
+                    navController.navigate(MainRoute.ProfileScreen) {
                         popUpTo(SignUp) { inclusive = true }
                     }
                 }
             )
         }
-        composable<ProfileScreen> {
+        composable<MainRoute.ProfileScreen> {
             val profileViewModel = hiltViewModel<ProfileViewModel>()
             val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
             val profileState by profileViewModel.profileState.collectAsState()
@@ -118,13 +123,32 @@ fun NavGraphBuilder.authNavGraph(
             val profileDetailsViewModel = hiltViewModel<ProfileDetailsViewModel>()
             val appSettingState1 by profileDetailsViewModel.profileState.collectAsState()
             val profileDetailsEvent = profileDetailsViewModel::onEvent
-            val profileAction by profileDetailsViewModel.profileActionState.observeAsState(initial = ProfileAction.Idle)
             val userEvent by profileDetailsViewModel.events.collectAsState(initial = null)
             ProfileDetailsScreen(
                 navController = navController,
                 profileState = appSettingState1,
                 profileDetailsEvent = profileDetailsEvent,
                 userEvent = userEvent
+            )
+        }
+        composable<ForgettingPassword> {
+            val forgetPasswordViewModel = hiltViewModel<ForgetPasswordViewModel>()
+            val forgetPasswordState by forgetPasswordViewModel.forgetPasswordState.collectAsState()
+            val channelEvent by forgetPasswordViewModel.events.collectAsState(initial = null)
+            ForgetPassword(
+                forgetPasswordState = forgetPasswordState,
+                forgetPasswordEvent = forgetPasswordViewModel::onEvent,
+                onBackClick = { navController.popBackStack() },
+                channelEvent = channelEvent,
+                navigateToLogin = {
+                    navController.navigate(Login) {
+                        popUpTo(ForgettingPassword) {
+                            inclusive = true
+                            saveState = false
+                        }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     }
@@ -139,6 +163,10 @@ data object Login
 
 @Serializable
 data object SignUp
+
+@Serializable
+data object ForgettingPassword
+
 
 @Serializable
 data object ProfileSettingScreen

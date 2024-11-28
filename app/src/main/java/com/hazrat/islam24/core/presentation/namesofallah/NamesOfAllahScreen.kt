@@ -42,8 +42,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.NameEntity
+import com.hazrat.islam24.core.presentation.common.OfflineCard
 import com.hazrat.islam24.ui.theme.AlQalam
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.getSystemLanguage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +58,7 @@ fun NamesOfAllahScreen(
 
     Scaffold(
         modifier = Modifier
-            ,
+        ,
         topBar = {
             TopAppBar(
                 title =
@@ -75,15 +77,21 @@ fun NamesOfAllahScreen(
                         )
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         }
     ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding)
         ) {
-            items(nameEntity) { name ->
-                NameCard(name = name)
+            if (nameEntity.isNotEmpty()){
+                items(nameEntity) { name ->
+                    NameCard(name = name)
+                }
+            }else{
+                items(99){
+                    OfflineCard()
+                }
             }
         }
     }
@@ -92,7 +100,7 @@ fun NamesOfAllahScreen(
 
 @Composable
 fun NameCard(name: NameEntity) {
-
+    val systemLanguage = getSystemLanguage()
     var expanded by remember {
         mutableStateOf(false)
     }
@@ -131,6 +139,7 @@ fun NameCard(name: NameEntity) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
+
                     Text(
                         text = "${name.number}", style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground
@@ -143,11 +152,17 @@ fun NameCard(name: NameEntity) {
                         .padding(dimens.size5)
                 ) {
                     Text(
-                        text = name.transliteration, style = MaterialTheme.typography.bodyLarge,
+                        text = when(systemLanguage){
+                            "bn" -> name.bnTransliteration
+                            else -> name.transliteration
+                        }, style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = name.meaning, style = MaterialTheme.typography.labelMedium,
+                        text = when(systemLanguage){
+                            "bn" -> name.bnMeaning
+                            else -> name.enMeaning
+                        }, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.height(dimens.size3))
@@ -193,7 +208,10 @@ fun NameCard(name: NameEntity) {
                     )
                     Spacer(modifier = Modifier.height(dimens.size5))
                     Text(
-                        text = name.enDec,
+                        text = when(systemLanguage){
+                            "bn" -> name.bnDec?:""
+                            else -> name.enDesc
+                        },
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodySmall
                     )

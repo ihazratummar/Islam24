@@ -44,7 +44,7 @@ fun ZakatScreen(
     zakatState: ZakatState,
     zakatEvent: (ZakatEvent) -> Unit,
     onNewAddClick: () -> Unit = {},
-    openZakat:(Int) -> Unit ={},
+    openZakat:(String) -> Unit ={},
     onBackClick:() -> Unit = {}
 
     ) {
@@ -83,7 +83,8 @@ fun ZakatScreen(
                             onNewAddClick()
                         },
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onBackground
                     )
                 ) {
                     Row(
@@ -110,7 +111,8 @@ fun ZakatScreen(
                                     openZakat(it.id)
                                 },
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onBackground
                             )
                         ) {
                             Row(

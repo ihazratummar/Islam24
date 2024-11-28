@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,28 +25,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.islam24.core.domain.model.athkar.morningAthkars
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import com.hazrat.islam24.core.data.entity.AthkarDataEntity
+import com.hazrat.islam24.ui.theme.Indopak
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.getSystemLanguage
+
 
 @Composable
-fun EveningContent() {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        items(com.hazrat.islam24.core.domain.model.athkar.eveningAkhtar) { athkar ->
-            AdhkarEveningCard(adhkars = athkar)
-        }
-    }
-}
-
-@Composable
-fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.EveningAkhtarData) {
-
+fun AdhkarCard(adhkars: AthkarDataEntity) {
 
     var expanded by remember {
         mutableStateOf(false)
     }
-
+    val systemLanguage = getSystemLanguage()
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,7 +47,10 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
             .clickable {
                 expanded = !expanded
             },
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground
+        ),
         elevation = CardDefaults.outlinedCardElevation(dimens.size2),
         border = BorderStroke(dimens.size1, color = MaterialTheme.colorScheme.primary)
     ) {
@@ -69,13 +63,39 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "${adhkars.number}-${morningAthkars.size - 1}",
+                    text = "${adhkars.number}",
                     modifier = Modifier.padding(top = dimens.size20),
-                    style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            if (adhkars.bismillah.isNotBlank()) {
+                Text(
+                    text = adhkars.bismillah,
+                    modifier = Modifier
+                        .padding(dimens.size10)
+                        .fillMaxWidth(),
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontFamily = Indopak,
+                    textAlign = TextAlign.Center,
+                    letterSpacing = TextUnit.Unspecified
                 )
             }
             Text(
-                text = adhkars.transliteration,
+                text = adhkars.arabicText,
+                modifier = Modifier.padding(dimens.size10).fillMaxWidth(),
+                style = MaterialTheme.typography.displayMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = Indopak,
+                textAlign = TextAlign.Center,
+                letterSpacing = TextUnit.Unspecified
+            )
+            Text(
+                text = when(systemLanguage){
+                    "bn" -> adhkars.bnTransliteration
+                    else -> adhkars.enTransliteration
+                } ,
                 modifier = Modifier.padding(dimens.size10),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground
@@ -85,10 +105,13 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = dimens.size1,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = adhkars.translation,
+                    text = when(systemLanguage){
+                        "bn" -> adhkars.bnTranslation
+                        else -> adhkars.enTranslation
+                    },
                     modifier = Modifier.padding(dimens.size10),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
@@ -102,7 +125,7 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
                 Card(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(dimens.size1, color = MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(dimens.size1, MaterialTheme.colorScheme.primary),
                     modifier = Modifier
                         .size(dimens.size80)
                         .padding(bottom = dimens.size10),
@@ -123,7 +146,4 @@ fun AdhkarEveningCard(adhkars: com.hazrat.islam24.core.domain.model.athkar.Eveni
             }
         }
     }
-
 }
-
-
