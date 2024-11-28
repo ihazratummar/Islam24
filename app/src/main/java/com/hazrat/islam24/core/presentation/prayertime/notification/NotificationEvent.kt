@@ -1,7 +1,5 @@
 package com.hazrat.islam24.core.presentation.prayertime.notification
 
-import com.hazrat.islam24.core.presentation.prayertime.PrayerEvent
-
 /**
  * @author Hazrat Ummar Shaikh
  */

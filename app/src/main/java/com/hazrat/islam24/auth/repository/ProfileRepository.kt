@@ -7,7 +7,6 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
-import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError
 import com.hazrat.islam24.util.error.UserDataSuccess
@@ -38,4 +37,5 @@ interface ProfileRepository {
 
     fun openRatingDialog()
     fun goToRate()
+
 }

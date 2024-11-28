@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val zakatRepository: ZakatRepository
 ) : ViewModel() {
 
 
@@ -38,6 +40,7 @@ class LoginViewModel @Inject constructor(
 
     init {
         checkAuthStatus()
+
     }
 
     private fun checkAuthStatus() {
@@ -45,6 +48,7 @@ class LoginViewModel @Inject constructor(
             _authState.value = AuthState.Unauthenticated
         } else {
             _authState.value = AuthState.Authenticated
+            syncData()
         }
     }
 
@@ -111,6 +115,7 @@ class LoginViewModel @Inject constructor(
                             password = ""
                         )
                     }
+                    syncData()
                 } else {
                     viewModelScope.launch {
                         _authState.value = AuthState.Loading
@@ -127,5 +132,10 @@ class LoginViewModel @Inject constructor(
                     _authState.value = AuthState.Error(e.message ?: "Authentication failed")
                 }
             }
+    }
+    private fun syncData(){
+        viewModelScope.launch (SupervisorJob()){
+            zakatRepository.syncData()
+        }
     }
 }

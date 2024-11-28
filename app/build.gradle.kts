@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -5,7 +7,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
 
 }
@@ -18,10 +20,16 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 35
-        versionCode = 75
-        versionName = "1.6.13"
+        versionCode = 78
+        versionName = "1.6.14"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "LOCATION_IQ_API_KEY", properties.getProperty("LOCATION_IQ_API_KEY"))
+        buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -54,6 +62,7 @@ android {
     }
     buildFeatures{
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -148,6 +157,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    //Room Encryption
+    implementation( libs.android.database.sqlcipher)
+    implementation( libs.androidx.sqlite)
+
 
     //Observe
     implementation (libs.androidx.lifecycle.viewmodel.compose.v281)
@@ -171,4 +184,7 @@ dependencies {
 
     //dataStorePreference
     implementation(libs.androidx.preference.ktx)
+
+    //Cloudy for blurring effect
+    implementation(libs.cloudy)
 }

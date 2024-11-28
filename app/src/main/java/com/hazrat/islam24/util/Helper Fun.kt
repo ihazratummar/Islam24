@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.runtime.Composable
@@ -13,6 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
+import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
+import java.io.File
 import java.util.Locale
 
 fun vibrate(vibrator: Vibrator) {
@@ -58,4 +62,15 @@ fun getSystemLanguage(): String {
     val context = LocalContext.current
     val locale: Locale = context.resources.configuration.locales[0]
     return locale.language
+}
+
+
+fun getCacheProfilePicture(context: Context): File? {
+    val directory = File(context.filesDir, INTERNALSTORAGEPICTUREFOLDER)
+    val file = File(directory, "$PROFILE_PICTURE.jpg") // Look for the file in the specified directory
+    return if (file.exists()) file else null
+}
+
+fun File.toUri(): Uri {
+    return Uri.fromFile(this)
 }

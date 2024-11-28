@@ -99,7 +99,6 @@ fun AppNavigator(
                                 saveState = true
                             }
                             launchSingleTop = true
-                            restoreState = true
                         }
                     }
                 )

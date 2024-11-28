@@ -88,6 +88,7 @@ class LocationNameRepositoryImpl @Inject constructor(
                 response.body() ?: throw Exception("Empty response body")
             } else {
                 // Handle errors based on the status code
+
                 throw handleApiError(response.code(), errorMessage = response.message())
             }
         } catch (e: LocationError) {
@@ -130,10 +131,6 @@ class LocationNameRepositoryImpl @Inject constructor(
 
     override fun getLocationDetails(): Flow<List<LocationDetailsEntity>> =
         locationNameDao.getLocationDetails().flowOn(Dispatchers.IO)
-
-    private suspend fun deleteOtherLocationDetails() {
-        locationNameDao.deleteOtherLocationDetails()
-    }
 
     private suspend fun saveLocation(locationDetailsEntity: LocationDetailsEntity) {
         locationNameDao.saveLocationDetails(locationDetailsEntity)

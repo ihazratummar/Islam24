@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.hazrat.islam24.BuildConfig
 import com.hazrat.islam24.core.api.LocationNameApi
 import com.hazrat.islam24.core.data.dao.LocationNameDao
 import com.hazrat.islam24.core.data.database.LocationDatabase
@@ -18,6 +19,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
 import javax.inject.Singleton
 
 @Module
@@ -64,14 +67,19 @@ object LocationModule {
     }
 
 
+
     @Singleton
     @Provides
     fun provideLocationDatabase(@ApplicationContext context: Context): LocationDatabase {
+        val passPhrase = SQLiteDatabase.getBytes(BuildConfig.MY_PASS_PHRASE.toCharArray())
+        val factory = SupportFactory(passPhrase)
+
+
         return Room.databaseBuilder(
             context.applicationContext,
             LocationDatabase::class.java,
-            "location_database"
-        ).fallbackToDestructiveMigration()
+            "location_database")
+            .fallbackToDestructiveMigration()
             .build()
     }
 

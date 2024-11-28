@@ -31,10 +31,6 @@ class CompassSensorManager @Inject constructor(
         }
     }
 
-    fun unregisterListeners() {
-        sensorManager.unregisterListener(this)
-    }
-
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {

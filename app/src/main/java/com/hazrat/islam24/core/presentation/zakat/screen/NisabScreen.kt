@@ -72,7 +72,7 @@ fun NisabScreen(
                 .padding(innerPadding),
         ) {
             Text(text = stringResource(R.string.nisab_is_a_threshold_referring_to_the_minimum_amount_of_wealth))
-            val nisabAmount = 11.66638 * 52.50
+            val nisabAmount = 11.66 * 52.50
             val roundAmount = String.format(Locale.getDefault(), "%.2f", nisabAmount)
             Spacer(modifier = Modifier.height(10.dp))
             Text(text = stringResource(
