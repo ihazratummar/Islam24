@@ -1,3 +1,4 @@
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -6,23 +7,29 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
 
 }
 
 android {
     namespace = "com.hazrat.islam24"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        targetSdk= 34
-        versionCode = 75
-        versionName = "1.6.13"
+        targetSdk= 35
+        versionCode = 79
+        versionName = "1.6.15"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "LOCATION_IQ_API_KEY", properties.getProperty("LOCATION_IQ_API_KEY"))
+        buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -44,17 +51,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
     }
     buildFeatures{
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -149,6 +157,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    //Room Encryption
+    implementation( libs.android.database.sqlcipher)
+    implementation( libs.androidx.sqlite)
+
 
     //Observe
     implementation (libs.androidx.lifecycle.viewmodel.compose.v281)
@@ -172,5 +184,7 @@ dependencies {
 
     //dataStorePreference
     implementation(libs.androidx.preference.ktx)
-}
 
+    //Cloudy for blurring effect
+    implementation(libs.cloudy)
+}

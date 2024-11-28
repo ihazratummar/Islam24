@@ -17,6 +17,7 @@ import com.hazrat.islam24.core.presentation.zakat.screen.SilverInfo
 import com.hazrat.islam24.core.presentation.zakat.screen.TotalDebtInfo
 import com.hazrat.islam24.core.presentation.zakat.screen.ZakatDetails
 import com.hazrat.islam24.core.presentation.zakat.screen.ZakatScreen
+import com.hazrat.islam24.main.navigation.MainRoute
 import kotlinx.serialization.Serializable
 
 /**
@@ -27,8 +28,8 @@ fun NavGraphBuilder.zakatNavGraph(
     navController: NavController,
     zakatViewModel: ZakatViewModel
 ) {
-    navigation<Zakat>(ZakatScreen) {
-        composable<ZakatScreen> {
+    navigation<Zakat>(MainRoute.ZakatScreen) {
+        composable<MainRoute.ZakatScreen> {
             val zakatState by zakatViewModel.zakatState.collectAsState()
             ZakatScreen(
                 zakatState = zakatState,
@@ -93,7 +94,7 @@ fun NavGraphBuilder.zakatNavGraph(
                 zakatEvent = zakatViewModel::event,
                 onSaveClick = {
                     navController.navigate(Zakat){
-                        popUpTo(ZakatScreen){
+                        popUpTo(MainRoute.ZakatScreen){
                             inclusive = true
                         }
                     }
@@ -161,8 +162,6 @@ fun NavGraphBuilder.zakatNavGraph(
 @Serializable
 data object Zakat
 
-@Serializable
-data object ZakatScreen
 
 @Serializable
 data class ZakatDetailsScreen(val zakatId: String)

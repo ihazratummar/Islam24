@@ -14,10 +14,10 @@ import com.hazrat.islam24.core.data.database.LocationDatabase
 import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.core.data.repository.LocationRepositoryImpl
 import com.hazrat.islam24.core.data.repository.PrayerTimeRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,14 +40,14 @@ object PrayerModule {
         prayerSettingRepository: PrayerSettingRepository,
         prayerTimeDao: PrayerTimeDao,
         @ApplicationContext context: Context,
-        connectivityObserver: ConnectivityObserver
+        networkRepository: NetworkRepository
     ): PrayerTimeRepository = PrayerTimeRepositoryImpl(
         api = api,
         locationRepository = locationRepository,
         prayerSettingRepository = prayerSettingRepository,
         prayerTimeDao = prayerTimeDao,
         context = context,
-        connectivityObserver = connectivityObserver
+    networkRepository = networkRepository
     )
 
 

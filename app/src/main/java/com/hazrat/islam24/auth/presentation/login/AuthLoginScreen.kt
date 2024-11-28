@@ -3,12 +3,16 @@ package com.hazrat.islam24.auth.presentation.login
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
@@ -73,7 +78,6 @@ fun AuthLoginScreen(
 
             else -> Unit
         }
-//        loginEvent(LoginEvent.Refresh)
     }
 
     val onLoginClick = remember(state.email, state.password) {
@@ -83,7 +87,7 @@ fun AuthLoginScreen(
     }
     Scaffold(
         topBar = {
-            TopAppBar(title = { /*TODO*/ },
+            TopAppBar(title = { },
                 navigationIcon = {
                     IconButton(onClick = {
                         onBackClick()
@@ -98,10 +102,9 @@ fun AuthLoginScreen(
         }
     ) { paddingValues ->
         LazyColumn(
-            contentPadding = paddingValues,
             modifier = Modifier
+                .padding(paddingValues)
                 .fillMaxSize()
-                .statusBarsPadding()
                 .padding(horizontal = dimens.size20),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -164,22 +167,12 @@ fun AuthLoginScreen(
                 Spacer(modifier = Modifier.height(dimens.size35))
             }
             item {
-                if (authState == AuthState.Loading) {
-                    LoginButton(
-                        modifier = Modifier.profileCardShimmerEffect(),
-                        onLoginClick = onLoginClick,
-                        state = state,
-                        authState = authState,
-                        containerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                } else {
-                    LoginButton(
-                        onLoginClick = onLoginClick,
-                        state = state,
-                        authState = authState,
-                    )
-                }
+                LoginButton(
+                    onLoginClick = onLoginClick,
+                    state = state,
+                    authState = authState,
+                    text = "LOGIN"
+                )
                 Spacer(modifier = Modifier.height(dimens.size15))
                 Text(
                     text = "Forgotten Password?",
@@ -216,29 +209,29 @@ fun AuthLoginScreen(
 }
 
 @Composable
-private fun LoginButton(
+fun LoginButton(
     modifier: Modifier = Modifier,
     onLoginClick: () -> Unit,
     state: LoginState,
     authState: AuthState,
-    containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    disabledContainerColor: Color = MaterialTheme.colorScheme.surfaceContainer
+    text: String
 ) {
     Button(
         onClick = onLoginClick,
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .let { if (authState == AuthState.Loading) it.profileCardShimmerEffect() else it },
         colors = ButtonColors(
-            containerColor = containerColor,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            disabledContainerColor = disabledContainerColor,
+            containerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.surfaceContainer,
             disabledContentColor = MaterialTheme.colorScheme.onSurface,
         ),
         enabled = state.isFormValid && authState != AuthState.Loading,
         shape = RoundedCornerShape(dimens.size10)
     ) {
         Text(
-            text = "LOGIN",
+            text = text,
             fontFamily = FontFamily(Font(R.font.nunitoregular)),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold

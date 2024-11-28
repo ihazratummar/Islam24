@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.presentation.profiledetails.UserEvent
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
@@ -41,7 +42,8 @@ class PrayerTimeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val repository: PrayerTimeRepository,
     private val prayerAlarmManager: PrayerAlarmManager,
-    private val dataStorePreference: DataStorePreference
+    private val dataStorePreference: DataStorePreference,
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
 
 
@@ -239,7 +241,6 @@ class PrayerTimeViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllPrayerTimes()
-            repository.networkObserver()
         }
     }
 

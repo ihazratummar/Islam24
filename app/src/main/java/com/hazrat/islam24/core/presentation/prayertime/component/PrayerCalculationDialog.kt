@@ -42,7 +42,7 @@ fun PrayerCalculationDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier.fillMaxHeight(),
         shape = MaterialTheme.shapes.medium,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     ) {
         LazyColumn(

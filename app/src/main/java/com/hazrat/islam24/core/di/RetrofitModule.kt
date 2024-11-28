@@ -1,9 +1,12 @@
 package com.hazrat.islam24.core.di
 
+import com.google.gson.Gson
+import com.hazrat.islam24.core.api.AthkarApiCall
 import com.hazrat.islam24.core.api.GregorianToHijriApi
 import com.hazrat.islam24.core.api.LocationNameApi
 import com.hazrat.islam24.core.api.NamesApi
 import com.hazrat.islam24.core.api.PrayerTimeApi
+import com.hazrat.islam24.util.Constants.ATHKAR_BASE_URL_NAME
 import com.hazrat.islam24.util.Constants.BASE_URL
 import com.hazrat.islam24.util.Constants.BASE_URL_NAME
 import com.hazrat.islam24.util.Constants.GTH_BASE_URL
@@ -93,5 +96,16 @@ object RetrofitModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(GregorianToHijriApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAthkarApi(): AthkarApiCall{
+        return Retrofit.Builder()
+            .baseUrl(ATHKAR_BASE_URL_NAME)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AthkarApiCall::class.java)
     }
 }
