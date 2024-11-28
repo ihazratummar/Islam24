@@ -62,9 +62,9 @@ fun Modifier.profileCardShimmerEffect(): Modifier = composed {
     background(
         brush = Brush.linearGradient(
             colors = listOf(
-                MaterialTheme.colorScheme.primaryContainer,
+                MaterialTheme.colorScheme.secondaryContainer,
                 MaterialTheme.colorScheme.primary,
-                MaterialTheme.colorScheme.primaryContainer,
+                MaterialTheme.colorScheme.secondaryContainer,
             ),
             start = Offset(startOffsetX, 0F),
             end = Offset(

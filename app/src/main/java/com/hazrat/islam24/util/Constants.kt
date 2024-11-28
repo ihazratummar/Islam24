@@ -1,5 +1,8 @@
 package com.hazrat.islam24.util
 
+import com.hazrat.islam24.BuildConfig
+
+
 /**
  * Object containing constant values used in the application.
  */
@@ -14,7 +17,7 @@ object Constants {
 
     /** Location IQ Api Key */
     const val LOCATION_IQ_BASE_URL = "https://us1.locationiq.com/v1/"
-    const val LOCATION_IQ_API_KEY = "pk.20293ab6b36cd4949fff87a3a97a3c49"
+    const val LOCATION_IQ_API_KEY = BuildConfig.LOCATION_IQ_API_KEY
 
     /** Base URL for retrieving Gregorian to Hijri conversion data */
     const val GTH_BASE_URL = "https://api.aladhan.com/"
@@ -25,4 +28,9 @@ object Constants {
 
     const val NISAB_DATABASE_NAME = "nisab_db"
     const val KEY_SORT_BY = "sort_type"
+
+
+    /**Profile and Settings Constants */
+    const val INTERNALSTORAGEPICTUREFOLDER = "profile_picture"
+    const val PROFILE_PICTURE = "profile_picture"
 }

@@ -27,7 +27,6 @@ class ProfileViewModel @Inject constructor(
         when (event) {
             is ProfileEvent.RateUs -> {
                 profileRepository.rateUs(event.activity)
-//                profileRepository.openRatingDialog()
             }
             ProfileEvent.InviteFriend -> {
                 profileRepository.inviteFriend()

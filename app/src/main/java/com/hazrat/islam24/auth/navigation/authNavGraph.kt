@@ -123,7 +123,6 @@ fun NavGraphBuilder.authNavGraph(
             val profileDetailsViewModel = hiltViewModel<ProfileDetailsViewModel>()
             val appSettingState1 by profileDetailsViewModel.profileState.collectAsState()
             val profileDetailsEvent = profileDetailsViewModel::onEvent
-            val profileAction by profileDetailsViewModel.profileActionState.observeAsState(initial = ProfileAction.Idle)
             val userEvent by profileDetailsViewModel.events.collectAsState(initial = null)
             ProfileDetailsScreen(
                 navController = navController,
