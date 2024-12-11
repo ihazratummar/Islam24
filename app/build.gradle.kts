@@ -103,6 +103,7 @@ dependencies {
     FireBase
      */
     implementation (libs.play.services.auth)
+
     implementation(libs.firebase.auth.ktx)
     implementation (libs.firebase.database)
     platform(libs.firebase.bom.v2821)
