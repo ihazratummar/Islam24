@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.SupervisorJob
@@ -23,7 +25,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val auth: FirebaseAuth,
-    private val zakatRepository: ZakatRepository
+    private val zakatRepository: ZakatRepository,
+    private val profileRepository: ProfileRepository,
+    private val storage: FirebaseStorage,
 ) : ViewModel() {
 
 
@@ -103,6 +107,7 @@ class LoginViewModel @Inject constructor(
             _authState.value = AuthState.Error("Please fill all fields")
             return
         }
+
         _authState.value = AuthState.Loading
         delay(2000L)
         auth.signInWithEmailAndPassword(email, password)
@@ -116,6 +121,12 @@ class LoginViewModel @Inject constructor(
                         )
                     }
                     syncData()
+                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+                    val storageRef = storage.reference
+                    val imageRef = storageRef.child("image/$userId/profile_image")
+                    imageRef.downloadUrl.addOnSuccessListener{
+                        profileRepository.saveProfilePictureLocally(uri = it)
+                    }
                 } else {
                     viewModelScope.launch {
                         _authState.value = AuthState.Loading

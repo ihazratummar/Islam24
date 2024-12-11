@@ -20,8 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,18 +33,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
-import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import com.hazrat.islam24.core.presentation.calendar.component.HijriMonth
 import com.hazrat.islam24.core.presentation.calendar.component.WeekDay
 import com.hazrat.islam24.ui.theme.dimens
 
+
 @Composable
-fun CalendarHomeScreen(
-    hijriCalendarEntity: List<HijriCalendarEntity>,
+fun HijriCalendarHomeScreen(
     gregorianToHijriEntity: List<GregorianToHijriEntity>
 ) {
-    val calendar = hijriCalendarEntity.firstOrNull()
+
     val hijriDayNew = gregorianToHijriEntity.firstOrNull()
+    val todayHijriDate = hijriDayNew?.let {
+        Triple(it.year.toInt(), it.monthNumber, it.day)
+    }
 
     Column(
         modifier = Modifier
@@ -53,59 +55,58 @@ fun CalendarHomeScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (calendar != null) {
-            if (hijriDayNew != null) {
-                Text(
-                    text = "${hijriDayNew.day} ${hijriDayNew.monthEn} ${hijriDayNew.year}${calendar.hijriAbbreviated}",
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
+        if (hijriDayNew != null) {
+            Text(
+                text = "${hijriDayNew.day} ${hijriDayNew.monthEn} ${hijriDayNew.year}",
+                color = MaterialTheme.colorScheme.onBackground
+            )
         } else {
-            Text(text = "Loading")
+            Text(text = "Loading...")
         }
-        HijriCalendar()
+
+        todayHijriDate?.let {
+            HijriCalendar(todayHijriDate = it)
+        } ?: Text("Loading Date...")
     }
 }
 
 @Composable
-fun HijriCalendar() {
-    val calendar by remember { mutableStateOf(IslamicCalendar()) }
-
-    val month by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH)) }
-
-    var currentMonthNumber by remember { mutableIntStateOf(calendar.get(IslamicCalendar.MONTH)) }
-    var year by remember { mutableIntStateOf(calendar.get(IslamicCalendar.YEAR)) }
-    var lastDayOfMonth by remember { mutableIntStateOf(calendar.getActualMaximum(IslamicCalendar.DAY_OF_MONTH)) }
-    var firstDayOfWeek by remember { mutableIntStateOf(getFirstDayOfWeek(calendar)) }
-    var totalDays by remember { mutableIntStateOf(lastDayOfMonth) }
+fun HijriCalendar(
+    todayHijriDate: Triple<Int, Int, Int>
+) {
+    val (todayHijriYear, todayHijriMonth, todayHijriDay) = todayHijriDate
+    val calendar = remember { IslamicCalendar() }
+    var currentMonthNumber by remember { mutableStateOf(todayHijriMonth -1) } //Months are 0-indexed
+    var year by remember { mutableStateOf(todayHijriYear) }
+    var lastDayOfMonth by remember { mutableStateOf(0) }
+    var firstDayOfWeek by remember { mutableStateOf(0) }
+    var totalDays by remember { mutableStateOf(0) }
 
 
     fun updateCalendar() {
         calendar.set(IslamicCalendar.YEAR, year)
         calendar.set(IslamicCalendar.MONTH, currentMonthNumber)
         lastDayOfMonth = calendar.getActualMaximum(IslamicCalendar.DAY_OF_MONTH)
-        firstDayOfWeek = getFirstDayOfWeek(calendar)
+        firstDayOfWeek = getFirstDayOfWeek(calendar) //Your existing function
         totalDays = lastDayOfMonth
     }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+
+    LaunchedEffect(todayHijriDate) {
+        updateCalendar()
+    }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         HijriMonthNavigation(
             currentMonth = currentMonthNumber,
             year = year,
             onPrevMonth = {
-                currentMonthNumber =
-                    (currentMonthNumber - 1 + HijriMonth.entries.size) % HijriMonth.entries.size
-                if (currentMonthNumber == HijriMonth.entries.size - 1) {
-                    year--
-                }
+                currentMonthNumber = (currentMonthNumber - 1 + 12) % 12 //12 months
+                if (currentMonthNumber == 11) year--
                 updateCalendar()
             },
             onNextMonth = {
-                currentMonthNumber = (currentMonthNumber + 1) % HijriMonth.entries.size
-                if (currentMonthNumber == 0) {
-                    year++
-                }
+                currentMonthNumber = (currentMonthNumber + 1) % 12
+                if (currentMonthNumber == 0) year++
                 updateCalendar()
             }
         )
@@ -113,15 +114,15 @@ fun HijriCalendar() {
         Spacer(modifier = Modifier.height(dimens.size4))
         DaysGrid(
             firstDayOfWeek = firstDayOfWeek,
-            totalDays = totalDays
+            totalDays = totalDays,
+            todayHijriDate = todayHijriDate,
+            currentMonth = currentMonthNumber,
+            year = year
         )
     }
-
-
 }
-
 fun getFirstDayOfWeek(calendar: IslamicCalendar): Int {
-    // Set the calendar to the first day of the current month
+
     val clonedCalendar = calendar.clone() as IslamicCalendar
     clonedCalendar.set(IslamicCalendar.DAY_OF_MONTH, 0)
     return clonedCalendar.get(IslamicCalendar.DAY_OF_WEEK) % 7
@@ -196,29 +197,37 @@ fun HijriWeekDaysHeader() {
 @Composable
 fun DaysGrid(
     firstDayOfWeek: Int,
-    totalDays: Int
+    totalDays: Int,
+    todayHijriDate: Triple<Int, Int, Int>,
+    currentMonth: Int,
+    year: Int
 ) {
-    Column(
-        modifier = Modifier
-    ) {
-        val calendar by remember { mutableStateOf(IslamicCalendar()) }
+    val (todayHijriYear, todayHijriMonth, todayHijriDay) = todayHijriDate
+    val calendar = remember { IslamicCalendar() }
+    calendar.set(IslamicCalendar.YEAR, year)
+    calendar.set(IslamicCalendar.MONTH, currentMonth)
+
+
+    Column(modifier = Modifier) {
         var day = 1
         for (week in 0..5) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 for (dayOfWeek in 0..6) {
                     if (week == 0 && dayOfWeek < firstDayOfWeek || day > totalDays) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                        )
+                        Box(modifier = Modifier.weight(1f))
                     } else {
+                        val isToday = day == todayHijriDay && currentMonth == todayHijriMonth - 1 && year == todayHijriYear
+
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .aspectRatio(1f)
                                 .padding(dimens.size4)
+                                .then(
+                                    if (isToday) Modifier.background(
+                                        color = MaterialTheme.colorScheme.secondaryContainer
+                                    ) else Modifier
+                                )
                                 .background(
                                     color = Color.Transparent,
                                     shape = RoundedCornerShape(dimens.size10)
@@ -228,7 +237,7 @@ fun DaysGrid(
                             Text(
                                 text = day.toString(),
                                 style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = if (isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
                             )
                         }
                         day++
@@ -238,4 +247,3 @@ fun DaysGrid(
         }
     }
 }
-

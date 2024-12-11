@@ -6,7 +6,6 @@ package com.hazrat.islam24.core.presentation.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import com.hazrat.islam24.R
@@ -45,7 +43,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun CalendarScreen(
+fun GregorianCalendarScreen(
     modifier: Modifier = Modifier,
 ) {
     val date = getCurrentDateWithMonthName()
@@ -72,17 +70,17 @@ fun CalendarScreen(
                     currentMonth = currentMonth,
                     onPrevMonth = {
                         currentMonth = currentMonth.minusMonths(1)
-                        selectedDate =
-                            if (currentMonth == YearMonth.now()) LocalDate.now() else currentMonth.atDay(
-                                1
-                            )
+//                        selectedDate =
+//                            if (currentMonth == YearMonth.now()) LocalDate.now() else currentMonth.atDay(
+//                                1
+//                            )
                     },
                     onNextMonth = {
                         currentMonth = currentMonth.plusMonths(1)
-                        selectedDate =
-                            if (currentMonth == YearMonth.now()) LocalDate.now() else currentMonth.atDay(
-                                1
-                            )
+//                        selectedDate =
+//                            if (currentMonth == YearMonth.now()) LocalDate.now() else currentMonth.atDay(
+//                                1
+//                            )
                     }
                 )
                 CalendarViewWithWeeksAndDays(
@@ -90,20 +88,6 @@ fun CalendarScreen(
                     selectedDate = selectedDate,
                     onDateSelected = { date ->
                         selectedDate = date
-                    },
-                    onSwipeLeft = {
-                        currentMonth = currentMonth.minusMonths(1)
-                        selectedDate =
-                            if (currentMonth == YearMonth.now()) LocalDate.now() else currentMonth.atDay(
-                                1
-                            )
-                    },
-                    onSwipeRight = {
-                        currentMonth = currentMonth.plusMonths(1)
-                        selectedDate =
-                            if (currentMonth == YearMonth.now()) LocalDate.now() else currentMonth.atDay(
-                                1
-                            )
                     }
                 )
             }
@@ -117,9 +101,7 @@ fun CalendarScreen(
 fun CalendarViewWithWeeksAndDays(
     currentMonth: YearMonth,
     selectedDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit,
-    onSwipeLeft: () -> Unit,
-    onSwipeRight: () -> Unit
+    onDateSelected: (LocalDate) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -129,13 +111,7 @@ fun CalendarViewWithWeeksAndDays(
         DaysGrid(
             currentMonth = currentMonth,
             selectedDate = selectedDate,
-            onDateSelected = onDateSelected,
-            onSwipeRight = {
-                onSwipeRight()
-            },
-            onSwipeLeft = {
-                onSwipeLeft()
-            }
+            onDateSelected = onDateSelected
         )
     }
 }
@@ -144,9 +120,7 @@ fun CalendarViewWithWeeksAndDays(
 fun DaysGrid(
     currentMonth: YearMonth,
     selectedDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit,
-    onSwipeLeft: () -> Unit,
-    onSwipeRight: () -> Unit
+    onDateSelected: (LocalDate) -> Unit
 ) {
     val firstDayOfMonth = currentMonth.atDay(1)
     val lastDayOfMonth = currentMonth.atEndOfMonth()
@@ -154,14 +128,7 @@ fun DaysGrid(
     val totalDays = lastDayOfMonth.dayOfMonth
 
     Column(
-        modifier = Modifier.pointerInput(Unit) {
-            detectHorizontalDragGestures { _, dragAmount ->
-                when {
-                    dragAmount > 0 -> onSwipeRight()
-                    dragAmount < 0 -> onSwipeLeft()
-                }
-            }
-        }
+        modifier = Modifier
     ) {
         var day = 1
         for (week in 0..5) {
@@ -193,7 +160,7 @@ fun DaysGrid(
                                 Text(
                                     text = day.toString(),
                                     style = MaterialTheme.typography.titleSmall,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color =  MaterialTheme.colorScheme.onBackground
                                 )
                             }
                         }

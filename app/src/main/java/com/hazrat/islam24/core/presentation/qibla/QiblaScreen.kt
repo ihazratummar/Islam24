@@ -5,18 +5,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -35,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
+import com.hazrat.islam24.core.presentation.common.BasicTopBar
 import com.hazrat.islam24.core.presentation.common.LocationName
 import com.hazrat.islam24.ui.theme.Hidaya
 import com.hazrat.islam24.ui.theme.dimens
@@ -56,10 +60,10 @@ import com.hazrat.islam24.util.vibrateDevice
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QiblaScreen(
-    navController: NavController,
     locationName: List<LocationDetailsEntity>,
     state: QiblaState,
-    isFacingQibla: Boolean = false
+    isFacingQibla: Boolean = false,
+    onBackClick: () -> Unit
 ) {
 
 
@@ -78,114 +82,102 @@ fun QiblaScreen(
         state.hasVibrated = false // Reset when not facing Qibla
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.qibla),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-
-                        Icon(
-                            painter = painterResource(id = R.drawable.backicon),
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
-            )
-        }
-    ) { paddingValues ->
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(dimens.size30)
-                .statusBarsPadding(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
+            modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(dimens.size10))
-            if (locationName.isNotEmpty()) {
-                LocationName(locationName.first())
-            }
-
-
+            Spacer(Modifier.height(dimens.size30))
+            BasicTopBar(
+                topBarTitle = stringResource(id = R.string.qibla),
+                onBackClick = { onBackClick.invoke() }
+            )
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .padding(dimens.size30),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
             ) {
-
-                Text(
-                    text = "Qibla: ${state.qiblaDirection.toInt()}°",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = Hidaya
-                )
-                if (isFacingQibla) {
-                    Icon(
-                        modifier = Modifier.size(dimens.size60),
-                        painter = painterResource(id = R.drawable.goldqaba),
-                        contentDescription = null,
-                        tint = Color.Unspecified
-                    )
-                } else {
-                    Icon(
-                        modifier = Modifier.size(dimens.size30),
-                        painter = painterResource(id = R.drawable.arrowup),
-                        contentDescription = null
-                    )
+                Spacer(modifier = Modifier.height(dimens.size10))
+                if (locationName.isNotEmpty()) {
+                    LocationName(locationName.first())
                 }
 
-                Spacer(modifier = Modifier.height(dimens.size40))
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight(0.5f)
-                        .padding(dimens.size10)
-                ) {
-                    // Canvas for compass
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val compassCenter = Offset(size.width / 2, size.height / 2)
-                        val compassRadius = size.minDimension / 2.5f
 
-                        // Rotate the entire compass background image
-                        rotate(degrees = -state.currentDirection, pivot = compassCenter) {
-                            drawImage(
-                                image = compassBgBitmap,
-                                topLeft = Offset(
-                                    compassCenter.x - compassBgBitmap.width / 2,
-                                    compassCenter.y - compassBgBitmap.height / 2
-                                )
-                            )
-                        }
-                        // Draw the Qibla direction needle
-                        rotate(degrees = state.qiblaDirection - state.currentDirection, pivot = compassCenter) {
-                            val needleStartY = compassCenter.y - needleBitmap.height / 1.1f
-                            drawImage(
-                                image = needleBitmap,
-                                topLeft = Offset(
-                                    compassCenter.x - needleBitmap.width / 2f,
-                                    needleStartY
-                                )
-                            )
-                            // Draw the Qibla icon
-                            if (!isFacingQibla) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Text(
+                        text = "Qibla: ${state.qiblaDirection.toInt()}°",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = Hidaya
+                    )
+                    if (isFacingQibla) {
+                        Icon(
+                            modifier = Modifier.size(dimens.size60),
+                            painter = painterResource(id = R.drawable.goldqaba),
+                            contentDescription = null,
+                            tint = Color.Unspecified
+                        )
+                    } else {
+                        Icon(
+                            modifier = Modifier.size(dimens.size30),
+                            painter = painterResource(id = R.drawable.arrowup),
+                            contentDescription = null
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(dimens.size40))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight(0.5f)
+                            .padding(dimens.size10)
+                    ) {
+                        // Canvas for compass
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            val compassCenter = Offset(size.width / 2, size.height / 2)
+                            val compassRadius = size.minDimension / 2.5f
+
+                            // Rotate the entire compass background image
+                            rotate(degrees = -state.currentDirection, pivot = compassCenter) {
                                 drawImage(
-                                    image = qiblaIconBitmap,
+                                    image = compassBgBitmap,
                                     topLeft = Offset(
-                                        compassCenter.x - qiblaIconBitmap.width / 2,
-                                        compassCenter.y - compassRadius - qiblaIconBitmap.height / 1.1f
-                                    ),
+                                        compassCenter.x - compassBgBitmap.width / 2,
+                                        compassCenter.y - compassBgBitmap.height / 2
+                                    )
                                 )
+                            }
+                            // Draw the Qibla direction needle
+                            rotate(
+                                degrees = state.qiblaDirection - state.currentDirection,
+                                pivot = compassCenter
+                            ) {
+                                val needleStartY = compassCenter.y - needleBitmap.height / 1.1f
+                                drawImage(
+                                    image = needleBitmap,
+                                    topLeft = Offset(
+                                        compassCenter.x - needleBitmap.width / 2f,
+                                        needleStartY
+                                    )
+                                )
+                                // Draw the Qibla icon
+                                if (!isFacingQibla) {
+                                    drawImage(
+                                        image = qiblaIconBitmap,
+                                        topLeft = Offset(
+                                            compassCenter.x - qiblaIconBitmap.width / 2,
+                                            compassCenter.y - compassRadius - qiblaIconBitmap.height / 1.1f
+                                        ),
+                                    )
+                                }
                             }
                         }
                     }
@@ -193,4 +185,5 @@ fun QiblaScreen(
             }
         }
     }
+
 }
