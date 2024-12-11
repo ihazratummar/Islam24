@@ -16,15 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
-import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import com.hazrat.islam24.core.presentation.common.BasicTopBarWithAction
 import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(
+fun GregorianCalendarScreen(
     onBackClick:() -> Unit,
-    hijriCalendarEntity: List<HijriCalendarEntity>,
     gregorianToHijriEntity: List<GregorianToHijriEntity>
 ) {
     var toggleCalendar by remember { mutableStateOf(false) }
@@ -35,7 +33,7 @@ fun CalendarScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.size40))
             BasicTopBarWithAction(
                 topBarTitle = "Hijri Calendar",
                 onBackClick = {onBackClick.invoke()},
@@ -47,12 +45,11 @@ fun CalendarScreen(
             ) {
                 item {
                     if (!toggleCalendar) {
-                        CalendarHomeScreen(
-                            hijriCalendarEntity = hijriCalendarEntity,
+                        HijriCalendarHomeScreen(
                             gregorianToHijriEntity = gregorianToHijriEntity
                         )
                     } else {
-                        CalendarScreen()
+                        GregorianCalendarScreen()
                     }
                 }
             }

@@ -62,6 +62,7 @@ fun BasicTopBarWithAction(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
+            modifier = Modifier.padding(dimens.size10),
             onClick = { onBackClick.invoke() }
         ) {
             Icon(painterResource(R.drawable.backicon), contentDescription = null)
@@ -69,6 +70,7 @@ fun BasicTopBarWithAction(
         Text(text = topBarTitle)
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
+            modifier = Modifier.padding(dimens.size10),
             onClick = { onActionClick.invoke() }
         ) {
             Icon(actionIcon, contentDescription = null)
