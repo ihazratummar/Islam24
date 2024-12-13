@@ -40,6 +40,7 @@ import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
 import com.hazrat.islam24.core.presentation.calendar.GregorianCalendarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
+import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesViewmodel
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
@@ -48,6 +49,7 @@ import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.main.navigation.MainRoute.BenifitsOfRecitingRoute
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreen
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
@@ -98,7 +100,16 @@ fun AppNavigator(
                             }
                             launchSingleTop = true
                         }
+                    },
+                    onBenefitsWidgetClick = {
+                        navController.navigate(BenifitsOfRecitingRoute)
                     }
+                )
+            }
+
+            composable<BenifitsOfRecitingRoute>{
+                BenefitsOfRecitingScreen(
+                    onBackClick = {navController.popBackStack()}
                 )
             }
             prayerNav(navController)
@@ -252,6 +263,9 @@ sealed class MainRoute{
 
     @Serializable
     data object ZakatScreen : MainRoute()
+
+    @Serializable
+    data object BenifitsOfRecitingRoute : MainRoute()
 }
 
 

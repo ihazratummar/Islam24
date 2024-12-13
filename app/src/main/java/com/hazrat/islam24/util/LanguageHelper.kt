@@ -32,13 +32,8 @@ fun changeLanguage(context: Context, language: Languages) {
 
         val config = Configuration(context.resources.configuration)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // Use LocaleList for Android 7.0 and later
-            config.setLocales(LocaleList(locale))
-        } else {
-            // Set Locale for devices below Android 7.0
-            config.setLocale(locale)
-        }
+        // Use LocaleList for Android 7.0 and later
+        config.setLocales(LocaleList(locale))
 
         // Apply the configuration change to the resources
         context.resources.updateConfiguration(config, context.resources.displayMetrics)

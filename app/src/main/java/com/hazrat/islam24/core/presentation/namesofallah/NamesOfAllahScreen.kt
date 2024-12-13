@@ -60,7 +60,7 @@ fun NamesOfAllahScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.size40))
             BasicTopBar(
                 modifier = Modifier,
                 topBarTitle = stringResource(R.string.names),

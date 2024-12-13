@@ -70,17 +70,9 @@ fun GregorianCalendarScreen(
                     currentMonth = currentMonth,
                     onPrevMonth = {
                         currentMonth = currentMonth.minusMonths(1)
-//                        selectedDate =
-//                            if (currentMonth == YearMonth.now()) LocalDate.now() else currentMonth.atDay(
-//                                1
-//                            )
                     },
                     onNextMonth = {
                         currentMonth = currentMonth.plusMonths(1)
-//                        selectedDate =
-//                            if (currentMonth == YearMonth.now()) LocalDate.now() else currentMonth.atDay(
-//                                1
-//                            )
                     }
                 )
                 CalendarViewWithWeeksAndDays(

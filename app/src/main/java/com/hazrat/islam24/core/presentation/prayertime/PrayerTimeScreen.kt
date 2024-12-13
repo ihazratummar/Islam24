@@ -97,7 +97,7 @@ fun ShowData(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.size40))
             PrayerTimeTopBar(
                 header = stringResource(R.string.prayer_times),
                 subText = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",

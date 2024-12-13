@@ -24,13 +24,16 @@ import com.hazrat.islam24.core.presentation.home.component.RamadanCard
 import com.hazrat.islam24.core.presentation.home.component.TimeLocationCard
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingWidget
+
 
 @Composable
 fun HomeScreen(
     navigateToPrayerTime: () -> Unit,
     prayerTimes: List<PrayerTimeEntity>,
     locationName: List<LocationDetailsEntity>,
-    onWidgetClick: (HomePageNavIcons) -> Unit
+    onWidgetClick: (HomePageNavIcons) -> Unit,
+    onBenefitsWidgetClick: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -48,7 +51,11 @@ fun HomeScreen(
                 ) {
                     Spacer(modifier = Modifier.height(dimens.size80))
                     if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
-                        TimeLocationCard(prayerTimes, navigateToPrayerTime, locationDetailsEntity = locationName.first())
+                        TimeLocationCard(
+                            prayerTimes,
+                            navigateToPrayerTime,
+                            locationDetailsEntity = locationName.first()
+                        )
                     } else {
                         Box(
                             modifier = Modifier
@@ -65,17 +72,23 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = dimens.size5),
+                    .padding(horizontal = dimens.size10),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LazyVerticalGridCardIcons(
-                    onClick = {onWidgetClick(it)}
+                    onClick = { onWidgetClick(it) }
                 )
             }
         }
         item {
             Spacer(modifier = Modifier.height(dimens.size15))
             RamadanCard()
+            Spacer(modifier = Modifier.height(dimens.size30))
+        }
+        item {
+            BenefitsOfRecitingWidget(
+                onClick = { onBenefitsWidgetClick() }
+            )
         }
     }
 }
