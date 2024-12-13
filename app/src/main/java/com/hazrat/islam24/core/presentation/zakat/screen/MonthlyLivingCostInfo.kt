@@ -44,7 +44,7 @@ fun MonthlyLivingCostInfo(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.size40))
             BasicTopBar(
                 topBarTitle = stringResource(id = R.string.monthly_living_cost),
                 onBackClick = {

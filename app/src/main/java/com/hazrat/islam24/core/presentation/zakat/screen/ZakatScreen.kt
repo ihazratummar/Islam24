@@ -58,7 +58,7 @@ fun ZakatScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.size40))
             BasicTopBarWithAction(
                 onBackClick = {
                     onBackClick.invoke()

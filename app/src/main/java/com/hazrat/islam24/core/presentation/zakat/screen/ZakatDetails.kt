@@ -48,7 +48,7 @@ fun ZakatDetails(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.size40))
             BasicTopBar(
                 onBackClick = {
                     onBackClick.invoke()
