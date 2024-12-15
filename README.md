@@ -25,6 +25,7 @@ Discover a seamless and intuitive Islamic app crafted to enhance your spiritual 
 
 <div style="display: flex; flex-direction: row;">
     <img src="screenshot/Home.png" alt="Home" width="150"/>
+    <img src="screenshot/Quran.png" alt="Quran" width="150"/>
     <img src="screenshot/PrayerTime.png" alt="Home" width="150"/>
     <img src="screenshot/Qibla.png" alt="Home" width="150"/>
     <img src="screenshot/Calendar.png" alt="Home" width="150"/>
