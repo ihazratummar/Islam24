@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuranViewModel @Inject constructor(
-    private val quranRepository: QuranRepository
+    private val quranRepository: QuranRepository,
 ) : ViewModel() {
 
     val quranState: StateFlow<QuranState> = quranRepository.quranState
@@ -24,13 +24,15 @@ class QuranViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             quranRepository.getAllQuranData()
+
         }
     }
 
-    fun refreshQuran(){
-        viewModelScope.launch{
+    fun refreshQuran() {
+        viewModelScope.launch {
             quranRepository.getAllQuranData()
         }
+        quranRepository.loadFavoritesFromFile()
     }
 
     fun refreshLastRead() {
@@ -53,6 +55,13 @@ class QuranViewModel @Inject constructor(
                 viewModelScope.launch {
                     quranRepository.getAllQuranData()
                 }
+            }
+
+            is QuranEvent.SaveFavorite -> {
+                quranRepository.toggleFavorite(
+                    quranAr = event.quranAr,
+                    arAyah = event.arAyah
+                )
             }
         }
     }

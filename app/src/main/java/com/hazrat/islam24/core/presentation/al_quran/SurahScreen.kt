@@ -1,13 +1,11 @@
 package com.hazrat.islam24.core.presentation.al_quran
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +32,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -41,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -71,6 +69,8 @@ import java.util.Locale
 fun SurahScreen(
     modifier: Modifier = Modifier,
     surahNumber: Int,
+    ayatNumber: Int?,
+    isTracking: Boolean = true,
     onBackClick: () -> Unit,
     event: (QuranEvent) -> Unit,
     quranState: QuranState,
@@ -98,15 +98,23 @@ fun SurahScreen(
         snapshotFlow { listState.firstVisibleItemIndex }
             .debounce(600)
             .collect { index ->
-                event(QuranEvent.SaveLastRead(surahNumber, index))
+                if (isTracking) {
+                    event(QuranEvent.SaveLastRead(surahNumber, index))
+                }
             }
     }
 
     LaunchedEffect(Unit) {
         if (quranState.lastReadSurah == surahNumber) {
             listState.scrollToItem(quranState.lastReadAyah)
+        } else {
+            listState.scrollToItem(0)
+        }
+        if (ayatNumber != null) {
+            listState.scrollToItem(ayatNumber)
         }
     }
+    val ayahNumber = remember { derivedStateOf { listState.firstVisibleItemIndex } }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -114,7 +122,8 @@ fun SurahScreen(
             AyaTopBar(
                 scrollBehavior = scrollBehavior,
                 surahName = quranAr.englishName,
-                onBackClick = { onBackClick() }
+                onBackClick = { onBackClick() },
+                ayahNumber = ayahNumber.value + 1
             )
         }
     ) { innerpadding ->
@@ -126,7 +135,7 @@ fun SurahScreen(
                 .padding(horizontal = dimens.size20)
         ) {
             item {
-                if (quranTransliteration.id != 1 && quranTransliteration.id != 9) {
+                if (quranAr.number != 1 && quranAr.number != 9) {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
@@ -144,13 +153,8 @@ fun SurahScreen(
             }
             itemsIndexed(quranAr.ayahs) { index, ayah ->
                 val quran = quranAr.ayahs[index]
+                val isFavorite = quranState.ayahFavoriteStatus[Pair(quranAr.number, ayah.numberInSurah)] == true
                 AyahRow(
-                    onCliCK = {
-                        Log.d(
-                            "AyahClick",
-                            "SurahScreen: SurahId: ${quranTransliteration.id}  AyahId : ${quran.numberInSurah} "
-                        )
-                    },
                     verse = quran,
                     translationText = when (systemLanguage) {
                         "bn" -> quranBn.verses[quran.numberInSurah - 1].translation
@@ -164,7 +168,11 @@ fun SurahScreen(
                     } else {
                         ayah.text
                     },
-                    transliterationVerse = quranTransliteration.verses[quran.numberInSurah - 1]
+                    transliterationVerse = quranTransliteration.verses[quran.numberInSurah - 1],
+                    onFavoriteClick = {
+                        event(QuranEvent.SaveFavorite(quranAr, ayah))
+                    },
+                    isFavorite = isFavorite
                 )
             }
         }
@@ -177,24 +185,16 @@ fun AyahRow(
     modifier: Modifier = Modifier,
     verse: ArAyah,
     translationText: String,
-    onCliCK: () -> Unit,
+    onFavoriteClick: () -> Unit,
     arabicText: String,
-    transliterationVerse: TransliterationVerse
+    transliterationVerse: TransliterationVerse,
+    isFavorite: Boolean = false
 ) {
 
     val number = NumberFormat.getInstance(Locale.forLanguageTag("ar")).format(verse.numberInSurah)
-
-
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .combinedClickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = {
-                    onCliCK.invoke()
-                }
-            ),
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         )
@@ -249,6 +249,25 @@ fun AyahRow(
                     fontWeight = FontWeight.Normal,
                 )
             )
+            Spacer(Modifier.height(dimens.size5))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    modifier = Modifier.padding(dimens.size10),
+                    onClick = { onFavoriteClick() },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.favourite),
+                        contentDescription = null
+                    )
+                }
+            }
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(0.4f)
             )
@@ -263,15 +282,23 @@ fun AyaTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     surahName: String,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    ayahNumber: Int? = null
 ) {
     TopAppBar(
         modifier = modifier.padding(top = dimens.size30),
         title = {
-            Text(
-                surahName,
-                modifier = Modifier
-            )
+            Column {
+                Text(
+                    surahName,
+                    modifier = Modifier
+                )
+                Text(
+                    "Ayat :$ayahNumber",
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         },
         navigationIcon = {
             IconButton(

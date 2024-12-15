@@ -8,3 +8,17 @@ data class LocalQuranModelArItem(
     val number: Int,
     val revelationType: String
 )
+
+fun findLocalQuranSurahNumberByAyahNumber(
+    quranItems: List<LocalQuranModelArItem>,
+    ayahNumber: Int
+): Pair<Int?, Int?>? {
+    for (quranItem in quranItems) {
+        for (ayah in quranItem.ayahs) {
+            if (ayah.number == ayahNumber) {
+                return Pair(quranItem.number, ayah.numberInSurah)
+            }
+        }
+    }
+    return null
+}

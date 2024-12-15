@@ -5,10 +5,14 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hazrat.islam24.core.api.QuranApi
+import com.hazrat.islam24.core.domain.model.al_quran_model.FavoriteAyah
+import com.hazrat.islam24.core.domain.model.al_quran_model.FavoritesList
+import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.ArAyah
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.LocalQuranModelArItem
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_en.LocalQuranDataEnItem
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_json_bn.LocalQuranDataItemBn
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_transliteration.LocalQuranTransliterationItem
+import com.hazrat.islam24.core.domain.model.al_quran_model.meta_data_juz.parseJuzJson
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
 import com.hazrat.islam24.util.DataStorePreference
@@ -20,9 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
@@ -70,7 +72,7 @@ class QuranRepositoryImpl @Inject constructor(
             )
         ) {
             Log.d(TAG, "One or more JSON files not found. Downloading missing files...")
-            downloadQuranFile(PARENT_FOLDER_NAME_DOWNLOAD,QURAN_FOLDER_NAME)
+            downloadQuranFile(PARENT_FOLDER_NAME_DOWNLOAD, QURAN_FOLDER_NAME)
         } else {
             Log.d(TAG, "All JSON files already exist.")
         }
@@ -145,7 +147,7 @@ class QuranRepositoryImpl @Inject constructor(
     override fun readQuranTransliterationFile(): Flow<List<LocalQuranTransliterationItem>>? = flow {
         val jsonString = fileUtils.readFile(
             context = context,
-            folderName = "${PARENT_FOLDER_NAME_DOWNLOAD}/${QURAN_FOLDER_NAME}" ,
+            folderName = "${PARENT_FOLDER_NAME_DOWNLOAD}/${QURAN_FOLDER_NAME}",
             fileName = QURAN_TRANSLITERATION_FILE_NAME
         )
         if (jsonString != null) {
@@ -215,17 +217,46 @@ class QuranRepositoryImpl @Inject constructor(
             readQuranArFile() ?: flow { emit(emptyList()) },
             readQuranEnFile() ?: flow { emit(emptyList()) },
             readQuranBnFile(),
-            readQuranTransliterationFile() ?: flow { emit(emptyList()) }
-        ) { ar, en, bn, transliteration ->
+            readQuranTransliterationFile() ?: flow { emit(emptyList()) },
+            readFavorite()
+        ) { ar, en, bn, transliteration , favorite ->
             _quranState.value = _quranState.value.copy(
                 isLoading = false,
                 arQuranData = ar,
                 quranEnData = en,
                 quranBnData = bn,
-                quranTransliterationData = transliteration
+                quranTransliterationData = transliteration,
+                favoritesList = favorite
             )
-        }.collect{}
+        }.collect {}
+
+        parseJuzJson(context)?.let { juz ->
+            Log.d(TAG, "getAllQuranData: $juz")
+            _quranState.update { it.copy(juzData = juz) }
+        }
+
+
     }
+
+    override fun readFavorite(): Flow<FavoritesList> = flow {
+        val favoritesList = fileUtils.getFavoriteAyaToFile(
+            context = context,
+            folderName = "${PARENT_FOLDER_NAME_APPDATA}/${QURAN_FOLDER_NAME}",
+            fileName = QURAN_AYAH_FAVORITE_FILE
+        )
+
+        if (favoritesList.isNotEmpty()) {
+            _quranState.update { it.copy(favoritesList = favoritesList) }
+            emit(favoritesList) // Emit the parsed list
+        } else {
+            Log.e(TAG, "Favorites list is empty.")
+            emit(emptyList()) // Emit an empty list if no favorites are found
+        }
+    }.catch { e ->
+        Log.e(TAG, "Error in flow: ${e.message}")
+        emit(emptyList()) // Emit an empty list in case of an error
+    }.flowOn(Dispatchers.IO)
+
 
     override fun saveLastRead(surahNumber: Int, ayahNumber: Int) {
         dataStorePreference.saveQuranLastRead(surahNumber, ayahNumber)
@@ -236,6 +267,72 @@ class QuranRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override fun loadFavoritesFromFile() {
+        val savedFavorites = fileUtils.getFavoriteAyaToFile(
+            context = context,
+            folderName = "${PARENT_FOLDER_NAME_APPDATA}/${QURAN_FOLDER_NAME}",
+            fileName = QURAN_AYAH_FAVORITE_FILE
+        )
+
+        // Update ayahFavoriteStatus to reflect the favorites from the file
+        _quranState.update {
+            it.copy(
+                ayahFavoriteStatus = savedFavorites.associate { favorite ->
+                    Pair(favorite.surahNumber, favorite.ayahNumber) to true
+                }
+            )
+        }
+    }
+
+    override fun toggleFavorite(quranAr: LocalQuranModelArItem, arAyah: ArAyah) {
+        // Retrieve existing favorites from file
+        val existingFavorites = fileUtils.getFavoriteAyaToFile(
+            context = context,
+            folderName = "${PARENT_FOLDER_NAME_APPDATA}/${QURAN_FOLDER_NAME}",
+            fileName = QURAN_AYAH_FAVORITE_FILE
+        )
+
+        // Create a new favorite object
+        val newFavorite = FavoriteAyah(surahNumber = quranAr.number, ayahNumber = arAyah.numberInSurah)
+
+        // Check if the Ayah is already in favorites
+        val isFavorite = existingFavorites.any {
+            it.surahNumber == quranAr.number && it.ayahNumber == arAyah.numberInSurah
+        }
+
+        // Update the favorites list based on the toggle action
+        val updatedFavorites = if (isFavorite) {
+            existingFavorites.filter { it != newFavorite }  // Remove from favorites
+        } else {
+            existingFavorites + newFavorite  // Add to favorites
+        }
+
+        // Update the ayahFavoriteStatus for the specific Ayah in the state
+        val updatedFavoriteStatus = updatedFavorites.associate {
+            Pair(it.surahNumber, it.ayahNumber) to true
+        }
+
+        // Update state with new favorites
+        _quranState.update {
+            it.copy(
+                favoritesList = updatedFavorites,
+                ayahFavoriteStatus = updatedFavoriteStatus
+            )
+        }
+
+        // Save the updated favorites to the file
+        fileUtils.saveFavoriteAyaToFile(
+            context = context,
+            parentFolderName = PARENT_FOLDER_NAME_APPDATA,
+            subFolderName = QURAN_FOLDER_NAME,
+            fileName = QURAN_AYAH_FAVORITE_FILE,
+            favoritesList = updatedFavorites
+        )
+    }
+
+
+
 
 
     override fun refreshLastRead() {
@@ -248,7 +345,7 @@ class QuranRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun getSurahNameByNumber(): String?{
+    private fun getSurahNameByNumber(): String? {
         if (_quranState.value.arQuranData?.isEmpty() != false) {
             Log.e("QuranViewModel", "Quran data is not loaded.")
             return null
@@ -259,11 +356,13 @@ class QuranRepositoryImpl @Inject constructor(
     companion object {
         private const val TAG = "QuranRepositoryImpl"
         private const val PARENT_FOLDER_NAME_DOWNLOAD = "Download"
+        private const val PARENT_FOLDER_NAME_APPDATA = "AppData"
         private const val QURAN_FOLDER_NAME = "AlQuran"
         private const val QURAN_AR_FILE_NAME = "quran_ar.json"
         private const val QURAN_TRANSLITERATION_FILE_NAME = "quran_transliteration.json"
         private const val QURAN_EN_FILE_NAME = "quran_en.json"
         private const val QURAN_BN_FILE_NAME = "quran_bn.json"
+        private const val QURAN_AYAH_FAVORITE_FILE = "quran_favorite.json"
 
     }
 }

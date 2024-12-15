@@ -35,8 +35,8 @@ val onSecondaryDark = Color(0xFF000000)
 val secondaryContainerDark = Color(0xFF124436)
 val onSecondaryContainerDark = Color(0xFFCDE8DA)
 
-val backgroundDark = Color(0xFF0D3026)
-val onBackgroundDark = Color(0xFFE1E4DA)
+val backgroundDark = Color(0xFF071A16) /* Color(0xFF0D3026)*/
+val onBackgroundDark = Color(0xFFF9FDFB)
 val surfaceDark = Color(0xFF0D3026)
 val onSurfaceDark = Color(0xFFE1E4DA)
 

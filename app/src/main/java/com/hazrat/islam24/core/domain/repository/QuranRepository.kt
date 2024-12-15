@@ -1,5 +1,7 @@
 package com.hazrat.islam24.core.domain.repository
 
+import com.hazrat.islam24.core.domain.model.al_quran_model.FavoritesList
+import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.ArAyah
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.LocalQuranModelArItem
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_en.LocalQuranDataEnItem
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_json_bn.LocalQuranDataItemBn
@@ -31,7 +33,13 @@ interface QuranRepository {
 
     fun saveLastRead(surahNumber: Int, ayahNumber: Int)
 
+    fun toggleFavorite(quranAr : LocalQuranModelArItem, arAyah :  ArAyah)
+
+    fun readFavorite() : Flow<FavoritesList>?
+
     fun refreshLastRead()
+
+    fun loadFavoritesFromFile()
 
 
 }

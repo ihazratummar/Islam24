@@ -78,6 +78,7 @@ androidx-window = { module = "androidx.compose.material3:material3-window-size-c
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
 firebase-bom-v2821 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-animation-core = { module = "androidx.compose.animation:animation-core", version.ref = "animationCore" }

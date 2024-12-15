@@ -1,8 +1,8 @@
-# Islamic 24 Application
+# Islam 24 Application
 
 **Embrace the Serenity of Faith with Islamic 24**
 
-Discover a seamless and intuitive Islamic app crafted to enhance your spiritual journey. **Islamic 24** offers a clutter-free experience with no ad interruptions, allowing you to focus entirely on your prayers and religious obligations.
+Discover a seamless and intuitive Islamic app crafted to enhance your spiritual journey. **Islam 24** offers a clutter-free experience with no ad interruptions, allowing you to focus entirely on your prayers and religious obligations.
 
 <div align="center">
   <a href="https://play.google.com/store/apps/details?id=com.hazrat.islam24">
@@ -25,7 +25,6 @@ Discover a seamless and intuitive Islamic app crafted to enhance your spiritual 
 
 <div style="display: flex; flex-direction: row;">
     <img src="screenshot/Home.png" alt="Home" width="150"/>
-    <img src="screenshot/Quran.png" alt="Quran" width="150"/>
     <img src="screenshot/PrayerTime.png" alt="Home" width="150"/>
     <img src="screenshot/Qibla.png" alt="Home" width="150"/>
     <img src="screenshot/Calendar.png" alt="Home" width="150"/>

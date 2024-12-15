@@ -1,6 +1,9 @@
 package com.hazrat.islam24.util
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.hazrat.islam24.core.domain.model.al_quran_model.FavoritesList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
@@ -25,6 +28,39 @@ object MyFileUtils {
         val file = File(subFolder, fileName)
         return file.exists()
     }
+
+
+    /*
+    Save Favorite Ayah to file
+     */
+
+    fun saveFavoriteAyaToFile(
+        context: Context,
+        parentFolderName: String,
+        subFolderName: String,
+        fileName: String,
+        favoritesList: FavoritesList
+    ){
+        val parentFolder = File(context.filesDir, parentFolderName)
+        if (!parentFolder.exists()) parentFolder.mkdirs()
+
+        val subFolder = File(parentFolder, subFolderName)
+        if (!subFolder.exists()) subFolder.mkdirs()
+
+        val file = File(subFolder, fileName)
+        val json = Gson().toJson(favoritesList)
+        file.writeText(json)
+    }
+
+    fun getFavoriteAyaToFile(context: Context, folderName: String, fileName: String):FavoritesList {
+        val file = File(context.filesDir, folderName + File.separator + fileName)
+        if (!file.exists()) return emptyList()
+        val json = file.readText()
+        val type = object : TypeToken<FavoritesList>() {}.type
+        return Gson().fromJson(json, type)
+
+    }
+
 
     /*
     Save File to local file
