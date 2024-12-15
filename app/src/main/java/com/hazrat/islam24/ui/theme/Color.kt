@@ -4,10 +4,10 @@ import androidx.compose.ui.graphics.Color
 
 // Royal Green Theme Colors
  val royalGreenLight = Color(0xFF15382C) // Example of royal green
- val royalGreenDark = Color(0xFF5BF5B6) // Darker shade for dark mode
+ val royalGreenPrimary = Color(0xFF5BF5B6) // Darker shade for dark mode
 
 //light colors
-val primaryLight = royalGreenLight
+val primaryLight = royalGreenPrimary
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFA5D6A7) // Lighter green
 val onPrimaryContainerLight = Color(0xFF1B5E20) // Dark green
@@ -25,7 +25,7 @@ val onSurfaceLight = Color(0xFF000000)
 
 
 //dark colors
-val primaryDark = royalGreenDark
+val primaryDark = royalGreenPrimary
 val onPrimaryDark = Color(0xFF0C382A)
 val primaryContainerDark = Color(0xFF21503D)
 val onPrimaryContainerDark = Color(0xFFA5D6A7)
@@ -68,7 +68,7 @@ val onSurfaceDark = Color(0xFFE1E4DA)
 // Inverse colors for UI contrast
  val inverseSurfaceLight = Color(0xFF303030)
  val inverseOnSurfaceLight = Color.White
- val inversePrimaryLight = royalGreenDark
+// val inversePrimaryLight = royalGreenDark
 
  val inverseSurfaceDark = Color.White
  val inverseOnSurfaceDark = Color.Black

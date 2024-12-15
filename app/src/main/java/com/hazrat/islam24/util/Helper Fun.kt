@@ -74,3 +74,8 @@ fun getCacheProfilePicture(context: Context): File? {
 fun File.toUri(): Uri {
     return Uri.fromFile(this)
 }
+
+fun Int.toArabicNumerals(): String {
+    val arabicDigits = listOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
+    return this.toString().map { arabicDigits[it.digitToInt()] }.joinToString("")
+}

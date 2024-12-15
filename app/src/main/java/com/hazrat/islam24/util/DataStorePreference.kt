@@ -20,8 +20,28 @@ class DataStorePreference @Inject constructor(
         private const val KEY_ASR_NOTIFICATION = "asr_notification"
         private const val KEY_MAGHRIB_NOTIFICATION = "maghrib_notification"
         private const val KEY_ISHA_NOTIFICATION = "isha_notification"
+
+        private const val LAST_READ_SURAH = "quran_last_surah"
+        private const val LAST_READ_AYAH = "quran_last_ayah"
     }
 
+
+    fun saveQuranLastRead(surahNumber: Int, ayahNumber: Int){
+        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        with(pref.edit()){
+            putInt(LAST_READ_SURAH, surahNumber)
+            putInt(LAST_READ_AYAH, ayahNumber)
+            apply()
+
+        }
+    }
+
+    fun getQuranLastRead(): Pair<Int, Int>{
+        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val surahNumber = pref.getInt(LAST_READ_SURAH, 1)
+        val ayahNumber = pref.getInt(LAST_READ_AYAH, 1)
+        return Pair(surahNumber, ayahNumber)
+    }
 
     fun setLanguage( language: Languages) {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)

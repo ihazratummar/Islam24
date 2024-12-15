@@ -41,6 +41,7 @@ Discover a seamless and intuitive Islamic app crafted to enhance your spiritual 
 5. ![Qibla Direction](https://img.icons8.com/?size=30&id=22lwhESSqHNw&format=png&color=000000) **Qibla Direction:** Easy-to-use Qibla compass to find the direction of the Kaaba.
 6.  [User Profile](https://img.icons8.com/?size=30&id=qVcjfxtIiPix&format=png&color=000000) **User Profile:** Customize your profile within the app.
 7.  [Zakat Calculator](https://img.icons8.com/?size=30&id=cp8BMs7vNblP&format=png&color=000000) **Zakat Calculator:** Calculate your Zakat with ease.
+8.  [Quran Reading](/app/src/main/res/drawable/quran.xml?size=30&color=000000) ** Quran Reading** Read the Holy Al-Quran, save last read
 ---
 
 **Upcoming Features:**
@@ -58,5 +59,8 @@ The icons used in this app are sourced from the following Figma icon packs:
 
 - [Stratis UI Icons - 1000+ Free Figma Icons](https://www.figma.com/design/4cMgtPKTUF4Kzz3QZxGRsq/Stratis-UI-Icons---1000%2B-Free-Figma-icons-(Community)?m=auto&t=wHGViASVSJGGHiyq-1) by Stratis UI
 - [Icons - Free Icons 65,000+](https://www.figma.com/design/TLNLk6CMdno4Uf3dJgo4hX/Icons---Free-Icons-65%2C000-(Community)?m=auto&t=wHGViASVSJGGHiyq-1) by Various Designers
+
+Fonts 
+- [Arabic Text Fonts](https://github.com/quran/quran_android/tree/main/app/src/main/assets) From Quran Android Git Repository
 
 We greatly appreciate the work of these creators in making these icons available to the community.

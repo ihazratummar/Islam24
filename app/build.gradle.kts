@@ -136,6 +136,7 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 
     //Datastore
     implementation (libs.androidx.datastore.preferences)
@@ -187,4 +188,7 @@ dependencies {
 
     //Cloudy for blurring effect
     implementation(libs.cloudy)
+
+
+
 }

@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import com.hazrat.islam24.core.data.entity.AthkarDataEntity
-import com.hazrat.islam24.ui.theme.Indopak
+import com.hazrat.islam24.ui.theme.Uthmani
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.getSystemLanguage
 
@@ -77,7 +77,7 @@ fun AdhkarCard(adhkars: AthkarDataEntity) {
                         .fillMaxWidth(),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = Indopak,
+                    fontFamily = Uthmani,
                     textAlign = TextAlign.Center,
                     letterSpacing = TextUnit.Unspecified
                 )
@@ -87,7 +87,7 @@ fun AdhkarCard(adhkars: AthkarDataEntity) {
                 modifier = Modifier.padding(dimens.size10).fillMaxWidth(),
                 style = MaterialTheme.typography.displayMedium,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontFamily = Indopak,
+                fontFamily = Uthmani,
                 textAlign = TextAlign.Center,
                 letterSpacing = TextUnit.Unspecified
             )

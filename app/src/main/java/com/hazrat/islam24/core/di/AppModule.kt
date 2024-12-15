@@ -16,6 +16,7 @@ import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.DataStorePreference
+import com.hazrat.islam24.util.MyFileUtils
 import com.hazrat.islam24.util.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
@@ -110,5 +111,12 @@ object AppModule {
     @Singleton
     fun provideDataStorePreference(@ApplicationContext context: Context): DataStorePreference {
         return DataStorePreference(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMyFileUtils(): MyFileUtils {
+        return MyFileUtils
+
     }
 }

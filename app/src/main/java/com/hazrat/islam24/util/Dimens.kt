@@ -35,6 +35,37 @@ data class Dimens (
     val size300:Dp = 0.dp,
 )
 
+val CompactDimens = Dimens(
+    size1 = 1.dp,
+    size2 = 2.dp,
+    size3 = 3.dp,
+    size4 = 4.dp,
+    size5 = 5.dp,
+    size6 = 6.dp,
+    size8 = 8.dp,
+    size9 = 9.dp,
+    size10 = 10.dp,
+    size12 = 12.dp,
+    size15 = 15.dp,
+    size20 = 20.dp,
+    size30 = 30.dp,
+    size35 = 35.dp,
+    size40 = 40.dp,
+    size42 = 42.dp,
+    size45 = 45.dp,
+    size48 = 48.dp,
+    size50 = 50.dp,
+    size52 = 52.dp,
+    size55 = 55.dp,
+    size60 = 60.dp,
+    size80 = 80.dp,
+    size100 = 100.dp,
+    size150 = 150.dp,
+    size200 = 200.dp,
+    size250 = 250.dp,
+    size300 = 300.dp,
+)
+
 val CompactSmallDimens = Dimens(
     size1 = 0.78.dp,  // 78% of 1.dp
     size2 = 1.56.dp,  // 78% of 2.dp
@@ -92,36 +123,7 @@ val CompactMediumDimens = Dimens(
     size300 = 240.dp   // 80% of 300.dp
 )
 
-val CompactDimens = Dimens(
-    size1 = 1.dp,
-    size2 = 2.dp,
-    size3 = 3.dp,
-    size4 = 4.dp,
-    size5 = 5.dp,
-    size6 = 6.dp,
-    size8 = 8.dp,
-    size9 = 9.dp,
-    size10 = 10.dp,
-    size12 = 12.dp,
-    size15 = 15.dp,
-    size20 = 20.dp,
-    size30 = 30.dp,
-    size35 = 35.dp,
-    size40 = 40.dp,
-    size42 = 42.dp,
-    size45 = 45.dp,
-    size48 = 48.dp,
-    size50 = 50.dp,
-    size52 = 52.dp,
-    size55 = 55.dp,
-    size60 = 60.dp,
-    size80 = 80.dp,
-    size100 = 100.dp,
-    size150 = 150.dp,
-    size200 = 200.dp,
-    size250 = 250.dp,
-    size300 = 300.dp,
-)
+
 val MediumDimens = Dimens(
     size1 = 1.5.dp,
     size2 = 3.dp,
