@@ -271,7 +271,7 @@ private fun BottomBar(navController: NavHostController) {
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         selectedTextColor = MaterialTheme.colorScheme.primary,
                         unselectedIconColor = MaterialTheme.colorScheme.secondary,
-                        unselectedTextColor = MaterialTheme.colorScheme.outline,
+                        unselectedTextColor = MaterialTheme.colorScheme.secondary,
                         indicatorColor = Color.Transparent
                     ),
                     interactionSource = remember { MutableInteractionSource() },

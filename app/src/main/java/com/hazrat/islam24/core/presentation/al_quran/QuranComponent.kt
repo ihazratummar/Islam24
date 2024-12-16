@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -161,7 +162,7 @@ fun LastReadCard(
                     .padding(bottom = dimens.size10, start = dimens.size20)
             ) {
                 Text(lastReadSurahName)
-                Text("Ayah ${lastReadAyah + 1}")
+                Text("${stringResource(R.string.ayah)} ${lastReadAyah + 1}" )
             }
             Image(
                 painter = painterResource(R.drawable.quran_image),
@@ -298,7 +299,8 @@ fun SurahCard(
                     Log.e("SVG Load", "Failed to load SVG: ${error.result.throwable}")
                 },
                 contentDescription = "Surah Calligraphy",
-                modifier = Modifier.size(dimens.size80)
+                modifier = Modifier.size(dimens.size80),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
             )
         }
     }
@@ -319,7 +321,7 @@ fun JuzCard(
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Text(
-            text = "Juz ${index + 1}",
+            text = "${stringResource(R.string.juz)} ${ index + 1}",
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Normal
             ),

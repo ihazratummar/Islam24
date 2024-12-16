@@ -2,6 +2,9 @@ package com.hazrat.islam24.core.presentation.al_quran
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,7 +38,11 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,10 +50,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
@@ -56,6 +67,7 @@ import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.getSystemLanguage
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -91,8 +103,9 @@ fun SurahScreen(
     val systemLanguage = getSystemLanguage()
     val listState = rememberLazyListState()
 
+    var isAyaDropDownOpen by remember { mutableStateOf(false) }
 
-
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
@@ -114,7 +127,9 @@ fun SurahScreen(
             listState.scrollToItem(ayatNumber)
         }
     }
-    val ayahNumber = remember { derivedStateOf { listState.firstVisibleItemIndex } }
+    val totalAyahs = quranAr.ayahs.size
+    val ayahNumber =
+        remember { derivedStateOf { (listState.firstVisibleItemIndex + 1).coerceAtMost(totalAyahs) } }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -123,7 +138,10 @@ fun SurahScreen(
                 scrollBehavior = scrollBehavior,
                 surahName = quranAr.englishName,
                 onBackClick = { onBackClick() },
-                ayahNumber = ayahNumber.value + 1
+                ayahNumber = ayahNumber.value,
+                onAyahClick = {
+                    isAyaDropDownOpen = true
+                }
             )
         }
     ) { innerpadding ->
@@ -153,7 +171,8 @@ fun SurahScreen(
             }
             itemsIndexed(quranAr.ayahs) { index, ayah ->
                 val quran = quranAr.ayahs[index]
-                val isFavorite = quranState.ayahFavoriteStatus[Pair(quranAr.number, ayah.numberInSurah)] == true
+                val isFavorite =
+                    quranState.ayahFavoriteStatus[Pair(quranAr.number, ayah.numberInSurah)] == true
                 AyahRow(
                     verse = quran,
                     translationText = when (systemLanguage) {
@@ -174,6 +193,36 @@ fun SurahScreen(
                     },
                     isFavorite = isFavorite
                 )
+            }
+        }
+
+        if (isAyaDropDownOpen) {
+            ModalBottomSheet(
+                onDismissRequest = { isAyaDropDownOpen = false }
+            ) {
+                LazyColumn {
+                    itemsIndexed(quranEn.verses) { index, ayah ->
+                        Text(
+                            text = "${stringResource(R.string.ayah)} ${index + 1} - ${ayah.translation}", maxLines = 1,
+                            modifier = Modifier
+                                .padding(horizontal = dimens.size10, vertical = dimens.size5)
+                                .clickable(
+                                    onClick = {
+                                        scope.launch {
+                                            val lastIndex = listState.layoutInfo.totalItemsCount
+                                            listState.animateScrollToItem(
+                                                index,
+                                                if (index == lastIndex) Int.MAX_VALUE else 0
+                                            )
+                                        }
+
+                                        isAyaDropDownOpen = false
+                                    }
+                                ),
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
             }
         }
     }
@@ -276,29 +325,47 @@ fun AyahRow(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AyaTopBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     surahName: String,
     scrollBehavior: TopAppBarScrollBehavior,
-    ayahNumber: Int? = null
+    ayahNumber: Int? = null,
+    onAyahClick: () -> Unit
 ) {
     TopAppBar(
         modifier = modifier.padding(top = dimens.size30),
         title = {
-            Column {
+            Column(
+                modifier = Modifier.combinedClickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = { onAyahClick() }
+                )
+            ) {
                 Text(
                     surahName,
                     modifier = Modifier
                 )
-                Text(
-                    "Ayat :$ayahNumber",
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.labelSmall
-                )
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Ayat :${ayahNumber}",
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.down_arrow),
+                        contentDescription = null
+                    )
+                }
             }
+
+
         },
         navigationIcon = {
             IconButton(
