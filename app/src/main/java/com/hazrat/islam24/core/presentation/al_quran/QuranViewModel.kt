@@ -3,6 +3,7 @@ package com.hazrat.islam24.core.presentation.al_quran
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.domain.repository.QuranRepository
+import com.hazrat.islam24.util.getSystemLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +20,6 @@ class QuranViewModel @Inject constructor(
 ) : ViewModel() {
 
     val quranState: StateFlow<QuranState> = quranRepository.quranState
-
 
     init {
         viewModelScope.launch {

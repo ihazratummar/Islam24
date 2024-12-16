@@ -5,17 +5,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,10 +24,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import com.hazrat.islam24.R
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.findLocalQuranSurahNumberByAyahNumber
 import com.hazrat.islam24.ui.theme.Lafadz
 import com.hazrat.islam24.ui.theme.dimens
@@ -122,9 +117,21 @@ fun QuranScreen(
                                     SurahCard(
                                         isLastReadSurah = quranState.lastReadSurah == surah.number,
                                         surahNumber = surah.number,
-                                        surahName = surah.englishName,
+                                        surahName = when(systemLanguage){
+                                            "bn" -> quranBn?.get(surah.number - 1)?.transliteration ?: ""
+                                            else -> surah.englishName
+                                        } ,
                                         surahVersesCount = surah.ayahs.size,
-                                        type = surah.revelationType,
+                                        type = when(systemLanguage){
+                                            "bn" -> {
+                                                when(surah.revelationType){
+                                                    "Meccan" -> "মাক্কি"
+                                                    "Medinan" -> "মদীনা"
+                                                    else -> ""
+                                                }
+                                            }
+                                            else ->surah.revelationType
+                                        } ,
                                         onSurahClick = { onSurahClick(surah.number, null, true) },
                                         surahNameTranslation = when (systemLanguage) {
                                             "bn" -> quranBn?.get(surah.number - 1)?.translation
@@ -171,8 +178,11 @@ fun QuranScreen(
                                                 it.ayahNumber - 1
                                             )?.translation ?: ""
                                         }
-                                        val surahAyahText =
-                                            "${quranState.arQuranData[it.surahNumber - 1].englishName} - Ayat: ${it.ayahNumber}"
+                                        val surahAyahText = when(systemLanguage){
+                                            "bn" -> "${quranBn?.get(it.surahNumber - 1)?.transliteration}"
+                                            else -> "${quranState.arQuranData[it.surahNumber - 1].englishName} "
+                                        } +  " - ${stringResource(R.string.ayah)}: ${it.ayahNumber}"
+
                                         FavoriteAyahCard(
                                             onClick = {
                                                 onSurahClick(

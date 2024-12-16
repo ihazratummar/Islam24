@@ -17,6 +17,7 @@ import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
 import com.hazrat.islam24.util.DataStorePreference
 import com.hazrat.islam24.util.MyFileUtils
+import com.hazrat.islam24.util.checkSystemLanguage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -219,7 +220,7 @@ class QuranRepositoryImpl @Inject constructor(
             readQuranBnFile(),
             readQuranTransliterationFile() ?: flow { emit(emptyList()) },
             readFavorite()
-        ) { ar, en, bn, transliteration , favorite ->
+        ) { ar, en, bn, transliteration, favorite ->
             _quranState.value = _quranState.value.copy(
                 isLoading = false,
                 arQuranData = ar,
@@ -294,7 +295,8 @@ class QuranRepositoryImpl @Inject constructor(
         )
 
         // Create a new favorite object
-        val newFavorite = FavoriteAyah(surahNumber = quranAr.number, ayahNumber = arAyah.numberInSurah)
+        val newFavorite =
+            FavoriteAyah(surahNumber = quranAr.number, ayahNumber = arAyah.numberInSurah)
 
         // Check if the Ayah is already in favorites
         val isFavorite = existingFavorites.any {
@@ -332,9 +334,6 @@ class QuranRepositoryImpl @Inject constructor(
     }
 
 
-
-
-
     override fun refreshLastRead() {
         _quranState.update {
             it.copy(
@@ -350,7 +349,19 @@ class QuranRepositoryImpl @Inject constructor(
             Log.e("QuranViewModel", "Quran data is not loaded.")
             return null
         }
-        return _quranState.value.arQuranData?.find { it.number == _quranState.value.lastReadSurah }?.englishName
+
+        val systemLanguage = checkSystemLanguage(context)
+        val quranData = if (systemLanguage == "bn") {
+            _quranState.value.quranBnData?.find { quranBn ->
+                quranBn.id == _quranState.value.lastReadSurah
+            }?.transliteration
+        } else {
+            _quranState.value.arQuranData?.find { quranAr ->
+                quranAr.number == _quranState.value.lastReadSurah
+            }?.englishName
+        }
+
+        return quranData
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.hazrat.islam24.core.presentation.al_quran
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -70,6 +71,8 @@ fun TabRowComponent(
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit
 ) {
+
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -91,7 +94,7 @@ fun TabRowComponent(
                     selected = selectedTabIndex == index,
                     onClick = { onTabSelected(index) }
                 ) {
-                    Text(text = tabTitle.toString())
+                    Text(text = tabTitle.getLocalizedTitle(context))
                 }
             }
         }
@@ -248,7 +251,7 @@ fun SurahCard(
                     )
                 }
                 Text(
-                    text = "Verses: $surahVersesCount",
+                    text = "${stringResource(R.string.ayah)} $surahVersesCount",
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.Thin
                     )
@@ -375,14 +378,12 @@ fun FavoriteAyahCard(
     }
 }
 
-enum class QuranScreenTab {
-    Surah {
-        override fun toString() = "Surah"
-    },
-    Juz {
-        override fun toString() = "Juz"
-    },
-    FAVORITE {
-        override fun toString() = "Favorite"
-    }
+enum class QuranScreenTab(val titleResId: Int) {
+    Surah(R.string.surah),
+    Juz(R.string.juz),
+    Favorite(R.string.favorite);
+}
+
+fun QuranScreenTab.getLocalizedTitle(context: Context): String {
+    return context.getString(titleResId)
 }

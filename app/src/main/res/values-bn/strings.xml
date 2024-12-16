@@ -132,4 +132,6 @@
     <string name="last_read">শেষ পড়া</string>
     <string name="juz">পারা</string>
     <string name="ayah">আয়াত</string>
+    <string name="surah">সূরা</string>
+    <string name="favorite">প্রিয়</string>
 </resources>

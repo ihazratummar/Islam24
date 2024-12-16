@@ -1,5 +1,6 @@
 package com.hazrat.islam24.core.presentation.al_quran
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -16,10 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.AlertDialog
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,6 +56,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
@@ -136,7 +139,10 @@ fun SurahScreen(
         topBar = {
             AyaTopBar(
                 scrollBehavior = scrollBehavior,
-                surahName = quranAr.englishName,
+                surahName = when (systemLanguage) {
+                    "bn" -> quranBn.transliteration
+                    else -> quranAr.englishName
+                },
                 onBackClick = { onBackClick() },
                 ayahNumber = ayahNumber.value,
                 onAyahClick = {
@@ -203,7 +209,8 @@ fun SurahScreen(
                 LazyColumn {
                     itemsIndexed(quranEn.verses) { index, ayah ->
                         Text(
-                            text = "${stringResource(R.string.ayah)} ${index + 1} - ${ayah.translation}", maxLines = 1,
+                            text = "${stringResource(R.string.ayah)} ${index + 1} - ${ayah.translation}",
+                            maxLines = 1,
                             modifier = Modifier
                                 .padding(horizontal = dimens.size10, vertical = dimens.size5)
                                 .clickable(
@@ -301,9 +308,28 @@ fun AyahRow(
             Spacer(Modifier.height(dimens.size5))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
+                Card(
+                    modifier = Modifier.width(dimens.size80),
+                    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                    border = BorderStroke(
+                        width = dimens.size1,
+                        color = MaterialTheme.colorScheme.secondary
+                    ),
+                    shape = RoundedCornerShape(dimens.size5)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(dimens.size5),
+                        text = "${verse.numberInSurah}",
+                        textAlign = TextAlign.Center
+                    )
+                }
+
                 IconButton(
                     modifier = Modifier.padding(dimens.size10),
                     onClick = { onFavoriteClick() },
@@ -316,6 +342,8 @@ fun AyahRow(
                         contentDescription = null
                     )
                 }
+
+
             }
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(0.4f)

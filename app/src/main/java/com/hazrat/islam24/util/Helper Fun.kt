@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.runtime.Composable
@@ -64,6 +65,12 @@ fun getSystemLanguage(): String {
     return locale.language
 }
 
+
+fun checkSystemLanguage(context: Context): String {
+    val locale: Locale =
+        context.resources.configuration.locales[0]
+    return locale.language
+}
 
 fun getCacheProfilePicture(context: Context): File? {
     val directory = File(context.filesDir, INTERNALSTORAGEPICTUREFOLDER)

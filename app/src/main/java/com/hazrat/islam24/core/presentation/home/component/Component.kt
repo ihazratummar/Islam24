@@ -2,7 +2,6 @@ package com.hazrat.islam24.core.presentation.home.component
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,8 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
@@ -133,7 +130,7 @@ fun TimeLocationCard(
 
                     Text(
                         text = stringResource(R.string.view_salat_times),
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }

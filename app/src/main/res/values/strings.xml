@@ -134,5 +134,7 @@
     <string name="last_read">Last Read</string>
     <string name="juz">Juz</string>
     <string name="ayah">Ayah</string>
+    <string name="surah">Surah</string>
+    <string name="favorite" />
 
 </resources>
