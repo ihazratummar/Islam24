@@ -135,6 +135,6 @@
     <string name="juz">Juz</string>
     <string name="ayah">Ayah</string>
     <string name="surah">Surah</string>
-    <string name="favorite" />
+    <string name="favorite" >Favorite</string>
 
 </resources>
