@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -179,6 +180,8 @@ class PrayerTimeReceiver : BroadcastReceiver() {
             notificationClickIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
+        val soundUri = Uri.parse("android.resource://${context.packageName}/raw/azan1.mp3")
         return NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_splash)
             .setContentTitle(title)

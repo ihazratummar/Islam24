@@ -5,6 +5,7 @@ package com.hazrat.islam24.notification
  */
 
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -95,6 +96,7 @@ class PrayerAlarmManager @Inject constructor(
         )
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     private fun setAlarm(
         prayerTime: Long,
         titleKey: String,

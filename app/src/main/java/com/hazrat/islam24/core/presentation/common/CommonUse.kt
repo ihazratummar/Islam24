@@ -38,7 +38,7 @@ fun Location(
         ?: locationDetailsEntity.town ?: locationDetailsEntity.suburb ?: "",
         modifier = modifier,
         style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onBackground,
+        color = MaterialTheme.colorScheme.onSecondaryContainer,
         fontWeight = FontWeight.SemiBold
     )
 }

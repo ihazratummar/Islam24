@@ -175,13 +175,13 @@ fun DisplayCurrentPrayerTime(
                 Text(
                     text = stringResource(R.string.next_prayer, prayerName),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 formatLocalTime(time)?.let {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }

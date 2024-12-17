@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.runtime.Composable
@@ -65,6 +66,12 @@ fun getSystemLanguage(): String {
 }
 
 
+fun checkSystemLanguage(context: Context): String {
+    val locale: Locale =
+        context.resources.configuration.locales[0]
+    return locale.language
+}
+
 fun getCacheProfilePicture(context: Context): File? {
     val directory = File(context.filesDir, INTERNALSTORAGEPICTUREFOLDER)
     val file = File(directory, "$PROFILE_PICTURE.jpg") // Look for the file in the specified directory
@@ -73,4 +80,9 @@ fun getCacheProfilePicture(context: Context): File? {
 
 fun File.toUri(): Uri {
     return Uri.fromFile(this)
+}
+
+fun Int.toArabicNumerals(): String {
+    val arabicDigits = listOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
+    return this.toString().map { arabicDigits[it.digitToInt()] }.joinToString("")
 }

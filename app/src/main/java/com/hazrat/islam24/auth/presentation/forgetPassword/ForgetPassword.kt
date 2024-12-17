@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -25,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -125,6 +129,7 @@ fun ForgetPassword(
     },
         topBar = {
             TopAppBar(
+                modifier = Modifier.padding(top = dimens.size30),
                 title = {
                     when (forgetPasswordState.currentStep) {
                         0 -> Text(text = "Forget Password")
@@ -142,7 +147,8 @@ fun ForgetPassword(
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
             )
         }
     ) { paddingValues ->
@@ -369,7 +375,7 @@ fun ForgetPassword(
                                 )
                             },
                             enabled = forgetPasswordState.isPasswordValid,
-                            shape = RoundedCornerShape(dimens.size10)
+                            shape = RoundedCornerShape(dimens.size10),
                         ) {
                             Text("Submit")
                         }

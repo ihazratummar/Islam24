@@ -33,4 +33,7 @@ object Constants {
     /**Profile and Settings Constants */
     const val INTERNALSTORAGEPICTUREFOLDER = "profile_picture"
     const val PROFILE_PICTURE = "profile_picture"
+
+    /** Quran Api Base  Url  */
+    const val QURAN_AR_BASE_URL = "https://raw.githubusercontent.com/ihazratummar/AlQuran/refs/heads/main/"
 }

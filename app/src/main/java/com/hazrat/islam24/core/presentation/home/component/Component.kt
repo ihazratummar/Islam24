@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.domain.model.ui_text_model.benefitsOfRecitingDataList
 import com.hazrat.islam24.core.presentation.common.LocationName
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.ui.theme.Hidaya
@@ -86,7 +87,7 @@ fun TimeLocationCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(dimens.size5)
-            .height(dimens.size200)
+            .height(dimens.size250)
             .clickable(
                 onClick = { navigateToPrayerTime() },
                 onClickLabel = stringResource(id = R.string.prayertimesandlocation)
@@ -129,7 +130,7 @@ fun TimeLocationCard(
 
                     Text(
                         text = stringResource(R.string.view_salat_times),
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -243,6 +244,53 @@ fun RamadanCard() {
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontFamily = Hidaya
             )
+        }
+    }
+}
+
+@Composable
+fun BenefitsOfRecitingWidget(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimens.size20),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.size20)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(stringResource(R.string.benefits_of_reciting_the_quran))
+                Text(
+                    text = "Details",
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Normal
+                    ),
+                    modifier = Modifier.clickable(onClick = {onClick()})
+                )
+            }
+            Spacer(modifier = Modifier.height(dimens.size30))
+
+            benefitsOfRecitingDataList.take(5).forEach {
+                Text(
+                    text = "${it.number}. ${stringResource(it.title)}",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Normal
+                    ),
+                    modifier = Modifier.padding(horizontal = dimens.size10, vertical = dimens.size5)
+                )
+            }
         }
     }
 }

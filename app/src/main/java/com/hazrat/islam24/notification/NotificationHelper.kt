@@ -3,6 +3,8 @@ package com.hazrat.islam24.notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Build
 import com.hazrat.islam24.notification.NotificationConts.ASR_CHANNEL_ID
 import com.hazrat.islam24.notification.NotificationConts.ASR_CHANNEL_NAME
@@ -24,6 +26,10 @@ import javax.inject.Inject
 class NotificationHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    val soundUri = Uri.parse("android.resource://${context.packageName}/raw/azan1.mp3")
+    val attributes = AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+        .build()
     fun notificationChannel() {
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val fajrChannel = NotificationChannel(

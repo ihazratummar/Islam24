@@ -1,6 +1,10 @@
 package com.hazrat.islam24.core.presentation.athkar
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,46 +25,37 @@ import androidx.compose.ui.res.stringResource
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.AthkarDataEntity
 import com.hazrat.islam24.core.presentation.athkar.components.AdhkarCard
+import com.hazrat.islam24.core.presentation.common.BasicTopBar
+import com.hazrat.islam24.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AthkarScreen(
+    modifier: Modifier = Modifier,
     athkar: List<AthkarDataEntity>,
-    onBackClick:()-> Unit
+    onBackClick: () -> Unit
 ) {
 
-    Scaffold(modifier = Modifier.statusBarsPadding(),
-        topBar = {
-            TopAppBar(title = {
-                Text(
-                    text = stringResource(R.string.athkar),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }, navigationIcon = {
-                IconButton(onClick = {
-                    onBackClick()
-                }) {
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.backicon),
-                        contentDescription = "Back"
-                    )
-                }
-            },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    Color.Transparent
-                )
-            )
-        }
-    ) { paddingvalues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingvalues)
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            items(athkar) { athkar ->
-                AdhkarCard(adhkars = athkar)
+            Spacer(Modifier.height(dimens.size40))
+            BasicTopBar(
+                topBarTitle = stringResource(R.string.athkar),
+                onBackClick = { onBackClick.invoke() }
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                items(athkar) { athkar ->
+                    AdhkarCard(adhkars = athkar)
+                }
             }
         }
     }
+
 }

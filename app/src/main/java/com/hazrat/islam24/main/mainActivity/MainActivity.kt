@@ -9,11 +9,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.view.WindowCompat
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
+import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.notification.NotificationHelper
@@ -64,7 +68,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var permissionsManager: PermissionsManager
 
     private val appSettingViewModel by viewModels<AppSettingViewModel>()
-    private val mainViewModel by viewModels<MainViewModel>()
+    private val quranViewModel by viewModels<QuranViewModel>()
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -100,7 +104,8 @@ class MainActivity : ComponentActivity() {
                 NavGraph(
                     appSettingState = appSettingState,
                     appSettingEvent = appSettingViewModel::onAppSettingEvent,
-                    zakatViewModel = zakatViewModel
+                    zakatViewModel = zakatViewModel,
+                    quranViewModel = quranViewModel
                 )
                 Log.d("MainActivityNetworkStatus", "$networkStatus")
             }

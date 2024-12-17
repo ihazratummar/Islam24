@@ -1,6 +1,10 @@
 package com.hazrat.islam24.core.presentation.prayertime.notification.screen
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,9 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.hazrat.islam24.R
+import com.hazrat.islam24.core.presentation.common.BasicTopBar
 import com.hazrat.islam24.core.presentation.prayertime.component.ToggleNotification
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
+import com.hazrat.islam24.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -30,35 +36,28 @@ fun IshaNotification(
     onBackClick: () -> Unit,
     notificationState: NotificationState
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.isha_notification),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onBackClick()
-                        notificationEvent(NotificationEvent.RefreshNotificationState)
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.backicon),
-                            contentDescription = "BackClick"
-                        )
-                    }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Spacer(Modifier.height(dimens.size30))
+            BasicTopBar(
+                topBarTitle = stringResource(R.string.isha_notification),
+                onBackClick = {
+                    onBackClick.invoke()
+                    notificationEvent(NotificationEvent.RefreshNotificationState)
                 }
             )
+
+            ToggleNotification(
+                modifier = Modifier,
+                isCheck = notificationState.isIshaNotification,
+                notificationEvent = { notificationEvent(NotificationEvent.ToggleIshaNotification) },
+                notificationName = R.string.isha_notification
+            )
         }
-    ) { paddingValues ->
-        ToggleNotification(
-            modifier = Modifier.padding(paddingValues),
-            isCheck = notificationState.isIshaNotification,
-            notificationEvent = { notificationEvent(NotificationEvent.ToggleIshaNotification) },
-            notificationName = R.string.dhuhr_notification
-        )
     }
 }
