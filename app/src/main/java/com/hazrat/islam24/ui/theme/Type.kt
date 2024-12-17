@@ -23,15 +23,15 @@ val AlQalam = FontFamily(
     )
 )
 
-val Arabic = FontFamily(
+val Uthmani = FontFamily(
     fonts = listOf(
-        Font(R.font.arabicislamic)
+        Font(R.font.uthmanic_hafs)
     )
 )
 
-val Indopak = FontFamily(
+val IndoPak = FontFamily(
     fonts = listOf(
-        Font(R.font.uthmanic)
+        Font(R.font.indopak)
     )
 )
 
@@ -42,13 +42,32 @@ val Hidaya = FontFamily(
 )
 
 
+
+val Lafadz  = FontFamily(
+    fonts = listOf(
+        Font(R.font.lafadz)
+    )
+)
+val SurahFont  = FontFamily(
+    fonts = listOf(
+        Font(R.font.surahfont)
+    )
+)
+
+val Kitab  = FontFamily(
+    fonts = listOf(
+        Font(R.font.kitab)
+    )
+)
+
+
 // Set of Material typography styles to start with
 val CompactTypography = Typography(
     displayLarge = TextStyle(
         fontSize = 28.sp,
         fontWeight = FontWeight.Normal,
         fontFamily = Poppins,
-        lineHeight = 42.sp
+        lineHeight = 45.sp
     ),
     displayMedium = TextStyle(
         fontSize = 24.sp,
@@ -142,7 +161,7 @@ val CompactMediumTypography = Typography(
         fontSize = 32.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 48.sp
+        lineHeight = 52.sp
     ),
     displayMedium = TextStyle(
         fontSize = 30.sp,
@@ -236,7 +255,7 @@ val CompactSmallTypography = Typography(
         fontSize = 26.sp,
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        lineHeight = 40.sp
+        lineHeight = 43.sp
     ),
     displayMedium = TextStyle(
         fontSize = 24.sp,

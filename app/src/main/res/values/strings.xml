@@ -131,5 +131,11 @@
     <string name="clearer_understanding">Clearer Understanding</string>
     <string name="clearer_understanding_description">Tajweed helps learners grasp the meaning behind each word in the Quran. By following proper pronunciation guidelines, readers can fully comprehend the message conveyed by Allah (SWT) in His book.</string>
     <string name="benefits_of_reciting_the_quran">Benefits of Reciting the Quran</string>
+    <string name="last_read">Last Read</string>
+    <string name="juz">Juz</string>
+    <string name="ayah">Ayah</string>
+    <string name="surah">Surah</string>
+    <string name="favorite" >Favorite</string>
+    <string name="start_reading">Start Reading</string>
 
 </resources>

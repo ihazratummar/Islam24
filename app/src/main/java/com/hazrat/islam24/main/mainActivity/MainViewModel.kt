@@ -8,6 +8,7 @@ import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.data.repository.NamesRepositoryImpl
+import com.hazrat.islam24.core.data.repository.QuranRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.AthkarRepository
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -40,7 +42,8 @@ class MainViewModel @Inject constructor(
     private val locationRepository: LocationRepository,
     private val networkRepository: NetworkRepository,
     private val athkarRepository: AthkarRepository,
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
+    private val quranRepository: QuranRepositoryImpl
 ) : ViewModel() {
 
 
@@ -63,6 +66,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             fetchDataFromDB()
             networkStatus.collect { status ->
+                Log.d("MainViewModel", "Network Status : $status")
                 if (status == ConnectivityObserver.Status.Available) {
                     fetchInitialData()
                 }
@@ -78,7 +82,7 @@ class MainViewModel @Inject constructor(
             locationNameRepository.locationName()
             locationNameRepository.getLocationDetails()
             athkarRepository.getAthkarFromDb()
-
+            quranRepository.getAllQuranData()
         }
     }
 
@@ -93,6 +97,7 @@ class MainViewModel @Inject constructor(
             locationNameRepository.getLocationName()
             athkarRepository.getAthkarFromApi()
             locationNameRepository.fetchLocationName()
+            quranRepository.downloadQuranFile()
         }
     }
 
