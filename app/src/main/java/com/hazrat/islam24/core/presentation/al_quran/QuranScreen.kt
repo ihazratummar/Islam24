@@ -94,7 +94,7 @@ fun QuranScreen(
                     .padding(horizontal = dimens.size20)
             ) {
 
-                LastRead.Card(
+                LastReadCard(
                     onLastReadClick = {
                         if (quranState.lastReadSurah != null){
                             onSurahClick(
