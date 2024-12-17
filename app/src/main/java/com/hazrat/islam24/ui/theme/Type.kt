@@ -25,13 +25,13 @@ val AlQalam = FontFamily(
 
 val Uthmani = FontFamily(
     fonts = listOf(
-        Font(R.font.uthmanic)
+        Font(R.font.uthmanic_hafs)
     )
 )
 
 val IndoPak = FontFamily(
     fonts = listOf(
-        Font(R.font.indopak2)
+        Font(R.font.indopak)
     )
 )
 

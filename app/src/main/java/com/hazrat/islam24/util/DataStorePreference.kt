@@ -36,12 +36,13 @@ class DataStorePreference @Inject constructor(
         }
     }
 
-    fun getQuranLastRead(): Pair<Int, Int>{
+    fun getQuranLastRead(): Pair<Int?, Int?> {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val surahNumber = pref.getInt(LAST_READ_SURAH, 1)
-        val ayahNumber = pref.getInt(LAST_READ_AYAH, 1)
+        val surahNumber = if (pref.contains(LAST_READ_SURAH)) pref.getInt(LAST_READ_SURAH, 0) else null
+        val ayahNumber = if (pref.contains(LAST_READ_AYAH)) pref.getInt(LAST_READ_AYAH, 0) else null
         return Pair(surahNumber, ayahNumber)
     }
+
 
     fun setLanguage( language: Languages) {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)

@@ -136,5 +136,6 @@
     <string name="ayah">Ayah</string>
     <string name="surah">Surah</string>
     <string name="favorite" >Favorite</string>
+    <string name="start_reading">Start Reading</string>
 
 </resources>

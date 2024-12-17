@@ -8,6 +8,7 @@ import com.hazrat.islam24.core.api.QuranApi
 import com.hazrat.islam24.core.domain.model.al_quran_model.FavoriteAyah
 import com.hazrat.islam24.core.domain.model.al_quran_model.FavoritesList
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.ArAyah
+import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.LocalQuranModelAr
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.LocalQuranModelArItem
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_en.LocalQuranDataEnItem
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_json_bn.LocalQuranDataItemBn
@@ -106,10 +107,7 @@ class QuranRepositoryImpl @Inject constructor(
                             Log.e(TAG, "Failed to save $fileName.")
                         }
                     } else {
-                        Log.e(
-                            TAG,
-                            "Failed to download $fileName. Response code: ${response.code()}"
-                        )
+                        Log.e(TAG, "Failed to download $fileName. Response code: ${response.code()}")
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "Error downloading $fileName: ${e.message}")
@@ -219,7 +217,7 @@ class QuranRepositoryImpl @Inject constructor(
             readQuranEnFile() ?: flow { emit(emptyList()) },
             readQuranBnFile(),
             readQuranTransliterationFile() ?: flow { emit(emptyList()) },
-            readFavorite()
+            readFavorite(),
         ) { ar, en, bn, transliteration, favorite ->
             _quranState.value = _quranState.value.copy(
                 isLoading = false,

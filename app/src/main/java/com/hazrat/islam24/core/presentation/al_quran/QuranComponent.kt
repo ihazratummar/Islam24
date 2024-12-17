@@ -115,7 +115,7 @@ fun TabRowComponent(
 fun LastReadCard(
     modifier: Modifier = Modifier,
     onLastReadClick: () -> Unit,
-    lastReadSurahName: String,
+    lastReadSurahName: String?,
     lastReadAyah: Int
 
 ) {
@@ -164,8 +164,10 @@ fun LastReadCard(
                     .align(Alignment.BottomStart)
                     .padding(bottom = dimens.size10, start = dimens.size20)
             ) {
-                Text(lastReadSurahName)
-                Text("${stringResource(R.string.ayah)} ${lastReadAyah + 1}" )
+                Text(lastReadSurahName?: stringResource(R.string.start_reading))
+                if (lastReadSurahName != null){
+                    Text("${stringResource(R.string.ayah)} ${lastReadAyah.plus(1)}" )
+                }
             }
             Image(
                 painter = painterResource(R.drawable.quran_image),

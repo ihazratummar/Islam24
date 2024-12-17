@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.ArAyah
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_transliteration.TransliterationVerse
+import com.hazrat.islam24.ui.theme.IndoPak
 import com.hazrat.islam24.ui.theme.Kitab
 import com.hazrat.islam24.ui.theme.Uthmani
 import com.hazrat.islam24.ui.theme.dimens
@@ -99,6 +100,8 @@ fun SurahScreen(
     val quranBn = quranState.quranBnData?.get(surahNumber - 1) ?: return
 
 
+
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = rememberTopAppBarState()
     )
@@ -121,7 +124,7 @@ fun SurahScreen(
     }
 
     LaunchedEffect(Unit) {
-        if (quranState.lastReadSurah == surahNumber) {
+        if (quranState.lastReadSurah == surahNumber && quranState.lastReadAyah != null ) {
             listState.scrollToItem(quranState.lastReadAyah)
         } else {
             listState.scrollToItem(0)
@@ -193,7 +196,7 @@ fun SurahScreen(
                     } else {
                         ayah.text
                     },
-                    transliterationVerse = quranTransliteration.verses[quran.numberInSurah - 1],
+                    transliterationVerse = quranTransliteration.verses[quran.numberInSurah - 1] ,
                     onFavoriteClick = {
                         event(QuranEvent.SaveFavorite(quranAr, ayah))
                     },

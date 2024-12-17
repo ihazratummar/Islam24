@@ -8,14 +8,15 @@ import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_translite
 import com.hazrat.islam24.core.domain.model.al_quran_model.meta_data_juz.QuranMetaDataJuz
 
 data class QuranState(
-    val lastReadSurah: Int = 0,
-    val lastReadAyah: Int = 0,
+    val lastReadSurah: Int? = null,
+    val lastReadAyah: Int? = null,
     val lastReadSurahName: String? = null,
     val arQuranData: List<LocalQuranModelArItem>? = null,
     val quranTransliterationData: List<LocalQuranTransliterationItem>? = null,
     val quranEnData: List<LocalQuranDataEnItem>? = null,
     val quranBnData: List<LocalQuranDataItemBn>? = null,
     val isLoading: Boolean = false,
+    val hasError: Boolean = false,
     val needsRefresh: Boolean = true,
     val juzData: QuranMetaDataJuz? = null,
     val favoritesList: FavoritesList? = null,

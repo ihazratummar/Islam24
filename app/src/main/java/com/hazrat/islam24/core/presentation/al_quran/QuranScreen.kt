@@ -86,27 +86,28 @@ fun QuranScreen(
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .padding(horizontal = dimens.size20)
-        ) {
-            // Static card content
-            LastReadCard(
-                onLastReadClick = {
-                    onSurahClick(
-                        quranState.lastReadSurah,
-                        quranState.lastReadAyah,
-                        true
-                    )
-                },
-                lastReadSurahName = quranState.lastReadSurahName ?: "Surah Name",
-                lastReadAyah = quranState.lastReadAyah
-            )
+        if (quranState.arQuranData != null && quranState.quranEnData != null) {
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+                    .padding(horizontal = dimens.size20)
+            ) {
 
-            // Tabs and content
-            if (quranState.arQuranData != null) {
+                LastRead.Card(
+                    onLastReadClick = {
+                        if (quranState.lastReadSurah != null){
+                            onSurahClick(
+                                quranState.lastReadSurah,
+                                quranState.lastReadAyah,
+                                true
+                            )
+                        }
+                    },
+                    lastReadSurahName = quranState.lastReadSurahName ,
+                    lastReadAyah = quranState.lastReadAyah?: 0
+                )
+                // Static card content
                 val quranMetaDataJuz = quranState.juzData ?: return@Scaffold
                 TabRowComponent(
                     modifier = Modifier.weight(1f),
@@ -117,21 +118,24 @@ fun QuranScreen(
                                     SurahCard(
                                         isLastReadSurah = quranState.lastReadSurah == surah.number,
                                         surahNumber = surah.number,
-                                        surahName = when(systemLanguage){
-                                            "bn" -> quranBn?.get(surah.number - 1)?.transliteration ?: ""
+                                        surahName = when (systemLanguage) {
+                                            "bn" -> quranBn?.get(surah.number - 1)?.transliteration
+                                                ?: ""
+
                                             else -> surah.englishName
-                                        } ,
+                                        },
                                         surahVersesCount = surah.ayahs.size,
-                                        type = when(systemLanguage){
+                                        type = when (systemLanguage) {
                                             "bn" -> {
-                                                when(surah.revelationType){
+                                                when (surah.revelationType) {
                                                     "Meccan" -> "মাক্কি"
                                                     "Medinan" -> "মদীনা"
                                                     else -> ""
                                                 }
                                             }
-                                            else ->surah.revelationType
-                                        } ,
+
+                                            else -> surah.revelationType
+                                        },
                                         onSurahClick = { onSurahClick(surah.number, null, true) },
                                         surahNameTranslation = when (systemLanguage) {
                                             "bn" -> quranBn?.get(surah.number - 1)?.translation
@@ -178,10 +182,10 @@ fun QuranScreen(
                                                 it.ayahNumber - 1
                                             )?.translation ?: ""
                                         }
-                                        val surahAyahText = when(systemLanguage){
+                                        val surahAyahText = when (systemLanguage) {
                                             "bn" -> "${quranBn?.get(it.surahNumber - 1)?.transliteration}"
                                             else -> "${quranState.arQuranData[it.surahNumber - 1].englishName} "
-                                        } +  " - ${stringResource(R.string.ayah)}: ${it.ayahNumber}"
+                                        } + " - ${stringResource(R.string.ayah)}: ${it.ayahNumber}"
 
                                         FavoriteAyahCard(
                                             onClick = {
