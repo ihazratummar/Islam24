@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.hazrat.islam24.core.data.database.PrayerDatabase
-import com.hazrat.islam24.util.DataStorePreference
-import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.islam24.util.datastore.DataStorePreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.concurrent.thread
@@ -29,6 +29,9 @@ class BootReceiver : BroadcastReceiver() {
     lateinit var dataStorePreference: DataStorePreference
 
     override fun onReceive(context: Context, intent: Intent?) {
+
+
+
         when (intent?.action) {
             Intent.ACTION_BOOT_COMPLETED -> {
                 Log.d("BootReceiver", "BOOT_COMPLETED action received")
@@ -71,7 +74,7 @@ class BootReceiver : BroadcastReceiver() {
     private fun fetchFajrPrayerTime(callback: (Long) -> Unit) {
         thread {
             val prayerTime =
-                prayerTimeDatabase.prayerTimeDao().getFajrTimeForTheDay(getCurrentDay())
+                prayerTimeDatabase.prayerTimeDao().getFajrTimeForTheDay(getCurrentDate())
             callback(prayerTime)
         }
     }
@@ -79,14 +82,14 @@ class BootReceiver : BroadcastReceiver() {
     private fun fetchDhuhrPrayerTime(callback: (Long) -> Unit) {
         thread {
             val prayerTime =
-                prayerTimeDatabase.prayerTimeDao().getDhuhrTimeForTheDay(getCurrentDay())
+                prayerTimeDatabase.prayerTimeDao().getDhuhrTimeForTheDay(getCurrentDate())
             callback(prayerTime)
         }
     }
 
     private fun fetchAsrPrayerTime(callback: (Long) -> Unit) {
         thread {
-            val prayerTime = prayerTimeDatabase.prayerTimeDao().getAsrTimeForTheDay(getCurrentDay())
+            val prayerTime = prayerTimeDatabase.prayerTimeDao().getAsrTimeForTheDay(getCurrentDate())
             callback(prayerTime)
         }
     }
@@ -94,7 +97,7 @@ class BootReceiver : BroadcastReceiver() {
     private fun fetchMaghribPrayerTime(callback: (Long) -> Unit) {
         thread {
             val prayerTime = prayerTimeDatabase.prayerTimeDao().getMaghribTimeForTheDay(
-                getCurrentDay()
+                getCurrentDate()
             )
             callback(prayerTime)
         }
@@ -103,7 +106,7 @@ class BootReceiver : BroadcastReceiver() {
     private fun fetchIshaPrayerTime(callback: (Long) -> Unit) {
         thread {
             val prayerTime =
-                prayerTimeDatabase.prayerTimeDao().getIshaTimeForTheDay(getCurrentDay())
+                prayerTimeDatabase.prayerTimeDao().getIshaTimeForTheDay(getCurrentDate())
             callback(prayerTime)
         }
     }

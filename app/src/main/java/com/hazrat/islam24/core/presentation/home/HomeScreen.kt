@@ -26,6 +26,7 @@ import com.hazrat.islam24.core.presentation.home.component.TimeLocationCard
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingWidget
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
 
 
 @Composable
@@ -52,6 +53,7 @@ fun HomeScreen(
                 ) {
                     Spacer(modifier = Modifier.height(dimens.size80))
                     if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
+
                         TimeLocationCard(
                             prayerTimes,
                             navigateToPrayerTime,

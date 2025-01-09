@@ -150,7 +150,8 @@ fun LastReadCard(
             Row(
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .padding(top = dimens.size10, start = dimens.size20)
+                    .padding(top = dimens.size10, start = dimens.size20),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(R.drawable.book),
@@ -246,7 +247,7 @@ fun SurahCard(
                     )
                     Text(
                         text = surahNumber.toString(),
-                        style = MaterialTheme.typography.labelSmall.copy(
+                        style = MaterialTheme.typography.labelMedium.copy(
                             color = MaterialTheme.colorScheme.onBackground,
                         ),
                         modifier = Modifier.align(Alignment.Center)
@@ -254,7 +255,7 @@ fun SurahCard(
                 }
                 Text(
                     text = "${stringResource(R.string.ayah)} $surahVersesCount",
-                    style = MaterialTheme.typography.labelSmall.copy(
+                    style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Thin
                     )
                 )
@@ -269,14 +270,14 @@ fun SurahCard(
             ) {
                 Text(
                     surahName,
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Black,
                     )
                 )
                 Text(
                     text = surahNameTranslation,
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Thin
                     )
@@ -284,7 +285,8 @@ fun SurahCard(
                 Text(
                     type.uppercase(),
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Thin
                     )
                 )
             }
@@ -327,7 +329,7 @@ fun JuzCard(
     ) {
         Text(
             text = "${stringResource(R.string.juz)} ${ index + 1}",
-            style = MaterialTheme.typography.titleLarge.copy(
+            style = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.Normal
             ),
             modifier = Modifier.padding(dimens.size5)

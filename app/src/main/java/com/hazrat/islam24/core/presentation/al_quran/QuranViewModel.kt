@@ -2,7 +2,10 @@ package com.hazrat.islam24.core.presentation.al_quran
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
+import com.hazrat.islam24.core.domain.repository.location.LocationRepository
+import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.getSystemLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -17,14 +20,30 @@ import javax.inject.Inject
 @HiltViewModel
 class QuranViewModel @Inject constructor(
     private val quranRepository: QuranRepository,
+    private val networkRepository: NetworkRepository,
 ) : ViewModel() {
 
     val quranState: StateFlow<QuranState> = quranRepository.quranState
-
+    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
+        networkRepository.networkStatus
     init {
+        observeNetworkStatus()
+        observeQuranFromDatabase()
+    }
+
+    private fun observeQuranFromDatabase() {
         viewModelScope.launch {
             quranRepository.getAllQuranData()
+        }
+    }
 
+    private fun observeNetworkStatus() {
+        viewModelScope.launch {
+            networkStatus.collect { status ->
+                if (status == ConnectivityObserver.Status.Available) {
+                    quranRepository.downloadQuranFile()
+                }
+            }
         }
     }
 

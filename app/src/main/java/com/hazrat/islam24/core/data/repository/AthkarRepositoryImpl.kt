@@ -1,6 +1,6 @@
 package com.hazrat.islam24.core.data.repository
 
-import com.hazrat.islam24.core.api.AthkarApiCall
+import com.hazrat.islam24.core.remote.api.AthkarApiCall
 import com.hazrat.islam24.core.data.dao.AthkarDao
 import com.hazrat.islam24.core.data.entity.AthkarDataEntity
 import com.hazrat.islam24.core.domain.model.athkar.AthkarApiModel

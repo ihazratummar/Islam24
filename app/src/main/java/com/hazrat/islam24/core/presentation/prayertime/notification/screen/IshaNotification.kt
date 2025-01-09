@@ -1,5 +1,6 @@
 package com.hazrat.islam24.core.presentation.prayertime.notification.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,10 +20,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.presentation.common.BasicTopBar
+import com.hazrat.islam24.core.presentation.prayertime.component.AzanList
 import com.hazrat.islam24.core.presentation.prayertime.component.ToggleNotification
+import com.hazrat.islam24.core.presentation.prayertime.component.listOfAzan
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.datastore.NotificationType
+import com.hazrat.islam24.util.datastore.PrayerName
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -38,7 +43,7 @@ fun IshaNotification(
 ) {
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -58,6 +63,29 @@ fun IshaNotification(
                 notificationEvent = { notificationEvent(NotificationEvent.ToggleIshaNotification) },
                 notificationName = R.string.isha_notification
             )
+
+            AnimatedVisibility(notificationState.isIshaNotification) {
+                AzanList(
+                    onAzanPlayClick = {index, item ->
+                        if (!notificationState.isAzanPlaying[index]){
+                            notificationEvent(NotificationEvent.OnAzanPlayClick(item, index))
+                        }else{
+                            notificationEvent(NotificationEvent.StopAzan)
+                        }
+                    },
+                    isAzanPlaying = notificationState.isAzanPlaying,
+                    onAzanClick = {
+                        notificationEvent(NotificationEvent.OnIshaAzanClick(it))
+                    },
+                    listOfAzan = listOfAzan,
+                    onSilentNotificationClick = {notificationEvent(NotificationEvent.OnSilentNotificationClick(PrayerName.ISHA, NotificationType.SILENT))},
+                    onDefaultNotificationClick = { notificationEvent(NotificationEvent.OnDefaultNotificationClick(PrayerName.ISHA, NotificationType.DEFAULT))},
+                    selectedOption = notificationState.selectedIshaAzan,
+                    onOptionSelected = {
+                        notificationEvent(NotificationEvent.SelectIshaAzanOption(it))
+                    }
+                )
+            }
         }
     }
 }

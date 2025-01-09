@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.domain.model.zakat.NisabEntity
 import com.hazrat.islam24.core.domain.model.zakat.ZakatEntity
 import com.hazrat.islam24.core.domain.repository.ZakatRepository
-import com.hazrat.islam24.util.DataStorePreference
+import com.hazrat.islam24.util.datastore.DataStorePreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

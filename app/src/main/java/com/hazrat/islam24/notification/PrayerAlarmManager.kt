@@ -40,7 +40,6 @@ class PrayerAlarmManager @Inject constructor(
 ) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-
     fun setFajrPrayerAlarm(prayerTime: Long) {
         setAlarm(
             prayerTime = prayerTime,

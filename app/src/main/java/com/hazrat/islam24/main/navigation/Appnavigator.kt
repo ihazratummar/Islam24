@@ -43,12 +43,13 @@ import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.al_quran.SurahScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
-import com.hazrat.islam24.core.presentation.calendar.GregorianCalendarScreen
 import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
+import com.hazrat.islam24.core.presentation.calendar.GregorianCalendarScreen
 import com.hazrat.islam24.core.presentation.home.HomeScreen
 import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesViewmodel
+import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
@@ -68,7 +69,8 @@ fun AppNavigator(
     appSettingState: AppSettingState,
     appSettingEvent: (AppSettingEvent) -> Unit,
     zakatViewModel: ZakatViewModel,
-    quranViewModel: QuranViewModel
+    quranViewModel: QuranViewModel,
+    prayerTimeViewModel: PrayerTimeViewModel,
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -86,9 +88,9 @@ fun AppNavigator(
             exitTransition = { ExitTransition.None }
         ) {
             composable<MainRoute.HomeScreen> {
-                val viewModel: MainViewModel = hiltViewModel()
-                val prayerTimes by viewModel.prayerTimes.collectAsStateWithLifecycle()
-                val locationName by viewModel.locationName.collectAsState()
+                val mainViewModel : MainViewModel = hiltViewModel()
+                val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
+                val locationName by mainViewModel.locationName.collectAsState()
                 HomeScreen(
                     navigateToPrayerTime = {
                         navController.navigate(PrayerTimeScreen) {
@@ -156,7 +158,7 @@ fun AppNavigator(
                 )
             }
 
-            prayerNav(navController)
+            prayerNav(navController,prayerTimeViewModel)
             composable<MainRoute.QiblaDirectionScreen> {
                 val viewModel: QiblaViewModel = hiltViewModel()
                 val locationName by viewModel.locationName.collectAsState()
@@ -173,7 +175,7 @@ fun AppNavigator(
             }
             composable<MainRoute.NamesOfAllahScreen> {
                 val viewModel: NamesViewmodel = hiltViewModel()
-                val names by viewModel.names.collectAsStateWithLifecycle()
+                val names by viewModel.names.collectAsState()
                 NamesOfAllahScreen(
                     onBackClick = {
                         navController.popBackStack()
@@ -242,7 +244,7 @@ private fun BottomBar(navController: NavHostController) {
     if (isBottomBarVisible) {
         NavigationBar(
             containerColor = Color.Transparent,
-            tonalElevation = dimens.size10
+            tonalElevation = dimens.size5
         ) {
             bottomNavigationItem.forEach { screen ->
                 val isSelected =
@@ -266,7 +268,7 @@ private fun BottomBar(navController: NavHostController) {
                         )
                     },
                     label = { Text(text = screen.name) },
-                    alwaysShowLabel = false,
+                    alwaysShowLabel = true,
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         selectedTextColor = MaterialTheme.colorScheme.primary,

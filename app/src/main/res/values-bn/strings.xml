@@ -6,7 +6,7 @@
     <string name="calendar">ক্যালেন্ডার</string>
     <string name="athkar">জিকির</string>
     <string name="next_prayer" translatable="true">পরবর্তী %1$s</string>
-    <string name="prayer_times">নামাজের সময় নির্ধারণের পদ্ধতি </string>
+    <string name="prayer_times">নামাজের সময়</string>
     <string name="fajr">ফজর</string>
     <string name="sunrise">সূর্যোদয়</string>
     <string name="dhuhr">যোহর</string>
