@@ -31,19 +31,29 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.text.withStyle
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.model.ui_text_model.benefitsOfRecitingDataList
+import com.hazrat.islam24.core.presentation.al_quran.QuranState
 import com.hazrat.islam24.core.presentation.common.LocationName
+import com.hazrat.islam24.core.presentation.home.HomeState
 import com.hazrat.islam24.ui.theme.Hidaya
+import com.hazrat.islam24.ui.theme.Kitab
 import com.hazrat.islam24.ui.theme.Poppins
+import com.hazrat.islam24.ui.theme.Uthmani
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.islam24.util.getSystemLanguage
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -302,6 +312,103 @@ fun BenefitsOfRecitingWidget(
                     modifier = Modifier.padding(horizontal = dimens.size10, vertical = dimens.size5)
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun DailyQuranAyat(
+    modifier: Modifier = Modifier,
+    quranState: QuranState,
+    homeState: HomeState,
+    onClick: (Int, Int) -> Unit
+) {
+    val systemLanguage = getSystemLanguage()
+    val arquran = quranState.arQuranData
+    val enQuran = quranState.quranEnData
+    val bnQuran = quranState.quranBnData
+
+    val totalAyat = 6236
+    val randomAyah = (1..totalAyat).random()
+
+    val allArAyah = arquran?.flatMap { it.ayahs } ?: emptyList()
+    val arAyah = allArAyah.find { it.number == homeState.randomAyatNumber }
+    val surah = arquran?.find { surah -> surah.ayahs.any { it.number == homeState.randomAyatNumber } }
+
+    val arNumber = arAyah?.numberInSurah?.let {
+        NumberFormat.getInstance(Locale.forLanguageTag("ar")).format(it)
+    } ?: "N/A"
+
+    val enAllAyah = enQuran?.find { it.id == surah?.number }
+    val enAyah = enAllAyah?.verses?.find { it.id == arAyah?.numberInSurah }
+
+    val bnAllAyah = bnQuran?.find { it.id == surah?.number }
+    val bnAyah = bnAllAyah?.verses?.find { it.id == arAyah?.numberInSurah }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimens.size20),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        onClick = {
+            onClick.invoke(surah?.number ?: 1, arAyah?.numberInSurah ?: 1)
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimens.size10, vertical = dimens.size5)
+        ) {
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = dimens.size10, horizontal = dimens.size10)
+            ){
+                Text(
+                    text = "Daily Quran",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            }
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            fontFamily = Kitab
+                        )
+                    ) {
+                        append(arAyah?.text)
+                    }
+
+                    withStyle(
+                        style = SpanStyle(
+                            fontFamily = Uthmani
+                        )
+                    ) {
+                        append(" $arNumber")
+                    }
+                },
+                style = MaterialTheme.typography.titleLarge.copy(
+                    textDirection = TextDirection.Rtl
+                )
+            )
+            Spacer(Modifier.height(dimens.size10))
+
+            Text(
+                text = when(systemLanguage){
+                    "bn" -> {
+                        "${bnAyah?.translation} - ${bnAyah?.id}"
+                    }
+                    else -> {"${enAyah?.translation} - ${enAyah?.id}"}
+                },
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Spacer(Modifier.height(dimens.size30))
+            Text(text = "${surah?.number}:${enAyah?.id}")
         }
     }
 }
