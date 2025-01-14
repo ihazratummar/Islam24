@@ -35,6 +35,8 @@ interface ProfileRepository {
 
     fun refreshProfile()
 
+    fun saveProfilePictureLocally(uri: Uri)
+
     fun openRatingDialog()
     fun goToRate()
 

@@ -3,7 +3,6 @@ package com.hazrat.islam24.core.presentation.prayertime.setting
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.data.entity.PrayerCalculationEntity
@@ -14,8 +13,8 @@ import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingReposit
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.DataStorePreference
-import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.islam24.util.datastore.DataStorePreference
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -48,12 +47,13 @@ class PrayerSettingViewModel @Inject constructor(
 
     val prayerTime: StateFlow<List<PrayerTimeEntity>> = prayerTimeRepository.prayerTimes
 
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> = networkRepository.networkStatus
+    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
+        networkRepository.networkStatus
 
     init {
         getJuristicMethod()
         getCalculationMethod()
-        viewModelScope.launch (Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             prayerTimeRepository.getAllPrayerTimes()
         }
         Log.d("PrayerSettingViewModel", "Network status: ${networkStatus.value}")
@@ -67,6 +67,7 @@ class PrayerSettingViewModel @Inject constructor(
                 }
         }
     }
+
     private fun getJuristicMethod() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getJuristicMethod().distinctUntilChanged()
@@ -80,32 +81,35 @@ class PrayerSettingViewModel @Inject constructor(
         when (event) {
             is PrayerSettingEvent.CalculationChanged -> {
                 viewModelScope.launch {
-                    if (networkStatus.value == ConnectivityObserver.Status.Available){
-                        prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
+                    if (networkStatus.value == ConnectivityObserver.Status.Available) {
                         repository.insertCalculationMethod(
                             PrayerCalculationEntity(method = event.value)
                         )
+                        prayerTimeRepository.newPrayerTimesRequest()
                         reScheduleAlarm()
-                    }else{
-                        Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
 
             is PrayerSettingEvent.JuristicChanged -> {
                 viewModelScope.launch {
-                    if (networkStatus.value == ConnectivityObserver.Status.Available){
+                    if (networkStatus.value == ConnectivityObserver.Status.Available) {
                         repository.insertJuristicMethod(
                             PrayerJuristicEntity(school = event.value)
                         )
-                        prayerTimeRepository.fetchAndSavePrayerTimesForMonth()
+                        prayerTimeRepository.newPrayerTimesRequest()
                         reScheduleAlarm()
 
-                    }else{
-                        Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
+
             PrayerSettingEvent.OpenCalculationDialog -> {
                 _state.update {
                     it.copy(
@@ -125,21 +129,22 @@ class PrayerSettingViewModel @Inject constructor(
     }
 
     private fun reScheduleAlarm() {
-        val today = getCurrentDay()
+        val today = getCurrentDate()
+        val getPrayer = prayerTime.value.find { it.gregorianDate == today }!!
         if (dataStorePreference.getFajrNotification()) {
-            prayerAlarmManager.setFajrPrayerAlarm(prayerTime.value[today - 1].fajrTime)
+            prayerAlarmManager.setFajrPrayerAlarm(getPrayer.fajrTime)
         }
         if (dataStorePreference.getDhuhrNotification()) {
-            prayerAlarmManager.setDhuhrPrayerAlarm(prayerTime.value[today - 1].dhuhrTime)
+            prayerAlarmManager.setDhuhrPrayerAlarm(getPrayer.dhuhrTime)
         }
         if (dataStorePreference.getAsrNotification()) {
-            prayerAlarmManager.setAsrPrayerAlarm(prayerTime.value[today - 1].asrTime)
+            prayerAlarmManager.setAsrPrayerAlarm(getPrayer.asrTime)
         }
         if (dataStorePreference.getMaghribNotification()) {
-            prayerAlarmManager.setMaghribPrayerAlarm(prayerTime.value[today - 1].maghribTime)
+            prayerAlarmManager.setMaghribPrayerAlarm(getPrayer.maghribTime)
         }
         if (dataStorePreference.getIshaNotification()) {
-            prayerAlarmManager.setIshaPrayerAlarm(prayerTime.value[today - 1].ishaTime)
+            prayerAlarmManager.setIshaPrayerAlarm(getPrayer.ishaTime)
         }
     }
 }

@@ -22,30 +22,30 @@ val prayerMethods = listOf(
         method = 3,
         name = "Muslim World League"
     ),
-//    CalculationMethodDetails(
-//        method = 4,
-//        name = "Umm Al-Qura University, Makkah"
-//    ),
-//    CalculationMethodDetails(
-//        method = 5,
-//        name = "Egyptian General Authority of Survey"
-//    ),
-//    CalculationMethodDetails(
-//        method = 7,
-//        name = "Institute of Geophysics, University of Tehran"
-//    ),
-//    CalculationMethodDetails(
-//        method = 8,
-//        name = "Gulf Region"
-//    ),
-//    CalculationMethodDetails(
-//        method = 9,
-//        name = "Kuwait"
-//    ),
-//    CalculationMethodDetails(
-//        method = 10,
-//        name = "Qatar"
-//    ),
+    CalculationMethodDetails(
+        method = 4,
+        name = "Umm Al-Qura University, Makkah"
+    ),
+    CalculationMethodDetails(
+        method = 5,
+        name = "Egyptian General Authority of Survey"
+    ),
+    CalculationMethodDetails(
+        method = 7,
+        name = "Institute of Geophysics, University of Tehran"
+    ),
+    CalculationMethodDetails(
+        method = 8,
+        name = "Gulf Region"
+    ),
+    CalculationMethodDetails(
+        method = 9,
+        name = "Kuwait"
+    ),
+    CalculationMethodDetails(
+        method = 10,
+        name = "Qatar"
+    ),
     CalculationMethodDetails(
         method = 11,
         name = "Majlis Ugama Islam Singapura, Singapore"
@@ -56,7 +56,7 @@ val prayerMethods = listOf(
     ),
     CalculationMethodDetails(
         method = 13,
-        name = "SDiyanet İşleri Başkanlığı, Turkey"
+        name = "Diyanet İşleri Başkanlığı, Turkey"
     ),
     CalculationMethodDetails(
         method = 14,
@@ -66,9 +66,39 @@ val prayerMethods = listOf(
         method = 15,
         name = "Moonsighting Committee Worldwide"
     ),
-//    MethodDetails(
-//        method = 16,
-//        name = "Dubai"
-//    )
+    CalculationMethodDetails(
+        method = 16,
+        name = "Dubai"
+    ),
+    CalculationMethodDetails(
+        method = 17,
+        name = "Jabatan Kemajuan Islam Malaysia"
+    ),
+    CalculationMethodDetails(
+        method = 18,
+        name = "Tunisia"
+    )
+    ,
+    CalculationMethodDetails(
+        method = 19,
+        name = "Algeria"
+    ),
+    CalculationMethodDetails(
+        method = 20,
+        name = "KEMENAG - Kementerian Agama Republik Indonesia"
+    ),
+    CalculationMethodDetails(
+        method = 21,
+        name = "Morocco"
+    ),
+    CalculationMethodDetails(
+        method = 22,
+        name = "Comunidade Islamica de Lisboa"
+    ),
+    CalculationMethodDetails(
+        method = 23,
+        name = "Ministry of Awqaf, Islamic Affairs and Holy Places, Jordan"
+    )
+
 )
 

@@ -3,6 +3,8 @@ package com.hazrat.islam24.auth.presentation.signup
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +45,7 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
+import com.hazrat.islam24.core.presentation.common.BasicTopBar
 import com.hazrat.islam24.ui.theme.dimens
 
 /**
@@ -76,182 +79,176 @@ fun AuthSignupScreen(
         onEvent(SingupEvent.Refresh)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = {  },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onBackClick()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.backicon),
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            contentPadding = paddingValues,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimens.size20),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            item {
-                Spacer(modifier = Modifier.height(dimens.size30))
-                Text(
-                    text = "Sign Up",
-                    style = MaterialTheme.typography.displayLarge,
-                    fontFamily = FontFamily(Font(R.font.nunitobold))
-                )
-                Spacer(modifier = Modifier.height(dimens.size20))
-                Text(
-                    text = "First create your account",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontFamily = FontFamily(Font(R.font.nunitobold)),
-                    color = Color(0xFFA8A6A7)
-                )
-                Spacer(modifier = Modifier.height(dimens.size40))
-                CustomTextField(
-                    label = { Text(text = "Full name") },
-                    placeholder = { Text(text = "Enter your full name") },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(id = R.drawable.editcontained),
-                            contentDescription = null
-                        )
-                    },
-                    value = signUpState.name,
-                    onValueChange = {
-                        onEvent(SingupEvent.SetName(it))
-                    },
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
-                Spacer(modifier = Modifier.height(dimens.size5))
-                CustomTextField(
-                    label = { Text(text = "Email") },
-                    placeholder = { Text(text = "Enter Your Email") },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(id = R.drawable.email),
-                            contentDescription = null
-                        )
-                    },
-                    value = signUpState.email,
-                    onValueChange = {
-                        onEvent(SingupEvent.SetEmail(it))
-                    },
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                )
-                Spacer(modifier = Modifier.height(dimens.size5))
-                CustomTextField(
-                    label = { Text(text = "Password") },
-                    placeholder = { Text(text = "Enter Your Password") },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(id = R.drawable.password),
-                            contentDescription = null
-                        )
-                    },
-                    value = signUpState.password,
-                    onValueChange = {
-                        onEvent(SingupEvent.SetPassword(it))
-                    },
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next,
-                    trailingIcon = {
+            Spacer(Modifier.height(dimens.size30))
+            BasicTopBar(
+                onBackClick = { onBackClick.invoke() }
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = dimens.size20),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(dimens.size30))
+                    Text(
+                        text = "Sign Up",
+                        style = MaterialTheme.typography.displayLarge,
+                        fontFamily = FontFamily(Font(R.font.nunitobold))
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size20))
+                    Text(
+                        text = "First create your account",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontFamily = FontFamily(Font(R.font.nunitobold)),
+                        color = Color(0xFFA8A6A7)
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size40))
+                    CustomTextField(
+                        label = { Text(text = "Full name") },
+                        placeholder = { Text(text = "Enter your full name") },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(id = R.drawable.editcontained),
+                                contentDescription = null
+                            )
+                        },
+                        value = signUpState.name,
+                        onValueChange = {
+                            onEvent(SingupEvent.SetName(it))
+                        },
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size5))
+                    CustomTextField(
+                        label = { Text(text = "Email") },
+                        placeholder = { Text(text = "Enter Your Email") },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(id = R.drawable.email),
+                                contentDescription = null
+                            )
+                        },
+                        value = signUpState.email,
+                        onValueChange = {
+                            onEvent(SingupEvent.SetEmail(it))
+                        },
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size5))
+                    CustomTextField(
+                        label = { Text(text = "Password") },
+                        placeholder = { Text(text = "Enter Your Password") },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(id = R.drawable.password),
+                                contentDescription = null
+                            )
+                        },
+                        value = signUpState.password,
+                        onValueChange = {
+                            onEvent(SingupEvent.SetPassword(it))
+                        },
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next,
+                        trailingIcon = {
+                            Text(
+                                text = if (signUpState.passwordVisible) "Hide" else "Show",
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.clickable {
+                                    onEvent(SingupEvent.OnPasswordVisibilityChanged)
+                                },
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        visualTransformation = if (signUpState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size5))
+                    CustomTextField(
+                        label = { Text(text = "Confirm password") },
+                        placeholder = { Text(text = "Enter Your Password") },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(id = R.drawable.password),
+                                contentDescription = null
+                            )
+                        },
+                        value = signUpState.confirmPassword,
+                        onValueChange = {
+                            onEvent(SingupEvent.SetConfirmPassword(it))
+                        },
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done,
+                        trailingIcon = {
+                            Text(
+                                text = if (signUpState.confirmPasswordVisible) "Hide" else "Show",
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.clickable {
+                                    onEvent(SingupEvent.OnConfirmPasswordVisibilityChanged)
+                                },
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        visualTransformation = if (signUpState.confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size2))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (signUpState.confirmPassword.isNotBlank() && !signUpState.isPasswordValid) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.alert),
+                                contentDescription = "Alert",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                            Spacer(modifier = Modifier.width(dimens.size5))
+                            Text(
+                                text = "Password do not match",
+                                fontFamily = FontFamily(Font(R.font.nunitoregular)),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimens.size35))
+                    SignupButton(
+                        onEvent = onEvent,
+                        signUpState = signUpState,
+                        authState = authState
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size15))
+                    Row {
                         Text(
-                            text = if (signUpState.passwordVisible) "Hide" else "Show",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.clickable {
-                                onEvent(SingupEvent.OnPasswordVisibilityChanged)
-                            },
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    visualTransformation = if (signUpState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
-                )
-                Spacer(modifier = Modifier.height(dimens.size5))
-                CustomTextField(
-                    label = { Text(text = "Confirm password") },
-                    placeholder = { Text(text = "Enter Your Password") },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(id = R.drawable.password),
-                            contentDescription = null
-                        )
-                    },
-                    value = signUpState.confirmPassword,
-                    onValueChange = {
-                        onEvent(SingupEvent.SetConfirmPassword(it))
-                    },
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done,
-                    trailingIcon = {
-                        Text(
-                            text = if (signUpState.confirmPasswordVisible) "Hide" else "Show",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.clickable {
-                                onEvent(SingupEvent.OnConfirmPasswordVisibilityChanged)
-                            },
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    visualTransformation = if (signUpState.confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation()
-                )
-                Spacer(modifier = Modifier.height(dimens.size2))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (signUpState.confirmPassword.isNotBlank() && !signUpState.isPasswordValid) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.alert),
-                            contentDescription = "Alert",
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.width(dimens.size5))
-                        Text(
-                            text = "Password do not match",
+                            text = "Already have an account?",
                             fontFamily = FontFamily(Font(R.font.nunitoregular)),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Spacer(modifier = Modifier.width(dimens.size2))
+                        Text(
+                            text = "Sign In",
+                            fontFamily = FontFamily(Font(R.font.nunitoregular)),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            textDecoration = TextDecoration.Underline,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.clickable {
+                                navigateToLogin()
+                            }
                         )
                     }
+                    Spacer(modifier = Modifier.height(30.dp))
                 }
-                Spacer(modifier = Modifier.height(dimens.size35))
-                SignupButton(
-                    onEvent = onEvent,
-                    signUpState = signUpState,
-                    authState = authState
-                )
-                Spacer(modifier = Modifier.height(dimens.size15))
-                Row {
-                    Text(
-                        text = "Already have an account?",
-                        fontFamily = FontFamily(Font(R.font.nunitoregular)),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Spacer(modifier = Modifier.width(dimens.size2))
-                    Text(
-                        text = "Sign In",
-                        fontFamily = FontFamily(Font(R.font.nunitoregular)),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.clickable {
-                            navigateToLogin()
-                        }
-                    )
-                }
-                Spacer(modifier = Modifier.height(30.dp))
             }
         }
     }

@@ -35,8 +35,9 @@ interface PrayerTimeDao {
      * @param day The day for which prayer time is requested.
      * @return The prayer time for the specified day as a PrayerTimeEntity object, or null if not found.
      */
-    @Query("SELECT * FROM prayer_times WHERE day = :day")
-    suspend fun getPrayerTimeByDay(day: Int): PrayerTimeEntity?
+    @Query("SELECT * FROM prayer_times WHERE GregorianDate >= :currentDate ORDER BY GregorianDate ASC")
+    fun getPrayerTimesFromDate(currentDate: String): Flow<List<PrayerTimeEntity>>
+
 
     /**
      * Deletes specific prayer times from the database.
@@ -62,18 +63,18 @@ interface PrayerTimeDao {
     suspend fun updatePrayerTime(prayerTime: PrayerTimeEntity)
 
 
-    @Query("SELECT `Fajr Time` FROM prayer_times WHERE day= :day")
-    fun getFajrTimeForTheDay(day: Int) : Long
+    @Query("SELECT `Fajr Time` FROM prayer_times WHERE GregorianDate == :currentDate")
+    fun getFajrTimeForTheDay(currentDate: String) : Long
 
-    @Query("SELECT `Dhuhr Time` FROM prayer_times WHERE day= :day")
-    fun getDhuhrTimeForTheDay(day: Int) : Long
+    @Query("SELECT `Dhuhr Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
+    fun getDhuhrTimeForTheDay(currentDate: String) : Long
 
-    @Query("SELECT AsrTime FROM prayer_times WHERE day= :day")
-    fun getAsrTimeForTheDay(day: Int) : Long
+    @Query("SELECT AsrTime FROM prayer_times WHERE GregorianDate == :currentDate")
+    fun getAsrTimeForTheDay(currentDate: String) : Long
 
-    @Query("SELECT `Maghrib Time` FROM prayer_times WHERE day= :day")
-    fun getMaghribTimeForTheDay(day: Int) : Long
+    @Query("SELECT `Maghrib Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
+    fun getMaghribTimeForTheDay(currentDate: String) : Long
 
-    @Query("SELECT `Isha Time` FROM prayer_times WHERE day= :day")
-    fun getIshaTimeForTheDay(day: Int) : Long
+    @Query("SELECT `Isha Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
+    fun getIshaTimeForTheDay(currentDate: String) : Long
 }

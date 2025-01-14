@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -47,6 +48,7 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
+import com.hazrat.islam24.core.presentation.common.BasicTopBar
 import com.hazrat.islam24.ui.theme.dimens
 
 /**
@@ -85,128 +87,125 @@ fun AuthLoginScreen(
             loginEvent(LoginEvent.Login(email = state.email, password = state.password))
         }
     }
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onBackClick()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.backicon),
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .padding(horizontal = dimens.size20),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            item {
-                Spacer(modifier = Modifier.height(dimens.size60))
-                Text(
-                    text = "Sign In",
-                    fontFamily = FontFamily(Font(R.font.nunitobold)),
-                    style = MaterialTheme.typography.displayLarge
-                )
-                Spacer(modifier = Modifier.height(dimens.size20))
-                Text(
-                    text = "Enter your email and password",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontFamily = FontFamily(Font(R.font.nunitobold)),
-                    color = Color(0xFFA8A6A7)
-                )
-                Spacer(modifier = Modifier.height(dimens.size60))
-                CustomTextField(
-                    label = { Text(text = "Email") },
-                    placeholder = { Text(text = "Enter Your Email") },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(id = R.drawable.email),
-                            contentDescription = null
-                        )
-                    },
-                    value = state.email,
-                    onValueChange = { loginEvent(LoginEvent.SetEmail(it)) },
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                )
-                Spacer(modifier = Modifier.height(dimens.size5))
-                CustomTextField(
-                    label = { Text(text = "Password") },
-                    placeholder = { Text(text = "Enter Your Password") },
-                    leadingIcon = {
-                        Icon(
-                            painterResource(id = R.drawable.password),
-                            contentDescription = null
-                        )
-                    },
-                    value = state.password,
-                    onValueChange = { loginEvent(LoginEvent.SetPassword(it)) },
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done,
-                    trailingIcon = {
-                        Text(
-                            text = if (state.passwordVisible) "Hide" else "Show",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.clickable {
-                                loginEvent(LoginEvent.OnPasswordVisibilityChanged)
-                            },
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
-                )
-                Spacer(modifier = Modifier.height(dimens.size35))
+            Spacer(Modifier.height(dimens.size30))
+            BasicTopBar {
+                onBackClick.invoke()
             }
-            item {
-                LoginButton(
-                    onLoginClick = onLoginClick,
-                    state = state,
-                    authState = authState,
-                    text = "LOGIN"
-                )
-                Spacer(modifier = Modifier.height(dimens.size15))
-                Text(
-                    text = "Forgotten Password?",
-                    fontFamily = FontFamily(Font(R.font.nunitoregular)),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {
-                        navigateToForgotPassword.invoke()
-                    }
-                )
-                Spacer(modifier = Modifier.height(dimens.size30))
-                Row {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = dimens.size20),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(dimens.size60))
                     Text(
-                        text = "Don't have an account?",
-                        fontFamily = FontFamily(Font(R.font.nunitoregular)),
-                        style = MaterialTheme.typography.bodyMedium
+                        text = "Sign In",
+                        fontFamily = FontFamily(Font(R.font.nunitobold)),
+                        style = MaterialTheme.typography.displayLarge
                     )
-                    Spacer(modifier = Modifier.width(dimens.size4))
+                    Spacer(modifier = Modifier.height(dimens.size20))
                     Text(
-                        text = "Sign Up",
+                        text = "Enter your email and password",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontFamily = FontFamily(Font(R.font.nunitobold)),
+                        color = Color(0xFFA8A6A7)
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size60))
+                    CustomTextField(
+                        label = { Text(text = "Email") },
+                        placeholder = { Text(text = "Enter Your Email") },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(id = R.drawable.email),
+                                contentDescription = null
+                            )
+                        },
+                        value = state.email,
+                        onValueChange = { loginEvent(LoginEvent.SetEmail(it)) },
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size5))
+                    CustomTextField(
+                        label = { Text(text = "Password") },
+                        placeholder = { Text(text = "Enter Your Password") },
+                        leadingIcon = {
+                            Icon(
+                                painterResource(id = R.drawable.password),
+                                contentDescription = null
+                            )
+                        },
+                        value = state.password,
+                        onValueChange = { loginEvent(LoginEvent.SetPassword(it)) },
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done,
+                        trailingIcon = {
+                            Text(
+                                text = if (state.passwordVisible) "Hide" else "Show",
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.clickable {
+                                    loginEvent(LoginEvent.OnPasswordVisibilityChanged)
+                                },
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size35))
+                }
+                item {
+                    LoginButton(
+                        onLoginClick = onLoginClick,
+                        state = state,
+                        authState = authState,
+                        text = "LOGIN"
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size15))
+                    Text(
+                        text = "Forgotten Password?",
                         fontFamily = FontFamily(Font(R.font.nunitoregular)),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.clickable {
-                            navigateToSignup()
+                            navigateToForgotPassword.invoke()
                         }
                     )
+                    Spacer(modifier = Modifier.height(dimens.size30))
+                    Row {
+                        Text(
+                            text = "Don't have an account?",
+                            fontFamily = FontFamily(Font(R.font.nunitoregular)),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(modifier = Modifier.width(dimens.size4))
+                        Text(
+                            text = "Sign Up",
+                            fontFamily = FontFamily(Font(R.font.nunitoregular)),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clickable {
+                                navigateToSignup()
+                            }
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(dimens.size30))
                 }
-                Spacer(modifier = Modifier.height(dimens.size30))
             }
         }
     }
+
 }
+
 
 @Composable
 fun LoginButton(

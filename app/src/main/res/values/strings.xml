@@ -114,5 +114,28 @@
     <string name="invalid_otp">Invalid OTP</string>
     <string name="invalid_password">Invalid password</string>
     <string name="password_reset_successfully">Password reset successful</string>
-
+    <string name="the_prevalence_of_scientific_miracles">The Prevalence of Scientific Miracles</string>
+    <string name="the_prevalence_of_scientific_miracles_description">The Quran contains information about scientific concepts that were not known at the time of its revelation, such as the Theory of Relativity, the Big Bang Theory, genetics, black holes, and more. This demonstrates the compatibility between the Quran and science.</string>
+    <string name="InspirationforScientificResearch">Inspiration for Scientific Research</string>
+    <string name="InspirationforScientificResearchDescription">The Quran’s verses often encourage contemplation and exploration of the natural world, inspiring Muslims to pursue scientific knowledge and contribute to advancements in various fields.</string>
+    <string name="integration_of_faith_and_science">Integration of Faith and Science</string>
+    <string name="integration_of_faith_and_science_description">Reading the Quran can help individuals find harmony between their faith and scientific understanding, fostering a holistic worldview that  embraces both religious beliefs and scientific principles.</string>
+    <string name="stress_reduction">Stress Reduction</string>
+    <string name="stress_reduction_description">Research suggests that reciting and contemplating upon the verses of the Quran can help reduce stress levels. The rhythmic tone and soothing melodies  in its recitation have a calming effect on both mind and body, promoting relaxation and reducing anxiety.</string>
+    <string name="cognitive_enhancement">Cognitive Enhancement</string>
+    <string name="cognitive_enhancement_description">Studies show that regular Quranic reading improves cognitive function, including attention span, memory retention, and problem-solving skills. The complex linguistic structure of Arabic used in the Quran enhances brain activity, stimulating intellectual growth.</string>
+    <string name="emotional_well_being">Emotional Well-being</string>
+    <string name="emotional_well_being_description">Engaging with the words of Allah through Quranic reading stimulates positive emotions such as happiness, gratitude, and contentment. This emotional well-being is linked to improved mental health outcomes like reduced symptoms of depression and enhanced overall life satisfaction.</string>
+    <string name="enhanced_recitation">Enhanced Recitation</string>
+    <string name="enhanced_recitation_description">When reading the Quran with Tajweed, individuals learn to pronounce each letter accurately and apply correct intonation. This leads to improved recitation skills and a more melodic rendition of the verses.</string>
+    <string name="clearer_understanding">Clearer Understanding</string>
+    <string name="clearer_understanding_description">Tajweed helps learners grasp the meaning behind each word in the Quran. By following proper pronunciation guidelines, readers can fully comprehend the message conveyed by Allah (SWT) in His book.</string>
+    <string name="benefits_of_reciting_the_quran">Benefits of Reciting the Quran</string>
+    <string name="last_read">Last Read</string>
+    <string name="juz">Juz</string>
+    <string name="ayah">Ayah</string>
+    <string name="surah">Surah</string>
+    <string name="favorite" >Favorite</string>
+    <string name="start_reading">Start Reading</string>
+    <string name="accessibility_service_description" translatable="false">This service allows the app to monitor volume key presses.</string>
 </resources>

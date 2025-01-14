@@ -7,8 +7,11 @@ import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.core.data.entity.HijriCalendarEntity
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
+import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -24,6 +27,7 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val gregorianToHijriRepository: GregorianToHijriRepository,
     private val hijriCalendarRepository: HijriCalendarRepository,
+    private val networkRepository: NetworkRepository,
 ): ViewModel() {
 
 
@@ -36,11 +40,28 @@ class CalendarViewModel @Inject constructor(
     private val _hijriCalendarEntity = MutableStateFlow<List<HijriCalendarEntity>>(emptyList())
     val hijriCalendarEntity = _hijriCalendarEntity.asStateFlow()
 
+    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
+        networkRepository.networkStatus
+
     init {
+        observeNetworkStatus()
         fetchHijriDate()
         fetchHijriCalendar()
     }
 
+
+
+    private fun observeNetworkStatus() {
+        viewModelScope.launch {
+            networkStatus.collect { status ->
+                Log.d("NamesViewModel", "Network Status : $status")
+                if (status == ConnectivityObserver.Status.Available) {
+                    gregorianToHijriRepository.getGregorianToHijriDate()
+                    hijriCalendarRepository.getHijriCalendarFromApi()
+                }
+            }
+        }
+    }
 
     /**
      * calendar function from db

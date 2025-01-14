@@ -1,6 +1,11 @@
 package com.hazrat.islam24.core.presentation.prayertime.notification.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,9 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.hazrat.islam24.R
+import com.hazrat.islam24.core.presentation.common.BasicTopBar
+import com.hazrat.islam24.core.presentation.prayertime.component.AzanList
 import com.hazrat.islam24.core.presentation.prayertime.component.ToggleNotification
+import com.hazrat.islam24.core.presentation.prayertime.component.listOfAzan
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
+import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.datastore.NotificationType
+import com.hazrat.islam24.util.datastore.PrayerName
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -30,38 +41,49 @@ fun AsrNotification(
     onBackClick: () -> Unit,
     notificationState: NotificationState
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.asr_notification),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onBackClick()
-                            notificationEvent(NotificationEvent.RefreshNotificationState)
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.backicon),
-                            contentDescription = "BackClick"
-                        )
-                    }
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Spacer(Modifier.height(dimens.size30))
+            BasicTopBar(
+                topBarTitle = stringResource(R.string.asr_notification),
+                onBackClick = {
+                    onBackClick.invoke()
+                    notificationEvent(NotificationEvent.RefreshNotificationState)
                 }
             )
+            ToggleNotification(
+                modifier = Modifier,
+                isCheck = notificationState.isAsrNotification,
+                notificationEvent = { notificationEvent(NotificationEvent.ToggleAsrNotification) },
+                notificationName = R.string.asr_notification
+            )
+            AnimatedVisibility(notificationState.isAsrNotification) {
+                AzanList(
+                    onAzanPlayClick = {index, item ->
+                        if (!notificationState.isAzanPlaying[index]){
+                            notificationEvent(NotificationEvent.OnAzanPlayClick(item, index))
+                        }else{
+                            notificationEvent(NotificationEvent.StopAzan)
+                        }
+                    },
+                    isAzanPlaying = notificationState.isAzanPlaying,
+                    onAzanClick = {
+                        notificationEvent(NotificationEvent.OnAsrAzanClick(it))
+                    },
+                    listOfAzan = listOfAzan,
+                    onSilentNotificationClick = {notificationEvent(NotificationEvent.OnSilentNotificationClick(PrayerName.ASR, NotificationType.SILENT))},
+                    onDefaultNotificationClick = { notificationEvent(NotificationEvent.OnDefaultNotificationClick(PrayerName.ASR, NotificationType.DEFAULT))},
+                    selectedOption = notificationState.selectedAsrAzan,
+                    onOptionSelected = {
+                        notificationEvent(NotificationEvent.SelectAsrAzanOption(it))
+                    }
+                )
+            }
         }
-    ) { paddingValues ->
-        ToggleNotification(
-            modifier = Modifier.padding(paddingValues),
-            isCheck = notificationState.isAsrNotification,
-            notificationEvent = { notificationEvent(NotificationEvent.ToggleAsrNotification) },
-            notificationName = R.string.asr_notification
-        )
     }
 }
 

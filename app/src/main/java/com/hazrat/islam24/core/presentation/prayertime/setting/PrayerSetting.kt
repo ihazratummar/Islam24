@@ -1,24 +1,19 @@
 package com.hazrat.islam24.core.presentation.prayertime.setting
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.presentation.common.BasicTopBar
 import com.hazrat.islam24.core.presentation.prayertime.component.JuristicSelectionDialog
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerCalculationDialog
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerSettingCard
@@ -36,32 +31,15 @@ fun PrayerSetting(
     val prayerTimeEntities = prayerTimeEntity.getOrNull(0)
     val school = prayerTimeEntities?.school
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.prayer_setting),
-                        modifier = Modifier.padding(dimens.size5)
-                    )
-                },
-                navigationIcon = {
-                    Icon(imageVector = ImageVector.vectorResource(id = R.drawable.backicon),
-                        contentDescription = "Back",
-                        modifier = Modifier
-                            .clickable {
-                                onBackClick()
-                            }
-                            .padding(dimens.size5)
-                    )
-                }
-            )
-        }
-    ) {
+    Box(modifier = Modifier.fillMaxWidth()) {
         Column(
-            modifier = Modifier
-                .padding(it)
+            modifier = Modifier.fillMaxWidth()
         ) {
+            Spacer(Modifier.height(dimens.size30))
+            BasicTopBar(
+                topBarTitle = stringResource(R.string.prayer_setting),
+                onBackClick = { onBackClick.invoke() }
+            )
             HorizontalDivider(
                 thickness = dimens.size1,
                 color = MaterialTheme.colorScheme.primary
@@ -75,7 +53,6 @@ fun PrayerSetting(
                     event(PrayerSettingEvent.OpenCalculationDialog)
                 }
             )
-
             PrayerSettingCard(
                 text = stringResource(R.string.juristic_method),
                 methodID = school,
@@ -84,23 +61,23 @@ fun PrayerSetting(
                     event(PrayerSettingEvent.OpenJuristicDialog)
                 }
             )
-
+        }
+        if (state.isCalculationDialogOpen) {
+            PrayerCalculationDialog(
+                onMethodSelected = { method ->
+                    event(PrayerSettingEvent.CalculationChanged(method.method))
+                },
+                onDismiss = { event(PrayerSettingEvent.OpenCalculationDialog) }
+            )
+        }
+        if (state.isJuristicDialogOpen) {
+            JuristicSelectionDialog(
+                onJuristicSelected = { juristic ->
+                    event(PrayerSettingEvent.JuristicChanged(juristic.number))
+                },
+                onDismiss = { event(PrayerSettingEvent.OpenJuristicDialog) }
+            )
         }
     }
-    if (state.isCalculationDialogOpen) {
-        PrayerCalculationDialog(
-            onMethodSelected = { method ->
-                event(PrayerSettingEvent.CalculationChanged(method.method))
-            },
-            onDismiss = { event(PrayerSettingEvent.OpenCalculationDialog) }
-        )
-    }
-    if (state.isJuristicDialogOpen) {
-        JuristicSelectionDialog(
-            onJuristicSelected = { juristic ->
-                event(PrayerSettingEvent.JuristicChanged(juristic.number))
-            },
-            onDismiss = { event(PrayerSettingEvent.OpenJuristicDialog) }
-        )
-    }
+
 }

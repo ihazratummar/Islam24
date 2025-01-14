@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import com.hazrat.islam24.R
 import com.hazrat.islam24.main.navigation.MainRoute
@@ -118,7 +119,8 @@ private fun HomeWidgetsIcons(
         Text(
             text = stringResource(names),
             color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -188,20 +190,40 @@ fun Modifier.generalShimmerEffect(): Modifier = composed {
 sealed class HomePageNavIcons(
     val icons: Int,
     val name: Int,
-    val route:  MainRoute
+    val route: MainRoute
 ) {
     data object AsmaUlHusna :
-        HomePageNavIcons(icons = R.drawable.allah_logo, name = R.string.names, route = MainRoute.NamesOfAllahScreen)
+        HomePageNavIcons(
+            icons = R.drawable.allah_logo,
+            name = R.string.names,
+            route = MainRoute.NamesOfAllahScreen
+        )
 
     data object Calendar :
-        HomePageNavIcons(icons = R.drawable.calendar, name = R.string.calendar,  route = MainRoute.CalendarScreen)
+        HomePageNavIcons(
+            icons = R.drawable.calendaricon,
+            name = R.string.calendar,
+            route = MainRoute.CalendarScreen
+        )
 
     data object Athkar :
-        HomePageNavIcons(icons = R.drawable.athkar, name = R.string.athkar,  route = MainRoute.AthkarScreen)
+        HomePageNavIcons(
+            icons = R.drawable.athkar,
+            name = R.string.athkar,
+            route = MainRoute.AthkarScreen
+        )
 
     data object Qibla :
-        HomePageNavIcons(icons = R.drawable.qibla, name = R.string.qibla, route = MainRoute.QiblaDirectionScreen)
+        HomePageNavIcons(
+            icons = R.drawable.qibla,
+            name = R.string.qibla,
+            route = MainRoute.QiblaDirectionScreen
+        )
 
     data object Zakat :
-        HomePageNavIcons(icons = R.drawable.zakat, name = R.string.zakat, route = MainRoute.ZakatScreen)
+        HomePageNavIcons(
+            icons = R.drawable.zakat,
+            name = R.string.zakat,
+            route = MainRoute.ZakatScreen
+        )
 }

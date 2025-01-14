@@ -15,7 +15,7 @@ fun AppUtils(
     val appDimens = remember {
         appDimens
     }
-    CompositionLocalProvider(LocalAppDimens provides appDimens) {
+    CompositionLocalProvider(LocalAppDimens provides appDimens ) {
         content()
     }
 

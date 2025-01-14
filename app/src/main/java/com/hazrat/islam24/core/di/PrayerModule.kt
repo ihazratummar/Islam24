@@ -6,7 +6,6 @@ import android.content.Context
 import android.util.Log
 import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.hazrat.islam24.core.api.PrayerTimeApi
 import com.hazrat.islam24.core.data.dao.LocationDao
 import com.hazrat.islam24.core.data.dao.PrayerSettingDao
 import com.hazrat.islam24.core.data.dao.PrayerTimeDao
@@ -18,6 +17,7 @@ import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
+import com.hazrat.islam24.core.remote.api.PrayerTimeApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

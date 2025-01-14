@@ -4,19 +4,20 @@ import androidx.compose.ui.graphics.Color
 
 // Royal Green Theme Colors
  val royalGreenLight = Color(0xFF15382C) // Example of royal green
- val royalGreenDark = Color(0xFF5BF5B6) // Darker shade for dark mode
+ val royalGreenPrimary = Color(0xFF5BF5B6) // Darker shade for dark mode
+ val onPrimary = Color(0xFF061C16) // Darker shade for dark mode
 
 //light colors
-val primaryLight = royalGreenLight
-val onPrimaryLight = Color(0xFFFFFFFF)
-val primaryContainerLight = Color(0xFFA5D6A7) // Lighter green
+val primaryLight = royalGreenPrimary
+val onPrimaryLight = onPrimary
+val primaryContainerLight = Color(0xFF7AAD9D) // Lighter green
 val onPrimaryContainerLight = Color(0xFF1B5E20) // Dark green
 
 
-val secondaryLight = Color(0xFF81C784) // Soft green
+val secondaryLight = Color(0xFF90E3B4) // Soft green
 val onSecondaryLight = Color.Black
-val secondaryContainerLight = Color(0xFFC8E6C9) // Very light green
-val onSecondaryContainerLight = Color(0xFF2E7D32) // Medium green
+val secondaryContainerLight = Color(0xFF417468) // Very light green
+val onSecondaryContainerLight = Color(0xFFDBFFF0) // Medium green
 
 val backgroundLight = Color(0xFFF8FBF1)
 val onBackgroundLight = Color(0xFF000000)
@@ -25,8 +26,8 @@ val onSurfaceLight = Color(0xFF000000)
 
 
 //dark colors
-val primaryDark = royalGreenDark
-val onPrimaryDark = Color(0xFF0C382A)
+val primaryDark = royalGreenPrimary
+val onPrimaryDark =onPrimary
 val primaryContainerDark = Color(0xFF21503D)
 val onPrimaryContainerDark = Color(0xFFA5D6A7)
 
@@ -35,8 +36,8 @@ val onSecondaryDark = Color(0xFF000000)
 val secondaryContainerDark = Color(0xFF124436)
 val onSecondaryContainerDark = Color(0xFFCDE8DA)
 
-val backgroundDark = Color(0xFF0D3026)
-val onBackgroundDark = Color(0xFFE1E4DA)
+val backgroundDark = Color(0xFF071A16) /* Color(0xFF0D3026)*/
+val onBackgroundDark = Color(0xFFF9FDFB)
 val surfaceDark = Color(0xFF0D3026)
 val onSurfaceDark = Color(0xFFE1E4DA)
 
@@ -68,7 +69,7 @@ val onSurfaceDark = Color(0xFFE1E4DA)
 // Inverse colors for UI contrast
  val inverseSurfaceLight = Color(0xFF303030)
  val inverseOnSurfaceLight = Color.White
- val inversePrimaryLight = royalGreenDark
+// val inversePrimaryLight = royalGreenDark
 
  val inverseSurfaceDark = Color.White
  val inverseOnSurfaceDark = Color.Black
