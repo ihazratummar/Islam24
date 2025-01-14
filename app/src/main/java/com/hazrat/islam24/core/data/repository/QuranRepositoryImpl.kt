@@ -4,11 +4,10 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.hazrat.islam24.core.api.QuranApi
+import com.hazrat.islam24.core.remote.api.QuranApi
 import com.hazrat.islam24.core.domain.model.al_quran_model.FavoriteAyah
 import com.hazrat.islam24.core.domain.model.al_quran_model.FavoritesList
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.ArAyah
-import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.LocalQuranModelAr
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.LocalQuranModelArItem
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_en.LocalQuranDataEnItem
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_json_bn.LocalQuranDataItemBn
@@ -16,7 +15,8 @@ import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_translite
 import com.hazrat.islam24.core.domain.model.al_quran_model.meta_data_juz.parseJuzJson
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
-import com.hazrat.islam24.util.DataStorePreference
+import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
+import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.MyFileUtils
 import com.hazrat.islam24.util.checkSystemLanguage
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -364,7 +364,6 @@ class QuranRepositoryImpl @Inject constructor(
 
     companion object {
         private const val TAG = "QuranRepositoryImpl"
-        private const val PARENT_FOLDER_NAME_DOWNLOAD = "Download"
         private const val PARENT_FOLDER_NAME_APPDATA = "AppData"
         private const val QURAN_FOLDER_NAME = "AlQuran"
         private const val QURAN_AR_FILE_NAME = "quran_ar.json"

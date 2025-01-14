@@ -10,8 +10,8 @@ import com.hazrat.islam24.core.data.repository.GregorianToHijriRepositoryImpl
 import com.hazrat.islam24.core.data.repository.HijriCalendarRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
-import com.hazrat.islam24.core.api.GregorianToHijriApi
-import com.hazrat.islam24.core.api.HijriCalendarApi
+import com.hazrat.islam24.core.remote.api.GregorianToHijriApi
+import com.hazrat.islam24.core.remote.api.HijriCalendarApi
 import com.hazrat.islam24.util.Constants.HIJRI_CALENDAR_URL
 import dagger.Module
 import dagger.Provides

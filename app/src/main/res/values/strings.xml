@@ -137,5 +137,5 @@
     <string name="surah">Surah</string>
     <string name="favorite" >Favorite</string>
     <string name="start_reading">Start Reading</string>
-
+    <string name="accessibility_service_description" translatable="false">This service allows the app to monitor volume key presses.</string>
 </resources>

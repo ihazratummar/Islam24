@@ -7,6 +7,7 @@ import com.hazrat.islam24.core.domain.model.al_quran_model.FavoritesList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
+import okio.IOException
 import java.io.File
 import java.io.FileOutputStream
 
@@ -109,4 +110,31 @@ object MyFileUtils {
         }
     }
 
+    /*
+    Save Mp3 Files
+     */
+
+    fun saveMp3File(context: Context, resourceInd: Int,  parentFolderName: String, subFolderName: String, fileName: String): Boolean{
+        val inputStream  = context.resources.openRawResource(resourceInd)
+        val parentFolder = File(context.filesDir, parentFolderName)
+        if (!parentFolder.exists()) parentFolder.mkdirs()
+        val subFolder = File(parentFolder, subFolderName)
+        if (!subFolder.exists()) subFolder.mkdirs()
+        val file = File(subFolder, fileName)
+
+        return try {
+            FileOutputStream(file).use { outputStream ->
+                val buffer = ByteArray(1024)
+                var bytesRead: Int
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                }
+            }
+            inputStream.close()
+            true
+        }catch (e: IOException){
+            e.printStackTrace()
+            false
+        }
+    }
 }

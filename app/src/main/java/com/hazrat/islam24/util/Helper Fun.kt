@@ -15,17 +15,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
 import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.islam24.util.datastore.PrayerName
 import java.io.File
 import java.util.Locale
-
-fun vibrate(vibrator: Vibrator) {
-    vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
-}
-
-
-
+import kotlin.concurrent.thread
 
 fun drawableToBitmap(context: Context, drawableId: Int): Bitmap {
     val drawable: Drawable = ContextCompat.getDrawable(context, drawableId)!!
@@ -82,7 +79,16 @@ fun File.toUri(): Uri {
     return Uri.fromFile(this)
 }
 
-fun Int.toArabicNumerals(): String {
-    val arabicDigits = listOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
-    return this.toString().map { arabicDigits[it.digitToInt()] }.joinToString("")
+
+fun fetchPrayerTimeForNotification(prayerName: PrayerName, prayerDatabase: PrayerDatabase, callback: (Long) -> Unit){
+    thread {
+        val prayerTime = when (prayerName) {
+            PrayerName.FAJR -> prayerDatabase.prayerTimeDao().getFajrTimeForTheDay(getCurrentDate())
+            PrayerName.DHUHR -> prayerDatabase.prayerTimeDao().getDhuhrTimeForTheDay(getCurrentDate())
+            PrayerName.ASR -> prayerDatabase.prayerTimeDao().getAsrTimeForTheDay(getCurrentDate())
+            PrayerName.MAGHRIB -> prayerDatabase.prayerTimeDao().getMaghribTimeForTheDay(getCurrentDate())
+            PrayerName.ISHA -> prayerDatabase.prayerTimeDao().getIshaTimeForTheDay(getCurrentDate())
+        }
+        callback(prayerTime)
+    }
 }

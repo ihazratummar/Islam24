@@ -1,8 +1,7 @@
 package com.hazrat.islam24.core.data.repository
 
-import android.accounts.NetworkErrorException
 import android.util.Log
-import com.hazrat.islam24.core.api.LocationNameApi
+import com.hazrat.islam24.core.remote.api.LocationNameApi
 import com.hazrat.islam24.core.data.dao.LocationNameDao
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.LocationEntity

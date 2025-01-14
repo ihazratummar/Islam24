@@ -1,23 +1,25 @@
 package com.hazrat.islam24.core.di
 
-import com.google.gson.Gson
-import com.hazrat.islam24.core.api.AthkarApiCall
-import com.hazrat.islam24.core.api.GregorianToHijriApi
-import com.hazrat.islam24.core.api.LocationNameApi
-import com.hazrat.islam24.core.api.NamesApi
-import com.hazrat.islam24.core.api.PrayerTimeApi
-import com.hazrat.islam24.core.api.QuranApi
+import com.hazrat.islam24.core.remote.api.AthkarApiCall
+import com.hazrat.islam24.core.remote.api.GregorianToHijriApi
+import com.hazrat.islam24.core.remote.api.LocationNameApi
+import com.hazrat.islam24.core.remote.api.NamesApi
+import com.hazrat.islam24.core.remote.api.PrayerTimeApi
+import com.hazrat.islam24.core.remote.api.QuranApi
 import com.hazrat.islam24.util.Constants.ATHKAR_BASE_URL_NAME
 import com.hazrat.islam24.util.Constants.BASE_URL
 import com.hazrat.islam24.util.Constants.BASE_URL_NAME
 import com.hazrat.islam24.util.Constants.GTH_BASE_URL
 import com.hazrat.islam24.util.Constants.LOCATION_IQ_BASE_URL
 import com.hazrat.islam24.util.Constants.QURAN_AR_BASE_URL
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -47,7 +49,8 @@ object RetrofitModule {
         response
     }
 
-
+    val json = Json { ignoreUnknownKeys = true }
+    val contentType = "application/json".toMediaType()
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(logging)
         .addInterceptor(retryInterceptor)
@@ -62,7 +65,7 @@ object RetrofitModule {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
             .create(PrayerTimeApi::class.java)
     }

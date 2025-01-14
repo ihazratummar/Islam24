@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.findLocalQuranSurahNumberByAyahNumber
@@ -60,7 +62,7 @@ fun QuranScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                windowInsets = WindowInsets(top = dimens.size20, bottom = dimens.size5),
+                windowInsets = WindowInsets(top = dimens.size20),
                 title = {
                     Row(
                         modifier = Modifier.padding(vertical = dimens.size10),
@@ -68,7 +70,7 @@ fun QuranScreen(
                     ) {
                         Text(
                             text = "Al-Quran",
-                            style = MaterialTheme.typography.headlineLarge.copy(
+                            style = MaterialTheme.typography.headlineSmall.copy(
                                 fontWeight = FontWeight.ExtraBold
                             )
                         )
@@ -84,7 +86,8 @@ fun QuranScreen(
                     containerColor = MaterialTheme.colorScheme.background
                 )
             )
-        }
+        },
+        contentWindowInsets = WindowInsets(bottom = 0.dp),
     ) { paddingValues ->
         if (quranState.arQuranData != null && quranState.quranEnData != null) {
             Column(

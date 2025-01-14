@@ -149,11 +149,6 @@ private fun DrawScope.moonAnimation(
         radius = animatedRadius * 1.4f,
         center = Offset(width / 2, height / 2)
     )
-//    drawCircle(
-//        color = shadowColor,
-//        radius = animatedRadius,
-//        center = Offset(width/2, height/2 )
-//    )
     drawCircle(
         brush = Brush.radialGradient(
             listOf(

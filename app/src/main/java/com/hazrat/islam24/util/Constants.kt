@@ -36,4 +36,21 @@ object Constants {
 
     /** Quran Api Base  Url  */
     const val QURAN_AR_BASE_URL = "https://raw.githubusercontent.com/ihazratummar/AlQuran/refs/heads/main/"
+
+
+
+    /*
+    Storage Constants
+     */
+
+    const val PARENT_FOLDER_NAME_DOWNLOAD = "Download"
+    const val SELECTED_ATHANS_SUB_FOLDER_NAME = "Selected Athan"
+
+
+    /*
+    DataStore Constants
+     */
+
+    const val APP_DATA_STORE = "APP_DATA_STORE"
+
 }

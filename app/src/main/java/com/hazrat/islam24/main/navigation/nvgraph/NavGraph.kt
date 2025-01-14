@@ -9,10 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.google.android.play.integrity.internal.q
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
+import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.AppNavigator
 import com.hazrat.islam24.main.navigation.MainRoute
@@ -24,7 +24,8 @@ fun NavGraph(
     appSettingState: AppSettingState,
     appSettingEvent : (AppSettingEvent) -> Unit,
     zakatViewModel: ZakatViewModel,
-    quranViewModel: QuranViewModel
+    quranViewModel: QuranViewModel,
+    prayerTimeViewModel : PrayerTimeViewModel
 ) {
     val navController = rememberNavController()
 
@@ -38,7 +39,8 @@ fun NavGraph(
                     appSettingState = appSettingState,
                     appSettingEvent = appSettingEvent,
                     zakatViewModel = zakatViewModel,
-                    quranViewModel = quranViewModel
+                    quranViewModel = quranViewModel,
+                    prayerTimeViewModel = prayerTimeViewModel,
                 )
             }
         }

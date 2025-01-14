@@ -25,10 +25,10 @@ import kotlinx.serialization.Serializable
 @RequiresApi(Build.VERSION_CODES.S)
 fun NavGraphBuilder.prayerNav(
     navController: NavController,
+    prayerTimeViewModel: PrayerTimeViewModel
 ){
     navigation<PrayerTime>(PrayerTimeScreen){
         composable<PrayerTimeScreen> {
-            val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
             val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
             PrayerTimeScreen(
                 navController = navController,
@@ -37,18 +37,17 @@ fun NavGraphBuilder.prayerNav(
             )
         }
         composable<FajrSetting> {
-            val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
             FajrNotification(
                 notificationEvent = prayerTimeViewModel::onNotificationEvent,
                 onBackClick = {
                     navController.popBackStack()
                 },
-                notificationState = notificationState
+                notificationState = notificationState,
+
             )
         }
         composable<DhuhrSetting> {
-            val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
             DhuhrNotification(
                 notificationEvent = prayerTimeViewModel::onNotificationEvent,
@@ -57,7 +56,6 @@ fun NavGraphBuilder.prayerNav(
             )
         }
         composable<AsrSetting> {
-            val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
             AsrNotification(
                 notificationEvent = prayerTimeViewModel::onNotificationEvent,
@@ -66,7 +64,6 @@ fun NavGraphBuilder.prayerNav(
             )
         }
         composable<MaghribSetting> {
-            val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
             MaghribNotification(
                 notificationEvent = prayerTimeViewModel::onNotificationEvent,
@@ -75,7 +72,6 @@ fun NavGraphBuilder.prayerNav(
             )
         }
         composable<IshaSetting> {
-            val prayerTimeViewModel: PrayerTimeViewModel = hiltViewModel()
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
             IshaNotification(
                 notificationEvent = prayerTimeViewModel::onNotificationEvent,

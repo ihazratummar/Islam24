@@ -100,8 +100,6 @@ fun SurahScreen(
     val quranBn = quranState.quranBnData?.get(surahNumber - 1) ?: return
 
 
-
-
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = rememberTopAppBarState()
     )
@@ -124,7 +122,7 @@ fun SurahScreen(
     }
 
     LaunchedEffect(Unit) {
-        if (quranState.lastReadSurah == surahNumber && quranState.lastReadAyah != null ) {
+        if (quranState.lastReadSurah == surahNumber && quranState.lastReadAyah != null) {
             listState.scrollToItem(quranState.lastReadAyah)
         } else {
             listState.scrollToItem(0)
@@ -161,23 +159,6 @@ fun SurahScreen(
                 .fillMaxSize()
                 .padding(horizontal = dimens.size20)
         ) {
-            item {
-                if (quranAr.number != 1 && quranAr.number != 9) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .size(width = dimens.size200, height = dimens.size50),
-                            painter = painterResource(R.drawable.bismillah),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
-                        )
-                    }
-                }
-            }
             itemsIndexed(quranAr.ayahs) { index, ayah ->
                 val quran = quranAr.ayahs[index]
                 val isFavorite =
@@ -196,11 +177,18 @@ fun SurahScreen(
                     } else {
                         ayah.text
                     },
-                    transliterationVerse = quranTransliteration.verses[quran.numberInSurah - 1] ,
+                    transliterationVerse = quranTransliteration.verses[quran.numberInSurah - 1],
                     onFavoriteClick = {
                         event(QuranEvent.SaveFavorite(quranAr, ayah))
                     },
-                    isFavorite = isFavorite
+                    isFavorite = isFavorite,
+                    bismillahText = if (quranAr.number == 1 || quranAr.number == 9) {
+                        null
+                    } else if (index == 0) {
+                        "﷽"
+                    } else {
+                        null
+                    }
                 )
             }
         }
@@ -246,6 +234,7 @@ fun AyahRow(
     translationText: String,
     onFavoriteClick: () -> Unit,
     arabicText: String,
+    bismillahText: String?,
     transliterationVerse: TransliterationVerse,
     isFavorite: Boolean = false
 ) {
@@ -262,6 +251,18 @@ fun AyahRow(
             modifier = modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            bismillahText?.let {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = bismillahText,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontFamily = Kitab,
+                        textAlign = TextAlign.Center
+                    )
+                )
+
+            }
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -294,7 +295,7 @@ fun AyahRow(
                     .fillMaxWidth()
                     .padding(vertical = dimens.size10),
                 text = transliterationVerse.transliteration,
-                style = MaterialTheme.typography.titleLarge.copy(
+                style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal,
                 )
             )
@@ -304,7 +305,7 @@ fun AyahRow(
                     .fillMaxWidth()
                     .padding(vertical = dimens.size10),
                 text = translationText,
-                style = MaterialTheme.typography.titleLarge.copy(
+                style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal,
                 )
             )
@@ -316,7 +317,7 @@ fun AyahRow(
             ) {
 
                 Card(
-                    modifier = Modifier.width(dimens.size80),
+                    modifier = Modifier.width(dimens.size60),
                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                     border = BorderStroke(
                         width = dimens.size1,
@@ -329,7 +330,8 @@ fun AyahRow(
                             .fillMaxWidth()
                             .padding(dimens.size5),
                         text = "${verse.numberInSurah}",
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
 

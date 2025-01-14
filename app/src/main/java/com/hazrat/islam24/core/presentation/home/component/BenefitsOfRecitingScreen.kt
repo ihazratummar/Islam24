@@ -80,14 +80,16 @@ fun BenefitsOfRecitingScreen(
                             ) {
                                 Text(
                                     text = stringResource(it.title),
-                                    style = MaterialTheme.typography.headlineMedium.copy(
+                                    style = MaterialTheme.typography.titleSmall.copy(
                                         fontWeight = FontWeight.SemiBold
                                     )
                                 )
 
+                                Spacer(Modifier.height(dimens.size5))
+
                                 Text(
                                     text = stringResource(it.description),
-                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                    style = MaterialTheme.typography.bodyMedium.copy(
                                         fontWeight = FontWeight.Normal,
                                     )
                                 )
