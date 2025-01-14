@@ -122,8 +122,6 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    //TODO()
-    // Save Profile Pic In Local Data as Cache When User Upload On Firebase
     override fun updateProfilePicture(uri: Uri) {
         val compressUri = compressImage(context, uri) ?: uri
         val userId = auth.currentUser?.uid ?: return

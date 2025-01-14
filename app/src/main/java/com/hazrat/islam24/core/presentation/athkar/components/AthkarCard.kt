@@ -28,7 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import com.hazrat.islam24.core.data.entity.AthkarDataEntity
-import com.hazrat.islam24.ui.theme.Indopak
+import com.hazrat.islam24.ui.theme.Kitab
+import com.hazrat.islam24.ui.theme.Uthmani
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.getSystemLanguage
 
@@ -73,11 +74,11 @@ fun AdhkarCard(adhkars: AthkarDataEntity) {
                 Text(
                     text = adhkars.bismillah,
                     modifier = Modifier
-                        .padding(dimens.size10)
-                        .fillMaxWidth(),
-                    style = MaterialTheme.typography.displayMedium,
+                        .fillMaxWidth()
+                        .padding(dimens.size10),
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = Indopak,
+                    fontFamily = Kitab,
                     textAlign = TextAlign.Center,
                     letterSpacing = TextUnit.Unspecified
                 )
@@ -85,9 +86,9 @@ fun AdhkarCard(adhkars: AthkarDataEntity) {
             Text(
                 text = adhkars.arabicText,
                 modifier = Modifier.padding(dimens.size10).fillMaxWidth(),
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontFamily = Indopak,
+                fontFamily = Kitab,
                 textAlign = TextAlign.Center,
                 letterSpacing = TextUnit.Unspecified
             )
@@ -97,7 +98,7 @@ fun AdhkarCard(adhkars: AthkarDataEntity) {
                     else -> adhkars.enTransliteration
                 } ,
                 modifier = Modifier.padding(dimens.size10),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
 

@@ -20,8 +20,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 35
-        versionCode = 79
-        versionName = "1.6.15"
+        versionCode = 82
+        versionName = "2.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -136,6 +136,7 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 
     //Datastore
     implementation (libs.androidx.datastore.preferences)
@@ -187,4 +188,9 @@ dependencies {
 
     //Cloudy for blurring effect
     implementation(libs.cloudy)
+
+    implementation (libs.kotlin.reflect)
+
+
+
 }

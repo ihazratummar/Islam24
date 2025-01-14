@@ -1,7 +1,7 @@
 package com.hazrat.islam24.core.data.repository
 
 import android.util.Log
-import com.hazrat.islam24.core.api.GregorianToHijriApi
+import com.hazrat.islam24.core.remote.api.GregorianToHijriApi
 import com.hazrat.islam24.core.data.dao.GregorianToHijriDao
 import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import com.hazrat.islam24.core.presentation.home.component.TimeLocationCard
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingWidget
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
 
 
 @Composable
@@ -39,8 +41,8 @@ fun HomeScreen(
         modifier = Modifier
     ) {
         item {
-            Surface(
-                modifier = Modifier
+            Box(
+                modifier = Modifier,
             ) {
                 BackGroundCard()
                 Column(
@@ -51,6 +53,7 @@ fun HomeScreen(
                 ) {
                     Spacer(modifier = Modifier.height(dimens.size80))
                     if (prayerTimes.isNotEmpty() && locationName.isNotEmpty()) {
+
                         TimeLocationCard(
                             prayerTimes,
                             navigateToPrayerTime,

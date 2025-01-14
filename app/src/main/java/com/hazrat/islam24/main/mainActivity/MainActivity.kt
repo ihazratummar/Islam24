@@ -1,25 +1,32 @@
 package com.hazrat.islam24.main.mainActivity
 
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import android.view.KeyEvent
+import android.view.accessibility.AccessibilityManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
+import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
+import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
-import com.hazrat.islam24.notification.NotificationHelper
+import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreen
+import com.hazrat.islam24.notification.MediaPlayerHelper
+import com.hazrat.islam24.notification.NotificationChannels
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
@@ -55,7 +62,7 @@ class MainActivity : ComponentActivity() {
     lateinit var locationHandler: LocationHandler
 
     @Inject
-    lateinit var notificationHelper: NotificationHelper
+    lateinit var notificationHelper: NotificationChannels
 
     @Inject
     lateinit var prayerAlarmManager: PrayerAlarmManager
@@ -63,11 +70,15 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var networkRepository: NetworkRepository
 
+    @Inject
+    lateinit var mediaPlayerHelper: MediaPlayerHelper
+
     // Permissions manager, initialized in onCreate
     private lateinit var permissionsManager: PermissionsManager
 
     private val appSettingViewModel by viewModels<AppSettingViewModel>()
-    private val mainViewModel by viewModels<MainViewModel>()
+    private val quranViewModel by viewModels<QuranViewModel>()
+    private val prayerTimeViewModel by viewModels<PrayerTimeViewModel>()
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -76,6 +87,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         // Enable edge-to-edge display
         enableEdgeToEdge()
 
@@ -92,10 +104,9 @@ class MainActivity : ComponentActivity() {
         }
         permissionsManager.requestPermission()
         permissionsManager.requestExactAlarmPermission()
-        notificationHelper.notificationChannel()
+        notificationHelper.createNotificationChannels()
         setContent {
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
-            val networkStatus by networkRepository.networkStatus.collectAsState()
             Islam24Theme(
                 darkTheme = appSettingState.isDarkMode
             ) {
@@ -103,9 +114,10 @@ class MainActivity : ComponentActivity() {
                 NavGraph(
                     appSettingState = appSettingState,
                     appSettingEvent = appSettingViewModel::onAppSettingEvent,
-                    zakatViewModel = zakatViewModel
+                    zakatViewModel = zakatViewModel,
+                    quranViewModel = quranViewModel,
+                    prayerTimeViewModel = prayerTimeViewModel
                 )
-                Log.d("MainActivityNetworkStatus", "$networkStatus")
             }
         }
         // Check for app updates

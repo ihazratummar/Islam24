@@ -62,7 +62,7 @@ fun JuristicSelectionDialog(
                     Text(
                         text = stringResource(R.string.determining_the_time_of_asr_the_method_of_the_jurists),
                         color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.bodyLarge
                     )
 
                 }
@@ -88,7 +88,7 @@ fun JuristicSelectionDialog(
                             Text(
                                 text = school.name,
                                 color = MaterialTheme.colorScheme.onSurface,
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(start = dimens.size10)
                             )
                         }

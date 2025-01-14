@@ -2,11 +2,14 @@ package com.hazrat.islam24.core.presentation.prayertime
 
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,10 +36,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.presentation.common.PrayerTimeTopBar
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
@@ -47,12 +50,15 @@ import com.hazrat.islam24.main.navigation.nvgraph.FajrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.IshaSetting
 import com.hazrat.islam24.main.navigation.nvgraph.MaghribSetting
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.DataStorePreference
+import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.islam24.util.datastore.DataStore
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun PrayerTimeScreen(
@@ -60,12 +66,83 @@ fun PrayerTimeScreen(
     event: (PrayerEvent) -> Unit,
     prayerTimes: List<PrayerTimeEntity>
 ) {
+    val methods = prayerTimes.firstOrNull()
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val today = getCurrentDate()
+        Log.d("Today", today)
+        val todayPrayerIndex = prayerTimes.indexOfFirst { it.gregorianDate == today }
+        val initialPage = if (todayPrayerIndex != -1) {
+            todayPrayerIndex
+        } else {
+            0
+        }
+        if (prayerTimes.any { it.gregorianDate == today }) {
+            PrayerTimeScreenAnimation(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimens.size250),
+                prayerTimeEntity = prayerTimes[initialPage]
 
-    ShowData(
-        navController = navController,
-        event = event,
-        prayerTimes = prayerTimes
-    )
+            )
+        }
+    }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column(
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.prayer_times),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Black,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { event(PrayerEvent.SharePrayer) },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+
+                        )
+                    }
+                    IconButton(
+                        onClick = { navController.navigate(MainRoute.PrayerSetting) },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+
+                        )
+                    }
+                },
+                windowInsets = WindowInsets(top = dimens.size40),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            )
+        },
+        containerColor = Color.Transparent
+    ) { paddingValue ->
+        ShowData(
+            modifier = Modifier.padding(paddingValue),
+            navController = navController,
+            prayerTimes = prayerTimes
+        )
+    }
 
 }
 
@@ -73,49 +150,17 @@ fun PrayerTimeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowData(
+    modifier: Modifier = Modifier,
     navController: NavController,
-    event: (PrayerEvent) -> Unit,
     prayerTimes: List<PrayerTimeEntity>,
 ) {
-    val methods = prayerTimes.firstOrNull()
-
-
-    Box(
-        modifier = Modifier.fillMaxSize()
+    Column(
+        modifier = modifier.fillMaxSize()
     ) {
-        val today = getCurrentDay()
-        val index = today - 1
-        if (index in prayerTimes.indices) {
-            PrayerTimeScreenAnimation(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(dimens.size250),
-                prayerTimeEntity = prayerTimes[index]
-
-            )
-        }
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Spacer(Modifier.height(dimens.size40))
-            PrayerTimeTopBar(
-                header = stringResource(R.string.prayer_times),
-                subText = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
-                onFirstActionClick = {
-                    event(PrayerEvent.SharePrayer)
-                },
-                onSecondActionClick = {
-                    navController.navigate(MainRoute.PrayerSetting)
-                },
-                firstActionIcon = painterResource(id = R.drawable.share),
-                secondActionIcon = painterResource(id = R.drawable.settings)
-            )
-
-            ViewPager(
-                prayerTimes = prayerTimes,
-                navController = navController,
-            )
-        }
+        ViewPager(
+            prayerTimes = prayerTimes,
+            navController = navController,
+        )
     }
 
 }
@@ -128,26 +173,16 @@ fun ViewPager(
     navController: NavController,
 ) {
 
-    val todayDay = getCurrentDay()
-    val todayIndex = prayerTimes.indexOfFirst { data ->
-        val day = data.day
-        todayDay == day
+    val currentGregorianDay = getCurrentDate()
+    val prayerTimeIndex = prayerTimes.indexOfFirst {
+        it.gregorianDate == currentGregorianDay
     }
-    val initialPage =
-        if (todayIndex != -1) todayIndex else todayDay - 1 // Use 0 as the default page if today's date is not found
+
     val pagerState = rememberPagerState(
         pageCount = { prayerTimes.size },
-        initialPage = initialPage
+        initialPage = prayerTimeIndex  // Default to the first page or modify as needed
     )
 
-//    LaunchedEffect(pagerState) {
-//        // Collect from the a snapshotFlow reading the currentPage
-//        snapshotFlow { pagerState.currentPage }.collect { page ->
-//            // Do something with each page change, for example:
-//            // viewModel.sendPageSelectedEvent(page)
-//            Log.d("Page change", "Page changed to $page")
-//        }
-//    }
 
     HorizontalPager(
         state = pagerState,
@@ -230,7 +265,6 @@ private fun PrayerTime(
     navController: NavController
 ) {
 
-
     val currentTime = System.currentTimeMillis()
     val context = LocalContext.current
     val dataStorePreference = DataStorePreference(context = context)
@@ -240,7 +274,7 @@ private fun PrayerTime(
     val isDhuhrTime = currentTime in (data.dhuhrTime + 1)..(data.dhuhrTime + 3600000)
     val isAsrTime = currentTime in (data.asrTime + 1)..(data.maghribTime - 600000)
     val isMaghribTime = currentTime in (data.maghribTime + 1)..(data.ishaTime - 600000)
-    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.midnightTime)
+    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.firstThirdTime)
 
     val isNextFajrTime = currentTime in (data.lastThirdTime + 1)..(data.fajrTime)
     val isNextDhurTime = currentTime in (data.sunriseTime + 1)..(data.dhuhrTime)
