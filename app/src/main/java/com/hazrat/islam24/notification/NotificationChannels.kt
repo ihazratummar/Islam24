@@ -3,16 +3,16 @@ package com.hazrat.islam24.notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.hazrat.islam24.notification.NotificationConts.ASR_CHANNEL_ID
-import com.hazrat.islam24.notification.NotificationConts.ASR_CHANNEL_NAME
-import com.hazrat.islam24.notification.NotificationConts.DHUHR_CHANNEL_ID
-import com.hazrat.islam24.notification.NotificationConts.DHUHR_CHANNEL_NAME
-import com.hazrat.islam24.notification.NotificationConts.FAJR_CHANNEL_ID
-import com.hazrat.islam24.notification.NotificationConts.FAJR_CHANNEL_NAME
-import com.hazrat.islam24.notification.NotificationConts.ISHA_CHANNEL_ID
-import com.hazrat.islam24.notification.NotificationConts.ISHA_CHANNEL_NAME
-import com.hazrat.islam24.notification.NotificationConts.MAGHRIB_CHANNEL_ID
-import com.hazrat.islam24.notification.NotificationConts.MAGHRIB_CHANNEL_NAME
+import com.hazrat.islam24.notification.NotificationConstant.ASR_CHANNEL_ID
+import com.hazrat.islam24.notification.NotificationConstant.ASR_CHANNEL_NAME
+import com.hazrat.islam24.notification.NotificationConstant.DHUHR_CHANNEL_ID
+import com.hazrat.islam24.notification.NotificationConstant.DHUHR_CHANNEL_NAME
+import com.hazrat.islam24.notification.NotificationConstant.FAJR_CHANNEL_ID
+import com.hazrat.islam24.notification.NotificationConstant.FAJR_CHANNEL_NAME
+import com.hazrat.islam24.notification.NotificationConstant.ISHA_CHANNEL_ID
+import com.hazrat.islam24.notification.NotificationConstant.ISHA_CHANNEL_NAME
+import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_CHANNEL_ID
+import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_CHANNEL_NAME
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -33,6 +33,7 @@ class NotificationChannels @Inject constructor(
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             setSound(null, null)
+            enableVibration(true)
         }
 
         val dhuhrChannel = NotificationChannel(
@@ -41,6 +42,7 @@ class NotificationChannels @Inject constructor(
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             setSound(null, null)
+            enableVibration(true)
         }
 
         val asrChannel = NotificationChannel(
@@ -49,6 +51,7 @@ class NotificationChannels @Inject constructor(
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             setSound(null, null)
+            enableVibration(true)
         }
 
         val maghribChannel = NotificationChannel(
@@ -57,6 +60,7 @@ class NotificationChannels @Inject constructor(
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             setSound(null, null)
+            enableVibration(true)
         }
 
         val ishaChannel = NotificationChannel(
@@ -65,7 +69,9 @@ class NotificationChannels @Inject constructor(
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             setSound(null, null)
+            enableVibration(true)
         }
+
 
         manager.createNotificationChannel(fajrChannel)
         manager.createNotificationChannel(dhuhrChannel)

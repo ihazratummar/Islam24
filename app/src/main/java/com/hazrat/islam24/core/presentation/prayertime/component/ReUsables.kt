@@ -105,8 +105,8 @@ fun PrayerTimeCard(
             ),
         colors = if (isPrayerTime) {
             CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary.copy(0.8f),
             )
         } else {
             CardDefaults.cardColors(
@@ -384,5 +384,10 @@ val listOfAzan = listOf(
     R.raw.azan8,
     R.raw.azan9,
     R.raw.azan10,
+)
+
+val listOfFajrAzan = listOf(
+    R.raw.fajr1,
+    R.raw.fajr2
 )
 

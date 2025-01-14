@@ -33,6 +33,7 @@ import com.hazrat.islam24.core.presentation.common.BasicTopBar
 import com.hazrat.islam24.core.presentation.prayertime.component.AzanList
 import com.hazrat.islam24.core.presentation.prayertime.component.ToggleNotification
 import com.hazrat.islam24.core.presentation.prayertime.component.listOfAzan
+import com.hazrat.islam24.core.presentation.prayertime.component.listOfFajrAzan
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent.OnDefaultNotificationClick
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
@@ -86,7 +87,7 @@ fun FajrNotification(
                     onAzanClick = {
                         notificationEvent(NotificationEvent.OnFajrAzanClick(it))
                     },
-                    listOfAzan = listOfAzan,
+                    listOfAzan = listOfFajrAzan,
                     onSilentNotificationClick = {
                         notificationEvent(
                             NotificationEvent.OnSilentNotificationClick(

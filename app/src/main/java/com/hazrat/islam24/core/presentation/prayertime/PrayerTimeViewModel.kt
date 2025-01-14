@@ -39,13 +39,11 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 
@@ -64,7 +62,6 @@ class PrayerTimeViewModel @Inject constructor(
     private val eventChannel = Channel<UserEvent>()
     val events = eventChannel.receiveAsFlow()
     val prayerTimes: StateFlow<List<PrayerTimeEntity>> = repository.prayerTimes
-    val prayerTimesByDate: StateFlow<List<PrayerTimeEntity>> = repository.prayerTimeByDate
 
     private val _notificationState = MutableStateFlow(
         NotificationState(
@@ -81,14 +78,45 @@ class PrayerTimeViewModel @Inject constructor(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = 0
+        ),
+        dataStore.selectedDhuhrNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        ),
+        dataStore.selectedAsrNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        ),
+        dataStore.selectedMaghribNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
         )
-    ) { state, selectedFajrNotification ->
-        state.copy(selectedFajrAzan = selectedFajrNotification)
+    ) { state, selectedFajrNotification, selectedDhuhrNotification, selectedAsrNotification, selectedMaghribNotification ->
+        state.copy(
+            selectedFajrAzan = selectedFajrNotification,
+            selectedDhuhrAzan = selectedDhuhrNotification,
+            selectedAsrAzan = selectedAsrNotification,
+            selectedMaghribAzan = selectedMaghribNotification
+        )
+    }.combine(
+        dataStore.selectedIshaNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        )
+    ) { state, selectedIshaNotification ->
+        state.copy(
+            selectedIshaAzan = selectedIshaNotification
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = _notificationState.value
     )
+
 
     fun onEvent(prayerEvent: PrayerEvent) {
         when (prayerEvent) {
@@ -127,7 +155,7 @@ class PrayerTimeViewModel @Inject constructor(
                             prayerAlarmManager.setFajrPrayerAlarm(fajr)
                         }
                     } else {
-                        prayerAlarmManager.cancelFajrAlarm()
+                        prayerAlarmManager.cancelAlarm(1)
                     }
                 } else {
                     openAppSettings()
@@ -157,7 +185,7 @@ class PrayerTimeViewModel @Inject constructor(
                             prayerAlarmManager.setDhuhrPrayerAlarm(dhuhrTime)
                         }
                     } else {
-                        prayerAlarmManager.cancelDhuhrAlarm()
+                        prayerAlarmManager.cancelAlarm(2)
                     }
                 } else {
                     openAppSettings()
@@ -188,7 +216,7 @@ class PrayerTimeViewModel @Inject constructor(
                             prayerAlarmManager.setAsrPrayerAlarm(asrTime)
                         }
                     } else {
-                        prayerAlarmManager.cancelAsrAlarm()
+                        prayerAlarmManager.cancelAlarm(3)
                     }
                 } else {
                     openAppSettings()
@@ -219,7 +247,7 @@ class PrayerTimeViewModel @Inject constructor(
                             prayerAlarmManager.setMaghribPrayerAlarm(maghribTime)
                         }
                     } else {
-                        prayerAlarmManager.cancelMaghribAlarm()
+                        prayerAlarmManager.cancelAlarm(4)
                     }
                 } else {
                     openAppSettings()
@@ -250,7 +278,7 @@ class PrayerTimeViewModel @Inject constructor(
                             prayerAlarmManager.setIshaPrayerAlarm(ishaTime)
                         }
                     } else {
-                        prayerAlarmManager.cancelIshaAlarm()
+                        prayerAlarmManager.cancelAlarm(5)
                     }
                 } else {
                     openAppSettings()
@@ -484,6 +512,9 @@ class PrayerTimeViewModel @Inject constructor(
                     it.copy(
                         selectedIshaAzan = notificationEvent.index
                     )
+                }
+                viewModelScope.launch {
+                    dataStore.setSelectedIshaNotification(notificationEvent.index)
                 }
             }
 

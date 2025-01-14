@@ -25,6 +25,8 @@ class MediaPlayerHelper @Inject constructor(
     private var mediaPlayer: MediaPlayer? = null
     private var vibrator: Vibrator? = null
 
+    private val pattern = longArrayOf(0, 500, 1000)
+
     fun prepareAzanNotification(filePath: String){
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
@@ -78,6 +80,7 @@ class MediaPlayerHelper @Inject constructor(
 
     fun startAzan(){
         mediaPlayer?.start()
+        vibrator?.vibrate(VibrationEffect.createWaveform(pattern, 0))
     }
     fun stopAzan() {
         try {
@@ -86,6 +89,9 @@ class MediaPlayerHelper @Inject constructor(
                     it.stop()
                 }
             }
+            vibrator?.cancel()
+            mediaPlayer = null
+            vibrator = null
         } catch (e: IllegalStateException) {
             // Handle the error, e.g., log it or take appropriate action
             Log.e("MediaPlayerHelper", "Error stopping Azan: ${e.message}")
@@ -99,7 +105,6 @@ class MediaPlayerHelper @Inject constructor(
 
     fun start(){
         mediaPlayer?.start()
-        val pattern = longArrayOf(0, 500, 1000)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             vibrator?.vibrate(VibrationEffect.createWaveform(pattern, 0))
         }else{

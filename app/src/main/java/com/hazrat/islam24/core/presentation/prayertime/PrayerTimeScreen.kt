@@ -55,6 +55,7 @@ import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.islam24.util.datastore.DataStore
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,62 +70,6 @@ fun PrayerTimeScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Column(
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.prayer_times),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Black,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                            Text(
-                                text = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
-                                color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        }
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = { event(PrayerEvent.SharePrayer) },
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.share),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground
-
-                            )
-                        }
-                        IconButton(
-                            onClick = { navController.navigate(MainRoute.PrayerSetting) },
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.settings),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground
-
-                            )
-                        }
-                    },
-                    windowInsets = WindowInsets(top = dimens.size40),
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-                )
-            }
-        ) { paddingValue ->
-            ShowData(
-                modifier = Modifier.padding(paddingValue),
-                navController = navController,
-                prayerTimes = prayerTimes
-            )
-        }
-
         val today = getCurrentDate()
         Log.d("Today", today)
         val todayPrayerIndex = prayerTimes.indexOfFirst { it.gregorianDate == today }
@@ -143,7 +88,61 @@ fun PrayerTimeScreen(
             )
         }
     }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column(
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.prayer_times),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Black,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { event(PrayerEvent.SharePrayer) },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
 
+                        )
+                    }
+                    IconButton(
+                        onClick = { navController.navigate(MainRoute.PrayerSetting) },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+
+                        )
+                    }
+                },
+                windowInsets = WindowInsets(top = dimens.size40),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            )
+        },
+        containerColor = Color.Transparent
+    ) { paddingValue ->
+        ShowData(
+            modifier = Modifier.padding(paddingValue),
+            navController = navController,
+            prayerTimes = prayerTimes
+        )
+    }
 
 }
 
@@ -189,7 +188,7 @@ fun ViewPager(
         state = pagerState,
     ) { page ->
         PrayerTimesDay(
-            prayerTimes[page ], navController
+            prayerTimes[page], navController
         )
     }
 }
@@ -266,7 +265,6 @@ private fun PrayerTime(
     navController: NavController
 ) {
 
-
     val currentTime = System.currentTimeMillis()
     val context = LocalContext.current
     val dataStorePreference = DataStorePreference(context = context)
@@ -276,7 +274,7 @@ private fun PrayerTime(
     val isDhuhrTime = currentTime in (data.dhuhrTime + 1)..(data.dhuhrTime + 3600000)
     val isAsrTime = currentTime in (data.asrTime + 1)..(data.maghribTime - 600000)
     val isMaghribTime = currentTime in (data.maghribTime + 1)..(data.ishaTime - 600000)
-    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.midnightTime)
+    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.firstThirdTime)
 
     val isNextFajrTime = currentTime in (data.lastThirdTime + 1)..(data.fajrTime)
     val isNextDhurTime = currentTime in (data.sunriseTime + 1)..(data.dhuhrTime)

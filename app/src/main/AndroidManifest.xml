@@ -13,13 +13,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.MEDIA_BUTTON" />
-    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
 
 
 
@@ -33,7 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/App.Starting.Theme"
         android:localeConfig="@xml/locale_config"
-        tools:targetApi="31">
+        tools:targetApi="tiramisu">
         <activity
             android:name=".main.mainActivity.MainActivity"
             android:exported="true"
@@ -45,12 +38,12 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".notification.PrayerTimeReceiver"
+            android:name=".Receiver.PrayerTimeReceiver"
             android:exported="true">
         </receiver>
-
+        <receiver android:name=".Receiver.MuteReceiver"/>
         <receiver
-            android:name=".notification.BootReceiver"
+            android:name=".Receiver.BootReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
