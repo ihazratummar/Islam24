@@ -181,9 +181,7 @@ fun QuranScreen(
                                                 it.ayahNumber - 1
                                             )?.translation ?: ""
 
-                                            else -> quranEn?.get(it.surahNumber - 1)?.verses?.get(
-                                                it.ayahNumber - 1
-                                            )?.translation ?: ""
+                                            else -> quranEn[it.surahNumber - 1].verses[it.ayahNumber - 1].translation
                                         }
                                         val surahAyahText = when (systemLanguage) {
                                             "bn" -> "${quranBn?.get(it.surahNumber - 1)?.transliteration}"

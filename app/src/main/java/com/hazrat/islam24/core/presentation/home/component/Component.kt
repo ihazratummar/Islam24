@@ -345,70 +345,73 @@ fun DailyQuranAyat(
     val bnAllAyah = bnQuran?.find { it.id == surah?.number }
     val bnAyah = bnAllAyah?.verses?.find { it.id == arAyah?.numberInSurah }
 
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimens.size20),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        ),
-        onClick = {
-            onClick.invoke(surah?.number ?: 1, arAyah?.numberInSurah ?: 1)
-        }
-    ) {
-        Column(
-            modifier = Modifier
+
+    if (!arquran.isNullOrEmpty() && !enQuran.isNullOrEmpty() && !bnQuran.isNullOrEmpty()){
+        Card(
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimens.size10, vertical = dimens.size5)
+                .padding(horizontal = dimens.size20),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            ),
+            onClick = {
+                onClick.invoke(surah?.number ?: 1, arAyah?.numberInSurah ?: 1)
+            }
         ) {
-            Row (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimens.size10, horizontal = dimens.size10)
-            ){
+                    .padding(horizontal = dimens.size10, vertical = dimens.size5)
+            ) {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = dimens.size10, horizontal = dimens.size10)
+                ){
+                    Text(
+                        text = "Daily Quran",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
                 Text(
-                    text = "Daily Quran",
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
+                    modifier = Modifier.fillMaxWidth(),
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = Kitab
+                            )
+                        ) {
+                            append(arAyah?.text)
+                        }
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = Uthmani
+                            )
+                        ) {
+                            append(" $arNumber")
+                        }
+                    },
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        textDirection = TextDirection.Rtl
                     )
                 )
-            }
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontFamily = Kitab
-                        )
-                    ) {
-                        append(arAyah?.text)
-                    }
+                Spacer(Modifier.height(dimens.size10))
 
-                    withStyle(
-                        style = SpanStyle(
-                            fontFamily = Uthmani
-                        )
-                    ) {
-                        append(" $arNumber")
-                    }
-                },
-                style = MaterialTheme.typography.titleLarge.copy(
-                    textDirection = TextDirection.Rtl
+                Text(
+                    text = when(systemLanguage){
+                        "bn" -> {
+                            "${bnAyah?.translation} - ${bnAyah?.id}"
+                        }
+                        else -> {"${enAyah?.translation} - ${enAyah?.id}"}
+                    },
+                    style = MaterialTheme.typography.bodyLarge
                 )
-            )
-            Spacer(Modifier.height(dimens.size10))
-
-            Text(
-                text = when(systemLanguage){
-                    "bn" -> {
-                        "${bnAyah?.translation} - ${bnAyah?.id}"
-                    }
-                    else -> {"${enAyah?.translation} - ${enAyah?.id}"}
-                },
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Spacer(Modifier.height(dimens.size30))
-            Text(text = "${surah?.number}:${enAyah?.id}")
+                Spacer(Modifier.height(dimens.size30))
+                Text(text = "${surah?.number}:${enAyah?.id}")
+            }
         }
     }
 }

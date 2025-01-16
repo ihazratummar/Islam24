@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
+import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.changeLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +29,8 @@ import javax.inject.Inject
 class AppSettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val profileRepository: ProfileRepository,
-    private val dataStorePreference: DataStorePreference
+    private val dataStorePreference: DataStorePreference,
+    private val quranRepository: QuranRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -117,11 +119,18 @@ class AppSettingViewModel @Inject constructor(
                 viewModelScope.launch {
                     profileRepository.signOut()
                 }
+                syncQuranData()
             }
 
             AppSettingEvent.RefreshAuth -> {
                 profileRepository.checkAuthStatus()
             }
+        }
+    }
+
+    private fun syncQuranData(){
+        viewModelScope.launch{
+            quranRepository.syncQuranDataIfLoggedIn()
         }
     }
 }
