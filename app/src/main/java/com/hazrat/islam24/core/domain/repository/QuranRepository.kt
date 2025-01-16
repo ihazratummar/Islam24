@@ -41,5 +41,8 @@ interface QuranRepository {
 
     fun loadFavoritesFromFile()
 
+    suspend fun syncQuranDataIfLoggedIn()
+    suspend fun syncQuranDataOnLogin()
+
 
 }

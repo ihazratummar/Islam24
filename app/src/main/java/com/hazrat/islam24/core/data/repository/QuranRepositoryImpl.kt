@@ -2,6 +2,9 @@ package com.hazrat.islam24.core.data.repository
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hazrat.islam24.core.remote.api.QuranApi
@@ -26,11 +29,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 /**
@@ -42,7 +45,9 @@ class QuranRepositoryImpl @Inject constructor(
     private val quranApi: QuranApi,
     private val fileUtils: MyFileUtils,
     @ApplicationContext private val context: Context,
-    private val dataStorePreference: DataStorePreference
+    private val dataStorePreference: DataStorePreference,
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseFirestore: FirebaseFirestore
 ) : QuranRepository {
 
     private val _quranState = MutableStateFlow(QuranState())
@@ -363,6 +368,62 @@ class QuranRepositoryImpl @Inject constructor(
         return quranData
     }
 
+    override suspend fun syncQuranDataIfLoggedIn() {
+        val userId  = firebaseAuth.currentUser?.uid ?: return
+
+        try {
+
+            val localLastReadSurah = dataStorePreference.getQuranLastRead().first?:1
+            val localLastReadAyah = dataStorePreference.getQuranLastRead().second?:1
+
+            val documentSnapshot = firebaseFirestore.collection(USER_COLLECTION).document(userId).get().await()
+
+            if (documentSnapshot.exists()){
+                val firebaseLastReadSurah = documentSnapshot.getLong("lastReadSurah")?.toInt()?:1
+                val firebaseLastReadAyah = documentSnapshot.getLong("lastReadAyah")?.toInt()?:1
+
+                if (firebaseLastReadSurah != localLastReadSurah || firebaseLastReadAyah != localLastReadAyah){
+                    dataStorePreference.saveQuranLastRead(localLastReadSurah, localLastReadAyah)
+
+                    firebaseFirestore.collection(USER_COLLECTION).document(userId)
+                        .update(
+                            mapOf(
+                                "lastReadSurah" to localLastReadSurah,
+                                "lastReadAyah" to localLastReadAyah
+                            )
+                        ).await()
+                    Log.d("QuranRepositoryImpl", "syncQuranDataIfLoggedIn: Quran Last Read Updated")
+
+                }else{
+                    Log.d("QuranRepositoryImpl", "syncQuranDataIfLoggedIn: Quran Last Read is already updated")
+                }
+            }else{
+                Log.w(TAG, "syncQuranDataIfLoggedIn: User document does not exist")
+            }
+
+        }catch (e: Exception){
+            Log.e("QuranRepositoryImpl", "syncQuranDataIfLoggedIn: ${e.message}")
+        }
+    }
+
+    override suspend fun syncQuranDataOnLogin() {
+        val userId = firebaseAuth.currentUser?.uid ?: return
+        try {
+            val documentSnapshot = firebaseFirestore.collection(USER_COLLECTION).document(userId).get().await()
+            if (documentSnapshot.exists()){
+                val firestorelastReadSurah = documentSnapshot.getLong("lastReadSurah")?.toInt()?:1
+                val firestoreLastReadAyah = documentSnapshot.getLong("lastReadAyah")?.toInt()?:1
+                dataStorePreference.saveQuranLastRead(firestorelastReadSurah, firestoreLastReadAyah)
+                Toast.makeText(context, "Quran Last Read Updated", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "syncQuranDataOnLogin: Quran Last Read Updated")
+            }else{
+                Log.w(TAG, "syncQuranDataOnLogin: User document does not exist")
+            }
+        }catch (e: Exception){
+            Log.e(TAG, "syncQuranDataOnLogin: ${e.message}")
+        }
+    }
+
     companion object {
         private const val TAG = "QuranRepositoryImpl"
         private const val PARENT_FOLDER_NAME_APPDATA = "AppData"
@@ -372,6 +433,6 @@ class QuranRepositoryImpl @Inject constructor(
         private const val QURAN_EN_FILE_NAME = "quran_en.json"
         private const val QURAN_BN_FILE_NAME = "quran_bn.json"
         private const val QURAN_AYAH_FAVORITE_FILE = "quran_favorite.json"
-
+        private const val USER_COLLECTION = "user"
     }
 }

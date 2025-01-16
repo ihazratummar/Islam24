@@ -214,7 +214,7 @@ class ProfileRepositoryImpl @Inject constructor(
             val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
             val file = File(context.cacheDir, "${UUID.randomUUID()}.jpg")
             file.outputStream().use { outputStream ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 25, outputStream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, outputStream)
             }
             Uri.fromFile(file)
         } catch (e: Exception) {

@@ -151,7 +151,7 @@ fun AuthLoginScreen(
                         trailingIcon = {
                             Text(
                                 text = if (state.passwordVisible) "Hide" else "Show",
-                                style = MaterialTheme.typography.labelSmall,
+                                style = MaterialTheme.typography.labelLarge,
                                 modifier = Modifier.clickable {
                                     loginEvent(LoginEvent.OnPasswordVisibilityChanged)
                                 },
@@ -223,7 +223,7 @@ fun LoginButton(
         colors = ButtonColors(
             containerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.surfaceContainer,
+            disabledContainerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.surface,
             disabledContentColor = MaterialTheme.colorScheme.onSurface,
         ),
         enabled = state.isFormValid && authState != AuthState.Loading,
