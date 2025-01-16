@@ -140,7 +140,8 @@ fun AppNavigator(
 
                 QuranScreen(
                     onSurahClick = { surahNumber, ayahNumber, isTracking ->
-                        navController.navigate(MainRoute.SurahScreenRoute(surahNumber, ayahNumber, isTracking)){
+                        navController.navigate(MainRoute.SurahScreenRoute(surahNumber,
+                            ayahNumber?.minus(1), isTracking)){
                             launchSingleTop = true
                             restoreState = true
                         }

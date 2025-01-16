@@ -277,7 +277,7 @@ private fun SignupButton(
         colors = ButtonColors(
             containerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.surfaceContainer,
+            disabledContainerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.surface,
             disabledContentColor = MaterialTheme.colorScheme.onSurface,
         ),
         enabled = signUpState.isFormValid && signUpState.isPasswordValid && authState != AuthState.Loading,

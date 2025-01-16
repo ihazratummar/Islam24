@@ -21,7 +21,7 @@ val onSecondaryContainerLight = Color(0xFFDBFFF0) // Medium green
 
 val backgroundLight = Color(0xFFF8FBF1)
 val onBackgroundLight = Color(0xFF000000)
-val surfaceLight = Color(0xFFF8FBF1)
+val surfaceLight = Color(0xFFDDDEDD)
 val onSurfaceLight = Color(0xFF000000)
 
 

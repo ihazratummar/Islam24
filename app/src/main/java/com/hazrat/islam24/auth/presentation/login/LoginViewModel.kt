@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
+import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.SupervisorJob
@@ -28,6 +29,7 @@ class LoginViewModel @Inject constructor(
     private val zakatRepository: ZakatRepository,
     private val profileRepository: ProfileRepository,
     private val storage: FirebaseStorage,
+    private val quranRepository: QuranRepository
 ) : ViewModel() {
 
 
@@ -145,8 +147,19 @@ class LoginViewModel @Inject constructor(
             }
     }
     private fun syncData(){
-        viewModelScope.launch (SupervisorJob()){
+        syncZakatData()
+        syncQuranData()
+    }
+
+    private fun syncZakatData(){
+        viewModelScope.launch(SupervisorJob()){
             zakatRepository.syncData()
+        }
+    }
+
+    private fun syncQuranData(){
+        viewModelScope.launch(SupervisorJob()){
+            quranRepository.syncQuranDataOnLogin()
         }
     }
 }

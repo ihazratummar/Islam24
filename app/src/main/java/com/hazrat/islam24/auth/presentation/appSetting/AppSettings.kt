@@ -142,7 +142,7 @@ fun AppSettingScreen(
                     Column {
                         Text(
                             text = stringResource(R.string.app_setting),
-                            style = MaterialTheme.typography.headlineSmall,
+                            style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(
                                 horizontal = dimens.size15,
                                 vertical = dimens.size10
@@ -264,14 +264,14 @@ private fun SettingItemCard(
                 Spacer(modifier = Modifier.width(dimens.size30))
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     modifier = Modifier,
                     text = selectedText,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Icon(
