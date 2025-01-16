@@ -46,6 +46,7 @@ import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
 import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.calendar.GregorianCalendarScreen
 import com.hazrat.islam24.core.presentation.home.HomeScreen
+import com.hazrat.islam24.core.presentation.home.HomeViewModel
 import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
 import com.hazrat.islam24.core.presentation.namesofallah.NamesViewmodel
@@ -90,7 +91,11 @@ fun AppNavigator(
             composable<MainRoute.HomeScreen> {
                 val mainViewModel : MainViewModel = hiltViewModel()
                 val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
+                val quranViewModel: QuranViewModel = hiltViewModel()
+                val quranState by quranViewModel.quranState.collectAsStateWithLifecycle()
                 val locationName by mainViewModel.locationName.collectAsState()
+                val homeViewModel: HomeViewModel = hiltViewModel()
+                val homeState by homeViewModel.homeState.collectAsStateWithLifecycle()
                 HomeScreen(
                     navigateToPrayerTime = {
                         navController.navigate(PrayerTimeScreen) {
@@ -112,6 +117,11 @@ fun AppNavigator(
                     },
                     onBenefitsWidgetClick = {
                         navController.navigate(BenifitsOfRecitingRoute)
+                    },
+                    quranState =  quranState,
+                    homeState = homeState,
+                    onDailyQuranClick = {surah, ayah ->
+                        navController.navigate(MainRoute.SurahScreenRoute(surahNumber = surah, ayahNumber = ayah, isTracking = false))
                     }
                 )
             }
@@ -130,7 +140,8 @@ fun AppNavigator(
 
                 QuranScreen(
                     onSurahClick = { surahNumber, ayahNumber, isTracking ->
-                        navController.navigate(MainRoute.SurahScreenRoute(surahNumber, ayahNumber, isTracking)){
+                        navController.navigate(MainRoute.SurahScreenRoute(surahNumber,
+                            ayahNumber?.minus(1), isTracking)){
                             launchSingleTop = true
                             restoreState = true
                         }

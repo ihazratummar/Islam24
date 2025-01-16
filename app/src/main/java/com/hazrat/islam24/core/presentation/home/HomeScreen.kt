@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.presentation.al_quran.QuranState
 import com.hazrat.islam24.core.presentation.home.component.BackGroundCard
 import com.hazrat.islam24.core.presentation.home.component.HomePageNavIcons
 import com.hazrat.islam24.core.presentation.home.component.LazyVerticalGridCardIcons
@@ -26,6 +27,7 @@ import com.hazrat.islam24.core.presentation.home.component.TimeLocationCard
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingWidget
+import com.hazrat.islam24.core.presentation.home.component.DailyQuranAyat
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
 
 
@@ -35,7 +37,10 @@ fun HomeScreen(
     prayerTimes: List<PrayerTimeEntity>,
     locationName: List<LocationDetailsEntity>,
     onWidgetClick: (HomePageNavIcons) -> Unit,
-    onBenefitsWidgetClick: () -> Unit
+    onBenefitsWidgetClick: () -> Unit,
+    quranState: QuranState,
+    homeState: HomeState,
+    onDailyQuranClick: (Int, Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -91,6 +96,16 @@ fun HomeScreen(
         item {
             BenefitsOfRecitingWidget(
                 onClick = { onBenefitsWidgetClick() }
+            )
+            Spacer(modifier = Modifier.height(dimens.size30))
+        }
+        item{
+            DailyQuranAyat(
+                quranState = quranState,
+                homeState = homeState,
+                onClick = {surah, ayah ->
+                    onDailyQuranClick(surah, ayah)
+                }
             )
         }
     }

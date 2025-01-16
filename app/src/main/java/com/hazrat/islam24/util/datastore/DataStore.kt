@@ -37,6 +37,9 @@ class DataStore @Inject constructor(
         const val SELECTED_ISHA_NOTIFICATION = "SELECTED_ISHA_NOTIFICATION"
 
 
+        const val DAILY_QURAN_DATE = "DAILY_QURAN_DATE"
+        const val RANDOM_AYAT_NUMBER = "RANDOM_AYAT_NUMBER"
+
         // Keys for each prayer time
         private val FAJR_KEY = stringPreferencesKey(FAJR)
         private val DHUHR_KEY = stringPreferencesKey(DHUHR)
@@ -51,7 +54,31 @@ class DataStore @Inject constructor(
         private val SELECTED_MAGHRIB_NOTIFICATION_KEY =
             intPreferencesKey(SELECTED_MAGHRIB_NOTIFICATION)
         private val SELECTED_ISHA_NOTIFICATION_KEY = intPreferencesKey(SELECTED_ISHA_NOTIFICATION)
+        // ---------------//
 
+        private val DAILY_QURAN_DATE_KEY = stringPreferencesKey(DAILY_QURAN_DATE)
+        private val RANDOM_AYAT_NUMBER_KEY = intPreferencesKey(RANDOM_AYAT_NUMBER)
+
+    }
+
+    suspend fun saveDailyQuranDate(date: String){
+        val key = DAILY_QURAN_DATE_KEY
+        appDataStore.edit { pref->
+            pref[key] = date
+        }
+    }
+    val getDailyQuranDate: Flow<String> = appDataStore.data.map { pref ->
+        pref[DAILY_QURAN_DATE_KEY] ?: ""
+    }
+
+    suspend fun saveRandomAyatNumber(number: Int){
+        val key = RANDOM_AYAT_NUMBER_KEY
+        appDataStore.edit { pref->
+            pref[key] = number
+        }
+    }
+    val getRandomAyatNumber: Flow<Int> = appDataStore.data.map { pref ->
+        pref[RANDOM_AYAT_NUMBER_KEY] ?: 0
     }
 
     suspend fun savePrayerNotificationType(
