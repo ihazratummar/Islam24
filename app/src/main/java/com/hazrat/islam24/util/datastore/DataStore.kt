@@ -3,6 +3,7 @@ package com.hazrat.islam24.util.datastore
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -60,6 +61,7 @@ class DataStore @Inject constructor(
         private val RANDOM_AYAT_NUMBER_KEY = intPreferencesKey(RANDOM_AYAT_NUMBER)
 
     }
+
 
     suspend fun saveDailyQuranDate(date: String){
         val key = DAILY_QURAN_DATE_KEY

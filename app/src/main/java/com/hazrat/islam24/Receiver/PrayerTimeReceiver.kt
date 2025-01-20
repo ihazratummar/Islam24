@@ -129,7 +129,7 @@ class PrayerTimeReceiver : BroadcastReceiver() {
         prayerName: PrayerName
     ): NotificationCompat.Builder {
         val notificationClickIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         val pendingIntent = PendingIntent.getActivity(
             context,
