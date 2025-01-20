@@ -191,6 +191,11 @@ dependencies {
 
     implementation (libs.kotlin.reflect)
 
+    //Glance App Widget
+
+    implementation (libs.androidx.glance)
+    implementation (libs.androidx.glance.appwidget)
+
 
 
 }
