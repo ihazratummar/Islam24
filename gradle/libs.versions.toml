@@ -1,7 +1,7 @@
 [versions]
 accompanistSystemuicontroller = "0.34.0"
-accompanistSystemuicontrollerVersion = "0.31.3-beta"
 agp = "8.8.0"
+glanceAppwidget = "1.1.1"
 junitVersion = "1.2.1"
 animationCore = "x.y.z"
 appUpdateKtx = "2.1.0"
@@ -55,6 +55,8 @@ lifecycleRuntimeKtx = "2.8.7"
 [libraries]
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-glance = { module = "androidx.glance:glance", version.ref = "glanceAppwidget" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android", version.ref = "materialIconsExtendedAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
