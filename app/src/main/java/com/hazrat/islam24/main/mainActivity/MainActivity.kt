@@ -1,30 +1,22 @@
 package com.hazrat.islam24.main.mainActivity
 
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
-import android.view.KeyEvent
-import android.view.accessibility.AccessibilityManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
-import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreen
 import com.hazrat.islam24.notification.MediaPlayerHelper
 import com.hazrat.islam24.notification.NotificationChannels
 import com.hazrat.islam24.notification.PrayerAlarmManager
@@ -79,6 +71,7 @@ class MainActivity : ComponentActivity() {
     private val appSettingViewModel by viewModels<AppSettingViewModel>()
     private val quranViewModel by viewModels<QuranViewModel>()
     private val prayerTimeViewModel by viewModels<PrayerTimeViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -106,17 +99,19 @@ class MainActivity : ComponentActivity() {
         permissionsManager.requestExactAlarmPermission()
         notificationHelper.createNotificationChannels()
         setContent {
-            val appSettingState by appSettingViewModel.appSettingState.collectAsState()
+            val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
+            val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
+
             Islam24Theme(
-                darkTheme = appSettingState.isDarkMode
+                darkTheme = isDarkModeEnabled
             ) {
                 val zakatViewModel by viewModels<ZakatViewModel>()
                 NavGraph(
-                    appSettingState = appSettingState,
-                    appSettingEvent = appSettingViewModel::onAppSettingEvent,
                     zakatViewModel = zakatViewModel,
                     quranViewModel = quranViewModel,
-                    prayerTimeViewModel = prayerTimeViewModel
+                    prayerTimeViewModel = prayerTimeViewModel,
+                    appSettingViewModel = appSettingViewModel,
+                    isHapticFeedback = isHapticFeedback
                 )
             }
         }

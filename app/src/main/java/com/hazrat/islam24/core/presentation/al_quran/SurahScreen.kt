@@ -2,12 +2,10 @@ package com.hazrat.islam24.core.presentation.al_quran
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -49,7 +46,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,7 +60,6 @@ import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.ArAyah
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_transliteration.TransliterationVerse
-import com.hazrat.islam24.ui.theme.IndoPak
 import com.hazrat.islam24.ui.theme.Kitab
 import com.hazrat.islam24.ui.theme.Uthmani
 import com.hazrat.islam24.ui.theme.dimens
@@ -128,7 +123,7 @@ fun SurahScreen(
             listState.scrollToItem(0)
         }
         if (ayatNumber != null) {
-            listState.scrollToItem(ayatNumber)
+            listState.scrollToItem(ayatNumber + 1)
         }
     }
     val totalAyahs = quranAr.ayahs.size

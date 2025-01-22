@@ -2,7 +2,7 @@ package com.hazrat.islam24.auth.repository
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import com.hazrat.islam24.auth.api.VercelApi
+import com.hazrat.islam24.auth.api.RenderApi
 import com.hazrat.islam24.auth.model.RequestOtpBody
 import com.hazrat.islam24.auth.model.ResetPasswordBody
 import com.hazrat.islam24.auth.model.VerifyOtpBody
@@ -22,86 +22,86 @@ import javax.inject.Inject
  */
 
 class ForgetPasswordRepositoryImpl @Inject constructor(
-    private val api: VercelApi,
+    private val api: RenderApi,
     private val connectivityObserver: ConnectivityObserver
-): ForgetPasswordRepository {
+) : ForgetPasswordRepository {
 
     private val _networkStatus = mutableStateOf(ConnectivityObserver.Status.Unavailable)
 
 
     override suspend fun requestOtp(email: String): Result<ForgetPasswordSuccess, ForgetPasswordError> {
-      return try {
-          if (_networkStatus.value == ConnectivityObserver.Status.Available){
-              val response = api.requestOtp(RequestOtpBody(email))
-              if (response.isSuccessful){
-                  val body =response.body()
-                  if (body != null){
-                      Result.Success(data = ForgetPasswordSuccess.SUCCESS_EMAIL_SENT)
-                  }else{
-                      Result.Error(error = ForgetPasswordError.INVALID_EMAIL)
-                  }
-              }else{
-                  Log.e("ForgetPasswordRepositoryImpl", "resetPassword 1 ")
-                  Result.Error(error = ForgetPasswordError.INVALID_EMAIL)
-              }
-          }else{
-              Result.Error(error = ForgetPasswordError.NO_INTERNET)
-          }
-        }catch (e: Exception){
-          Log.e("ForgetPasswordRepositoryImpl", "resetPassword: $e")
-            return Result.Error(error = ForgetPasswordError.UNKNOWN_ERROR)
-       }
-    }
-
-    override suspend fun verifyOtp(email: String, otp: String): Result<ForgetPasswordSuccess, ForgetPasswordError> {
         return try {
-            if (_networkStatus.value == ConnectivityObserver.Status.Available){
-                val response = api.verifyOtp(VerifyOtpBody(email = email, otp = otp))
-                if (response.isSuccessful){
-                    val body = response.body()
-                    if (body!= null){
-                        Result.Success(data = ForgetPasswordSuccess.SUCCESS_EMAIL_VERIFIED)
-                    }else{
-                        Result.Error(error = ForgetPasswordError.INVALID_OTP)
-                    }
-                }else{
-                    Result.Error(error = ForgetPasswordError.UNKNOWN_ERROR)
+            val response = api.requestOtp(RequestOtpBody(email))
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    Result.Success(data = ForgetPasswordSuccess.SUCCESS_EMAIL_SENT)
+                } else {
+                    Result.Error(error = ForgetPasswordError.INVALID_EMAIL)
                 }
-            }else{
-                return Result.Error(error = ForgetPasswordError.NO_INTERNET)
+            } else {
+                Log.e("ForgetPasswordRepositoryImpl", "resetPassword 1 ")
+                Result.Error(error = ForgetPasswordError.INVALID_EMAIL)
             }
-
-        }catch (e: Exception){
+        } catch (e: Exception) {
+            Log.e("ForgetPasswordRepositoryImpl", "resetPassword: $e")
             return Result.Error(error = ForgetPasswordError.UNKNOWN_ERROR)
         }
     }
 
-    override suspend fun resetPassword(email: String, password: String): Result<ForgetPasswordSuccess, ForgetPasswordError> {
+    override suspend fun verifyOtp(
+        email: String,
+        otp: String
+    ): Result<ForgetPasswordSuccess, ForgetPasswordError> {
         return try {
-            if (_networkStatus.value == ConnectivityObserver.Status.Available){
-                val response = api.resetPassword(ResetPasswordBody(email = email, new_password = password))
-                if (response.isSuccessful){
+            if (_networkStatus.value == ConnectivityObserver.Status.Available) {
+                val response = api.verifyOtp(VerifyOtpBody(email = email, otp = otp))
+                if (response.isSuccessful) {
                     val body = response.body()
-                    if (body != null){
+                    if (body != null) {
+                        Result.Success(data = ForgetPasswordSuccess.SUCCESS_EMAIL_VERIFIED)
+                    } else {
+                        Result.Error(error = ForgetPasswordError.INVALID_OTP)
+                    }
+                } else {
+                    Result.Error(error = ForgetPasswordError.INVALID_OTP)
+                }
+            } else {
+                return Result.Error(error = ForgetPasswordError.NO_INTERNET)
+            }
+
+        } catch (_: Exception) {
+            return Result.Error(error = ForgetPasswordError.UNKNOWN_ERROR)
+        }
+    }
+
+    override suspend fun resetPassword(
+        email: String,
+        password: String
+    ): Result<ForgetPasswordSuccess, ForgetPasswordError> {
+        return try {
+            if (_networkStatus.value == ConnectivityObserver.Status.Available) {
+                val response =
+                    api.resetPassword(ResetPasswordBody(email = email, new_password = password))
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
                         Result.Success(data = ForgetPasswordSuccess.SUCCESS_PASSWORD_RESET)
-                    }else{
+                    } else {
                         Result.Error(error = ForgetPasswordError.INVALID_PASSWORD)
                     }
-                }else{
+                } else {
                     Log.e("ForgetPasswordRepositoryImpl", "resetPassword: Error")
                     Result.Error(error = ForgetPasswordError.UNKNOWN_ERROR)
                 }
-            }else{
+            } else {
                 return Result.Error(error = ForgetPasswordError.NO_INTERNET)
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.e("ForgetPasswordRepositoryImpl", "resetPassword: ${e.message}")
             return Result.Error(error = ForgetPasswordError.UNKNOWN_ERROR)
         }
     }
-
-
-
 
 
     private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

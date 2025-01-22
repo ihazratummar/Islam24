@@ -5,8 +5,6 @@ import android.content.pm.PackageManager
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -63,6 +61,7 @@ import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.getCacheProfilePicture
+import com.hazrat.islam24.util.hapticFeedbacks
 import com.hazrat.islam24.util.toUri
 
 /**
@@ -74,8 +73,10 @@ fun ProfileScreen(
     navController: NavController,
     authState: AuthState,
     profileEvent: (ProfileEvent) -> Unit,
-    profileState: ProfileState
+    profileState: ProfileState,
+    isHapticFeedback: Boolean = false
 ) {
+    val hapticFeedback = LocalHapticFeedback.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -91,12 +92,17 @@ fun ProfileScreen(
         )
         ProfileComponent(
             navController = navController,
-            profileEvent = profileEvent
+            profileEvent = profileEvent,
         )
     }
 
     if (profileState.isRatingDialogOpen) {
-        RatingBottomSheet(profileEvent)
+        RatingBottomSheet(
+            profileEvent,
+            hapticFeedback ={
+                hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
+            }
+        )
     }
 
 }
@@ -105,8 +111,10 @@ fun ProfileScreen(
 @Composable
 private fun ProfileComponent(
     navController: NavController,
-    profileEvent: (ProfileEvent) -> Unit
-) {
+    profileEvent: (ProfileEvent) -> Unit,
+
+    ) {
+
     val activity: Activity = LocalContext.current as MainActivity
     val context = LocalContext.current
     LazyColumn(
@@ -133,7 +141,9 @@ private fun ProfileComponent(
             ProfileScreenItemCard(
                 painter = painterResource(id = R.drawable.like),
                 text = stringResource(id = R.string.rate),
-                onClick = { profileEvent(ProfileEvent.RateUs(activity)) },
+                onClick = {
+                    profileEvent(ProfileEvent.RateUs(activity))
+                },
                 trailingIcon = painterResource(id = R.drawable.chevron_right)
             )
             ProfileScreenItemCard(
@@ -217,10 +227,10 @@ private fun ProfileHeader(
         is AuthState.Authenticated -> {
             val context = LocalContext.current
             val cacheFile = getCacheProfilePicture(context = context)
-            val imageUri = remember { mutableStateOf(cacheFile?.toUri()?.toString() ) }
+            val imageUri = remember { mutableStateOf(cacheFile?.toUri()?.toString()) }
             val painter = rememberAsyncImagePainter(
                 model = ImageRequest.Builder(context)
-                    .data(imageUri.value )
+                    .data(imageUri.value)
                     .size(Size.ORIGINAL)
                     .crossfade(true)
                     .build()
@@ -396,7 +406,7 @@ fun MainTopProfileCard(
                                 }
                             }
                         }
-                    }else{
+                    } else {
                         Icon(
                             painter = painterResource(R.drawable.profile),
                             contentDescription = "error",

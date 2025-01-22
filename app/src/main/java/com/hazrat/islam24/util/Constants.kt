@@ -53,4 +53,12 @@ object Constants {
 
     const val APP_DATA_STORE = "APP_DATA_STORE"
 
+    const val USER_DATA_SORE = "USER_DATA_SORE"
+
+    /*
+    Islam 24 Backend
+     */
+
+    const val RENDER_BASE_URL = "https://islam24-backend.onrender.com/"
+
 }

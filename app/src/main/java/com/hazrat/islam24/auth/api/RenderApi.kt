@@ -17,7 +17,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-interface VercelApi {
+interface RenderApi {
     @POST("request_otp")
     suspend fun requestOtp(@Body body: RequestOtpBody): Response<RequestOtpResponse>
 

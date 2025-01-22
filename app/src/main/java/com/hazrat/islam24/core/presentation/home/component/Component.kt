@@ -82,9 +82,9 @@ fun isPrayerTime(
             3600000
         ))
     val isMaghribTime =
-        currentTime in currentDayPrayerTimes.maghribTime..((currentDayPrayerTimes.ishaTime.minus(
+        currentTime in currentDayPrayerTimes.maghribTime..(currentDayPrayerTimes.ishaTime.minus(
             1800000
-        )) ?: 0)
+        ))
     val isIshaTime =
         currentTime in currentDayPrayerTimes.ishaTime..currentDayPrayerTimes.midnightTime
 
@@ -328,9 +328,6 @@ fun DailyQuranAyat(
     val enQuran = quranState.quranEnData
     val bnQuran = quranState.quranBnData
 
-    val totalAyat = 6236
-    val randomAyah = (1..totalAyat).random()
-
     val allArAyah = arquran?.flatMap { it.ayahs } ?: emptyList()
     val arAyah = allArAyah.find { it.number == homeState.randomAyatNumber }
     val surah = arquran?.find { surah -> surah.ayahs.any { it.number == homeState.randomAyatNumber } }
@@ -394,7 +391,7 @@ fun DailyQuranAyat(
                             append(" $arNumber")
                         }
                     },
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style = MaterialTheme.typography.displayMedium.copy(
                         textDirection = TextDirection.Rtl
                     )
                 )
