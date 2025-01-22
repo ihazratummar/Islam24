@@ -36,8 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.navigation.authNavGraph
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.presentation.al_quran.QuranScreen
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.al_quran.SurahScreen
@@ -67,11 +66,11 @@ import kotlinx.serialization.Serializable
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AppNavigator(
-    appSettingState: AppSettingState,
-    appSettingEvent: (AppSettingEvent) -> Unit,
     zakatViewModel: ZakatViewModel,
     quranViewModel: QuranViewModel,
     prayerTimeViewModel: PrayerTimeViewModel,
+    appSettingViewModel: AppSettingViewModel,
+    isHapticFeedback: Boolean = false
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -225,12 +224,12 @@ fun AppNavigator(
             }
             authNavGraph(
                 navController = navController,
-                appSettingState = appSettingState,
-                appSettingEvent = appSettingEvent
+                appSettingViewModel = appSettingViewModel,
+                isHapticFeedback = isHapticFeedback
             )
             zakatNavGraph(
                 navController = navController,
-                zakatViewModel = zakatViewModel
+                zakatViewModel = zakatViewModel,
             )
         }
     }

@@ -2,9 +2,8 @@ package com.hazrat.islam24.util.datastore
 
 import android.content.Context
 import android.media.MediaFormat.KEY_LANGUAGE
-import com.hazrat.islam24.auth.presentation.appSetting.Themes
-import com.hazrat.islam24.util.Constants.KEY_SORT_BY
 import com.hazrat.islam24.core.presentation.zakat.DateType
+import com.hazrat.islam24.util.Constants.KEY_SORT_BY
 import com.hazrat.islam24.util.Languages
 import javax.inject.Inject
 
@@ -14,8 +13,6 @@ class DataStorePreference @Inject constructor(
 
     companion object{
         private const val PREF_NAME = "app_setting"
-        private const val KEY_THEME_MODE = "theme_mode"
-        private const val KEY_THEME_NAME = "theme_name"
 
         private const val KEY_FAJR_NOTIFICATION = "fajr_notification"
         private const val KEY_DHUHR_NOTIFICATION = "dhuhr_notification"
@@ -56,27 +53,6 @@ class DataStorePreference @Inject constructor(
         val language =
             pref.getString(KEY_LANGUAGE, Languages.ENGLISH.name) ?: Languages.ENGLISH.name
         return Languages.valueOf(language)
-    }
-
-    fun setThemeMode(themeMode: Boolean) {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        pref.edit().putBoolean(KEY_THEME_MODE, themeMode).apply()
-    }
-
-    fun getThemeMode(): Boolean {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return pref.getBoolean(KEY_THEME_MODE, true)
-    }
-
-    fun setThemeName(themes: Themes) {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        pref.edit().putString(KEY_THEME_NAME, themes.name).apply()
-    }
-
-    fun getThemeName(): Themes {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val themeName = pref.getString(KEY_THEME_NAME, Themes.DARK.name) ?: Themes.DARK.name
-        return Themes.valueOf(themeName)
     }
 
 

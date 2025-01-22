@@ -29,7 +29,7 @@ class LoginViewModel @Inject constructor(
     private val zakatRepository: ZakatRepository,
     private val profileRepository: ProfileRepository,
     private val storage: FirebaseStorage,
-    private val quranRepository: QuranRepository
+    private val quranRepository: QuranRepository,
 ) : ViewModel() {
 
 

@@ -17,7 +17,6 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.presentation.profiledetails.UserEvent
-import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
@@ -26,10 +25,10 @@ import com.hazrat.islam24.notification.MediaPlayerHelper
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
 import com.hazrat.islam24.util.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
-import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.MyFileUtils.saveMp3File
-import com.hazrat.islam24.util.datastore.DataStore
+import com.hazrat.islam24.util.datastore.DataStorePreference
+import com.hazrat.islam24.util.datastore.LocalDataStore
 import com.hazrat.islam24.util.datastore.NotificationType
 import com.hazrat.islam24.util.datastore.PrayerName
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,9 +52,8 @@ class PrayerTimeViewModel @Inject constructor(
     private val repository: PrayerTimeRepository,
     private val prayerAlarmManager: PrayerAlarmManager,
     private val dataStorePreference: DataStorePreference,
-    private val prayerTimeDao: PrayerTimeDao,
     private val mediaPlayerHelper: MediaPlayerHelper,
-    private val dataStore: DataStore
+    private val dataStore: LocalDataStore
 ) : ViewModel() {
 
 

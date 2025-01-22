@@ -6,10 +6,11 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -41,14 +42,8 @@ fun vibrateDevice(context: Context, vibrateTime: Long) {
     }
 }
 
-fun NavController.popUpTo(destination: String) = navigate(destination) {
-    popUpTo(graph.findStartDestination().id) {
-        saveState = true
-    }
-    restoreState = true
-}
 
-fun Context.getActivity(): Activity? = when(this){
+fun Context.getActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.getActivity()
     else -> null
@@ -71,7 +66,8 @@ fun checkSystemLanguage(context: Context): String {
 
 fun getCacheProfilePicture(context: Context): File? {
     val directory = File(context.filesDir, INTERNALSTORAGEPICTUREFOLDER)
-    val file = File(directory, "$PROFILE_PICTURE.jpg") // Look for the file in the specified directory
+    val file =
+        File(directory, "$PROFILE_PICTURE.jpg") // Look for the file in the specified directory
     return if (file.exists()) file else null
 }
 
@@ -80,15 +76,33 @@ fun File.toUri(): Uri {
 }
 
 
-fun fetchPrayerTimeForNotification(prayerName: PrayerName, prayerDatabase: PrayerDatabase, callback: (Long) -> Unit){
+fun fetchPrayerTimeForNotification(
+    prayerName: PrayerName,
+    prayerDatabase: PrayerDatabase,
+    callback: (Long) -> Unit
+) {
     thread {
         val prayerTime = when (prayerName) {
             PrayerName.FAJR -> prayerDatabase.prayerTimeDao().getFajrTimeForTheDay(getCurrentDate())
-            PrayerName.DHUHR -> prayerDatabase.prayerTimeDao().getDhuhrTimeForTheDay(getCurrentDate())
+            PrayerName.DHUHR -> prayerDatabase.prayerTimeDao()
+                .getDhuhrTimeForTheDay(getCurrentDate())
+
             PrayerName.ASR -> prayerDatabase.prayerTimeDao().getAsrTimeForTheDay(getCurrentDate())
-            PrayerName.MAGHRIB -> prayerDatabase.prayerTimeDao().getMaghribTimeForTheDay(getCurrentDate())
+            PrayerName.MAGHRIB -> prayerDatabase.prayerTimeDao()
+                .getMaghribTimeForTheDay(getCurrentDate())
+
             PrayerName.ISHA -> prayerDatabase.prayerTimeDao().getIshaTimeForTheDay(getCurrentDate())
         }
         callback(prayerTime)
+    }
+}
+
+
+fun hapticFeedbacks(
+    isEnable: Boolean,
+    hapticFeedback: HapticFeedback
+) {
+    if (isEnable) {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
     }
 }

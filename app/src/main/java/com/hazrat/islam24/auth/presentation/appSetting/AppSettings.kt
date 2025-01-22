@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -37,6 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -44,10 +48,10 @@ import androidx.navigation.NavController
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
-import com.hazrat.islam24.auth.presentation.appSetting.component.SelectThemeDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Languages
+import com.hazrat.islam24.util.hapticFeedbacks
 import kotlinx.coroutines.launch
 
 /**
@@ -59,14 +63,13 @@ import kotlinx.coroutines.launch
 fun AppSettingScreen(
     navController: NavController,
     authState: AuthState,
-    appSettingState: AppSettingState,
     appSettingEvent: (AppSettingEvent) -> Unit,
-    appSettingStateTheme: AppSettingState,
-    appSettingEventTheme: (AppSettingEvent) -> Unit
+    appSettingState: AppSettingState,
+    isHapticFeedback: Boolean = false
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
+    val hapticFeedback = LocalHapticFeedback.current
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Error -> {
@@ -78,6 +81,7 @@ fun AppSettingScreen(
                     )
                 }
             }
+
             else -> Unit
         }
     }
@@ -157,19 +161,39 @@ fun AppSettingScreen(
                             selectedText = when (appSettingState.currentLanguage) {
                                 Languages.ENGLISH -> stringResource(R.string.english)
                                 Languages.BENGALI -> stringResource(R.string.bengali)
+                                null -> ""
                             }
                         )
+
                         SettingItemCard(
                             painter = painterResource(id = R.drawable.theme_light_dark),
                             text = stringResource(R.string.theme),
                             onClick = {
-                                appSettingEventTheme(AppSettingEvent.ClickThemeDialog)
+                                hapticFeedbacks(
+                                    isEnable = isHapticFeedback,
+                                    hapticFeedback = hapticFeedback
+                                )
+                                appSettingEvent(AppSettingEvent.ToggleTheme)
                             },
-                            selectedText = when (appSettingStateTheme.currentTheme) {
-                                Themes.DARK -> stringResource(R.string.dark)
-                                Themes.LIGHT -> stringResource(R.string.light)
-                            }
+                            isSwitch = true,
+                            isSwitchChecked = appSettingState.toggleTheme,
                         )
+
+                        SettingItemCard(
+                            painter = painterResource(id = R.drawable.vibrate),
+                            text = stringResource(R.string.enable_haptic),
+                            onClick = {
+                                appSettingEvent(AppSettingEvent.HapticFeedbackClick)
+                                hapticFeedbacks(
+                                    isEnable = isHapticFeedback,
+                                    hapticFeedback = hapticFeedback
+                                )
+                            },
+                            isSwitch = true,
+                            isSwitchChecked = appSettingState.isHapticFeedbackEnabled,
+                        )
+
+
                         SettingItemCard(
                             painter = painterResource(id = R.drawable.sysemsetting),
                             text = stringResource(R.string.system_seeting),
@@ -183,11 +207,14 @@ fun AppSettingScreen(
             item {
                 Spacer(modifier = Modifier.height(dimens.size10))
                 when (authState) {
-                    is AuthState.Authenticated , is AuthState.Error -> {
+                    is AuthState.Authenticated, is AuthState.Error -> {
                         SettingItemCard(
                             painter = painterResource(id = R.drawable.logout),
                             text = stringResource(R.string.logout),
                             onClick = {
+                                if (appSettingState.isHapticFeedbackEnabled) {
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
                                 appSettingEvent(AppSettingEvent.SignOut)
                             },
                             iconColor = MaterialTheme.colorScheme.error,
@@ -215,10 +242,6 @@ fun AppSettingScreen(
         if (appSettingState.isLanguageDialogOpen) {
             SelectLanguageDialog(appSettingEvent)
         }
-
-        if (appSettingStateTheme.isThemeDialogOpen) {
-            SelectThemeDialog(appSettingEventTheme)
-        }
     }
 }
 
@@ -231,7 +254,9 @@ private fun SettingItemCard(
     onClick: () -> Unit = {},
     iconColor: Color = MaterialTheme.colorScheme.onBackground,
     cardContainerColor: Color = Color.Transparent,
-    selectedText: String = ""
+    selectedText: String = "",
+    isSwitch: Boolean = false,
+    isSwitchChecked: Boolean = false
 ) {
     Card(
         modifier = modifier
@@ -256,7 +281,9 @@ private fun SettingItemCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    modifier = Modifier.padding(horizontal = dimens.size10),
+                    modifier = Modifier
+                        .padding(horizontal = dimens.size10)
+                        .size(dimens.size40),
                     painter = painter,
                     contentDescription = text,
                     tint = iconColor
@@ -268,18 +295,30 @@ private fun SettingItemCard(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    modifier = Modifier,
-                    text = selectedText,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Icon(
-                    modifier = Modifier.padding(horizontal = dimens.size10),
-                    painter = painterResource(id = R.drawable.arrowright),
-                    contentDescription = text,
-                    tint = iconColor
-                )
+                if (isSwitch) {
+                    Switch(
+                        modifier = Modifier
+                            .padding(horizontal = dimens.size10),
+                        checked = isSwitchChecked,
+                        onCheckedChange = {
+                            onClick()
+                        }
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier,
+                        text = selectedText,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Icon(
+                        modifier = Modifier.padding(horizontal = dimens.size10),
+                        painter = painterResource(id = R.drawable.arrowright),
+                        contentDescription = text,
+                        tint = iconColor
+                    )
+                }
+
             }
         }
     }
