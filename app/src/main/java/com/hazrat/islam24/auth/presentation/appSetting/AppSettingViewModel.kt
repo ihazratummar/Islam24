@@ -10,12 +10,16 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
-import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.changeLanguage
+import com.hazrat.islam24.util.datastore.AppDataStore
+import com.hazrat.islam24.util.datastore.DataStorePreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,23 +34,48 @@ class AppSettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val profileRepository: ProfileRepository,
     private val dataStorePreference: DataStorePreference,
-    private val quranRepository: QuranRepository
+    private val quranRepository: QuranRepository,
+    private val appDataStore: AppDataStore
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
         AppSettingState(
             currentLanguage = dataStorePreference.getLanguage(),
-            isDarkMode = dataStorePreference.getThemeMode(),
-            currentTheme = dataStorePreference.getThemeName(),
         )
     )
-    val appSettingState = _state.asStateFlow()
-
+    val appSettingState : StateFlow<AppSettingState> = combine(
+        _state,
+        appDataStore.isDarkModeEnabled,
+        appDataStore.isHapticEnabled
+    ){ state, isDarkModeEnabled, isHapticEnabled ->
+        state.copy(
+            toggleTheme = isDarkModeEnabled,
+            isHapticFeedbackEnabled = isHapticEnabled
+        )
+    }.stateIn(
+        viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = AppSettingState()
+    )
 
 
     val authState: LiveData<AuthState> = profileRepository.authState
     init {
         profileRepository.checkAuthStatus()
+
+//        viewModelScope.launch{
+//            val darkMode = appDataStore.getDarkModeEnabled()
+//            val hapticFeedback = appDataStore.getHapticEnabled()
+//
+//            _state.update {
+//                it.copy(
+//                    toggleTheme = darkMode,
+//                    isHapticFeedbackEnabled = hapticFeedback,
+//
+//                )
+//            }
+//        }
+
     }
 
     fun onAppSettingEvent(event: AppSettingEvent) {
@@ -71,42 +100,6 @@ class AppSettingViewModel @Inject constructor(
                     changeLanguage(language = newLanguage, context = context)
                 }
             }
-            is AppSettingEvent.ChangeTheme -> {
-                viewModelScope.launch {
-                    when (event.theme) {
-                        Themes.DARK -> {
-                            _state.update {
-                                it.copy(
-                                    isDarkMode = true,
-                                    currentTheme = Themes.DARK
-                                )
-                            }
-                            dataStorePreference.setThemeMode( true)
-                            dataStorePreference.setThemeName( Themes.DARK)
-                        }
-
-                        Themes.LIGHT -> {
-                            _state.update {
-                                it.copy(
-                                    isDarkMode = false,
-                                    currentTheme = Themes.LIGHT
-                                )
-                            }
-                            dataStorePreference.setThemeMode( false)
-                            dataStorePreference.setThemeName( Themes.LIGHT)
-                        }
-                    }
-                }
-            }
-
-            AppSettingEvent.ClickThemeDialog -> {
-                _state.update {
-                    it.copy(
-                        isThemeDialogOpen = !it.isThemeDialogOpen
-                    )
-                }
-            }
-
             AppSettingEvent.OpenAppSetting -> {
                 val intent: Intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.fromParts("package", context.packageName, null)
@@ -124,6 +117,25 @@ class AppSettingViewModel @Inject constructor(
 
             AppSettingEvent.RefreshAuth -> {
                 profileRepository.checkAuthStatus()
+            }
+
+            AppSettingEvent.HapticFeedbackClick ->{
+                _state.update {
+                    it.copy(isHapticFeedbackEnabled = !it.isHapticFeedbackEnabled)
+                }
+                viewModelScope.launch{
+                    appDataStore.enableHaptic(_state.value.isHapticFeedbackEnabled)
+                }
+            }
+
+            AppSettingEvent.ToggleTheme -> {
+                val newTheme = !_state.value.toggleTheme
+                _state.update {
+                    it.copy(toggleTheme = newTheme)
+                }
+                viewModelScope.launch{
+                    appDataStore.enableDarkTheme(newTheme)
+                }
             }
         }
     }

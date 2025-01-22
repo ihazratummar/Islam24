@@ -5,8 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import androidx.work.impl.model.Preference
 import com.hazrat.islam24.util.Constants.APP_DATA_STORE
+import com.hazrat.islam24.util.Constants.USER_DATA_SORE
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +28,17 @@ object AppModule {
     ): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create {
             context.preferencesDataStoreFile(APP_DATA_STORE)
+        }
+    }
+
+    @Singleton
+    @Provides
+    @Named(USER_DATA_SORE)
+    fun provideUserDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create {
+            context.preferencesDataStoreFile(USER_DATA_SORE)
         }
     }
 

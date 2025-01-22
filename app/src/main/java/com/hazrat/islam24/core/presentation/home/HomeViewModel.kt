@@ -5,15 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
-import com.hazrat.islam24.util.datastore.DataStore
+import com.hazrat.islam24.util.datastore.LocalDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,7 +24,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val prayerTimeRepository: PrayerTimeRepository,
 //    private val locationNameRepository: LocationNameRepository,
-    private val dataStore: DataStore
+    private val dataStore: LocalDataStore
 ):ViewModel() {
 //    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
     val prayerTimes: StateFlow<List<PrayerTimeEntity>> = prayerTimeRepository.prayerTimes

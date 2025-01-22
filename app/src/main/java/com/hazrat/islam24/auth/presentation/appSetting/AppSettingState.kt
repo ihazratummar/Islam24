@@ -3,9 +3,8 @@ package com.hazrat.islam24.auth.presentation.appSetting
 import com.hazrat.islam24.util.Languages
 
 data class AppSettingState(
-    val currentLanguage: Languages ,
+    val currentLanguage: Languages ? = null ,
     val isLanguageDialogOpen: Boolean = false,
-    val isThemeDialogOpen: Boolean = false,
-    val isDarkMode: Boolean = true,
-    val currentTheme: Themes,
+    val isHapticFeedbackEnabled: Boolean = false,
+    val toggleTheme: Boolean = false
 )

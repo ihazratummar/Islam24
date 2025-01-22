@@ -135,4 +135,5 @@
     <string name="surah">সূরা</string>
     <string name="favorite">প্রিয়</string>
     <string name="start_reading">পড়া শুরু করুন</string>
+    <string name="enable_haptic">Enable Haptic</string>
 </resources>

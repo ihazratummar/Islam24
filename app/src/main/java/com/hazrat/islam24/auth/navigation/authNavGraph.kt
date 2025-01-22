@@ -11,9 +11,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingScreen
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPassword
 import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
@@ -21,7 +19,6 @@ import com.hazrat.islam24.auth.presentation.login.AuthLoginScreen
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
-import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsScreen
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
@@ -36,8 +33,8 @@ import kotlinx.serialization.Serializable
 @RequiresApi(Build.VERSION_CODES.S)
 fun NavGraphBuilder.authNavGraph(
     navController: NavController,
-    appSettingState: AppSettingState,
-    appSettingEvent: (AppSettingEvent) -> Unit
+    appSettingViewModel: AppSettingViewModel,
+    isHapticFeedback: Boolean = false
 ) {
     navigation<Auth>(startDestination = MainRoute.ProfileScreen) {
         composable<Login> {
@@ -62,7 +59,8 @@ fun NavGraphBuilder.authNavGraph(
                 },
                 navigateToForgotPassword = {
                     navController.navigate(ForgettingPassword)
-                }
+                },
+                isHapticFeedback = isHapticFeedback
             )
         }
         composable<SignUp> {
@@ -90,7 +88,8 @@ fun NavGraphBuilder.authNavGraph(
                     navController.navigate(MainRoute.ProfileScreen) {
                         popUpTo(SignUp) { inclusive = true }
                     }
-                }
+                },
+                isHapticFeedback = isHapticFeedback
             )
         }
         composable<MainRoute.ProfileScreen> {
@@ -102,21 +101,20 @@ fun NavGraphBuilder.authNavGraph(
                 navController = navController,
                 authState = authState,
                 profileEvent = profileEvent,
-                profileState = profileState
+                profileState = profileState,
+                isHapticFeedback = isHapticFeedback
             )
         }
         composable<ProfileSettingScreen> {
-            val appSettingViewModel = hiltViewModel<AppSettingViewModel>()
             val authState by appSettingViewModel.authState.observeAsState(AuthState.Loading)
-            val appSettingState1 by appSettingViewModel.appSettingState.collectAsState()
-            val appSettingEvent1 = appSettingViewModel::onAppSettingEvent
+            val appSettingEvent = appSettingViewModel::onAppSettingEvent
+            val appSettingState by appSettingViewModel.appSettingState.collectAsState()
             AppSettingScreen(
                 navController = navController,
                 authState = authState,
-                appSettingState = appSettingState1,
-                appSettingEvent = appSettingEvent1,
-                appSettingStateTheme = appSettingState,
-                appSettingEventTheme = appSettingEvent
+                appSettingEvent = appSettingEvent,
+                appSettingState = appSettingState,
+                isHapticFeedback = isHapticFeedback
             )
         }
         composable<ProfileDetailsScreen> {
@@ -128,7 +126,8 @@ fun NavGraphBuilder.authNavGraph(
                 navController = navController,
                 profileState = appSettingState1,
                 profileDetailsEvent = profileDetailsEvent,
-                userEvent = userEvent
+                userEvent = userEvent,
+                isHapticFeedback = isHapticFeedback
             )
         }
         composable<ForgettingPassword> {
@@ -148,7 +147,8 @@ fun NavGraphBuilder.authNavGraph(
                         }
                         launchSingleTop = true
                     }
-                }
+                },
+                isHapticFeedback = isHapticFeedback
             )
         }
     }

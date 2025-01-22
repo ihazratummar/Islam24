@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,7 +54,6 @@ import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
-import com.hazrat.islam24.util.datastore.DataStore
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)

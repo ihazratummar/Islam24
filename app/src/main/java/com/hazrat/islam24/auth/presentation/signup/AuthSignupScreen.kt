@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,17 +18,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -47,6 +44,7 @@ import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.core.presentation.common.BasicTopBar
 import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.util.hapticFeedbacks
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -60,10 +58,11 @@ fun AuthSignupScreen(
     authState: AuthState,
     onBackClick: () -> Unit,
     navigateToLogin: () -> Unit,
-    navigateToProfile: () -> Unit
+    navigateToProfile: () -> Unit,
+    isHapticFeedback: Boolean = false
 ) {
     val context = LocalContext.current
-
+    val hapticFeedback = LocalHapticFeedback.current
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Authenticated -> {
@@ -157,6 +156,7 @@ fun AuthSignupScreen(
                         value = signUpState.password,
                         onValueChange = {
                             onEvent(SingupEvent.SetPassword(it))
+
                         },
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Next,
@@ -166,6 +166,7 @@ fun AuthSignupScreen(
                                 style = MaterialTheme.typography.labelSmall,
                                 modifier = Modifier.clickable {
                                     onEvent(SingupEvent.OnPasswordVisibilityChanged)
+                                    hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
                                 },
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -194,6 +195,7 @@ fun AuthSignupScreen(
                                 style = MaterialTheme.typography.labelSmall,
                                 modifier = Modifier.clickable {
                                     onEvent(SingupEvent.OnConfirmPasswordVisibilityChanged)
+                                    hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
                                 },
                                 color = MaterialTheme.colorScheme.primary
                             )
@@ -244,6 +246,7 @@ fun AuthSignupScreen(
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.clickable {
                                 navigateToLogin()
+                                hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
                             }
                         )
                     }
@@ -261,6 +264,7 @@ private fun SignupButton(
     signUpState: SingupState,
     authState: AuthState
 ) {
+    val hapticFeedback = LocalHapticFeedback.current
     Button(
         onClick = {
             onEvent(
@@ -271,6 +275,7 @@ private fun SignupButton(
                     signUpState.confirmPassword
                 )
             )
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         modifier = modifier.fillMaxWidth()
             .let { if (authState == AuthState.Loading) it.profileCardShimmerEffect() else it },
