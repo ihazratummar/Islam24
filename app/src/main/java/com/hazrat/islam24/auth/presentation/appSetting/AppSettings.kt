@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -101,24 +102,22 @@ fun AppSettingScreen(
                 )
             }
         },
-        containerColor = MaterialTheme.colorScheme.surfaceDim,
         topBar = {
             TopAppBar(
                 modifier = Modifier.padding(top = dimens.size30),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceDim
-                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.setting),
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
+                    IconButton(
+                        modifier = Modifier.padding(dimens.size5),
+                        onClick = {
+                            navController.popBackStack()
+                        }) {
                         Icon(
                             painter = painterResource(id = R.drawable.backicon),
                             contentDescription = null
@@ -139,7 +138,7 @@ fun AppSettingScreen(
             item {
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 ) {
@@ -159,8 +158,11 @@ fun AppSettingScreen(
                                 appSettingEvent(AppSettingEvent.ClickLanguageDialog)
                             },
                             selectedText = when (appSettingState.currentLanguage) {
-                                Languages.ENGLISH -> stringResource(R.string.english)
-                                Languages.BENGALI -> stringResource(R.string.bengali)
+                                Languages.ENGLISH -> {
+                                    stringResource(Languages.ENGLISH.getString())
+                                }
+
+                                Languages.BENGALI -> stringResource(Languages.BENGALI.getString())
                                 null -> ""
                             }
                         )
@@ -218,7 +220,7 @@ fun AppSettingScreen(
                                 appSettingEvent(AppSettingEvent.SignOut)
                             },
                             iconColor = MaterialTheme.colorScheme.error,
-                            cardContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                            cardContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                         )
                     }
 
@@ -298,7 +300,9 @@ private fun SettingItemCard(
                 if (isSwitch) {
                     Switch(
                         modifier = Modifier
-                            .padding(horizontal = dimens.size10),
+                            .padding(end = dimens.size20)
+                            .size(dimens.size40)
+                            .scale(0.6f),
                         checked = isSwitchChecked,
                         onCheckedChange = {
                             onClick()

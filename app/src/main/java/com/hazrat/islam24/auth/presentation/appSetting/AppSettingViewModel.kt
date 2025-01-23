@@ -63,18 +63,18 @@ class AppSettingViewModel @Inject constructor(
     init {
         profileRepository.checkAuthStatus()
 
-//        viewModelScope.launch{
-//            val darkMode = appDataStore.getDarkModeEnabled()
-//            val hapticFeedback = appDataStore.getHapticEnabled()
-//
-//            _state.update {
-//                it.copy(
-//                    toggleTheme = darkMode,
-//                    isHapticFeedbackEnabled = hapticFeedback,
-//
-//                )
-//            }
-//        }
+        viewModelScope.launch{
+            val darkMode = appDataStore.getDarkModeEnabled()
+            val hapticFeedback = appDataStore.getHapticEnabled()
+
+            _state.update {
+                it.copy(
+                    toggleTheme = darkMode,
+                    isHapticFeedbackEnabled = hapticFeedback,
+
+                )
+            }
+        }
 
     }
 

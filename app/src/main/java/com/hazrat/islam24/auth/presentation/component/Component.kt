@@ -79,7 +79,7 @@ fun CustomTextField(
         modifier = Modifier.fillMaxWidth(),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.surface
+            unfocusedBorderColor = MaterialTheme.colorScheme.secondaryContainer
         )
     )
 }
@@ -136,7 +136,7 @@ fun ButtonLoading(modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(dimens.size10),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            contentColor = MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
         Text("Submit")

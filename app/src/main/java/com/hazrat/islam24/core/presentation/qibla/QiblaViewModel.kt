@@ -40,7 +40,7 @@ class QiblaViewModel @Inject constructor(
         locationManager.onLocationReceived = { location ->
             Log.d(
                 "LocationManager",
-                "Location received: ${location.latitude}, ${location.longitude}"
+                "LocationOnCard received: ${location.latitude}, ${location.longitude}"
             )
             val qiblaDirection =
                 calculateQiblaDirection(location.latitude, location.longitude).toFloat()

@@ -147,7 +147,6 @@ fun ProfileDetailsScreen(
             TopAppBar(
                 modifier = Modifier.padding(top = dimens.size30),
                 title = { Text(text = "Profile") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceDim),
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -161,8 +160,7 @@ fun ProfileDetailsScreen(
                 windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
             )
         },
-        modifier = Modifier,
-        containerColor = MaterialTheme.colorScheme.surfaceDim
+        modifier = Modifier
     ) { paddingValues ->
         var showImagePreview by remember { mutableStateOf(false) }
         var activeImage by remember { mutableStateOf<String?>(null) }
@@ -270,7 +268,7 @@ private fun UpdateDataDetails(
             onDismissRequest = {
                 onDismiss()
             },
-            containerColor = MaterialTheme.colorScheme.surfaceDim
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
         ) {
             Column(
                 modifier = Modifier
@@ -341,8 +339,8 @@ private fun ProfileDataCards(
                 interactionSource = remember { MutableInteractionSource() }
             ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
     ) {
         Row(
