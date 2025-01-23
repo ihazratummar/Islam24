@@ -2,6 +2,7 @@ package com.hazrat.islam24.core.presentation.home.component
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -41,7 +43,7 @@ import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.model.ui_text_model.benefitsOfRecitingDataList
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
-import com.hazrat.islam24.core.presentation.common.LocationName
+import com.hazrat.islam24.core.presentation.common.LocationOnCard
 import com.hazrat.islam24.core.presentation.home.HomeState
 import com.hazrat.islam24.ui.theme.Hidaya
 import com.hazrat.islam24.ui.theme.Kitab
@@ -167,7 +169,9 @@ fun TimeLocationCard(
                     horizontalAlignment = Alignment.End
                 ) {
 
-                    LocationName(locationDetailsEntity)
+                    LocationOnCard(
+                        locationDetailsEntity = locationDetailsEntity
+                    )
                     Spacer(modifier = Modifier.height(dimens.size8))
                     if (isPrayerTime(prayerTimes)) {
                         Text(
@@ -248,7 +252,7 @@ fun RamadanCard() {
             Text(
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = stringResource(R.string.ramadan),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold
@@ -256,7 +260,7 @@ fun RamadanCard() {
             Text(
                 modifier = Modifier.align(Alignment.CenterEnd),
                 text = stringResource(R.string.days, formattedDaysRemaining),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontFamily = Hidaya
             )
@@ -272,15 +276,18 @@ fun BenefitsOfRecitingWidget(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = dimens.size20),
+            .padding(horizontal = dimens.size20)
+            .clip(
+                shape = RoundedCornerShape(dimens.size10)
+            ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor =  MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimens.size20, vertical = dimens.size5)
+                .padding(horizontal = dimens.size20, vertical = dimens.size10)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -289,7 +296,8 @@ fun BenefitsOfRecitingWidget(
                 Text(
                     text = stringResource(R.string.benefits_of_reciting_the_quran),
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Thin
+                        fontWeight = FontWeight.Thin,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 )
                 Text(
@@ -306,8 +314,9 @@ fun BenefitsOfRecitingWidget(
             benefitsOfRecitingDataList.take(5).forEach {
                 Text(
                     text = "${it.number}. ${stringResource(it.title)}",
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontWeight = FontWeight.Normal
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     ),
                     modifier = Modifier.padding(horizontal = dimens.size10, vertical = dimens.size5)
                 )
@@ -330,7 +339,8 @@ fun DailyQuranAyat(
 
     val allArAyah = arquran?.flatMap { it.ayahs } ?: emptyList()
     val arAyah = allArAyah.find { it.number == homeState.randomAyatNumber }
-    val surah = arquran?.find { surah -> surah.ayahs.any { it.number == homeState.randomAyatNumber } }
+    val surah =
+        arquran?.find { surah -> surah.ayahs.any { it.number == homeState.randomAyatNumber } }
 
     val arNumber = arAyah?.numberInSurah?.let {
         NumberFormat.getInstance(Locale.forLanguageTag("ar")).format(it)
@@ -343,7 +353,7 @@ fun DailyQuranAyat(
     val bnAyah = bnAllAyah?.verses?.find { it.id == arAyah?.numberInSurah }
 
 
-    if (!arquran.isNullOrEmpty() && !enQuran.isNullOrEmpty() && !bnQuran.isNullOrEmpty()){
+    if (!arquran.isNullOrEmpty() && !enQuran.isNullOrEmpty() && !bnQuran.isNullOrEmpty()) {
         Card(
             modifier = modifier
                 .fillMaxWidth()
@@ -360,11 +370,11 @@ fun DailyQuranAyat(
                     .fillMaxWidth()
                     .padding(horizontal = dimens.size10, vertical = dimens.size5)
             ) {
-                Row (
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = dimens.size10, horizontal = dimens.size10)
-                ){
+                ) {
                     Text(
                         text = "Daily Quran",
                         style = MaterialTheme.typography.bodyLarge.copy(
@@ -398,11 +408,14 @@ fun DailyQuranAyat(
                 Spacer(Modifier.height(dimens.size10))
 
                 Text(
-                    text = when(systemLanguage){
+                    text = when (systemLanguage) {
                         "bn" -> {
                             "${bnAyah?.translation} - ${bnAyah?.id}"
                         }
-                        else -> {"${enAyah?.translation} - ${enAyah?.id}"}
+
+                        else -> {
+                            "${enAyah?.translation} - ${enAyah?.id}"
+                        }
                     },
                     style = MaterialTheme.typography.bodyLarge
                 )

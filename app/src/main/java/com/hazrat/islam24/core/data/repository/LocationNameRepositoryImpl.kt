@@ -91,7 +91,7 @@ class LocationNameRepositoryImpl @Inject constructor(
                 throw handleApiError(response.code(), errorMessage = response.message())
             }
         } catch (e: LocationError) {
-            Log.e("LocationNameRepository", "Location API error: ${e.message}", e)
+            Log.e("LocationNameRepository", "LocationOnCard API error: ${e.message}", e)
             // Return default LocationNameFinder in case of LocationError
             LocationNameFinder(address = Address(village = null, city = null, town = null, suburb = null))
         } catch (e: Exception) {

@@ -8,15 +8,16 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,9 +47,11 @@ import com.hazrat.islam24.ui.theme.dimens
 
 
 @Composable
-fun LazyVerticalGridCardIcons(
+fun LazyHorizontalMenyIcons(
     onClick: (HomePageNavIcons) -> Unit
 ) {
+
+
     val navIcons = listOf(
         HomePageNavIcons.AsmaUlHusna,
         HomePageNavIcons.Calendar,
@@ -61,18 +64,16 @@ fun LazyVerticalGridCardIcons(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        LazyVerticalGrid(
+        LazyRow(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(dimens.size200),
-            columns = GridCells.Fixed(5),
-            horizontalArrangement = Arrangement.Center
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             navIcons.forEach {
                 item {
                     HomeWidgetsIcons(
-                        icons = it.icons,
-                        names = it.name,
+                        iconData = it,
                         onClick = { onClick(it) }
                     )
                 }
@@ -84,40 +85,50 @@ fun LazyVerticalGridCardIcons(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeWidgetsIcons(
-    icons: Int,
-    names: Int,
+    iconData: HomePageNavIcons,
     onClick: () -> Unit
 ) {
+    val backgroundColor = if (isSystemInDarkTheme()) {
+        iconData.backgroundColor.dark
+    } else {
+        iconData.backgroundColor.light
+    }
+
     Column(
-        modifier = Modifier.padding(vertical = dimens.size10),
+        modifier = Modifier.padding(vertical = dimens.size10, horizontal = dimens.size5),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(
             modifier = Modifier
-                .size(dimens.size60)
+                .size(dimens.size80)
                 .padding(dimens.size1)
                 .combinedClickable(
                     onClick = { onClick() },
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 )
-                .clip(RoundedCornerShape(dimens.size8)),
+                .clip(CircleShape),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                containerColor = backgroundColor
             )
         ) {
-            Icon(
-                painter = painterResource(icons),
-                contentDescription = names.toString(),
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .size(dimens.size60)
-                    .padding(dimens.size1)
-            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(iconData.icons),
+                    contentDescription = iconData.name.toString(),
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .size(dimens.size60)
+                        .padding(dimens.size1)
+                )
+            }
         }
         Text(
-            text = stringResource(names),
+            text = stringResource(iconData.name),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center
@@ -126,7 +137,9 @@ private fun HomeWidgetsIcons(
 }
 
 
-fun Modifier.shimmerEffect(): Modifier = composed {
+fun Modifier.shimmerEffect(
+    animationSpeed: Int = 3000
+): Modifier = composed {
     var size by remember {
         mutableStateOf(IntSize.Zero)
     }
@@ -135,23 +148,22 @@ fun Modifier.shimmerEffect(): Modifier = composed {
         initialValue = -2 * size.width.toFloat(),
         targetValue = 2 * size.width.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(1000)
+            animation = tween(animationSpeed)
         ), label = ""
     )
     background(
         brush = Brush.linearGradient(
             colors = listOf(
-                Color(0xEE155242),
-                Color(0xFD258971),
-                Color(0xE9155242),
-
-                ),
+                MaterialTheme.colorScheme.secondaryContainer,
+                MaterialTheme.colorScheme.primary,
+                MaterialTheme.colorScheme.secondaryContainer,
+            ),
             start = Offset(startOffsetX, 0F),
             end = Offset(
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(dimens.size30)
+        shape = RoundedCornerShape(dimens.size10)
     ).onGloballyPositioned {
         size = it.size
     }
@@ -190,40 +202,63 @@ fun Modifier.generalShimmerEffect(): Modifier = composed {
 sealed class HomePageNavIcons(
     val icons: Int,
     val name: Int,
-    val route: MainRoute
+    val route: MainRoute,
+    val backgroundColor: AppColor
 ) {
     data object AsmaUlHusna :
         HomePageNavIcons(
-            icons = R.drawable.allah_logo,
+            icons = R.drawable.allah,
             name = R.string.names,
-            route = MainRoute.NamesOfAllahScreen
+            route = MainRoute.NamesOfAllahScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFE0F2F7),
+                light = Color(0xFFA8D4FD)
+            ) // Light blue shades
         )
 
     data object Calendar :
         HomePageNavIcons(
-            icons = R.drawable.calendaricon,
+            icons = R.drawable.calendar,
             name = R.string.calendar,
-            route = MainRoute.CalendarScreen
+            route = MainRoute.CalendarScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFF8EBD0),
+                light = Color(0xFFFAE194)
+            ) // Yellow shades
         )
 
     data object Athkar :
         HomePageNavIcons(
-            icons = R.drawable.athkar,
+            icons = R.drawable.zikir,
             name = R.string.athkar,
-            route = MainRoute.AthkarScreen
+            route = MainRoute.AthkarScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFDEFFDF),
+                light = Color(0xFFCFFCAE)
+            ) // Green shades
         )
 
     data object Qibla :
         HomePageNavIcons(
-            icons = R.drawable.qibla,
+            icons = R.drawable.kaba,
             name = R.string.qibla,
-            route = MainRoute.QiblaDirectionScreen
+            route = MainRoute.QiblaDirectionScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFCFEDFF),
+                light = Color(0xFFC6B8FF)
+            ) // Light blue shades
         )
 
     data object Zakat :
         HomePageNavIcons(
             icons = R.drawable.zakat,
             name = R.string.zakat,
-            route = MainRoute.ZakatScreen
+            route = MainRoute.ZakatScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFFFE5BE),
+                light = Color(0xFFFDCB95)
+            ) // Orange shades
         )
 }
+
+data class AppColor(val light: Color, val dark: Color)
