@@ -2,6 +2,7 @@ package com.hazrat.islam24.core.domain.repository
 
 import com.hazrat.islam24.core.data.entity.NameEntity
 import com.hazrat.islam24.core.domain.model.namesofallah.NameOfAllahData
+import kotlinx.coroutines.flow.Flow
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -23,5 +24,5 @@ interface NamesRepository {
      *
      * @return A list of NameEntity objects representing the names retrieved from the database.
      */
-    suspend fun getAllahNamesFromDatabase(): List<NameEntity>
+    fun getAllahNamesFromDatabase(): Flow<List<NameEntity>>
 }

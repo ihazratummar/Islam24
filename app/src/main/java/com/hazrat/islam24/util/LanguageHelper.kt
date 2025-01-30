@@ -7,8 +7,11 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
+import com.hazrat.islam24.R
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import java.util.Locale
 
@@ -32,13 +35,8 @@ fun changeLanguage(context: Context, language: Languages) {
 
         val config = Configuration(context.resources.configuration)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // Use LocaleList for Android 7.0 and later
-            config.setLocales(LocaleList(locale))
-        } else {
-            // Set Locale for devices below Android 7.0
-            config.setLocale(locale)
-        }
+        // Use LocaleList for Android 7.0 and later
+        config.setLocales(LocaleList(locale))
 
         // Apply the configuration change to the resources
         context.resources.updateConfiguration(config, context.resources.displayMetrics)
@@ -58,6 +56,13 @@ fun changeLanguage(context: Context, language: Languages) {
 }
 
 enum class Languages {
-    ENGLISH,
-    BENGALI
+    ENGLISH {
+        override fun getString() = R.string.english
+    },
+    BENGALI {
+        override fun getString() = R.string.bengali
+    };
+
+    @StringRes
+    abstract fun getString(): Int
 }

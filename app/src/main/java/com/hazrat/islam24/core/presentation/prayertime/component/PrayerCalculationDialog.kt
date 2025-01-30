@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -51,7 +52,7 @@ fun PrayerCalculationDialog(
             item {
                 Text(
                     text = stringResource(id = R.string.prayer_times),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(top = dimens.size30)
                 )
@@ -59,14 +60,13 @@ fun PrayerCalculationDialog(
             item {
                 Spacer(modifier = Modifier.height(dimens.size10))
             }
-            items(prayerMethods.size) { index ->
-                val method = prayerMethods[index]
+            items(prayerMethods) { methods ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = dimens.size15)
                         .clickable {
-                            onMethodSelected(method)
+                            onMethodSelected(methods)
                             onDismiss()
                         },
                     colors = CardDefaults.cardColors(Color.Transparent),
@@ -80,9 +80,9 @@ fun PrayerCalculationDialog(
                         horizontalArrangement = Arrangement.Start
                     ) {
                         Text(
-                            text = method.name,
+                            text = methods.name,
                             color = MaterialTheme.colorScheme.onSurface,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(start = dimens.size10)
                         )
                     }

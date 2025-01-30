@@ -48,7 +48,7 @@ class LocationHandler @Inject constructor (
                         onLocationReceived(location)
                         Log.d(
                             "LocationHandler",
-                            "Location received: ${location.latitude}, ${location.longitude}"
+                            "LocationOnCard received: ${location.latitude}, ${location.longitude}"
                         )
                     }
                 }
@@ -74,7 +74,7 @@ class LocationHandler @Inject constructor (
         if (!permissionRequested) {
             if (!isLocationEnabled()) {
                 AlertDialog.Builder(activity)
-                    .setMessage("Location is disabled. Do you want to enable it?")
+                    .setMessage("LocationOnCard is disabled. Do you want to enable it?")
                     .setPositiveButton("Yes") { _, _ ->
                         activity.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     }

@@ -1,0 +1,140 @@
+package com.hazrat.islam24.util
+
+import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.hazrat.islam24.core.domain.model.al_quran_model.FavoritesList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
+import okio.IOException
+import java.io.File
+import java.io.FileOutputStream
+
+object MyFileUtils {
+
+
+    fun isFilePresent(
+        context: Context,
+        parentFolder: String,
+        subFolderName: String,
+        fileName: String
+    ): Boolean {
+        val parentFolder = File(context.filesDir, parentFolder)
+        if (!parentFolder.exists()) parentFolder.mkdirs()
+
+        val subFolder = File(parentFolder, subFolderName)
+        if (!subFolder.exists()) subFolder.mkdirs()
+
+        val file = File(subFolder, fileName)
+        return file.exists()
+    }
+
+
+    /*
+    Save Favorite Ayah to file
+     */
+
+    fun saveFavoriteAyaToFile(
+        context: Context,
+        parentFolderName: String,
+        subFolderName: String,
+        fileName: String,
+        favoritesList: FavoritesList
+    ){
+        val parentFolder = File(context.filesDir, parentFolderName)
+        if (!parentFolder.exists()) parentFolder.mkdirs()
+
+        val subFolder = File(parentFolder, subFolderName)
+        if (!subFolder.exists()) subFolder.mkdirs()
+
+        val file = File(subFolder, fileName)
+        val json = Gson().toJson(favoritesList)
+        file.writeText(json)
+    }
+
+    fun getFavoriteAyaToFile(context: Context, folderName: String, fileName: String):FavoritesList {
+        val file = File(context.filesDir, folderName + File.separator + fileName)
+        if (!file.exists()) return emptyList()
+        val json = file.readText()
+        val type = object : TypeToken<FavoritesList>() {}.type
+        return Gson().fromJson(json, type)
+
+    }
+
+
+    /*
+    Save File to local file
+     */
+
+    suspend fun saveFile(
+        context: Context,
+        parentFolderName: String,
+        subFolderName: String,
+        fileName: String,
+        body: ResponseBody?
+    ): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val folder = File(context.filesDir, parentFolderName)
+                if (!folder.exists()) folder.mkdirs()
+
+                val subFolder = File(folder, subFolderName)
+                if (!subFolder.exists()) subFolder.mkdirs()
+
+                val file = File(subFolder, fileName)
+
+                body?.byteStream()?.use { inputStream ->
+                    FileOutputStream(file).use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+    }
+
+    /*
+    Read File from local file
+     */
+
+    fun readFile(context: Context, folderName: String, fileName: String): String? {
+        val file = File(context.filesDir, folderName + File.separator + fileName)
+        return if (file.exists()) {
+            file.bufferedReader().use { it.readText() }
+        } else {
+            null
+        }
+    }
+
+    /*
+    Save Mp3 Files
+     */
+
+    fun saveMp3File(context: Context, resourceInd: Int,  parentFolderName: String, subFolderName: String, fileName: String): Boolean{
+        val inputStream  = context.resources.openRawResource(resourceInd)
+        val parentFolder = File(context.filesDir, parentFolderName)
+        if (!parentFolder.exists()) parentFolder.mkdirs()
+        val subFolder = File(parentFolder, subFolderName)
+        if (!subFolder.exists()) subFolder.mkdirs()
+        val file = File(subFolder, fileName)
+
+        return try {
+            FileOutputStream(file).use { outputStream ->
+                val buffer = ByteArray(1024)
+                var bytesRead: Int
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                }
+            }
+            inputStream.close()
+            true
+        }catch (e: IOException){
+            e.printStackTrace()
+            false
+        }
+    }
+}

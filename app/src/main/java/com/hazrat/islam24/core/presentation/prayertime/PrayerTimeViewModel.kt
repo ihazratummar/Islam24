@@ -11,27 +11,36 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.presentation.profiledetails.UserEvent
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
+import com.hazrat.islam24.notification.MediaPlayerHelper
 import com.hazrat.islam24.notification.PrayerAlarmManager
-import com.hazrat.islam24.util.DataStorePreference
-import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
+import com.hazrat.islam24.util.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.islam24.util.MyFileUtils.saveMp3File
+import com.hazrat.islam24.util.datastore.DataStorePreference
+import com.hazrat.islam24.util.datastore.UserDataStore
+import com.hazrat.islam24.util.datastore.NotificationType
+import com.hazrat.islam24.util.datastore.PrayerName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,7 +52,8 @@ class PrayerTimeViewModel @Inject constructor(
     private val repository: PrayerTimeRepository,
     private val prayerAlarmManager: PrayerAlarmManager,
     private val dataStorePreference: DataStorePreference,
-    private val networkRepository: NetworkRepository
+    private val mediaPlayerHelper: MediaPlayerHelper,
+    private val dataStore: UserDataStore
 ) : ViewModel() {
 
 
@@ -57,10 +67,54 @@ class PrayerTimeViewModel @Inject constructor(
             isDhuhrNotification = dataStorePreference.getDhuhrNotification(),
             isAsrNotification = dataStorePreference.getAsrNotification(),
             isMaghribNotification = dataStorePreference.getMaghribNotification(),
-            isIshaNotification = dataStorePreference.getIshaNotification()
+            isIshaNotification = dataStorePreference.getIshaNotification(),
         )
     )
-    val notificationState= _notificationState.asStateFlow()
+    val notificationState = combine(
+        _notificationState,
+        dataStore.selectedFajrNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        ),
+        dataStore.selectedDhuhrNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        ),
+        dataStore.selectedAsrNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        ),
+        dataStore.selectedMaghribNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        )
+    ) { state, selectedFajrNotification, selectedDhuhrNotification, selectedAsrNotification, selectedMaghribNotification ->
+        state.copy(
+            selectedFajrAzan = selectedFajrNotification,
+            selectedDhuhrAzan = selectedDhuhrNotification,
+            selectedAsrAzan = selectedAsrNotification,
+            selectedMaghribAzan = selectedMaghribNotification
+        )
+    }.combine(
+        dataStore.selectedIshaNotification.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        )
+    ) { state, selectedIshaNotification ->
+        state.copy(
+            selectedIshaAzan = selectedIshaNotification
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = _notificationState.value
+    )
+
 
     fun onEvent(prayerEvent: PrayerEvent) {
         when (prayerEvent) {
@@ -80,22 +134,26 @@ class PrayerTimeViewModel @Inject constructor(
                             isFajrNotification = !it.isFajrNotification
                         )
                     }
+                    mediaPlayerHelper.releaseAzan()
                     viewModelScope.launch {
                         dataStorePreference.setFajrNotification(
                             _notificationState.value.isFajrNotification
                         )
                     }
                     if (_notificationState.value.isFajrNotification) {
-                        val today = getCurrentDay()
+
+                        val date = getCurrentDate()
+                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val fajr = findDate.fajrTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
                                 Manifest.permission.POST_NOTIFICATIONS
                             ) == PackageManager.PERMISSION_GRANTED
                         ) {
-                            prayerAlarmManager.setFajrPrayerAlarm(prayerTimes.value[today - 1].fajrTime)
+                            prayerAlarmManager.setFajrPrayerAlarm(fajr)
                         }
                     } else {
-                        prayerAlarmManager.cancelFajrAlarm()
+                        prayerAlarmManager.cancelAlarm(1)
                     }
                 } else {
                     openAppSettings()
@@ -109,22 +167,25 @@ class PrayerTimeViewModel @Inject constructor(
                             isDhuhrNotification = !it.isDhuhrNotification
                         )
                     }
+                    mediaPlayerHelper.releaseAzan()
                     viewModelScope.launch {
                         dataStorePreference.setDhuhrNotification(_notificationState.value.isDhuhrNotification)
                     }
                     if (_notificationState.value.isDhuhrNotification) {
-                        val today = getCurrentDay()
+                        val date = getCurrentDate()
+                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val dhuhrTime = findDate.dhuhrTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
                                 Manifest.permission.POST_NOTIFICATIONS
                             ) == PackageManager.PERMISSION_GRANTED
                         ) {
-                            prayerAlarmManager.setDhuhrPrayerAlarm(prayerTimes.value[today - 1].dhuhrTime)
+                            prayerAlarmManager.setDhuhrPrayerAlarm(dhuhrTime)
                         }
                     } else {
-                        prayerAlarmManager.cancelDhuhrAlarm()
+                        prayerAlarmManager.cancelAlarm(2)
                     }
-                }else{
+                } else {
                     openAppSettings()
                 }
             }
@@ -137,22 +198,25 @@ class PrayerTimeViewModel @Inject constructor(
                             isAsrNotification = !it.isAsrNotification
                         )
                     }
+                    mediaPlayerHelper.releaseAzan()
                     viewModelScope.launch {
                         dataStorePreference.setAsrNotification(_notificationState.value.isAsrNotification)
                     }
                     if (_notificationState.value.isAsrNotification) {
-                        val today = getCurrentDay()
+                        val date = getCurrentDate()
+                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val asrTime = findDate.asrTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
                                 Manifest.permission.POST_NOTIFICATIONS
                             ) == PackageManager.PERMISSION_GRANTED
                         ) {
-                            prayerAlarmManager.setAsrPrayerAlarm(prayerTimes.value[today - 1].asrTime)
+                            prayerAlarmManager.setAsrPrayerAlarm(asrTime)
                         }
                     } else {
-                        prayerAlarmManager.cancelAsrAlarm()
+                        prayerAlarmManager.cancelAlarm(3)
                     }
-                }else{
+                } else {
                     openAppSettings()
                 }
             }
@@ -165,22 +229,25 @@ class PrayerTimeViewModel @Inject constructor(
                             isMaghribNotification = !it.isMaghribNotification
                         )
                     }
+                    mediaPlayerHelper.releaseAzan()
                     viewModelScope.launch {
                         dataStorePreference.setMaghribNotification(_notificationState.value.isMaghribNotification)
                     }
                     if (_notificationState.value.isMaghribNotification) {
-                        val today = getCurrentDay()
+                        val date = getCurrentDate()
+                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val maghribTime = findDate.maghribTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
                                 Manifest.permission.POST_NOTIFICATIONS
                             ) == PackageManager.PERMISSION_GRANTED
                         ) {
-                            prayerAlarmManager.setMaghribPrayerAlarm(prayerTimes.value[today - 1].maghribTime)
+                            prayerAlarmManager.setMaghribPrayerAlarm(maghribTime)
                         }
                     } else {
-                        prayerAlarmManager.cancelMaghribAlarm()
+                        prayerAlarmManager.cancelAlarm(4)
                     }
-                }else{
+                } else {
                     openAppSettings()
                 }
             }
@@ -193,22 +260,25 @@ class PrayerTimeViewModel @Inject constructor(
                             isIshaNotification = !it.isIshaNotification
                         )
                     }
+                    mediaPlayerHelper.releaseAzan()
                     viewModelScope.launch {
                         dataStorePreference.setIshaNotification(_notificationState.value.isIshaNotification)
                     }
                     if (_notificationState.value.isIshaNotification) {
-                        val today = getCurrentDay()
+                        val date = getCurrentDate()
+                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val ishaTime = findDate.ishaTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
                                 Manifest.permission.POST_NOTIFICATIONS
                             ) == PackageManager.PERMISSION_GRANTED
                         ) {
-                            prayerAlarmManager.setIshaPrayerAlarm(prayerTimes.value[today - 1].ishaTime)
+                            prayerAlarmManager.setIshaPrayerAlarm(ishaTime)
                         }
                     } else {
-                        prayerAlarmManager.cancelIshaAlarm()
+                        prayerAlarmManager.cancelAlarm(5)
                     }
-                }else{
+                } else {
                     openAppSettings()
                 }
             }
@@ -226,6 +296,226 @@ class PrayerTimeViewModel @Inject constructor(
                     }
                 }
             }
+
+            is NotificationEvent.OnFajrAzanClick -> {
+                viewModelScope.launch {
+                    val success = saveMp3File(
+                        context = context,
+                        resourceInd = notificationEvent.resourceInd,
+                        parentFolderName = PARENT_FOLDER_NAME_DOWNLOAD,
+                        subFolderName = SELECTED_ATHANS_SUB_FOLDER_NAME,
+                        fileName = "fajrAzan.mp3"
+                    )
+                    if (success) {
+                        dataStore.savePrayerNotificationType(
+                            prayerName = PrayerName.FAJR,
+                            NotificationType.AZAN
+                        )
+                        Log.d(
+                            "Notification",
+                            "Aazn Fajr: ${notificationEvent.resourceInd}, NotificationType: ${NotificationType.AZAN}"
+                        )
+                    } else {
+                        Log.e("PrayerTimeViewModel", "Failed to save MP3.")
+                    }
+                }
+            }
+
+            is NotificationEvent.OnDhuhrAzanClick -> {
+                viewModelScope.launch {
+                    val success = saveMp3File(
+                        context = context,
+                        resourceInd = notificationEvent.resourceInd,
+                        parentFolderName = PARENT_FOLDER_NAME_DOWNLOAD,
+                        subFolderName = SELECTED_ATHANS_SUB_FOLDER_NAME,
+                        fileName = "dhurAzan.mp3"
+                    )
+                    if (success) {
+                        dataStore.savePrayerNotificationType(
+                            prayerName = PrayerName.DHUHR,
+                            NotificationType.AZAN
+                        )
+                        Log.d(
+                            "Notification",
+                            "Aazn Dhuhr: ${notificationEvent.resourceInd}, NotificationType: ${NotificationType.AZAN}"
+                        )
+                    } else {
+                        Log.e("PrayerTimeViewModel", "Failed to save MP3.")
+                    }
+                }
+            }
+
+            is NotificationEvent.OnAsrAzanClick -> {
+                viewModelScope.launch {
+                    val success = saveMp3File(
+                        context = context,
+                        resourceInd = notificationEvent.resourceInd,
+                        parentFolderName = PARENT_FOLDER_NAME_DOWNLOAD,
+                        subFolderName = SELECTED_ATHANS_SUB_FOLDER_NAME,
+                        fileName = "asrAzan.mp3"
+                    )
+                    if (success) {
+                        dataStore.savePrayerNotificationType(
+                            prayerName = PrayerName.ASR,
+                            notificationType = NotificationType.AZAN
+                        )
+                        Log.d(
+                            "Notification",
+                            "Aazn Asr: ${notificationEvent.resourceInd}, NotificationType: ${NotificationType.AZAN}"
+                        )
+                    } else {
+                        Log.e("PrayerTimeViewModel", "Failed to save MP3.")
+                    }
+                }
+            }
+
+            is NotificationEvent.OnMaghribAzanClick -> {
+                viewModelScope.launch {
+                    val success = saveMp3File(
+                        context = context,
+                        resourceInd = notificationEvent.resourceInd,
+                        parentFolderName = PARENT_FOLDER_NAME_DOWNLOAD,
+                        subFolderName = SELECTED_ATHANS_SUB_FOLDER_NAME,
+                        fileName = "maghribAzan.mp3"
+                    )
+                    if (success) {
+                        dataStore.savePrayerNotificationType(
+                            prayerName = PrayerName.MAGHRIB,
+                            NotificationType.AZAN
+                        )
+                        Log.d(
+                            "Notification",
+                            "Aazn Maghrib: ${notificationEvent.resourceInd}, NotificationType: ${NotificationType.AZAN}"
+                        )
+                        Log.d("PrayerTimeViewModel", "NotificationEvent.OnFajrAzanClick: Success")
+                    } else {
+                        Log.e("PrayerTimeViewModel", "Failed to save MP3.")
+                    }
+                }
+            }
+
+            is NotificationEvent.OnIshaAzanClick -> {
+                viewModelScope.launch {
+                    val success = saveMp3File(
+                        context = context,
+                        resourceInd = notificationEvent.resourceInd,
+                        parentFolderName = PARENT_FOLDER_NAME_DOWNLOAD,
+                        subFolderName = SELECTED_ATHANS_SUB_FOLDER_NAME,
+                        fileName = "ishaAzan.mp3"
+                    )
+                    if (success) {
+                        dataStore.savePrayerNotificationType(
+                            prayerName = PrayerName.ISHA,
+                            notificationType = NotificationType.AZAN
+                        )
+
+                        Log.d(
+                            "Notification",
+                            "Aazn Isha: ${notificationEvent.resourceInd}, NotificationType: ${NotificationType.AZAN}"
+                        )
+                    } else {
+                        Log.e("PrayerTimeViewModel", "Failed to save MP3.")
+                    }
+                }
+            }
+
+            is NotificationEvent.OnAzanPlayClick -> {
+                _notificationState.update { state ->
+                    state.copy(isAzanPlaying = state.isAzanPlaying.mapIndexed { index, isPlaying ->
+                        index == notificationEvent.aazanIndex // Only the clicked Azan will be true
+                    })
+                }
+                mediaPlayerHelper.playAzan(notificationEvent.resourceInd)
+                mediaPlayerHelper.startAzan()
+            }
+
+            NotificationEvent.StopAzan -> {
+                mediaPlayerHelper.stopAzan()
+                mediaPlayerHelper.releaseAzan()
+                _notificationState.update { it.copy(isAzanPlaying = it.isAzanPlaying.map { false }) }
+            }
+
+            is NotificationEvent.OnDefaultNotificationClick -> {
+                viewModelScope.launch {
+                    dataStore.savePrayerNotificationType(
+                        prayerName = notificationEvent.azanName,
+                        notificationType = notificationEvent.notificationType
+                    )
+                }
+                Log.d(
+                    "Notification",
+                    "Default PrayerName: ${notificationEvent.azanName}, NotificationType: ${notificationEvent.notificationType}"
+                )
+            }
+
+            is NotificationEvent.OnSilentNotificationClick -> {
+                viewModelScope.launch {
+                    dataStore.savePrayerNotificationType(
+                        prayerName = notificationEvent.azanName,
+                        notificationType = notificationEvent.notificationType
+                    )
+                }
+                Log.d(
+                    "Notification",
+                    "Silent PrayerName: ${notificationEvent.azanName}, NotificationType: ${notificationEvent.notificationType}"
+                )
+            }
+
+            is NotificationEvent.SelectFajrAzanOption -> {
+                _notificationState.update {
+                    it.copy(
+                        selectedFajrAzan = notificationEvent.index
+                    )
+                }
+                viewModelScope.launch {
+                    dataStore.setSelectedFajrNotification(notificationEvent.index)
+                }
+            }
+
+            is NotificationEvent.SelectDhuhrAzanOption -> {
+                _notificationState.update {
+                    it.copy(
+                        selectedDhuhrAzan = notificationEvent.index
+                    )
+                }
+                viewModelScope.launch {
+                    dataStore.setSelectedDhuhrNotification(notificationEvent.index)
+                }
+            }
+
+            is NotificationEvent.SelectAsrAzanOption -> {
+                _notificationState.update {
+                    it.copy(
+                        selectedAsrAzan = notificationEvent.index
+                    )
+                }
+                viewModelScope.launch {
+                    dataStore.setSelectedAsrNotification(notificationEvent.index)
+                }
+            }
+
+            is NotificationEvent.SelectMaghribAzanOption -> {
+                _notificationState.update {
+                    it.copy(
+                        selectedMaghribAzan = notificationEvent.index
+                    )
+                }
+                viewModelScope.launch {
+                    dataStore.setSelectedMaghribNotification(notificationEvent.index)
+                }
+            }
+
+            is NotificationEvent.SelectIshaAzanOption -> {
+                _notificationState.update {
+                    it.copy(
+                        selectedIshaAzan = notificationEvent.index
+                    )
+                }
+                viewModelScope.launch {
+                    dataStore.setSelectedIshaNotification(notificationEvent.index)
+                }
+            }
+
         }
     }
 
@@ -241,6 +531,7 @@ class PrayerTimeViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllPrayerTimes()
+            repository.getPrayerTimeByDate()
         }
     }
 
@@ -252,4 +543,5 @@ class PrayerTimeViewModel @Inject constructor(
         }
         context.startActivity(intent)
     }
+
 }

@@ -1,8 +1,7 @@
 package com.hazrat.islam24.core.data.repository
 
-import android.accounts.NetworkErrorException
 import android.util.Log
-import com.hazrat.islam24.core.api.LocationNameApi
+import com.hazrat.islam24.core.remote.api.LocationNameApi
 import com.hazrat.islam24.core.data.dao.LocationNameDao
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.LocationEntity
@@ -92,7 +91,7 @@ class LocationNameRepositoryImpl @Inject constructor(
                 throw handleApiError(response.code(), errorMessage = response.message())
             }
         } catch (e: LocationError) {
-            Log.e("LocationNameRepository", "Location API error: ${e.message}", e)
+            Log.e("LocationNameRepository", "LocationOnCard API error: ${e.message}", e)
             // Return default LocationNameFinder in case of LocationError
             LocationNameFinder(address = Address(village = null, city = null, town = null, suburb = null))
         } catch (e: Exception) {

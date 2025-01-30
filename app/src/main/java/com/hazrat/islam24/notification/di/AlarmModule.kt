@@ -2,7 +2,8 @@ package com.hazrat.islam24.notification.di
 
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
-import com.hazrat.islam24.notification.NotificationHelper
+import com.hazrat.islam24.notification.MediaPlayerHelper
+import com.hazrat.islam24.notification.NotificationChannels
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import dagger.Module
 import dagger.Provides
@@ -29,13 +30,19 @@ object AlarmModule {
 
     @Singleton
     @Provides
-    fun provideNotificationHelper(@ApplicationContext context: Context): NotificationHelper {
-        return NotificationHelper(context)
+    fun provideNotificationHelper(@ApplicationContext context: Context): NotificationChannels {
+        return NotificationChannels(context)
     }
 
     @Singleton
     @Provides
     fun provideNotificationManagerCompat(@ApplicationContext context: Context): NotificationManagerCompat {
         return NotificationManagerCompat.from(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMediaPlayerHelper(@ApplicationContext context: Context): MediaPlayerHelper {
+        return MediaPlayerHelper(context)
     }
 }

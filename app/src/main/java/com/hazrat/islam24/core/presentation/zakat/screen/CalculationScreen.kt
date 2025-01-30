@@ -80,7 +80,7 @@ fun CalculationScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.size40))
             TopBarWithTwoAction(
                 topBarTitle = stringResource(R.string.zakat_calculator),
                 onBackClick = { onBackClick.invoke() },

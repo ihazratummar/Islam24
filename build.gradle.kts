@@ -15,6 +15,7 @@ buildscript {
         classpath(libs.onesignal.gradle.plugin)
         classpath(libs.compose.compiler.gradle.plugin)
         classpath(libs.hilt.android.gradle.plugin)
+        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
     }
 }
 

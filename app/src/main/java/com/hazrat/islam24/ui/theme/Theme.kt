@@ -53,7 +53,6 @@ private val lightScheme = lightColorScheme(
     scrim = scrimLight,
     inverseSurface = inverseSurfaceLight,
     inverseOnSurface = inverseOnSurfaceLight,
-    inversePrimary = inversePrimaryLight,
     surfaceDim = surfaceDimLight,
     surfaceBright = surfaceBrightLight,
     surfaceContainerLowest = surfaceContainerLowestLight,
@@ -91,7 +90,6 @@ private val darkScheme = darkColorScheme(
     scrim = scrimDark,
     inverseSurface = inverseSurfaceDark,
     inverseOnSurface = inverseOnSurfaceDark,
-    inversePrimary = inversePrimaryDark,
     surfaceDim = surfaceDimDark,
     surfaceBright = surfaceBrightDark,
     surfaceContainerLowest = surfaceContainerLowestDark,
@@ -100,7 +98,6 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHigh = surfaceContainerHighDark,
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
-
 
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -117,39 +114,41 @@ fun Islam24Theme(
     }
 
     val window = calculateWindowSizeClass(activity = activity)
-    val config  = LocalConfiguration.current
+    val config = LocalConfiguration.current
 
     val typography: Typography
     val appDimens: Dimens
     val view = LocalView.current
     SideEffect {
-        activity.window?.statusBarColor = Color.Transparent.toArgb()
-        WindowCompat.getInsetsController(activity.window!!, view).isAppearanceLightStatusBars = !darkTheme
+        activity.window?.colorMode = Color.Transparent.toArgb()
+        WindowCompat.getInsetsController(activity.window!!, view).isAppearanceLightStatusBars =
+            !darkTheme
     }
-    when(window.widthSizeClass){
+    when (window.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
-            if (config.screenWidthDp <= 360 ){
+            if (config.screenWidthDp <= 360) {
                 appDimens = CompactSmallDimens
                 typography = CompactSmallTypography
-            }
-            else if (config.screenWidthDp < 599 ){
+            } else if (config.screenWidthDp < 599) {
                 appDimens = CompactMediumDimens
                 typography = CompactMediumTypography
-            }else{
+            } else {
                 appDimens = CompactDimens
                 typography = CompactTypography
             }
         }
+
         WindowWidthSizeClass.Medium -> {
             appDimens = MediumDimens
             typography = MediumTypography
         }
+
         else -> {
             appDimens = ExpandedDimens
             typography = ExpandedTypography
         }
     }
-    AppUtils(appDimens =appDimens ) {
+    AppUtils(appDimens = appDimens, ){
         MaterialTheme(
             colorScheme = colorScheme,
             typography = typography,

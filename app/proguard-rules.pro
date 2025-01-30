@@ -20,6 +20,44 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# Prevent R8 from removing internal location classes
+-keep class com.google.android.gms.internal.location.** { *; }
+-keep class com.google.android.gms.location.** { *; }
+-dontwarn com.google.android.gms.internal.location.**
+-dontwarn com.google.android.gms.location.**
+
+
+# Google Maps SDK
+-keep class com.google.android.gms.maps.** { *; }
+-keep class com.google.maps.android.** { *; }
+
+# Keep dynamically referenced classes for reflection
+-keepnames class com.google.android.gms.** { *; }
+-keepclassmembers class * {
+    @com.google.android.gms.common.annotation.KeepName *;
+}
+-dontwarn com.google.android.gms.**
+
+# Parcelable Support
+-keep class * implements android.os.Parcelable { *; }
+-keepclassmembers class * {
+    public static final android.os.Parcelable$Creator *;
+}
+
+# SafeParcelable annotations for Play Services
+-keep class com.google.android.gms.common.internal.safeparcel.SafeParcelable { *; }
+-keep class * extends com.google.android.gms.common.internal.safeparcel.AbstractSafeParcelable { *; }
+-keep class * implements com.google.android.gms.common.internal.safeparcel.SafeParcelable { *; }
+-keepclassmembers class * {
+    @com.google.android.gms.common.internal.safeparcel.SafeParcelable$Field <fields>;
+}
+-keepclassmembers class * {
+    @com.google.android.gms.common.internal.safeparcel.SafeParcelable$Constructor <init>(...);
+}
+
+
+
+
 # Retrofit
 -keep class retrofit2.** { *; }
 -keep class okhttp3.** { *; }

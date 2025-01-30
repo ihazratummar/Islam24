@@ -12,10 +12,10 @@ fun AppUtils(
     appDimens: Dimens,
     content:@Composable () -> Unit
 ) {
-    val appDimens = remember {
-        appDimens
-    }
-    CompositionLocalProvider(LocalAppDimens provides appDimens) {
+//    val appDimens = remember {
+//        appDimens
+//    }
+    CompositionLocalProvider(LocalAppDimens provides appDimens ) {
         content()
     }
 
