@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +36,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.hazrat.islam24.R
+import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.authNavGraph
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.presentation.al_quran.QuranScreen
@@ -70,6 +73,7 @@ fun AppNavigator(
     quranViewModel: QuranViewModel,
     prayerTimeViewModel: PrayerTimeViewModel,
     appSettingViewModel: AppSettingViewModel,
+    qiblaViewModel: QiblaViewModel,
     isHapticFeedback: Boolean = false
 ) {
     val navController = rememberNavController()
@@ -88,7 +92,7 @@ fun AppNavigator(
             exitTransition = { ExitTransition.None }
         ) {
             composable<MainRoute.HomeScreen> {
-                val mainViewModel : MainViewModel = hiltViewModel()
+                val mainViewModel: MainViewModel = hiltViewModel()
                 val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
                 val quranViewModel: QuranViewModel = hiltViewModel()
                 val quranState by quranViewModel.quranState.collectAsStateWithLifecycle()
@@ -117,10 +121,16 @@ fun AppNavigator(
                     onBenefitsWidgetClick = {
                         navController.navigate(BenifitsOfRecitingRoute)
                     },
-                    quranState =  quranState,
+                    quranState = quranState,
                     homeState = homeState,
-                    onDailyQuranClick = {surah, ayah ->
-                        navController.navigate(MainRoute.SurahScreenRoute(surahNumber = surah, ayahNumber = ayah, isTracking = false))
+                    onDailyQuranClick = { surah, ayah ->
+                        navController.navigate(
+                            MainRoute.SurahScreenRoute(
+                                surahNumber = surah,
+                                ayahNumber = ayah,
+                                isTracking = false
+                            )
+                        )
                     }
                 )
             }
@@ -139,8 +149,12 @@ fun AppNavigator(
 
                 QuranScreen(
                     onSurahClick = { surahNumber, ayahNumber, isTracking ->
-                        navController.navigate(MainRoute.SurahScreenRoute(surahNumber,
-                            ayahNumber?.minus(1), isTracking)){
+                        navController.navigate(
+                            MainRoute.SurahScreenRoute(
+                                surahNumber,
+                                ayahNumber?.minus(1), isTracking
+                            )
+                        ) {
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -148,14 +162,15 @@ fun AppNavigator(
                     quranState = quranState,
                     refresh = quranViewModel::refreshLastRead,
 
-                )
+                    )
             }
 
             composable<MainRoute.SurahScreenRoute> { navBackStackEntry ->
                 val quranState by quranViewModel.quranState.collectAsStateWithLifecycle()
-                val surahNumber =  navBackStackEntry.toRoute<MainRoute.SurahScreenRoute>().surahNumber
-                val ayahNumber =  navBackStackEntry.toRoute<MainRoute.SurahScreenRoute>().ayahNumber
-                val isTracking =  navBackStackEntry.toRoute<MainRoute.SurahScreenRoute>().isTracking
+                val surahNumber =
+                    navBackStackEntry.toRoute<MainRoute.SurahScreenRoute>().surahNumber
+                val ayahNumber = navBackStackEntry.toRoute<MainRoute.SurahScreenRoute>().ayahNumber
+                val isTracking = navBackStackEntry.toRoute<MainRoute.SurahScreenRoute>().isTracking
                 SurahScreen(
                     surahNumber = surahNumber,
                     ayatNumber = ayahNumber,
@@ -168,17 +183,26 @@ fun AppNavigator(
                 )
             }
 
-            prayerNav(navController,prayerTimeViewModel)
+            prayerNav(navController, prayerTimeViewModel)
             composable<MainRoute.QiblaDirectionScreen> {
-                val viewModel: QiblaViewModel = hiltViewModel()
-                val locationName by viewModel.locationName.collectAsState()
-                val state by viewModel.qiblaState.collectAsStateWithLifecycle()
+//                val viewModel: QiblaViewModel = hiltViewModel()
+                val locationName by qiblaViewModel.locationName.collectAsState()
+                val state by qiblaViewModel.qiblaState.collectAsStateWithLifecycle()
+                val qiblaEvent = qiblaViewModel::onEvent
+                val authState by qiblaViewModel.authState.observeAsState(initial = AuthState.Unauthenticated)
                 QiblaScreen(
                     locationName = locationName,
                     state = state,
-                    isFacingQibla = viewModel.isFacingQibla(),
                     onBackClick = {
                         navController.popBackStack()
+                    },
+                    isHapticFeedback = isHapticFeedback,
+                    authState = authState,
+                    qiblaEvent = qiblaEvent,
+                    navigateToLogin = {
+                        navController.navigate(Login){
+                            launchSingleTop = true
+                        }
                     }
                 )
 
@@ -307,7 +331,11 @@ sealed class MainRoute {
     data object QuranScreenRoute : MainRoute()
 
     @Serializable
-    data class SurahScreenRoute(val surahNumber: Int, val ayahNumber: Int? = 1, val isTracking: Boolean = true) : MainRoute()
+    data class SurahScreenRoute(
+        val surahNumber: Int,
+        val ayahNumber: Int? = 1,
+        val isTracking: Boolean = true
+    ) : MainRoute()
 
     @Serializable
     data object QiblaDirectionScreen : MainRoute()

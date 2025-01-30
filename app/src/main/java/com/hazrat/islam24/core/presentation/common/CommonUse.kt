@@ -1,5 +1,6 @@
 package com.hazrat.islam24.core.presentation.common
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,9 +12,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.glance.LocalContext
+import coil.ImageLoader
+import coil.disk.DiskCache
+import coil.request.CachePolicy
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.ui.theme.dimens
@@ -81,5 +87,22 @@ fun OfflineCard(
                 .size(dimens.size20)
                 .shimmerEffect()
         )
+    }
+}
+
+
+@Composable
+fun rememberImageLoader(context: Context): ImageLoader {
+    return remember {
+        ImageLoader.Builder(context)
+            .crossfade(false)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(context.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.02)
+                    .build()
+            }.build()
     }
 }

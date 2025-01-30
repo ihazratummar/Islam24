@@ -14,7 +14,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
+import com.hazrat.islam24.core.presentation.common.rememberImageLoader
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
+import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.notification.MediaPlayerHelper
@@ -72,6 +74,7 @@ class MainActivity : ComponentActivity() {
     private val quranViewModel by viewModels<QuranViewModel>()
     private val prayerTimeViewModel by viewModels<PrayerTimeViewModel>()
     private val mainViewModel by viewModels<MainViewModel>()
+    private val qiblaViewModel by viewModels<QiblaViewModel>()
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -80,6 +83,8 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
         // Enable edge-to-edge display
         enableEdgeToEdge()
@@ -105,13 +110,15 @@ class MainActivity : ComponentActivity() {
             Islam24Theme(
                 darkTheme = isDarkModeEnabled
             ) {
+                rememberImageLoader(this)
                 val zakatViewModel by viewModels<ZakatViewModel>()
                 NavGraph(
                     zakatViewModel = zakatViewModel,
                     quranViewModel = quranViewModel,
                     prayerTimeViewModel = prayerTimeViewModel,
                     appSettingViewModel = appSettingViewModel,
-                    isHapticFeedback = isHapticFeedback
+                    isHapticFeedback = isHapticFeedback,
+                    qiblaViewModel = qiblaViewModel
                 )
             }
         }
