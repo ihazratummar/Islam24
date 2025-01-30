@@ -1,32 +1,32 @@
 package com.hazrat.islam24.main.mainActivity
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
-import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
-import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.util.datastore.AppDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val locationNameRepository: LocationNameRepository,
-    private val profileRepository: ProfileRepository,
+    profileRepository: ProfileRepository,
     private val locationRepository: LocationRepository,
-    private val networkRepository: NetworkRepository,
-    @ApplicationContext context: Context
+    networkRepository: NetworkRepository,
+    private val appDataStore: AppDataStore
 ) : ViewModel() {
 
 
@@ -36,6 +36,9 @@ class MainViewModel @Inject constructor(
      */
 
     val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
+
+    val isDarkMode : StateFlow<Boolean>
+    val isHapticFeedback  : StateFlow<Boolean>
 
     private val networkStatus: StateFlow<ConnectivityObserver.Status> =
         networkRepository.networkStatus
@@ -52,6 +55,18 @@ class MainViewModel @Inject constructor(
             }
         }
         profileRepository.checkAuthStatus()
+        val initialDarkMode = runBlocking{ appDataStore.getDarkModeEnabled() }
+        isDarkMode = appDataStore.isDarkModeEnabled.stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = initialDarkMode
+        )
+        val initialHaptic = runBlocking { appDataStore.getHapticEnabled()}
+        isHapticFeedback = appDataStore.isHapticEnabled.stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = initialHaptic
+        )
     }
 
     private fun fetchDataFromDB() {

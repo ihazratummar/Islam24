@@ -26,7 +26,15 @@
         android:supportsRtl="true"
         android:theme="@style/App.Starting.Theme"
         android:localeConfig="@xml/locale_config"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="tiramisu">
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.version"-->
+<!--            android:value="@integer/google_play_services_version"/>-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}"  />
         <activity
             android:name=".main.mainActivity.MainActivity"
             android:exported="true"
@@ -38,12 +46,13 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".Receiver.PrayerTimeReceiver"
-            android:exported="true">
+            android:name=".receiver.PrayerTimeReceiver"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
         </receiver>
-        <receiver android:name=".Receiver.MuteReceiver"/>
+        <receiver android:name=".receiver.MuteReceiver"/>
         <receiver
-            android:name=".Receiver.BootReceiver"
+            android:name=".receiver.BootReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
@@ -52,6 +61,16 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".widget.WuzuReceiver" android:exported="true" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/wuzu_widget_info"
+                />
+        </receiver>
+
     </application>
 
 </manifest>

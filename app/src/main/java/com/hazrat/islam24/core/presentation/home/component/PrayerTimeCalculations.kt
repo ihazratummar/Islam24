@@ -159,7 +159,7 @@ fun DisplayCurrentPrayerTime(
     if (currentPrayerName != null) {
         Text(
             text = currentPrayerName,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold
         )

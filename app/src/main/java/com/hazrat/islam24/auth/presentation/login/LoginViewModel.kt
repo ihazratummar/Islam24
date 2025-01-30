@@ -1,5 +1,6 @@
 package com.hazrat.islam24.auth.presentation.login
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,15 +9,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
+import com.hazrat.islam24.auth.repository.SyncRepository
+import com.hazrat.islam24.core.domain.repository.QiblaRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 /**
@@ -26,10 +29,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val auth: FirebaseAuth,
-    private val zakatRepository: ZakatRepository,
     private val profileRepository: ProfileRepository,
     private val storage: FirebaseStorage,
-    private val quranRepository: QuranRepository
+    private val syncRepository: SyncRepository
 ) : ViewModel() {
 
 
@@ -54,9 +56,12 @@ class LoginViewModel @Inject constructor(
             _authState.value = AuthState.Unauthenticated
         } else {
             _authState.value = AuthState.Authenticated
-            syncData()
+            viewModelScope.launch {
+                syncRepository.syncDataOnLogin()
+            }
         }
     }
+
 
     fun onEvent(event: LoginEvent) {
         when (event) {
@@ -112,54 +117,29 @@ class LoginViewModel @Inject constructor(
 
         _authState.value = AuthState.Loading
         delay(2000L)
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    _authState.value = AuthState.Authenticated
-                    _loginState.update {
-                        it.copy(
-                            email = "",
-                            password = ""
-                        )
-                    }
-                    syncData()
-                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
-                    val storageRef = storage.reference
-                    val imageRef = storageRef.child("image/$userId/profile_image")
-                    imageRef.downloadUrl.addOnSuccessListener{
-                        profileRepository.saveProfilePictureLocally(uri = it)
-                    }
-                } else {
-                    viewModelScope.launch {
-                        _authState.value = AuthState.Loading
-                        delay(1000L)
-                        _authState.value =
-                            AuthState.Error(task.exception?.message ?: "Authentication failed")
-                    }
-                }
-            }
-            .addOnFailureListener { e ->
-                viewModelScope.launch {
-                    _authState.value = AuthState.Loading
-                    delay(1000L)
-                    _authState.value = AuthState.Error(e.message ?: "Authentication failed")
-                }
-            }
-    }
-    private fun syncData(){
-        syncZakatData()
-        syncQuranData()
-    }
 
-    private fun syncZakatData(){
-        viewModelScope.launch(SupervisorJob()){
-            zakatRepository.syncData()
+        try {
+            auth.signInWithEmailAndPassword(email, password).await()
+            val syncTime = syncRepository.syncDataOnLogin() // Now calls SyncRepository
+            Log.d("Login", "Total sync time: $syncTime ms")
+            delay(syncTime) // Delay based on sync time
+
+            _authState.value = AuthState.Authenticated
+            _loginState.update {
+                it.copy(email = "", password = "")
+            }
+
+            val userId = auth.currentUser?.uid ?: return
+            val storageRef = storage.reference
+            val imageRef = storageRef.child("image/$userId/profile_image")
+            imageRef.downloadUrl.addOnSuccessListener {
+                profileRepository.saveProfilePictureLocally(uri = it)
+            }
+        } catch (e: Exception) {
+            _authState.value = AuthState.Loading
+            delay(1000L)
+            _authState.value = AuthState.Error(e.message ?: "Authentication failed")
         }
     }
 
-    private fun syncQuranData(){
-        viewModelScope.launch(SupervisorJob()){
-            quranRepository.syncQuranDataOnLogin()
-        }
-    }
 }

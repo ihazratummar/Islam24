@@ -28,7 +28,7 @@ class LocationManager @Inject constructor(
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.d("LocationManager", "Location permissions not granted")
+            Log.d("LocationManager", "LocationOnCard permissions not granted")
             return
         }
 
@@ -36,9 +36,9 @@ class LocationManager @Inject constructor(
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 onLocationReceived?.invoke(location)
-                Log.d("LocationManager", "Location received: ${location.latitude}, ${location.longitude}")
+                Log.d("LocationManager", "LocationOnCard received: ${location.latitude}, ${location.longitude}")
             } else {
-                Log.d("LocationManager", "Location is null")
+                Log.d("LocationManager", "LocationOnCard is null")
             }
         }.addOnFailureListener { e ->
             Log.d("LocationManager", "Failed to get location: ${e.message}")

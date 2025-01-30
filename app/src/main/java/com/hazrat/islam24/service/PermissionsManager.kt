@@ -8,16 +8,20 @@ package com.hazrat.islam24.service
 
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.hazrat.islam24.util.Constants.REQUEST_CODE_SCHEDULE_EXACT_ALARM
 
 class PermissionsManager (private val activity: ComponentActivity) {
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private var requestPermissionLauncher: ActivityResultLauncher<String> =
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
@@ -34,10 +38,12 @@ class PermissionsManager (private val activity: ComponentActivity) {
     // Variable to track if location permission was requested
     private var isLocationPermissionGranted = false
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun requestPermission() {
         checkAndRequestLocationPermission() // Start by requesting location permission
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkAndRequestLocationPermission() {
         when {
             ContextCompat.checkSelfPermission(
@@ -60,6 +66,8 @@ class PermissionsManager (private val activity: ComponentActivity) {
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             when {
@@ -82,6 +90,7 @@ class PermissionsManager (private val activity: ComponentActivity) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun requestNextPermission() {
         if (!isLocationPermissionGranted) {
             // First, request location permission
@@ -91,7 +100,6 @@ class PermissionsManager (private val activity: ComponentActivity) {
             requestNotificationPermission()
         }
     }
-    private val REQUEST_CODE_SCHEDULE_EXACT_ALARM = 100
     fun requestExactAlarmPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED){

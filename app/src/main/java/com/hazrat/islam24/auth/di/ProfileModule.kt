@@ -4,13 +4,19 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.hazrat.islam24.auth.api.VercelApi
+import com.hazrat.islam24.auth.api.RenderApi
 import com.hazrat.islam24.auth.repository.ForgetPasswordRepository
 import com.hazrat.islam24.auth.repository.ForgetPasswordRepositoryImpl
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.auth.repository.ProfileRepositoryImpl
+import com.hazrat.islam24.auth.repository.SyncRepository
+import com.hazrat.islam24.auth.repository.SyncRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
+import com.hazrat.islam24.core.domain.repository.QiblaRepository
+import com.hazrat.islam24.core.domain.repository.QuranRepository
+import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import com.hazrat.islam24.util.ConnectivityObserver
+import com.hazrat.islam24.util.Constants.RENDER_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,7 +49,7 @@ object ProfileModule {
     @Singleton
     @Provides
     fun provideForgetPasswordRepository(
-        api: VercelApi,
+        api: RenderApi,
         connectivityObserver: ConnectivityObserver
     ): ForgetPasswordRepository {
         return ForgetPasswordRepositoryImpl(api, connectivityObserver)
@@ -51,12 +57,28 @@ object ProfileModule {
 
     @Singleton
     @Provides
-    fun provideVercelApi():VercelApi{
+    fun provideRenderApi():RenderApi{
+
         return  Retrofit.Builder()
-            .baseUrl("https://islam24.vercel.app/")
+            .baseUrl(RENDER_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(VercelApi::class.java)
+            .create(RenderApi::class.java)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideSyncRepository(
+        zakatRepository: ZakatRepository,
+        quranRepository: QuranRepository,
+        qiblaRepository: QiblaRepository
+    ): SyncRepository {
+        return SyncRepositoryImpl(
+            zakatRepository =zakatRepository,
+            quranRepository = quranRepository,
+            qiblaRepository = qiblaRepository
+        )
     }
 
 }

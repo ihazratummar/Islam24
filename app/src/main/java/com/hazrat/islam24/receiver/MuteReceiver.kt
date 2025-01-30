@@ -1,4 +1,4 @@
-package com.hazrat.islam24.Receiver
+package com.hazrat.islam24.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

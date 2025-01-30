@@ -43,7 +43,7 @@ class LocationRepositoryImpl @Inject constructor(
      */
     override suspend fun saveLocation(latitude: Double, longitude: Double) {
         val location = LocationEntity(latitude = latitude, longitude = longitude)
-        Log.d("LocationRepository", "Location saved: ${location.latitude}, ${location.longitude}")
+        Log.d("LocationRepository", "LocationOnCard saved: ${location.latitude}, ${location.longitude}")
         locationDao.saveLocation(location)
         lastSavedLocation = Location("").apply {
             this.latitude = latitude
@@ -60,7 +60,7 @@ class LocationRepositoryImpl @Inject constructor(
                     }
                     _currentLocation.postValue(location)
                 } else {
-                    Log.d("LocationRepository", "Location has not changed, skipping save.")
+                    Log.d("LocationRepository", "LocationOnCard has not changed, skipping save.")
                     stopLocationUpdates()
                 }
             }

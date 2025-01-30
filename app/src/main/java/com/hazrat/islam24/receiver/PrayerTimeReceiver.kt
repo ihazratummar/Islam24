@@ -1,4 +1,4 @@
-package com.hazrat.islam24.Receiver
+package com.hazrat.islam24.receiver
 
 import android.Manifest
 import android.app.PendingIntent
@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.RingtoneManager
-import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -39,8 +38,7 @@ import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_TITLE_KEY
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
 import com.hazrat.islam24.util.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
-import com.hazrat.islam24.util.datastore.DataStore
+import com.hazrat.islam24.util.datastore.UserDataStore
 import com.hazrat.islam24.util.datastore.NotificationType
 import com.hazrat.islam24.util.datastore.PrayerName
 import com.hazrat.islam24.util.fetchPrayerTimeForNotification
@@ -48,7 +46,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
-import kotlin.concurrent.thread
 
 @AndroidEntryPoint
 class PrayerTimeReceiver : BroadcastReceiver() {
@@ -66,7 +63,7 @@ class PrayerTimeReceiver : BroadcastReceiver() {
     lateinit var mediaPlayerHelper: MediaPlayerHelper
 
     @Inject
-    lateinit var dataStore: DataStore
+    lateinit var dataStore: UserDataStore
 
     private val prayerInfo = mapOf(
         PrayerName.FAJR to Triple(FAJR_CHANNEL_ID, FAJR_TITLE_KEY, FAJR_MESSAGE_KEY),
@@ -129,7 +126,7 @@ class PrayerTimeReceiver : BroadcastReceiver() {
         prayerName: PrayerName
     ): NotificationCompat.Builder {
         val notificationClickIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         val pendingIntent = PendingIntent.getActivity(
             context,

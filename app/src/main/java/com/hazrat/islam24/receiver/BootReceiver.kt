@@ -1,4 +1,4 @@
-package com.hazrat.islam24.Receiver
+package com.hazrat.islam24.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,13 +6,11 @@ import android.content.Intent
 import android.util.Log
 import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.notification.PrayerAlarmManager
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.datastore.PrayerName
 import com.hazrat.islam24.util.fetchPrayerTimeForNotification
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlin.concurrent.thread
 
 /**
  * @author Hazrat Ummar Shaikh

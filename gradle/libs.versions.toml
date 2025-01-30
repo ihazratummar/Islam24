@@ -1,7 +1,8 @@
 [versions]
 accompanistSystemuicontroller = "0.34.0"
-accompanistSystemuicontrollerVersion = "0.31.3-beta"
 agp = "8.8.0"
+androidsvg = "1.4"
+glanceAppwidget = "1.1.1"
 junitVersion = "1.2.1"
 animationCore = "x.y.z"
 appUpdateKtx = "2.1.0"
@@ -54,7 +55,10 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 [libraries]
 
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-glance = { module = "androidx.glance:glance", version.ref = "glanceAppwidget" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android", version.ref = "materialIconsExtendedAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -71,6 +75,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
 
+androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
 
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
