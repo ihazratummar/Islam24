@@ -1,4 +1,4 @@
-package com.hazrat.islam24.Receiver
+package com.hazrat.islam24.receiver
 
 import android.Manifest
 import android.app.PendingIntent
@@ -38,7 +38,7 @@ import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_TITLE_KEY
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
 import com.hazrat.islam24.util.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
-import com.hazrat.islam24.util.datastore.LocalDataStore
+import com.hazrat.islam24.util.datastore.UserDataStore
 import com.hazrat.islam24.util.datastore.NotificationType
 import com.hazrat.islam24.util.datastore.PrayerName
 import com.hazrat.islam24.util.fetchPrayerTimeForNotification
@@ -63,7 +63,7 @@ class PrayerTimeReceiver : BroadcastReceiver() {
     lateinit var mediaPlayerHelper: MediaPlayerHelper
 
     @Inject
-    lateinit var dataStore: LocalDataStore
+    lateinit var dataStore: UserDataStore
 
     private val prayerInfo = mapOf(
         PrayerName.FAJR to Triple(FAJR_CHANNEL_ID, FAJR_TITLE_KEY, FAJR_MESSAGE_KEY),

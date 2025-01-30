@@ -50,6 +50,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.disk.DiskCache
+import coil.imageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.hazrat.islam24.R
@@ -194,18 +195,6 @@ fun SurahCard(
 ) {
 
     val context = LocalContext.current
-    val imageLoader = ImageLoader.Builder(context)
-        .crossfade(true) // Optional, for crossfade effect
-        .memoryCachePolicy(CachePolicy.ENABLED) // Enable in-memory cache
-        .diskCachePolicy(CachePolicy.ENABLED) // Enable disk cache
-        .diskCache {
-            DiskCache.Builder()
-                .directory(context.cacheDir.resolve("image_cache"))
-                .maxSizePercent(0.02) // Cache size as a percentage of available storage
-                .build()
-        }
-        .build()
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -298,7 +287,7 @@ fun SurahCard(
                     .data(fullPath)
                     .decoderFactory(SvgDecoder.Factory())
                     .build(),
-                imageLoader = imageLoader,
+                imageLoader = context.imageLoader,
                 onSuccess = { result ->
                     Log.d("SVG Load", "SVG loaded successfully: ${result.result.request.data}")
                 },

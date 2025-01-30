@@ -1,5 +1,6 @@
 package com.hazrat.islam24.notification
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -103,6 +104,7 @@ class MediaPlayerHelper @Inject constructor(
         mediaPlayer = null // Clear the reference to the MediaPlayer
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     fun start(){
         mediaPlayer?.start()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){

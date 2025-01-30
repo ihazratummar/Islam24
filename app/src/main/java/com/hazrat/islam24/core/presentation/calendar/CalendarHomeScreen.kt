@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -76,11 +77,11 @@ fun HijriCalendar(
 ) {
     val (todayHijriYear, todayHijriMonth, todayHijriDay) = todayHijriDate
     val calendar = remember { IslamicCalendar() }
-    var currentMonthNumber by remember { mutableStateOf(todayHijriMonth -1) } //Months are 0-indexed
-    var year by remember { mutableStateOf(todayHijriYear) }
-    var lastDayOfMonth by remember { mutableStateOf(0) }
-    var firstDayOfWeek by remember { mutableStateOf(0) }
-    var totalDays by remember { mutableStateOf(0) }
+    var currentMonthNumber by remember { mutableIntStateOf(todayHijriMonth -1) } //Months are 0-indexed
+    var year by remember { mutableIntStateOf(todayHijriYear) }
+    var lastDayOfMonth by remember { mutableIntStateOf(0) }
+    var firstDayOfWeek by remember { mutableIntStateOf(0) }
+    var totalDays by remember { mutableIntStateOf(0) }
 
 
     fun updateCalendar() {

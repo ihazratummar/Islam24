@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +32,9 @@ import com.hazrat.islam24.ui.theme.dimens
 fun BasicTopBar(
     modifier: Modifier = Modifier,
     topBarTitle: String = "",
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    iconColor: Color = MaterialTheme.colorScheme.onBackground,
+    textColor: Color = MaterialTheme.colorScheme.onBackground
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -39,11 +42,20 @@ fun BasicTopBar(
     ) {
         IconButton(
             modifier = Modifier.padding(dimens.size10),
-            onClick = { onBackClick.invoke() }
+            onClick = { onBackClick.invoke() },
         ) {
-            Icon(painterResource(R.drawable.backicon), contentDescription = null)
+            Icon(
+                painterResource(R.drawable.backicon),
+                contentDescription = null,
+                tint = iconColor
+            )
         }
-        Text(text = topBarTitle)
+        Text(
+            text = topBarTitle,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = textColor
+        )
     }
 }
 

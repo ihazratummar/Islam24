@@ -30,7 +30,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -41,11 +40,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
+import coil.imageLoader
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
@@ -59,7 +61,7 @@ import kotlinx.coroutines.launch
  * @author Hazrat Ummar Shaikh
  */
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Composable
 fun AppSettingScreen(
     navController: NavController,
@@ -68,6 +70,9 @@ fun AppSettingScreen(
     appSettingState: AppSettingState,
     isHapticFeedback: Boolean = false
 ) {
+
+    val context = LocalContext.current
+
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val hapticFeedback = LocalHapticFeedback.current
@@ -195,7 +200,6 @@ fun AppSettingScreen(
                             isSwitchChecked = appSettingState.isHapticFeedbackEnabled,
                         )
 
-
                         SettingItemCard(
                             painter = painterResource(id = R.drawable.sysemsetting),
                             text = stringResource(R.string.system_seeting),
@@ -218,6 +222,8 @@ fun AppSettingScreen(
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 }
                                 appSettingEvent(AppSettingEvent.SignOut)
+                                context.imageLoader.diskCache?.clear()
+                                context.imageLoader.memoryCache?.clear()
                             },
                             iconColor = MaterialTheme.colorScheme.error,
                             cardContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh

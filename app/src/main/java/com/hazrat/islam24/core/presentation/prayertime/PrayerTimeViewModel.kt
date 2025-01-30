@@ -28,7 +28,7 @@ import com.hazrat.islam24.util.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.MyFileUtils.saveMp3File
 import com.hazrat.islam24.util.datastore.DataStorePreference
-import com.hazrat.islam24.util.datastore.LocalDataStore
+import com.hazrat.islam24.util.datastore.UserDataStore
 import com.hazrat.islam24.util.datastore.NotificationType
 import com.hazrat.islam24.util.datastore.PrayerName
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,7 +53,7 @@ class PrayerTimeViewModel @Inject constructor(
     private val prayerAlarmManager: PrayerAlarmManager,
     private val dataStorePreference: DataStorePreference,
     private val mediaPlayerHelper: MediaPlayerHelper,
-    private val dataStore: LocalDataStore
+    private val dataStore: UserDataStore
 ) : ViewModel() {
 
 
