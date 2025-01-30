@@ -19,6 +19,7 @@ import com.hazrat.islam24.core.domain.model.al_quran_model.meta_data_juz.parseJu
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
 import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
+import com.hazrat.islam24.util.Constants.USER_COLLECTION
 import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.MyFileUtils
 import com.hazrat.islam24.util.checkSystemLanguage
@@ -433,6 +434,6 @@ class QuranRepositoryImpl @Inject constructor(
         private const val QURAN_EN_FILE_NAME = "quran_en.json"
         private const val QURAN_BN_FILE_NAME = "quran_bn.json"
         private const val QURAN_AYAH_FAVORITE_FILE = "quran_favorite.json"
-        private const val USER_COLLECTION = "user"
+
     }
 }

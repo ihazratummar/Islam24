@@ -91,9 +91,9 @@ fun AuthLoginScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Spacer(Modifier.height(dimens.size30))
-            BasicTopBar {
-                onBackClick.invoke()
-            }
+            BasicTopBar(
+                onBackClick = {onBackClick.invoke()}
+            )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

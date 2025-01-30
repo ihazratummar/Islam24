@@ -1,5 +1,6 @@
 package com.hazrat.islam24.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
@@ -8,6 +9,7 @@ import java.util.Locale
 
 object LocaleHelper {
 
+    @SuppressLint("ObsoleteSdkInt")
     fun wrap(context: Context, locale: Locale): ContextWrapper {
         var updatedContext = context
         val config = context.resources.configuration

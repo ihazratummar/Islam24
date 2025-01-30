@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 
 }
 
@@ -20,8 +21,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 35
-        versionCode = 82
-        versionName = "2.1.0"
+        versionCode = 83
+        versionName = "2.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -29,6 +30,7 @@ android {
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "LOCATION_IQ_API_KEY", properties.getProperty("LOCATION_IQ_API_KEY"))
         buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
+        buildConfigField("String", "MAPS_API_KEY", properties.getProperty("MAPS_API_KEY"))
 
         vectorDrawables {
             useSupportLibrary = true
@@ -47,6 +49,7 @@ android {
                 "proguard-rules.pro"
             )
             ndk.debugSymbolLevel = "FULL"
+
         }
     }
 
@@ -195,6 +198,17 @@ dependencies {
 
     implementation (libs.androidx.glance)
     implementation (libs.androidx.glance.appwidget)
+
+    implementation (libs.androidsvg)
+
+
+    implementation ("com.google.android.gms:play-services-maps:19.0.0")
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
+    implementation ("com.google.maps.android:maps-compose:6.4.0")
+
+
+    implementation ("com.google.maps.android:maps-ktx:3.2.1")
+    implementation ("com.google.maps.android:maps-utils-ktx:3.2.1")
 
 
 

@@ -1,5 +1,6 @@
 package com.hazrat.islam24.auth.presentation.profiledetails
 
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -68,6 +69,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import coil.imageLoader
 import coil.request.ImageRequest
 import coil.size.Size
 import com.hazrat.islam24.R
@@ -176,7 +178,8 @@ fun ProfileDetailsScreen(
                         activeImage = imageUri
                         showImagePreview  = true
                     },
-                    onImageDragEnd = { showImagePreview = false }
+                    onImageDragEnd = { showImagePreview = false },
+                    context = context
                 )
                 Spacer(modifier = Modifier.height(dimens.size50))
             }
@@ -202,7 +205,8 @@ fun ProfileDetailsScreen(
         }
         ZoomedProfileImage(
             imageUri = activeImage,
-            isVisible = showImagePreview
+            isVisible = showImagePreview,
+            context = context
         )
         if (profileState.isNameDialogOpen) {
             UpdateDataDetails(
@@ -379,9 +383,10 @@ private fun ProfileDataCards(
 private fun ProfilePicture(
     profileDetailsEvent: (ProfileDetailsEvent) -> Unit,
     onImageDragStart: (String?) -> Unit = {},
-    onImageDragEnd: () -> Unit = {}
+    onImageDragEnd: () -> Unit = {},
+    context: Context
 ) {
-    val context = LocalContext.current
+
     val cacheFile = getCacheProfilePicture(context = context)
     val imageUri = remember { mutableStateOf(cacheFile?.toUri()?.toString()) }
 
@@ -390,7 +395,8 @@ private fun ProfilePicture(
             .data(imageUri.value)
             .size(Size.ORIGINAL)
             .crossfade(true)
-            .build()
+            .build(),
+        imageLoader = context.imageLoader
 
     )
     val launcher = rememberLauncherForActivityResult(
@@ -461,7 +467,6 @@ private fun ProfilePicture(
                         painter = painterResource(R.drawable.profile),
                         contentDescription = "error",
                         modifier = Modifier
-                            .fillMaxSize()
                             .size(
                                 dimens.size150
                             )

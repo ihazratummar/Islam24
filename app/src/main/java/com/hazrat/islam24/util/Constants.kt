@@ -61,4 +61,16 @@ object Constants {
 
     const val RENDER_BASE_URL = "https://islam24-backend.onrender.com/"
 
+
+    /*
+    Firebase Constants
+     */
+
+    const val USER_COLLECTION = "user"
+    const val ZAKAT_COLLECTION = "zakat"
+
+    // ********************//
+
+    const val  REQUEST_CODE_SCHEDULE_EXACT_ALARM = 100
+
 }

@@ -1,5 +1,6 @@
 package com.hazrat.islam24.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedback
@@ -38,6 +39,7 @@ import com.hazrat.islam24.R
 class WuzuWidget : GlanceAppWidget() {
 
     val wuzuKey = booleanPreferencesKey("Wuzu")
+    @SuppressLint("RestrictedApi")
     override suspend fun provideGlance(
         context: Context,
         id: GlanceId
