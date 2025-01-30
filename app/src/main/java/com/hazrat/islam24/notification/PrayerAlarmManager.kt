@@ -11,7 +11,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.hazrat.islam24.Receiver.PrayerTimeReceiver
+import com.hazrat.islam24.receiver.PrayerTimeReceiver
 import com.hazrat.islam24.notification.NotificationConstant.ASR_MESSAGE_CONTENT
 import com.hazrat.islam24.notification.NotificationConstant.ASR_MESSAGE_KEY
 import com.hazrat.islam24.notification.NotificationConstant.ASR_TITLE_CONTENT

@@ -13,6 +13,7 @@ import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.util.changeLanguage
 import com.hazrat.islam24.util.datastore.AppDataStore
 import com.hazrat.islam24.util.datastore.DataStorePreference
+import com.hazrat.islam24.util.datastore.UserDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +36,8 @@ class AppSettingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val dataStorePreference: DataStorePreference,
     private val quranRepository: QuranRepository,
-    private val appDataStore: AppDataStore
+    private val appDataStore: AppDataStore,
+    private val userDataStore: UserDataStore
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -63,18 +65,18 @@ class AppSettingViewModel @Inject constructor(
     init {
         profileRepository.checkAuthStatus()
 
-//        viewModelScope.launch{
-//            val darkMode = appDataStore.getDarkModeEnabled()
-//            val hapticFeedback = appDataStore.getHapticEnabled()
-//
-//            _state.update {
-//                it.copy(
-//                    toggleTheme = darkMode,
-//                    isHapticFeedbackEnabled = hapticFeedback,
-//
-//                )
-//            }
-//        }
+        viewModelScope.launch{
+            val darkMode = appDataStore.getDarkModeEnabled()
+            val hapticFeedback = appDataStore.getHapticEnabled()
+
+            _state.update {
+                it.copy(
+                    toggleTheme = darkMode,
+                    isHapticFeedbackEnabled = hapticFeedback,
+
+                )
+            }
+        }
 
     }
 
@@ -113,6 +115,7 @@ class AppSettingViewModel @Inject constructor(
                     profileRepository.signOut()
                 }
                 syncQuranData()
+                clearDataStore()
             }
 
             AppSettingEvent.RefreshAuth -> {
@@ -137,6 +140,12 @@ class AppSettingViewModel @Inject constructor(
                     appDataStore.enableDarkTheme(newTheme)
                 }
             }
+        }
+    }
+
+    private fun clearDataStore(){
+        viewModelScope.launch {
+            userDataStore.clearSelectedCompassId()
         }
     }
 

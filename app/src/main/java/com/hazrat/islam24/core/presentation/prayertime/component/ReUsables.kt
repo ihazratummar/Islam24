@@ -112,13 +112,6 @@ fun PrayerTimeCard(
             CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
-        },
-        elevation = if (isPrayerTime) {
-            CardDefaults.cardElevation(
-                defaultElevation = dimens.size10
-            )
-        } else {
-            CardDefaults.cardElevation(defaultElevation = 0.dp)
         }
     ) {
         Row(

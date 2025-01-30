@@ -139,5 +139,6 @@
     <string name="start_reading">Start Reading</string>
     <string name="accessibility_service_description" translatable="false">This service allows the app to monitor volume key presses.</string>
     <string name="widget_icon_desc" translatable="false">WuzuIconDescription</string>
-    <string name="enable_haptic">Enable Haptic</string>
+    <string name="enable_haptic">Haptic Feedback</string>
+    <string name="no_wuzu">No Wuzu</string>
 </resources>

@@ -7,5 +7,6 @@ data class UserData(
     val profilePictureUrl: String? = "",
     val bio: String ? = "",
     val lastReadSurah: Int? = 0,
-    val lastReadAyah: Int? = 0
+    val lastReadAyah: Int? = 0,
+    val compassModelId : Int ? = 1
 )

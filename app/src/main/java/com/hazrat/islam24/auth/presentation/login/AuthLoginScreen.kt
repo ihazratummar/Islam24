@@ -91,9 +91,9 @@ fun AuthLoginScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Spacer(Modifier.height(dimens.size30))
-            BasicTopBar {
-                onBackClick.invoke()
-            }
+            BasicTopBar(
+                onBackClick = {onBackClick.invoke()}
+            )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -222,7 +222,7 @@ fun LoginButton(
         colors = ButtonColors(
             containerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.surface,
+            disabledContainerColor = if (authState == AuthState.Loading) Color.Transparent else MaterialTheme.colorScheme.secondaryContainer,
             disabledContentColor = MaterialTheme.colorScheme.onSurface,
         ),
         enabled = state.isFormValid && authState != AuthState.Loading,

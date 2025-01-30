@@ -10,6 +10,8 @@ import com.hazrat.islam24.core.data.dao.ZakatDao
 import com.hazrat.islam24.core.domain.model.zakat.NisabEntity
 import com.hazrat.islam24.core.domain.model.zakat.ZakatEntity
 import com.hazrat.islam24.core.domain.repository.ZakatRepository
+import com.hazrat.islam24.util.Constants.USER_COLLECTION
+import com.hazrat.islam24.util.Constants.ZAKAT_COLLECTION
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +49,7 @@ class ZakatRepositoryImpl @Inject constructor(
         dao.insertZakatDetails(zakatEntity = newZakatEntity)
 
         val userId = auth.currentUser?.uid ?: return
-        fireStore.collection("user").document(userId).collection("zakat")
+        fireStore.collection(USER_COLLECTION).document(userId).collection(ZAKAT_COLLECTION)
             .document(newZakatEntity.id).set(zakatEntity)
             .addOnSuccessListener {
                 Toast.makeText(context, "Zakat Added Successfully", Toast.LENGTH_SHORT).show()
@@ -58,7 +60,7 @@ class ZakatRepositoryImpl @Inject constructor(
     override suspend fun deleteZakat(zakatId: String) {
         dao.deleteZakatDetails(zakatId)
         val userId = auth.currentUser?.uid?:return
-        fireStore.collection("user").document(userId).collection("zakat")
+        fireStore.collection(USER_COLLECTION).document(userId).collection(ZAKAT_COLLECTION)
             .document(zakatId).delete()
     }
 
@@ -84,7 +86,7 @@ class ZakatRepositoryImpl @Inject constructor(
             val firestoreZakatEntities = mutableListOf<ZakatEntity>()
 
             // Fetch data from Firestore
-            val querySnapshot = fireStore.collection("user").document(userId).collection("zakat").get().await()
+            val querySnapshot = fireStore.collection(USER_COLLECTION).document(userId).collection(ZAKAT_COLLECTION  ).get().await()
 
             for (document in querySnapshot.documents) {
                 val zakatEntity = document.toObject(ZakatEntity::class.java)
@@ -94,7 +96,7 @@ class ZakatRepositoryImpl @Inject constructor(
             // Backup local data to Firestore
             for (localEntity in localZakatEntities) {
                 if (!firestoreZakatEntities.any { it.id == localEntity.id }) {
-                    fireStore.collection("user").document(userId).collection("zakat")
+                    fireStore.collection(USER_COLLECTION).document(userId).collection("zakat")
                         .document(localEntity.id).set(localEntity).await()
                 }
             }

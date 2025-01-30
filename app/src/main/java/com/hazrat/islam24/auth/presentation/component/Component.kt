@@ -1,5 +1,6 @@
 package com.hazrat.islam24.auth.presentation.component
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import coil.compose.AsyncImage
+import coil.imageLoader
 import coil.memory.MemoryCache
 import coil.request.ImageRequest
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
@@ -79,7 +81,7 @@ fun CustomTextField(
         modifier = Modifier.fillMaxWidth(),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.surface
+            unfocusedBorderColor = MaterialTheme.colorScheme.secondaryContainer
         )
     )
 }
@@ -88,14 +90,9 @@ fun CustomTextField(
 fun ZoomedProfileImage(
     modifier: Modifier = Modifier,
     isVisible: Boolean,
-    imageUri: String?
+    imageUri: String?,
+    context: Context
 ) {
-
-    val imageBuilder = ImageRequest.Builder(LocalContext.current)
-        .data(imageUri)
-        .crossfade(true)
-        .placeholderMemoryCacheKey(MemoryCache.Key(imageUri?:""))
-        .build()
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -117,8 +114,9 @@ fun ZoomedProfileImage(
             ) {
                 AsyncImage(
                     modifier = Modifier.fillMaxWidth(),
-                    model = imageBuilder,
-                    contentDescription = null
+                    model = imageUri,
+                    contentDescription = null,
+                    imageLoader = context.imageLoader
                 )
             }
         }
@@ -136,7 +134,7 @@ fun ButtonLoading(modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(dimens.size10),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            contentColor = MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
         Text("Submit")

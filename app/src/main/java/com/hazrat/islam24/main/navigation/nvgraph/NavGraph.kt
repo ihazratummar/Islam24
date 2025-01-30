@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
+import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.AppNavigator
 import com.hazrat.islam24.main.navigation.MainRoute
@@ -24,6 +25,7 @@ fun NavGraph(
     quranViewModel: QuranViewModel,
     prayerTimeViewModel : PrayerTimeViewModel,
     appSettingViewModel : AppSettingViewModel,
+    qiblaViewModel: QiblaViewModel,
     isHapticFeedback : Boolean = false
 ) {
     val navController = rememberNavController()
@@ -39,7 +41,8 @@ fun NavGraph(
                     quranViewModel = quranViewModel,
                     prayerTimeViewModel = prayerTimeViewModel,
                     appSettingViewModel = appSettingViewModel,
-                    isHapticFeedback = isHapticFeedback
+                    isHapticFeedback = isHapticFeedback,
+                    qiblaViewModel = qiblaViewModel
                 )
             }
         }

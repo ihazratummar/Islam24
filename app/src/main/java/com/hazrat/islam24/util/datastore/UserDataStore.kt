@@ -17,7 +17,7 @@ import javax.inject.Named
  * Created on 24-12-2024
  */
 
-class LocalDataStore @Inject constructor(
+class UserDataStore @Inject constructor(
     @Named(USER_DATA_SORE) private val userDataStore: DataStore<Preferences>,
 ) {
     companion object {
@@ -40,6 +40,8 @@ class LocalDataStore @Inject constructor(
         const val RANDOM_AYAT_NUMBER = "RANDOM_AYAT_NUMBER"
 
 
+        const val SELECTED_QIBLA_COMPASS = "SELECTED_QIBLA_COMPASS"
+
         /*
         ******************--------------------------*************************
          */
@@ -61,10 +63,27 @@ class LocalDataStore @Inject constructor(
         private val DAILY_QURAN_DATE_KEY = stringPreferencesKey(DAILY_QURAN_DATE)
         private val RANDOM_AYAT_NUMBER_KEY = intPreferencesKey(RANDOM_AYAT_NUMBER)
 
-
+        private val SELECTED_QIBLA_COMPASS_KEY = intPreferencesKey(SELECTED_QIBLA_COMPASS)
 
     }
 
+    suspend fun clearSelectedCompassId(){
+        val key = SELECTED_QIBLA_COMPASS_KEY
+        userDataStore.edit { pref->
+            pref.remove(key)
+        }
+    }
+
+    suspend fun saveSelectedCompassId(id: Int){
+        val key = SELECTED_QIBLA_COMPASS_KEY
+        userDataStore.edit { pref->
+            pref[key] = id
+        }
+    }
+
+    val getSelectedCompassId: Flow<Int> = userDataStore.data.map { pref ->
+        pref[SELECTED_QIBLA_COMPASS_KEY] ?: 1
+    }
 
     suspend fun saveDailyQuranDate(date: String){
         val key = DAILY_QURAN_DATE_KEY
