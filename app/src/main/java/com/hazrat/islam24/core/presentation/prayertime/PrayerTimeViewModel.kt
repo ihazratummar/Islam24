@@ -12,17 +12,20 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.presentation.profiledetails.UserEvent
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
 import com.hazrat.islam24.notification.MediaPlayerHelper
 import com.hazrat.islam24.notification.PrayerAlarmManager
+import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
 import com.hazrat.islam24.util.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
@@ -34,7 +37,9 @@ import com.hazrat.islam24.util.datastore.PrayerName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,7 +48,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 
 @HiltViewModel
@@ -53,10 +60,15 @@ class PrayerTimeViewModel @Inject constructor(
     private val prayerAlarmManager: PrayerAlarmManager,
     private val dataStorePreference: DataStorePreference,
     private val mediaPlayerHelper: MediaPlayerHelper,
-    private val dataStore: UserDataStore
+    private val dataStore: UserDataStore,
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
 
 
+    var isPrayerTimeRefreshing = MutableStateFlow(false)
+        private set
+    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
+        networkRepository.networkStatus
     private val eventChannel = Channel<UserEvent>()
     val events = eventChannel.receiveAsFlow()
     val prayerTimes: StateFlow<List<PrayerTimeEntity>> = repository.prayerTimes
@@ -120,6 +132,25 @@ class PrayerTimeViewModel @Inject constructor(
         when (prayerEvent) {
             PrayerEvent.SharePrayer -> {
                 repository.sharePrayerTimes(prayerTimes.value)
+            }
+
+            PrayerEvent.RefreshPrayer -> {
+                viewModelScope.launch {
+                    isPrayerTimeRefreshing.value = true
+                    if (networkStatus.value == ConnectivityObserver.Status.Available) {
+                        val apiTime = measureTimeMillis { repository.newPrayerTimesRequest() }
+                        val minExecutionTime = 2000L
+                        val totalExecutionTime = apiTime
+                        if (totalExecutionTime < minExecutionTime) {
+                            delay(minExecutionTime - totalExecutionTime)
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    isPrayerTimeRefreshing.value = false  // ✅ This will always execute
+                }
             }
         }
     }

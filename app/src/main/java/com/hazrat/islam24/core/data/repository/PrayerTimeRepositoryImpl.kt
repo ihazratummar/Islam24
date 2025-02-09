@@ -77,6 +77,7 @@ class PrayerTimeRepositoryImpl(
                 school = schoolValue,
                 annual = true
             )
+            Log.d("NewPrayerTimeRepositoryImpl", "Api called ${apiResponse.data.values.flatten().find { it.date.gregorian.date == getCurrentDate() }}")
             prayerTimeDao.insertAllPrayerTimes(apiResponse.data.values.flatten().toEntityList())
             apiResponse.data.values.flatten().toEntityList()
         } catch (e: HttpException) {
