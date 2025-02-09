@@ -299,22 +299,35 @@ fun SurahCard(
 fun JuzCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    index: Int
+    index: Int,
+    ayat: String
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(vertical = dimens.size10),
         onClick = {
             onClick()
         },
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
-        Text(
-            text = "${stringResource(R.string.juz)} ${ index + 1}",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Normal
-            ),
-            modifier = Modifier.padding(dimens.size5)
-        )
+        Column (
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(dimens.size4)
+        ){
+            Text(
+                text = "${stringResource(R.string.juz)} ${ index + 1}",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier.padding(dimens.size5)
+            )
+            Text(
+                text = "${stringResource(R.string.ayah)} $ayat",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier.padding(dimens.size5)
+            )
+        }
     }
 }
 

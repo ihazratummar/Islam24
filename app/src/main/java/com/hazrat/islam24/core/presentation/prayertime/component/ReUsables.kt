@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -30,9 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
-import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.ui.theme.dimens
 
 
@@ -248,10 +244,10 @@ fun ToggleNotification(
 @Composable
 fun AzanList(
     modifier: Modifier = Modifier,
-    onAzanPlayClick: (Int, Int) -> Unit,
+    onAzanPlayClick: (Int, String, String) -> Unit,
     isAzanPlaying: List<Boolean>,
-    onAzanClick: (Int) -> Unit,
-    listOfAzan: List<Int>,
+    onAzanClick: (String, String) -> Unit,
+    listOfAzan: List<AzanData>,
     onDefaultNotificationClick: () -> Unit,
     onSilentNotificationClick: () -> Unit,
     selectedOption: Int = 0,
@@ -321,7 +317,7 @@ fun AzanList(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onClick = {
-                    onAzanClick(item)
+                    onAzanClick(item.url, item.name)
                     onOptionSelected(index + 2)
                 },
                 shape = RectangleShape,
@@ -348,7 +344,7 @@ fun AzanList(
                             .size(dimens.size30)
                             .clickable {
                                 if (index < isAzanPlaying.size) {
-                                    onAzanPlayClick(index, item)
+                                    onAzanPlayClick(index, item.name, item.url)
                                 }
                             },
                         painter = if (index < isAzanPlaying.size && !isAzanPlaying[index]) {
@@ -368,19 +364,57 @@ fun AzanList(
 }
 
 val listOfAzan = listOf(
-    R.raw.azan2,
-    R.raw.azan3,
-    R.raw.azan4,
-    R.raw.azan5,
-    R.raw.azan6,
-    R.raw.azan7,
-    R.raw.azan8,
-    R.raw.azan9,
-    R.raw.azan10,
+    AzanData(
+        name = "azan1",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan1.mp3"
+    ),
+    AzanData(
+        name = "azan2",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan2.mp3"
+    ),
+    AzanData(
+        name = "azan3",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan3.mp3"
+    ),
+    AzanData(
+        name = "azan4",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan4.mp3"
+    ),
+    AzanData(
+        name = "azan5",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan5.mp3"
+    ),
+    AzanData(
+        name = "azan6",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan6.mp3"
+    ),
+    AzanData(
+        name = "azan7",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan7.mp3"
+    ),
+    AzanData(
+        name = "azan8",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan8.mp3"
+    ),
+    AzanData(
+        name = "azan9",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan9.mp3"
+    )
 )
 
 val listOfFajrAzan = listOf(
-    R.raw.fajr1,
-    R.raw.fajr2
+    AzanData(
+        name = "fajr1",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/fajr1.mp3"
+    ),
+    AzanData(
+        name = "fajr2",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/fajr2.mp3"
+    )
 )
 
+
+data class AzanData(
+    val name: String,
+    val url: String
+)
