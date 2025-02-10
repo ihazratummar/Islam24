@@ -16,5 +16,7 @@ data class NotificationState(
     val selectedDhuhrAzan: Int = 0,
     val selectedAsrAzan: Int = 0,
     val selectedMaghribAzan: Int = 0,
-    val selectedIshaAzan: Int = 0
+    val selectedIshaAzan: Int = 0,
+
+    val isAzanDownloading : Boolean = false
 )

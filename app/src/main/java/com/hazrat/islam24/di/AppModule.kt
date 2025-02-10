@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.hazrat.islam24.util.Constants.APP_DATA_STORE
 import com.hazrat.islam24.util.Constants.USER_DATA_SORE
+import com.hazrat.islam24.util.downloader.AndroidDownloader
+import com.hazrat.islam24.util.downloader.Downloader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,5 +43,14 @@ object AppModule {
             context.preferencesDataStoreFile(USER_DATA_SORE)
         }
     }
+
+    @Singleton
+    @Provides
+    fun provideDownloader(
+        @ApplicationContext context: Context
+    ): Downloader {
+        return AndroidDownloader(context)
+    }
+
 
 }
