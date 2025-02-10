@@ -15,7 +15,7 @@ object Constants {
     /** Base URL for the Aladhan API */
     const val BASE_URL = "https://api.aladhan.com/v1/calendar/"
 
-    /** Location IQ Api Key */
+    /** LocationOnCard IQ Api Key */
     const val LOCATION_IQ_BASE_URL = "https://us1.locationiq.com/v1/"
     const val LOCATION_IQ_API_KEY = BuildConfig.LOCATION_IQ_API_KEY
 
@@ -36,4 +36,42 @@ object Constants {
 
     /** Quran Api Base  Url  */
     const val QURAN_AR_BASE_URL = "https://raw.githubusercontent.com/ihazratummar/AlQuran/refs/heads/main/"
+
+
+
+    /*
+    Storage Constants
+     */
+
+    const val PARENT_FOLDER_NAME_DOWNLOAD = "Download"
+    const val DOWNLOADED_AZAN_FOLDER = "azans"
+    const val SELECTED_ATHANS_SUB_FOLDER_NAME = "Selected Athan"
+
+
+    /*
+    DataStore Constants
+     */
+
+    const val APP_DATA_STORE = "APP_DATA_STORE"
+
+    const val USER_DATA_SORE = "USER_DATA_SORE"
+
+    /*
+    Islam 24 Backend
+     */
+
+    const val RENDER_BASE_URL = "https://islam24-backend.onrender.com/"
+
+
+    /*
+    Firebase Constants
+     */
+
+    const val USER_COLLECTION = "user"
+    const val ZAKAT_COLLECTION = "zakat"
+
+    // ********************//
+
+    const val  REQUEST_CODE_SCHEDULE_EXACT_ALARM = 100
+
 }

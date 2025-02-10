@@ -12,12 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,9 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
-import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.ui.theme.dimens
 
 
@@ -101,20 +101,13 @@ fun PrayerTimeCard(
             ),
         colors = if (isPrayerTime) {
             CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary.copy(0.8f),
             )
         } else {
             CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
-        },
-        elevation = if (isPrayerTime) {
-            CardDefaults.cardElevation(
-                defaultElevation = dimens.size10
-            )
-        } else {
-            CardDefaults.cardElevation(defaultElevation = 0.dp)
         }
     ) {
         Row(
@@ -208,7 +201,7 @@ fun ToggleNotification(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(
@@ -227,27 +220,201 @@ fun ToggleNotification(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = stringResource(notificationName))
-                IconToggleButton(
-                    modifier = Modifier.size(dimens.size50),
+
+                Switch(
                     checked = isCheck,
-                    onCheckedChange = {
-                        notificationEvent.invoke()
-                    },
-                    colors = IconButtonDefaults.iconToggleButtonColors(
-                        disabledContentColor = MaterialTheme.colorScheme.onSurface,
-                        checkedContentColor = MaterialTheme.colorScheme.primary
+                    onCheckedChange = {notificationEvent.invoke()},
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                        checkedBorderColor = MaterialTheme.colorScheme.primary,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                        uncheckedBorderColor = MaterialTheme.colorScheme.primary,
                     )
-                ) {
-                    Icon(
-                        painter = if (isCheck) painterResource(id = R.drawable.toggleon) else painterResource(
-                            id = R.drawable.toggleoff
-                        ),
-                        contentDescription = "Notification",
-                        modifier = Modifier.size(dimens.size40)
-                    )
-                }
+                )
             }
         }
     }
 }
 
+
+
+
+@Composable
+fun AzanList(
+    modifier: Modifier = Modifier,
+    onAzanPlayClick: (Int, String, String) -> Unit,
+    isAzanPlaying: List<Boolean>,
+    onAzanClick: (String, String) -> Unit,
+    listOfAzan: List<AzanData>,
+    onDefaultNotificationClick: () -> Unit,
+    onSilentNotificationClick: () -> Unit,
+    selectedOption: Int = 0,
+    onOptionSelected: (Int) -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
+    ) {
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = {
+                    onSilentNotificationClick()
+                    onOptionSelected(0)
+                },
+                shape = RectangleShape,
+                colors = CardDefaults.cardColors(
+                    containerColor = if (selectedOption == 0) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = dimens.size30, horizontal = dimens.size10)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(dimens.size30),
+                        painter = painterResource(R.drawable.bell_off),
+                        contentDescription = null
+                    )
+                    Spacer(Modifier.width(dimens.size20))
+                    Text("Silent")
+                }
+            }
+        }
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = {
+                    onDefaultNotificationClick()
+                    onOptionSelected(1)
+                },
+                shape = RectangleShape,
+                colors = CardDefaults.cardColors(
+                    containerColor = if (selectedOption == 1) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = dimens.size30, horizontal = dimens.size10)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(dimens.size30),
+                        painter = painterResource(R.drawable.bell_ringing),
+                        contentDescription = null
+                    )
+                    Spacer(Modifier.width(dimens.size20))
+                    Text("Default Notification")
+                }
+            }
+        }
+        itemsIndexed(listOfAzan) { index, item ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = {
+                    onAzanClick(item.url, item.name)
+                    onOptionSelected(index + 2)
+                },
+                shape = RectangleShape,
+                colors = CardDefaults.cardColors(
+                    containerColor = if (selectedOption == index + 2) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = dimens.size30, horizontal = dimens.size10),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier.size(dimens.size40),
+                        painter = painterResource(R.drawable.volume),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(dimens.size20))
+                    Text(text = "Azan ${index + 1}")
+                    Spacer(Modifier.weight(1f))
+                    Icon(
+                        modifier = Modifier
+                            .size(dimens.size30)
+                            .clickable {
+                                if (index < isAzanPlaying.size) {
+                                    onAzanPlayClick(index, item.name, item.url)
+                                }
+                            },
+                        painter = if (index < isAzanPlaying.size && !isAzanPlaying[index]) {
+                            painterResource(R.drawable.play)
+                        } else {
+                            painterResource(R.drawable.stop)
+                        },
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.height(dimens.size5))
+
+                }
+            }
+        }
+
+    }
+}
+
+val listOfAzan = listOf(
+    AzanData(
+        name = "azan1",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan1.mp3"
+    ),
+    AzanData(
+        name = "azan2",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan2.mp3"
+    ),
+    AzanData(
+        name = "azan3",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan3.mp3"
+    ),
+    AzanData(
+        name = "azan4",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan4.mp3"
+    ),
+    AzanData(
+        name = "azan5",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan5.mp3"
+    ),
+    AzanData(
+        name = "azan6",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan6.mp3"
+    ),
+    AzanData(
+        name = "azan7",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan7.mp3"
+    ),
+    AzanData(
+        name = "azan8",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan8.mp3"
+    ),
+    AzanData(
+        name = "azan9",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/azan9.mp3"
+    )
+)
+
+val listOfFajrAzan = listOf(
+    AzanData(
+        name = "fajr1",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/fajr1.mp3"
+    ),
+    AzanData(
+        name = "fajr2",
+        url = "https://raw.githubusercontent.com/ihazratummar/azan/main/fajr2.mp3"
+    )
+)
+
+
+data class AzanData(
+    val name: String,
+    val url: String
+)

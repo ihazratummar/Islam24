@@ -1,10 +1,12 @@
 package com.hazrat.islam24.core.di
 
 import android.content.Context
-import com.hazrat.islam24.core.api.QuranApi
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.hazrat.islam24.core.remote.api.QuranApi
 import com.hazrat.islam24.core.data.repository.QuranRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.QuranRepository
-import com.hazrat.islam24.util.DataStorePreference
+import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.MyFileUtils
 import dagger.Module
 import dagger.Provides
@@ -23,13 +25,17 @@ object QuranModule {
         quranApi: QuranApi,
         fileUtils: MyFileUtils,
         @ApplicationContext context: Context,
-        dataStorePreference: DataStorePreference
+        dataStorePreference: DataStorePreference,
+        firebaseAuth: FirebaseAuth,
+        firebaseFirestore: FirebaseFirestore
     ): QuranRepository {
         return QuranRepositoryImpl(
             context = context,
             quranApi = quranApi,
             fileUtils = fileUtils,
-            dataStorePreference = dataStorePreference
+            dataStorePreference = dataStorePreference,
+            firebaseAuth = firebaseAuth,
+            firebaseFirestore = firebaseFirestore
         )
     }
 

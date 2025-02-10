@@ -80,7 +80,10 @@ fun Modifier.profileCardShimmerEffect(): Modifier = composed {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun RatingBottomSheet(profileEvent: (ProfileEvent) -> Unit) {
+fun RatingBottomSheet(
+    profileEvent: (ProfileEvent) -> Unit,
+    hapticFeedback: () -> Unit
+) {
     ModalBottomSheet(
         onDismissRequest = {
             profileEvent(ProfileEvent.OpenRatingDialog)
@@ -110,7 +113,9 @@ fun RatingBottomSheet(profileEvent: (ProfileEvent) -> Unit) {
             ) {
                 repeat(5) { index ->
                     Icon(
-                        painter = if (rating > index) painterResource(id = R.drawable.star) else painterResource(R.drawable.outlinstar),
+                        painter = if (rating > index) painterResource(id = R.drawable.star) else painterResource(
+                            R.drawable.outlinstar
+                        ),
                         contentDescription = "Star",
                         modifier = Modifier
                             .size(dimens.size60)
@@ -140,6 +145,7 @@ fun RatingBottomSheet(profileEvent: (ProfileEvent) -> Unit) {
                 Button(
                     onClick = {
                         profileEvent(ProfileEvent.GoToRate)
+                        hapticFeedback()
                     },
                     modifier = Modifier
                         .padding(dimens.size10)
@@ -147,8 +153,8 @@ fun RatingBottomSheet(profileEvent: (ProfileEvent) -> Unit) {
                         .height(dimens.size60),
                     shape = RoundedCornerShape(dimens.size10),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Text(

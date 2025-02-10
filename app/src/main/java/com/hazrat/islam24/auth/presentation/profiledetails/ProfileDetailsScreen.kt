@@ -1,13 +1,12 @@
 package com.hazrat.islam24.auth.presentation.profiledetails
 
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,13 +25,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -66,12 +62,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import coil.imageLoader
 import coil.request.ImageRequest
 import coil.size.Size
 import com.hazrat.islam24.R
@@ -80,8 +78,8 @@ import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.auth.presentation.component.ZoomedProfileImage
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.Dimens
 import com.hazrat.islam24.util.getCacheProfilePicture
+import com.hazrat.islam24.util.hapticFeedbacks
 import com.hazrat.islam24.util.toUri
 import kotlinx.coroutines.launch
 
@@ -96,11 +94,12 @@ fun ProfileDetailsScreen(
     modifier: Modifier = Modifier,
     profileState: ProfileState,
     profileDetailsEvent: (ProfileDetailsEvent) -> Unit,
-    userEvent: UserEvent?
+    userEvent: UserEvent?,
+    isHapticFeedback: Boolean = false
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
+    val hapticFeedback = LocalHapticFeedback.current
     val context = LocalContext.current
     LaunchedEffect(userEvent) {
         userEvent?.let {
@@ -150,7 +149,6 @@ fun ProfileDetailsScreen(
             TopAppBar(
                 modifier = Modifier.padding(top = dimens.size30),
                 title = { Text(text = "Profile") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceDim),
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -164,8 +162,7 @@ fun ProfileDetailsScreen(
                 windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
             )
         },
-        modifier = Modifier,
-        containerColor = MaterialTheme.colorScheme.surfaceDim
+        modifier = Modifier
     ) { paddingValues ->
         var showImagePreview by remember { mutableStateOf(false) }
         var activeImage by remember { mutableStateOf<String?>(null) }
@@ -181,7 +178,8 @@ fun ProfileDetailsScreen(
                         activeImage = imageUri
                         showImagePreview  = true
                     },
-                    onImageDragEnd = { showImagePreview = false }
+                    onImageDragEnd = { showImagePreview = false },
+                    context = context
                 )
                 Spacer(modifier = Modifier.height(dimens.size50))
             }
@@ -207,7 +205,8 @@ fun ProfileDetailsScreen(
         }
         ZoomedProfileImage(
             imageUri = activeImage,
-            isVisible = showImagePreview
+            isVisible = showImagePreview,
+            context = context
         )
         if (profileState.isNameDialogOpen) {
             UpdateDataDetails(
@@ -223,6 +222,7 @@ fun ProfileDetailsScreen(
                         )
                     )
                     profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog)
+                    hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
                 },
                 onDismiss = { profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog) }
             )
@@ -241,6 +241,7 @@ fun ProfileDetailsScreen(
                         )
                     )
                     profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog)
+                    hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
                 },
                 onDismiss = {
                     profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog)
@@ -271,7 +272,7 @@ private fun UpdateDataDetails(
             onDismissRequest = {
                 onDismiss()
             },
-            containerColor = MaterialTheme.colorScheme.surfaceDim
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
         ) {
             Column(
                 modifier = Modifier
@@ -342,8 +343,8 @@ private fun ProfileDataCards(
                 interactionSource = remember { MutableInteractionSource() }
             ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         )
     ) {
         Row(
@@ -363,7 +364,7 @@ private fun ProfileDataCards(
                 Spacer(modifier = Modifier.height(dimens.size10))
                 Text(
                     text = value,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             Icon(
@@ -382,9 +383,10 @@ private fun ProfileDataCards(
 private fun ProfilePicture(
     profileDetailsEvent: (ProfileDetailsEvent) -> Unit,
     onImageDragStart: (String?) -> Unit = {},
-    onImageDragEnd: () -> Unit = {}
+    onImageDragEnd: () -> Unit = {},
+    context: Context
 ) {
-    val context = LocalContext.current
+
     val cacheFile = getCacheProfilePicture(context = context)
     val imageUri = remember { mutableStateOf(cacheFile?.toUri()?.toString()) }
 
@@ -393,7 +395,8 @@ private fun ProfilePicture(
             .data(imageUri.value)
             .size(Size.ORIGINAL)
             .crossfade(true)
-            .build()
+            .build(),
+        imageLoader = context.imageLoader
 
     )
     val launcher = rememberLauncherForActivityResult(
@@ -464,7 +467,6 @@ private fun ProfilePicture(
                         painter = painterResource(R.drawable.profile),
                         contentDescription = "error",
                         modifier = Modifier
-                            .fillMaxSize()
                             .size(
                                 dimens.size150
                             )

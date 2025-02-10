@@ -4,12 +4,14 @@ package com.hazrat.islam24.core.data.repository
 import android.util.Log
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.entity.NameEntity
+import com.hazrat.islam24.core.domain.model.namesofallah.Bn
 import com.hazrat.islam24.core.domain.model.namesofallah.En
 import com.hazrat.islam24.core.domain.model.namesofallah.NameOfAllahData
 import com.hazrat.islam24.core.domain.repository.NamesRepository
-import com.hazrat.islam24.core.api.NamesApi
-import com.hazrat.islam24.core.domain.model.namesofallah.Bn
+import com.hazrat.islam24.core.remote.api.NamesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -32,11 +34,13 @@ class NamesRepositoryImpl @Inject constructor(
      *
      * @return A list of NameOfAllahData objects representing the names retrieved.
      */
+
+
     override suspend fun getAllahNamesFromApi(): List<NameOfAllahData> {
         return withContext(Dispatchers.IO) {
             try {
                 // Retrieve names from local database
-                val localNames = nameDao.getAllNames()
+                val localNames = nameDao.getAllNames().firstOrNull() ?: emptyList()
                 if (localNames.isNotEmpty()) {
                     // Map local names to data objects
                     localNames.map { nameEntityToData(it) }
@@ -98,7 +102,7 @@ class NamesRepositoryImpl @Inject constructor(
      *
      * @return A list of NameEntity objects representing the names retrieved from the database.
      */
-    override suspend fun getAllahNamesFromDatabase(): List<NameEntity> {
+    override  fun getAllahNamesFromDatabase(): Flow<List<NameEntity>> {
         return nameDao.getAllNames()
     }
 }

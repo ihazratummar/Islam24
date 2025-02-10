@@ -74,11 +74,11 @@ fun AdhkarCard(adhkars: AthkarDataEntity) {
                 Text(
                     text = adhkars.bismillah,
                     modifier = Modifier
-                        .padding(dimens.size10)
-                        .fillMaxWidth(),
-                    style = MaterialTheme.typography.displayMedium,
+                        .fillMaxWidth()
+                        .padding(dimens.size10),
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = Uthmani,
+                    fontFamily = Kitab,
                     textAlign = TextAlign.Center,
                     letterSpacing = TextUnit.Unspecified
                 )
@@ -86,7 +86,7 @@ fun AdhkarCard(adhkars: AthkarDataEntity) {
             Text(
                 text = adhkars.arabicText,
                 modifier = Modifier.padding(dimens.size10).fillMaxWidth(),
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = Kitab,
                 textAlign = TextAlign.Center,
@@ -98,7 +98,7 @@ fun AdhkarCard(adhkars: AthkarDataEntity) {
                     else -> adhkars.enTransliteration
                 } ,
                 modifier = Modifier.padding(dimens.size10),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
 

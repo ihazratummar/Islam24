@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.hazrat.islam24.BuildConfig
-import com.hazrat.islam24.core.api.LocationNameApi
+import com.hazrat.islam24.core.remote.api.LocationNameApi
 import com.hazrat.islam24.core.data.dao.LocationNameDao
 import com.hazrat.islam24.core.data.database.LocationDatabase
 import com.hazrat.islam24.core.data.repository.LocationNameRepositoryImpl
