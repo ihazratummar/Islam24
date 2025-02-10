@@ -1,6 +1,8 @@
 package com.hazrat.islam24.core.presentation.prayertime.setting
 
+import android.app.AlarmManager
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
@@ -141,6 +143,12 @@ class PrayerSettingViewModel @Inject constructor(
     }
 
     private fun reScheduleAlarm() {
+
+        if (!requestScheduleExactAlarmPermission(context = context)){
+            Log.d("PrayerSettingViewModel", "Exact Alarm Permission Not Granted")
+            return
+        }
+
         val today = getCurrentDate()
         val getPrayer = prayerTime.value.find { it.gregorianDate == today }!!
         if (dataStorePreference.getFajrNotification()) {
@@ -157,6 +165,15 @@ class PrayerSettingViewModel @Inject constructor(
         }
         if (dataStorePreference.getIshaNotification()) {
             prayerAlarmManager.setIshaPrayerAlarm(getPrayer.ishaTime)
+        }
+    }
+
+    fun requestScheduleExactAlarmPermission(context: Context) : Boolean{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            val alermManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alermManager.canScheduleExactAlarms()
+        }else{
+            true
         }
     }
 }

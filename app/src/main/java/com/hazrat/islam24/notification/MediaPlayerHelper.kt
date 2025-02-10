@@ -86,8 +86,8 @@ class MediaPlayerHelper @Inject constructor(
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC) // Use MUSIC instead of SONIFICATION
-                    .setUsage(AudioAttributes.USAGE_MEDIA) // Use MEDIA instead of NOTIFICATION
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION) // Use MUSIC instead of SONIFICATION
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION) // Use MEDIA instead of NOTIFICATION
                     .build()
             )
             isLooping = false

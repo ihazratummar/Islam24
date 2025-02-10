@@ -439,7 +439,7 @@ class PrayerTimeViewModel @Inject constructor(
 
             is NotificationEvent.SelectFajrAzanOption -> {
                 val isAzanExist = isSelectedAzanExist("fajrAzan.mp3")
-                if (!isAzanExist) {
+                if (!isAzanExist && notificationEvent.index > 1) {
                     return
                 }
                 _notificationState.update {
@@ -454,7 +454,7 @@ class PrayerTimeViewModel @Inject constructor(
 
             is NotificationEvent.SelectDhuhrAzanOption -> {
                 val isAzanExist = isSelectedAzanExist("dhurAzan.mp3")
-                if (!isAzanExist) {
+                if (!isAzanExist && notificationEvent.index > 1) {
                     return
                 }
                 _notificationState.update {
@@ -469,7 +469,7 @@ class PrayerTimeViewModel @Inject constructor(
 
             is NotificationEvent.SelectAsrAzanOption -> {
                 val isAzanExist = isSelectedAzanExist("asrAzan.mp3")
-                if (!isAzanExist) {
+                if (!isAzanExist && notificationEvent.index > 1) {
                     return
                 }
                 _notificationState.update {
@@ -484,7 +484,7 @@ class PrayerTimeViewModel @Inject constructor(
 
             is NotificationEvent.SelectMaghribAzanOption -> {
                 val isAzanExist = isSelectedAzanExist("maghribAzan.mp3")
-                if (!isAzanExist) {
+                if (!isAzanExist && notificationEvent.index > 1) {
                     return
                 }
                 _notificationState.update {
@@ -499,7 +499,7 @@ class PrayerTimeViewModel @Inject constructor(
 
             is NotificationEvent.SelectIshaAzanOption -> {
                 val isAzanExist = isSelectedAzanExist("ishaAzan.mp3")
-                if (!isAzanExist) {
+                if (!isAzanExist && notificationEvent.index > 1) {
                     return
                 }
                 _notificationState.update {
