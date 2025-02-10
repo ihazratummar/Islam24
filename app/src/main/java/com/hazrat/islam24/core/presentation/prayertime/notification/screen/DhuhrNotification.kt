@@ -91,15 +91,15 @@ fun DhuhrNotification(
                 )
             }
         }
-    }
-    if (notificationState.isAzanDownloading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.5f)) // Dim background
-                .clickable(enabled = true, onClick = {}) // Consume all touch events
-        )
+        if (notificationState.isAzanDownloading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.5f)) // Dim background
+                    .clickable(enabled = true, onClick = {}) // Consume all touch events
+            )
 
-        CircularProgressIndicator()
+            CircularProgressIndicator()
+        }
     }
 }
