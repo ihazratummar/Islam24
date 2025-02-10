@@ -30,10 +30,12 @@ fun NavGraphBuilder.prayerNav(
     navigation<PrayerTime>(PrayerTimeScreen){
         composable<PrayerTimeScreen> {
             val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
+            val isRefreshing by prayerTimeViewModel.isPrayerTimeRefreshing.collectAsState()
             PrayerTimeScreen(
                 navController = navController,
                 event = prayerTimeViewModel::onEvent,
-                prayerTimes = prayerTimes
+                prayerTimes = prayerTimes,
+                isRefreshing = isRefreshing
             )
         }
         composable<FajrSetting> {

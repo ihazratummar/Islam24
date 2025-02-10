@@ -44,6 +44,7 @@ object Constants {
      */
 
     const val PARENT_FOLDER_NAME_DOWNLOAD = "Download"
+    const val DOWNLOADED_AZAN_FOLDER = "azans"
     const val SELECTED_ATHANS_SUB_FOLDER_NAME = "Selected Athan"
 
 

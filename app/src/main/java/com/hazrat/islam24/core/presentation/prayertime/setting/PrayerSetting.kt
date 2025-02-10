@@ -3,12 +3,15 @@ package com.hazrat.islam24.core.presentation.prayertime.setting
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.hazrat.islam24.R
@@ -31,7 +34,7 @@ fun PrayerSetting(
     val prayerTimeEntities = prayerTimeEntity.getOrNull(0)
     val school = prayerTimeEntities?.school
 
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -76,6 +79,11 @@ fun PrayerSetting(
                     event(PrayerSettingEvent.JuristicChanged(juristic.number))
                 },
                 onDismiss = { event(PrayerSettingEvent.OpenJuristicDialog) }
+            )
+        }
+        if (state.isRefresh){
+            LinearProgressIndicator(
+                modifier = Modifier.align(Alignment.TopCenter).fillMaxWidth(),
             )
         }
     }
