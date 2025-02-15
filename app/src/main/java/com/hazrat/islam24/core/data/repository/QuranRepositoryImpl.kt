@@ -106,7 +106,7 @@ class QuranRepositoryImpl @Inject constructor(
                             parentFolderName = parentFolderName,
                             subFolderName = subFolderName,
                             fileName = fileName,
-                            body = response.body()
+                            body = response.body(),
                         )
                         if (isSaved) {
                             Log.d(TAG, "$fileName downloaded and saved successfully.")

@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -104,5 +106,20 @@ fun hapticFeedbacks(
 ) {
     if (isEnable) {
         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
+}
+
+
+
+fun isMp3FileValid(filePath: String): Boolean {
+    val retriever = MediaMetadataRetriever()
+    return try {
+        retriever.setDataSource(filePath)
+        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toIntOrNull() ?: 0
+        retriever.release()
+        duration > 0  // MP3 is valid if it has a non-zero duration
+    } catch (e: Exception) {
+        Log.e("FileCheck", "Error checking MP3 file: ${e.message}", e)
+        false
     }
 }

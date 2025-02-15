@@ -24,6 +24,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -62,7 +64,8 @@ import kotlinx.coroutines.delay
 fun PrayerTimeScreen(
     navController: NavController,
     event: (PrayerEvent) -> Unit,
-    prayerTimes: List<PrayerTimeEntity>
+    prayerTimes: List<PrayerTimeEntity>,
+    isRefreshing: Boolean
 ) {
     val methods = prayerTimes.firstOrNull()
     Box(
@@ -135,11 +138,20 @@ fun PrayerTimeScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValue ->
-        ShowData(
-            modifier = Modifier.padding(paddingValue),
-            navController = navController,
-            prayerTimes = prayerTimes
-        )
+
+        val pullToRefreshState = rememberPullToRefreshState()
+
+        PullToRefreshBox(
+            state = pullToRefreshState,
+            onRefresh = {event(PrayerEvent.RefreshPrayer)},
+            isRefreshing = isRefreshing
+        ){
+            ShowData(
+                modifier = Modifier.padding(paddingValue),
+                navController = navController,
+                prayerTimes = prayerTimes
+            )
+        }
     }
 
 }

@@ -18,13 +18,13 @@ sealed interface NotificationEvent {
     data object RefreshNotificationState: NotificationEvent
 
 
-    data class OnFajrAzanClick(val resourceInd: Int) : NotificationEvent
-    data class OnDhuhrAzanClick(val resourceInd: Int) : NotificationEvent
-    data class OnAsrAzanClick(val resourceInd: Int) : NotificationEvent
-    data class OnMaghribAzanClick(val resourceInd: Int) : NotificationEvent
-    data class OnIshaAzanClick(val resourceInd: Int) : NotificationEvent
+    data class OnFajrAzanClick(val azanUrl: String, val fileName: String) : NotificationEvent
+    data class OnDhuhrAzanClick(val azanUrl: String, val fileName: String) : NotificationEvent
+    data class OnAsrAzanClick(val azanUrl: String, val fileName: String) : NotificationEvent
+    data class OnMaghribAzanClick(val azanUrl: String, val fileName: String) : NotificationEvent
+    data class OnIshaAzanClick(val azanUrl: String, val fileName: String) : NotificationEvent
 
-    data class OnAzanPlayClick(val resourceInd: Int, val aazanIndex: Int) : NotificationEvent
+    data class OnAzanPlayClick(val fileName: String, val aazanIndex: Int, val azanUrl: String) : NotificationEvent
     data object StopAzan : NotificationEvent
 
     data class OnDefaultNotificationClick(val azanName: PrayerName, val notificationType: NotificationType) : NotificationEvent

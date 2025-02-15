@@ -1,12 +1,15 @@
 package com.hazrat.islam24.core.presentation.prayertime.notification.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,7 +47,8 @@ fun MaghribNotification(
 ) {
 
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -66,16 +71,16 @@ fun MaghribNotification(
 
             AnimatedVisibility(notificationState.isMaghribNotification) {
                 AzanList(
-                    onAzanPlayClick = {index, item ->
+                    onAzanPlayClick = {index, azanName, azanUrl ->
                         if (!notificationState.isAzanPlaying[index]){
-                            notificationEvent(NotificationEvent.OnAzanPlayClick(item, index))
+                            notificationEvent(NotificationEvent.OnAzanPlayClick(fileName = azanName, aazanIndex =  index, azanUrl = azanUrl))
                         }else{
                             notificationEvent(NotificationEvent.StopAzan)
                         }
                     },
                     isAzanPlaying = notificationState.isAzanPlaying,
-                    onAzanClick = {
-                        notificationEvent(NotificationEvent.OnMaghribAzanClick(it))
+                    onAzanClick = {url, fileName ->
+                        notificationEvent(NotificationEvent.OnMaghribAzanClick(azanUrl = url, fileName = fileName))
                     },
                     listOfAzan = listOfAzan,
                     onSilentNotificationClick = {notificationEvent(NotificationEvent.OnSilentNotificationClick(PrayerName.MAGHRIB, NotificationType.SILENT))},
@@ -87,5 +92,16 @@ fun MaghribNotification(
                 )
             }
         }
+        if (notificationState.isAzanDownloading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.5f)) // Dim background
+                    .clickable(enabled = true, onClick = {}) // Consume all touch events
+            )
+
+            CircularProgressIndicator()
+        }
     }
+
 }

@@ -11,7 +11,10 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.provider.Settings
 import android.util.Log
+import com.hazrat.islam24.util.isMp3FileValid
 import dagger.hilt.android.qualifiers.ApplicationContext
+import okio.IOException
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -64,20 +67,42 @@ class MediaPlayerHelper @Inject constructor(
         }
     }
 
-    fun playAzan(resourceInd: Int){
+    fun playAzan(filePath: String) {
+        Log.d("MediaPlayerHelper", "Trying to play MP3: $filePath")
+
+        if (!isMp3FileValid(filePath)) {
+            Log.e("MediaPlayerHelper", "Invalid MP3 file: $filePath")
+            return
+        }
+
         stopAzan()
+
+        val file = File(filePath)
+        if (!file.exists()) {
+            Log.e("MediaPlayerHelper", "File not found: $filePath")
+            return
+        }
+
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION) // Use MUSIC instead of SONIFICATION
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION) // Use MEDIA instead of NOTIFICATION
                     .build()
             )
             isLooping = false
-            setDataSource(context, Uri.Builder().scheme("android.resource").authority(context.packageName).appendPath(resourceInd.toString()).build())
-            prepare()
+
+            try {
+                setDataSource(file.absolutePath) // Use absolute path
+                prepare()
+                start()
+                Log.d("MediaPlayerHelper", "Azan is playing...")
+            } catch (e: IOException) {
+                Log.e("MediaPlayerHelper", "Error preparing Azan: ${e.message}", e)
+            }
         }
     }
+
 
     fun startAzan(){
         mediaPlayer?.start()

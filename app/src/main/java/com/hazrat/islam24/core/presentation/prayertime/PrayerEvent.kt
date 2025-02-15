@@ -6,4 +6,5 @@ package com.hazrat.islam24.core.presentation.prayertime
 
 sealed interface PrayerEvent {
     data object SharePrayer: PrayerEvent
+    data object RefreshPrayer: PrayerEvent
 }
