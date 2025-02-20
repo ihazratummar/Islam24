@@ -61,6 +61,7 @@ object Constants {
      */
 
     const val RENDER_BASE_URL = "https://islam24-backend.onrender.com/"
+    const val ISLAM24_BACKEND_BASE_URL = "https://islam24.hazratdev.top/"
 
 
     /*

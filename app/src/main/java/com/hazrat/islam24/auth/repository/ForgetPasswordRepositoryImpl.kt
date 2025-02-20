@@ -2,7 +2,7 @@ package com.hazrat.islam24.auth.repository
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import com.hazrat.islam24.auth.api.RenderApi
+import com.hazrat.islam24.auth.api.Islam24BackendApi
 import com.hazrat.islam24.auth.model.RequestOtpBody
 import com.hazrat.islam24.auth.model.ResetPasswordBody
 import com.hazrat.islam24.auth.model.VerifyOtpBody
@@ -22,7 +22,7 @@ import javax.inject.Inject
  */
 
 class ForgetPasswordRepositoryImpl @Inject constructor(
-    private val api: RenderApi,
+    private val api: Islam24BackendApi,
     private val connectivityObserver: ConnectivityObserver
 ) : ForgetPasswordRepository {
 

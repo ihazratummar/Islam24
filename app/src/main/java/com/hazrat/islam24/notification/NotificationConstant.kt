@@ -41,7 +41,7 @@ object NotificationConstant {
     Notificaion channels
      */
     //Fajr
-    const val FAJR_CHANNEL_ID = "fajr_channel"
+    const val   FAJR_CHANNEL_ID = "fajr_channel"
     const val FAJR_CHANNEL_NAME = "Fajr"
     //Dhuhr
     const val DHUHR_CHANNEL_ID = "dhuhr_channel"

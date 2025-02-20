@@ -34,12 +34,21 @@
             android:value="${MAPS_API_KEY}"/>
         <activity
             android:name=".main.mainActivity.MainActivity"
+            android:launchMode="singleTask"
             android:exported="true"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/App.Starting.Theme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="islam24.com"/>
             </intent-filter>
         </activity>
         <receiver
