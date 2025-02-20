@@ -8,9 +8,12 @@ package com.hazrat.islam24.notification
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.core.net.toUri
+import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.receiver.PrayerTimeReceiver
 import com.hazrat.islam24.notification.NotificationConstant.ASR_MESSAGE_CONTENT
 import com.hazrat.islam24.notification.NotificationConstant.ASR_MESSAGE_KEY
@@ -123,6 +126,7 @@ class PrayerAlarmManager @Inject constructor(
             putExtra(messageKey, messageContent)
             putExtra("prayerName",titleContent )
         }
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             requestCode,

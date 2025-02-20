@@ -2,6 +2,7 @@ package com.hazrat.islam24.receiver
 
 import android.Manifest
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.main.mainActivity.MainActivity
@@ -125,15 +127,17 @@ class PrayerTimeReceiver : BroadcastReceiver() {
         message: String,
         prayerName: PrayerName
     ): NotificationCompat.Builder {
-        val notificationClickIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-        val pendingIntent = PendingIntent.getActivity(
+
+        val clickIntent = Intent(Intent.ACTION_VIEW,
+            "https://islam24.com/prayertime".toUri(),
             context,
-            0,
-            notificationClickIntent,
-            PendingIntent.FLAG_IMMUTABLE
+            MainActivity::class.java
         )
+
+        val clickPendingIntent : PendingIntent = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(clickIntent)
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        }
 
         val muteIntent = PendingIntent.getBroadcast(
             context,
@@ -148,7 +152,7 @@ class PrayerTimeReceiver : BroadcastReceiver() {
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
+            .setContentIntent(clickPendingIntent)
             .setDeleteIntent(muteIntent)
             .setVibrate(pattern)
 

@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
@@ -28,7 +29,9 @@ fun NavGraphBuilder.prayerNav(
     prayerTimeViewModel: PrayerTimeViewModel
 ){
     navigation<PrayerTime>(PrayerTimeScreen){
-        composable<PrayerTimeScreen> {
+        composable<PrayerTimeScreen>(
+            deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.com/prayertime" })
+        ) {
             val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
             val isRefreshing by prayerTimeViewModel.isPrayerTimeRefreshing.collectAsState()
             PrayerTimeScreen(
