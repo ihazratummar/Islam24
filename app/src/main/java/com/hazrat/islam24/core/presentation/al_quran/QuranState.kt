@@ -20,5 +20,7 @@ data class QuranState(
     val needsRefresh: Boolean = true,
     val juzData: QuranMetaDataJuz? = null,
     val favoritesList: FavoritesList? = null,
-    val ayahFavoriteStatus: Map<Pair<Int, Int>, Boolean> = emptyMap()
+    val ayahFavoriteStatus: Map<Pair<Int, Int>, Boolean> = emptyMap(),
+    val isAyahDropDownOpen: Boolean = false,
+    val isQuranSettingDiloagOpen : Boolean = false
 )
