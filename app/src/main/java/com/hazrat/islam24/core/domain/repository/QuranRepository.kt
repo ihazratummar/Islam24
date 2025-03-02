@@ -44,5 +44,8 @@ interface QuranRepository {
     suspend fun syncQuranDataIfLoggedIn()
     suspend fun syncQuranDataOnLogin()
 
+    fun onAyahDropDownClick()
+    fun onQuranSettingClick()
+
 
 }

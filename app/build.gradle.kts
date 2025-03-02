@@ -202,13 +202,13 @@ dependencies {
     implementation (libs.androidsvg)
 
 
-    implementation ("com.google.android.gms:play-services-maps:19.0.0")
-    implementation ("com.google.android.gms:play-services-location:21.3.0")
-    implementation ("com.google.maps.android:maps-compose:6.4.0")
+    implementation (libs.play.services.maps)
+    implementation (libs.play.services.location)
+    implementation (libs.maps.compose)
 
 
-    implementation ("com.google.maps.android:maps-ktx:3.2.1")
-    implementation ("com.google.maps.android:maps-utils-ktx:3.2.1")
+    implementation (libs.maps.ktx)
+    implementation (libs.maps.utils.ktx)
 
 
 

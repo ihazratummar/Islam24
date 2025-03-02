@@ -425,6 +425,22 @@ class QuranRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun onAyahDropDownClick() {
+        _quranState.update {
+            it.copy(
+                isAyahDropDownOpen = !it.isAyahDropDownOpen
+            )
+        }
+    }
+
+    override fun onQuranSettingClick() {
+        _quranState.update {
+            it.copy(
+                isQuranSettingDiloagOpen = !it.isQuranSettingDiloagOpen
+            )
+        }
+    }
+
     companion object {
         private const val TAG = "QuranRepositoryImpl"
         private const val PARENT_FOLDER_NAME_APPDATA = "AppData"
