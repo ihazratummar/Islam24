@@ -70,11 +70,7 @@ fun HomeScreen(
             }
         }
         item {
-            Spacer(modifier = Modifier.height(dimens.size15))
-            RamadanCard()
             Spacer(modifier = Modifier.height(dimens.size30))
-        }
-        item {
             BenefitsOfRecitingWidget(
                 onClick = { onBenefitsWidgetClick() }
             )

@@ -407,17 +407,17 @@ fun AyaTopBar(
                 )
             }
         },
-        actions = {
-            Row (
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    painter = painterResource(R.drawable.settings),
-                    contentDescription = null
-                )
-            }
-        },
+//        actions = {
+//            Row (
+//                modifier = Modifier,
+//                verticalAlignment = Alignment.CenterVertically
+//            ){
+//                Icon(
+//                    painter = painterResource(R.drawable.settings),
+//                    contentDescription = null
+//                )
+//            }
+//        },
         scrollBehavior = scrollBehavior,
         windowInsets = WindowInsets(top = 20.dp),
         colors = TopAppBarDefaults.topAppBarColors(
