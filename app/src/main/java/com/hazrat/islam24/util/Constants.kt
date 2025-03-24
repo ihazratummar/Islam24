@@ -15,6 +15,7 @@ object Constants {
     /** Base URL for the Aladhan API */
     const val BASE_URL = "https://api.aladhan.com/v1/calendar/"
 
+
     /** LocationOnCard IQ Api Key */
     const val LOCATION_IQ_BASE_URL = "https://us1.locationiq.com/v1/"
     const val LOCATION_IQ_API_KEY = BuildConfig.LOCATION_IQ_API_KEY
@@ -74,5 +75,9 @@ object Constants {
     // ********************//
 
     const val  REQUEST_CODE_SCHEDULE_EXACT_ALARM = 100
+
+
+
+    const val GOOGLE_COULD_BASE_URL = "https://www.googleapis.com/youtube/v3/"
 
 }

@@ -34,29 +34,35 @@
             android:value="${MAPS_API_KEY}"/>
         <activity
             android:name=".main.mainActivity.MainActivity"
-            android:launchMode="singleTask"
             android:exported="true"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/App.Starting.Theme">
+            android:theme="@style/App.Starting.Theme" >
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="islam24.com"/>
+                    android:host="islam24.hazratdev.top"/>
             </intent-filter>
         </activity>
+
         <receiver
             android:name=".receiver.PrayerTimeReceiver"
             android:exported="true"
             tools:ignore="ExportedReceiver">
         </receiver>
+
         <receiver android:name=".receiver.MuteReceiver"/>
+
         <receiver
             android:name=".receiver.BootReceiver"
             android:enabled="true"
@@ -67,6 +73,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <receiver android:name=".widget.WuzuReceiver" android:exported="true" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

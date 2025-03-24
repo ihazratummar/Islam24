@@ -137,4 +137,7 @@
     <string name="start_reading">পড়া শুরু করুন</string>
     <string name="enable_haptic">হ্যাপটিক</string>
     <string name="no_wuzu">No Wuzu</string>
+    <string name="hajj_live">হজ লাইভ</string>
+    <string name="legal">Legal</string>
+    <string name="policies">Policies</string>
 </resources>
