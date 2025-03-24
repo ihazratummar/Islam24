@@ -3,6 +3,8 @@ package com.hazrat.islam24.core.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
+import com.hazrat.islam24.core.domain.model.hajjlive.HajjLiveYoutubeModel
+import com.hazrat.islam24.core.domain.repository.HajjLiveRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.datastore.UserDataStore
@@ -24,7 +26,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val prayerTimeRepository: PrayerTimeRepository,
 //    private val locationNameRepository: LocationNameRepository,
-    private val dataStore: UserDataStore
+    private val dataStore: UserDataStore,
 ):ViewModel() {
 //    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
     val prayerTimes: StateFlow<List<PrayerTimeEntity>> = prayerTimeRepository.prayerTimes
@@ -32,6 +34,8 @@ class HomeViewModel @Inject constructor(
     private val _homeState = MutableStateFlow(HomeState())
 
     val homeState = _homeState.asStateFlow()
+
+
 
     init {
         viewModelScope.launch {

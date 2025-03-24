@@ -29,4 +29,3 @@ interface Islam24BackendApi {
 }
 
 
-

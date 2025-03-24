@@ -3,6 +3,7 @@ package com.hazrat.islam24.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.MediaMetadataRetriever
@@ -23,6 +24,8 @@ import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
 import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.datastore.PrayerName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.util.Locale
 import kotlin.concurrent.thread
@@ -82,22 +85,18 @@ fun fetchPrayerTimeForNotification(
     prayerName: PrayerName,
     prayerDatabase: PrayerDatabase,
     callback: (Long) -> Unit
-) {
-    thread {
-        val prayerTime = when (prayerName) {
-            PrayerName.FAJR -> prayerDatabase.prayerTimeDao().getFajrTimeForTheDay(getCurrentDate())
-            PrayerName.DHUHR -> prayerDatabase.prayerTimeDao()
-                .getDhuhrTimeForTheDay(getCurrentDate())
-
-            PrayerName.ASR -> prayerDatabase.prayerTimeDao().getAsrTimeForTheDay(getCurrentDate())
-            PrayerName.MAGHRIB -> prayerDatabase.prayerTimeDao()
-                .getMaghribTimeForTheDay(getCurrentDate())
-
-            PrayerName.ISHA -> prayerDatabase.prayerTimeDao().getIshaTimeForTheDay(getCurrentDate())
-        }
-        callback(prayerTime)
+) : Unit = runBlocking(Dispatchers.IO){
+    val prayerTime = when (prayerName) {
+        PrayerName.FAJR -> prayerDatabase.prayerTimeDao().getFajrTimeForTheDay(getCurrentDate())
+        PrayerName.DHUHR -> prayerDatabase.prayerTimeDao().getDhuhrTimeForTheDay(getCurrentDate())
+        PrayerName.ASR -> prayerDatabase.prayerTimeDao().getAsrTimeForTheDay(getCurrentDate())
+        PrayerName.MAGHRIB -> prayerDatabase.prayerTimeDao().getMaghribTimeForTheDay(getCurrentDate())
+        PrayerName.ISHA -> prayerDatabase.prayerTimeDao().getIshaTimeForTheDay(getCurrentDate())
     }
+    callback(prayerTime)
 }
+
+
 
 
 fun hapticFeedbacks(

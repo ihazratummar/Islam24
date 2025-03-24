@@ -60,7 +60,9 @@ import androidx.compose.ui.unit.dp
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.ArAyah
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_transliteration.TransliterationVerse
+import com.hazrat.islam24.ui.theme.IndoPak
 import com.hazrat.islam24.ui.theme.Kitab
+import com.hazrat.islam24.ui.theme.SurahFont
 import com.hazrat.islam24.ui.theme.Uthmani
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.getSystemLanguage
@@ -102,8 +104,6 @@ fun SurahScreen(
     val systemLanguage = getSystemLanguage()
     val listState = rememberLazyListState()
 
-    var isAyaDropDownOpen by remember { mutableStateOf(false) }
-
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(listState) {
@@ -142,7 +142,7 @@ fun SurahScreen(
                 onBackClick = { onBackClick() },
                 ayahNumber = ayahNumber.value,
                 onAyahClick = {
-                    isAyaDropDownOpen = true
+                    event(QuranEvent.AyahDropDownClick)
                 }
             )
         }
@@ -188,9 +188,9 @@ fun SurahScreen(
             }
         }
 
-        if (isAyaDropDownOpen) {
+        if (quranState.isAyahDropDownOpen) {
             ModalBottomSheet(
-                onDismissRequest = { isAyaDropDownOpen = false }
+                onDismissRequest = { event(QuranEvent.AyahDropDownClick) }
             ) {
                 LazyColumn {
                     itemsIndexed(quranEn.verses) { index, ayah ->
@@ -209,7 +209,7 @@ fun SurahScreen(
                                             )
                                         }
 
-                                        isAyaDropDownOpen = false
+                                        event(QuranEvent.AyahDropDownClick)
                                     }
                                 ),
                             overflow = TextOverflow.Ellipsis
@@ -265,7 +265,8 @@ fun AyahRow(
                 text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
-                            fontFamily = Kitab
+                            fontFamily = IndoPak,
+                            fontWeight = FontWeight.Thin
                         )
                     ) {
                         append(arabicText)
@@ -406,8 +407,19 @@ fun AyaTopBar(
                 )
             }
         },
+//        actions = {
+//            Row (
+//                modifier = Modifier,
+//                verticalAlignment = Alignment.CenterVertically
+//            ){
+//                Icon(
+//                    painter = painterResource(R.drawable.settings),
+//                    contentDescription = null
+//                )
+//            }
+//        },
         scrollBehavior = scrollBehavior,
-        windowInsets = WindowInsets(top = 0.dp),
+        windowInsets = WindowInsets(top = 20.dp),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
             scrolledContainerColor = MaterialTheme.colorScheme.background,
