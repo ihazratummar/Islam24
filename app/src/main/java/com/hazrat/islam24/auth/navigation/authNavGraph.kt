@@ -17,6 +17,8 @@ import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPassword
 import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.islam24.auth.presentation.login.AuthLoginScreen
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
+import com.hazrat.islam24.auth.presentation.policiesScreen.PoliciesScreen
+import com.hazrat.islam24.auth.presentation.policiesScreen.PrivacyPolicyScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsScreen
@@ -110,11 +112,14 @@ fun NavGraphBuilder.authNavGraph(
             val appSettingEvent = appSettingViewModel::onAppSettingEvent
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
             AppSettingScreen(
-                navController = navController,
                 authState = authState,
                 appSettingEvent = appSettingEvent,
                 appSettingState = appSettingState,
-                isHapticFeedback = isHapticFeedback
+                isHapticFeedback = isHapticFeedback,
+                onPolicyClick = {
+                    navController.navigate(PoliciesScreenRoute)
+                },
+                onBackClick = {navController.navigateUp()}
             )
         }
         composable<ProfileDetailsScreen> {
@@ -151,6 +156,19 @@ fun NavGraphBuilder.authNavGraph(
                 isHapticFeedback = isHapticFeedback
             )
         }
+
+        composable <PoliciesScreenRoute>{
+            PoliciesScreen(
+                onBackClick = { navController.popBackStack() },
+                onPolicyClick = {navController.navigate(PrivacyPolicyScreenRoute)}
+            )
+        }
+
+        composable <PrivacyPolicyScreenRoute>{
+            PrivacyPolicyScreen(
+                onBackClick = { navController.popBackStack() },
+            )
+        }
     }
 }
 
@@ -173,3 +191,10 @@ data object ProfileSettingScreen
 
 @Serializable
 data object ProfileDetailsScreen
+
+@Serializable
+data object PoliciesScreenRoute
+
+
+@Serializable
+data object PrivacyPolicyScreenRoute

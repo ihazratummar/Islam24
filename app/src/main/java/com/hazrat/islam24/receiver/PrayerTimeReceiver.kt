@@ -45,6 +45,7 @@ import com.hazrat.islam24.util.datastore.NotificationType
 import com.hazrat.islam24.util.datastore.PrayerName
 import com.hazrat.islam24.util.fetchPrayerTimeForNotification
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -128,16 +129,12 @@ class PrayerTimeReceiver : BroadcastReceiver() {
         prayerName: PrayerName
     ): NotificationCompat.Builder {
 
-        val clickIntent = Intent(Intent.ACTION_VIEW,
-            "https://islam24.com/prayertime".toUri(),
+        val clickIntent = Intent(
+            Intent.ACTION_VIEW,
+            "https://islam24.hazratdev.top/prayertime".toUri(),
             context,
             MainActivity::class.java
         )
-
-        val clickPendingIntent : PendingIntent = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(clickIntent)
-            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        }
 
         val muteIntent = PendingIntent.getBroadcast(
             context,
@@ -145,6 +142,13 @@ class PrayerTimeReceiver : BroadcastReceiver() {
             Intent(context, MuteReceiver::class.java),
             PendingIntent.FLAG_IMMUTABLE
         )
+
+        val clickPendingIntent : PendingIntent = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(clickIntent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+
         val pattern = longArrayOf(0, 500, 1000)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.naviconhome)
@@ -156,7 +160,7 @@ class PrayerTimeReceiver : BroadcastReceiver() {
             .setDeleteIntent(muteIntent)
             .setVibrate(pattern)
 
-        val notificationType = runBlocking {
+        val notificationType = runBlocking(Dispatchers.IO) {
             dataStore.getPrayerNotificationType(prayerName).firstOrNull() ?: NotificationType.DEFAULT
         }
         Log.d("NotificationTypeCheck", "Notification type for $prayerName: $notificationType")

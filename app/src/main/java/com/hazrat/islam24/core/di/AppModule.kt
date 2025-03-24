@@ -9,11 +9,14 @@ import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.database.AthkarDatabase
 import com.hazrat.islam24.core.data.database.NamesDataBase
 import com.hazrat.islam24.core.data.repository.AthkarRepositoryImpl
+import com.hazrat.islam24.core.data.repository.HajjLiveRepositoryImpl
 import com.hazrat.islam24.core.data.repository.NamesRepositoryImpl
 import com.hazrat.islam24.core.data.repository.NetworkRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.AthkarRepository
+import com.hazrat.islam24.core.domain.repository.HajjLiveRepository
 import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
+import com.hazrat.islam24.core.remote.api.GoogleCloudConsoleApi
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.MyFileUtils
@@ -118,5 +121,14 @@ object AppModule {
     fun provideMyFileUtils(): MyFileUtils {
         return MyFileUtils
 
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideHajjLiveRepository(
+        googleCloudConsoleApi: GoogleCloudConsoleApi
+    ): HajjLiveRepository {
+        return HajjLiveRepositoryImpl(api = googleCloudConsoleApi)
     }
 }

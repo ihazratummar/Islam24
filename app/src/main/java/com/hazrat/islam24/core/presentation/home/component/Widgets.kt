@@ -47,7 +47,7 @@ import com.hazrat.islam24.ui.theme.dimens
 
 
 @Composable
-fun LazyHorizontalMenyIcons(
+fun LazyHorizontalManyIcons(
     onClick: (HomePageNavIcons) -> Unit
 ) {
 
@@ -58,6 +58,7 @@ fun LazyHorizontalMenyIcons(
         HomePageNavIcons.Athkar,
         HomePageNavIcons.Qibla,
         HomePageNavIcons.Zakat,
+        HomePageNavIcons.HajjLive,
     )
 
     Box(
@@ -95,7 +96,7 @@ private fun HomeWidgetsIcons(
     }
 
     Column(
-        modifier = Modifier.padding(vertical = dimens.size10, horizontal = dimens.size5),
+        modifier = Modifier.padding(vertical = dimens.size10, horizontal = dimens.size10),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -256,7 +257,18 @@ sealed class HomePageNavIcons(
             route = MainRoute.ZakatScreen,
             backgroundColor = AppColor(
                 dark = Color(0xFFFFE5BE),
-                light = Color(0xFFFDCB95)
+                light = Color(0xFFE7B987)
+            ) // Orange shades
+        )
+
+    data object HajjLive :
+        HomePageNavIcons(
+            icons = R.drawable.hajj_live,
+            name = R.string.hajj_live,
+            route = MainRoute.HajjLiveScreenRoute,
+            backgroundColor = AppColor(
+                dark = Color(0xFFC4FDB1),
+                light = Color(0xFFFAFD95)
             ) // Orange shades
         )
 }

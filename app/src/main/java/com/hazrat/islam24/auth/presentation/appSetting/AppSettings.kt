@@ -19,7 +19,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -45,13 +44,13 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
+import com.hazrat.islam24.core.presentation.common.BackIcon
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Languages
 import com.hazrat.islam24.util.hapticFeedbacks
@@ -64,11 +63,12 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Composable
 fun AppSettingScreen(
-    navController: NavController,
     authState: AuthState,
     appSettingEvent: (AppSettingEvent) -> Unit,
     appSettingState: AppSettingState,
-    isHapticFeedback: Boolean = false
+    isHapticFeedback: Boolean = false,
+    onPolicyClick: () -> Unit = {},
+    onBackClick: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -118,16 +118,9 @@ fun AppSettingScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        modifier = Modifier.padding(dimens.size5),
-                        onClick = {
-                            navController.popBackStack()
-                        }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.backicon),
-                            contentDescription = null
-                        )
-                    }
+                    BackIcon(
+                        onBackClick = { onBackClick() }
+                    )
                 },
                 windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
             )
@@ -157,7 +150,7 @@ fun AppSettingScreen(
                             )
                         )
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.language),
+                            leadingIcon = painterResource(id = R.drawable.language),
                             text = stringResource(id = R.string.language),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.ClickLanguageDialog)
@@ -173,7 +166,7 @@ fun AppSettingScreen(
                         )
 
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.theme_light_dark),
+                            leadingIcon = painterResource(id = R.drawable.theme_light_dark),
                             text = stringResource(R.string.theme),
                             onClick = {
                                 hapticFeedbacks(
@@ -187,7 +180,7 @@ fun AppSettingScreen(
                         )
 
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.vibrate),
+                            leadingIcon = painterResource(id = R.drawable.vibrate),
                             text = stringResource(R.string.enable_haptic),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.HapticFeedbackClick)
@@ -201,7 +194,7 @@ fun AppSettingScreen(
                         )
 
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.sysemsetting),
+                            leadingIcon = painterResource(id = R.drawable.sysemsetting),
                             text = stringResource(R.string.system_seeting),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.OpenAppSetting)
@@ -210,12 +203,41 @@ fun AppSettingScreen(
                     }
                 }
             }
+
             item {
-                Spacer(modifier = Modifier.height(dimens.size10))
+                Spacer(modifier = Modifier.height(dimens.size20))
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.legal),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(
+                                horizontal = dimens.size15,
+                                vertical = dimens.size10
+                            )
+                        )
+                        SettingItemCard(
+                            leadingIcon = painterResource(id = R.drawable.policy),
+                            text = stringResource(R.string.policies),
+                            onClick = {
+                                onPolicyClick()
+                            }
+                        )
+
+                    }
+                }
+            }
+            item {
+                Spacer(modifier = Modifier.height(dimens.size40))
                 when (authState) {
                     is AuthState.Authenticated, is AuthState.Error -> {
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.logout),
+                            leadingIcon = painterResource(id = R.drawable.logout),
                             text = stringResource(R.string.logout),
                             onClick = {
                                 if (appSettingState.isHapticFeedbackEnabled) {
@@ -233,7 +255,7 @@ fun AppSettingScreen(
                     AuthState.Loading -> {
                         SettingItemCard(
                             modifier = Modifier.logOutCardShimmerEffect(),
-                            painter = painterResource(id = R.drawable.logout),
+                            leadingIcon = painterResource(id = R.drawable.logout),
                             text = stringResource(R.string.logout),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.SignOut)
@@ -255,9 +277,9 @@ fun AppSettingScreen(
 
 
 @Composable
-private fun SettingItemCard(
+fun SettingItemCard(
     modifier: Modifier = Modifier,
-    painter: Painter,
+    leadingIcon: Painter,
     text: String,
     onClick: () -> Unit = {},
     iconColor: Color = MaterialTheme.colorScheme.onBackground,
@@ -292,7 +314,7 @@ private fun SettingItemCard(
                     modifier = Modifier
                         .padding(horizontal = dimens.size10)
                         .size(dimens.size40),
-                    painter = painter,
+                    painter = leadingIcon,
                     contentDescription = text,
                     tint = iconColor
                 )
