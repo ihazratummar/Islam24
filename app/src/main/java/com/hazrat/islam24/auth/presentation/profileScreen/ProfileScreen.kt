@@ -2,6 +2,7 @@ package com.hazrat.islam24.auth.presentation.profileScreen
 
 import android.app.Activity
 import android.content.pm.PackageManager
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,9 +28,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
@@ -57,6 +64,7 @@ import com.hazrat.islam24.auth.navigation.ProfileDetailsScreen
 import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
+import com.hazrat.islam24.core.presentation.common.BackIcon
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.ui.theme.dimens
@@ -68,154 +76,49 @@ import com.hazrat.islam24.util.toUri
  * @author Hazrat Ummar Shaikh
  */
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     navController: NavController,
     authState: AuthState,
-    profileEvent: (ProfileEvent) -> Unit,
     profileState: ProfileState,
-    isHapticFeedback: Boolean = false
+    onSettingClick:() -> Unit
 ) {
-    val hapticFeedback = LocalHapticFeedback.current
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = dimens.size10)
-            .statusBarsPadding(),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Top
-    ) {
-        ProfileHeader(
-            navController = navController,
-            state = authState,
-            profileState = profileState,
-        )
-        ProfileComponent(
-            navController = navController,
-            profileEvent = profileEvent,
-        )
-    }
 
-    if (profileState.isRatingDialogOpen) {
-        RatingBottomSheet(
-            profileEvent,
-            hapticFeedback ={
-                hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
-            }
-        )
-    }
-
-}
-
-
-@Composable
-private fun ProfileComponent(
-    navController: NavController,
-    profileEvent: (ProfileEvent) -> Unit,
-
-    ) {
-
-    val activity: Activity = LocalContext.current as MainActivity
-    val context = LocalContext.current
-    LazyColumn(
-        modifier = Modifier.fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item {
-            ProfileScreenItemCard(
-                painter = painterResource(id = R.drawable.settings),
-                text = stringResource(id = R.string.setting),
-                onClick = {
-                    navController.navigate(ProfileSettingScreen) {
-                        popUpTo(ProfileSettingScreen) {
-                            inclusive = true
-                            saveState = false
+    Scaffold (
+        topBar = {
+            TopAppBar(
+                title = {},
+                actions = {
+                    BackIcon(
+                        icon = painterResource(R.drawable.settings),
+                        onBackClick = {
+                            onSettingClick()
                         }
-                        launchSingleTop = true
-                    }
+                    )
                 },
-                trailingIcon = painterResource(id = R.drawable.chevron_right)
-            )
-
-            ProfileScreenItemCard(
-                painter = painterResource(id = R.drawable.like),
-                text = stringResource(id = R.string.rate),
-                onClick = {
-                    profileEvent(ProfileEvent.RateUs(activity))
-                },
-                trailingIcon = painterResource(id = R.drawable.chevron_right)
-            )
-            ProfileScreenItemCard(
-                painter = painterResource(id = R.drawable.share),
-                text = stringResource(id = R.string.invite_a_friend),
-                onClick = {
-                    profileEvent(ProfileEvent.InviteFriend)
-                },
-                trailingIcon = painterResource(id = R.drawable.chevron_right)
+                windowInsets = WindowInsets(top = dimens.size20, bottom = 0.dp),
             )
         }
-        item {
-            val versionName = context.packageName?.let {
-                context.packageManager.getPackageInfo(it, PackageManager.GET_META_DATA).versionName
-            }
-            Text(text = "$versionName")
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun ProfileScreenItemCard(
-    painter: Painter,
-    text: String,
-    onClick: () -> Unit = {},
-    trailingIcon: Painter
-) {
-    Card(
-        modifier = Modifier
-            .combinedClickable(
-                onClick = { onClick() },
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            )
-            .padding(vertical = dimens.size5),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        ),
-    ) {
+    ){paddingValues ->
         Column(
             modifier = Modifier
+                .padding(paddingValues)
                 .fillMaxSize()
-                .padding(dimens.size10)
+                .padding(horizontal = dimens.size10),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimens.size10),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier.padding(horizontal = dimens.size10),
-                    painter = painter,
-                    contentDescription = "Rate us",
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-
-                Spacer(modifier = Modifier.width(dimens.size30))
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(painter = trailingIcon, contentDescription = "trailingIcon")
-            }
+            ProfileHeader(
+                navController = navController,
+                state = authState,
+                profileState = profileState,
+            )
         }
     }
 }
+
+
 
 @Composable
 private fun ProfileHeader(

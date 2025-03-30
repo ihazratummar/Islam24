@@ -61,67 +61,6 @@ class ProfileRepositoryImpl @Inject constructor(
     private val _profileActionState = MutableLiveData<ProfileAction>()
     override val profileActionState: LiveData<ProfileAction> = _profileActionState
 
-    override fun inviteFriend() {
-        val text = context.getString(R.string.invite_friend)
-        val intent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, text)
-            type = "text/plain"
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        val shareIntent = Intent.createChooser(intent, null).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        context.startActivity(shareIntent)
-    }
-
-
-    override fun rateUs(activity: Activity) {
-        val reviewManager = ReviewManagerFactory.create(context)
-        val request = reviewManager.requestReviewFlow()
-
-        request.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val reviewInfo = task.result
-                reviewManager.launchReviewFlow(activity, reviewInfo)
-                    .addOnCompleteListener { launchTask ->
-                        Log.d("ProfileRepositoryImpl", "rateUs: ${launchTask.result}")
-                        if (launchTask.exception == null) {
-                            _profileState.update {
-                                it.copy(
-                                    isRatingDialogOpen = true
-                                )
-                            }
-                        }
-                    }
-            }
-        }
-    }
-
-    override fun openRatingDialog() {
-        _profileState.update {
-            it.copy(
-                isRatingDialogOpen = !it.isRatingDialogOpen
-            )
-        }
-    }
-
-    override fun goToRate() {
-        val intent: Intent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(
-                "https://play.google.com/store/apps/details?id=${context.packageName}"
-            )
-            setPackage("com.android.vending")
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        context.startActivity(intent)
-        _profileState.update {
-            it.copy(
-                isRatingDialogOpen = false
-            )
-        }
-    }
-
     override fun updateProfilePicture(uri: Uri) {
         val compressUri = compressImage(context, uri) ?: uri
         val userId = auth.currentUser?.uid ?: return

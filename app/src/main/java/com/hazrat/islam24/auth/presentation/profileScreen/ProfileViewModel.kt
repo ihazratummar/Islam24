@@ -24,20 +24,6 @@ class ProfileViewModel @Inject constructor(
     }
     val authState: LiveData<AuthState> = profileRepository.authState
     fun onEvent(event: ProfileEvent) {
-        when (event) {
-            is ProfileEvent.RateUs -> {
-                profileRepository.rateUs(event.activity)
-            }
-            ProfileEvent.InviteFriend -> {
-                profileRepository.inviteFriend()
-            }
 
-            ProfileEvent.OpenRatingDialog -> {
-                profileRepository.openRatingDialog()
-            }
-            ProfileEvent.GoToRate -> {
-                profileRepository.goToRate()
-            }
-        }
     }
 }

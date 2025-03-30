@@ -1,5 +1,8 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
+import android.app.Activity
+import android.content.pm.PackageManager
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -50,7 +53,11 @@ import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
+import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
 import com.hazrat.islam24.core.presentation.common.BackIcon
+import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Languages
 import com.hazrat.islam24.util.hapticFeedbacks
@@ -68,10 +75,13 @@ fun AppSettingScreen(
     appSettingState: AppSettingState,
     isHapticFeedback: Boolean = false,
     onPolicyClick: () -> Unit = {},
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    profileEvent: (ProfileEvent) -> Unit,
+    profileState: ProfileState,
 ) {
 
     val context = LocalContext.current
+    val activity: Activity = LocalActivity.current as MainActivity
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -126,6 +136,27 @@ fun AppSettingScreen(
             )
         }
     ) { paddingValues ->
+
+        val listOfSocialTabs = listOf<SettingItemData>(
+            SettingItemData(
+                leadingIcon = painterResource(id = R.drawable.like),
+                tabName = stringResource(id = R.string.rate),
+                onClick = {
+                    appSettingEvent(AppSettingEvent.RateUs(activity))
+                },
+                trailingIcon = painterResource(id = R.drawable.chevron_right)
+            ),
+            SettingItemData(
+                leadingIcon = painterResource(id = R.drawable.share),
+                tabName = stringResource(id = R.string.invite_a_friend),
+                onClick = {
+                    appSettingEvent(AppSettingEvent.InviteFriend)
+                },
+                trailingIcon = painterResource(id = R.drawable.chevron_right)
+            )
+
+        )
+
         LazyColumn(
             modifier = Modifier
                 .padding(horizontal = dimens.size10)
@@ -232,6 +263,28 @@ fun AppSettingScreen(
                     }
                 }
             }
+
+            item{
+                Spacer(modifier = Modifier.height(dimens.size20))
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
+                    Column {
+                        listOfSocialTabs.forEach {
+                            SettingItemCard(
+                                leadingIcon = it.leadingIcon,
+                                text = it.tabName,
+                                onClick = {it.onClick()},
+
+                            )
+                        }
+                    }
+                }
+            }
+
             item {
                 Spacer(modifier = Modifier.height(dimens.size40))
                 when (authState) {
@@ -268,13 +321,40 @@ fun AppSettingScreen(
                     else -> Unit
                 }
             }
+
+            item {
+                val versionName = context.packageName?.let {
+                    context.packageManager.getPackageInfo(
+                        it,
+                        PackageManager.GET_META_DATA
+                    ).versionName
+                }
+                Text(text = "Islam24 $versionName")
+            }
+
+
         }
         if (appSettingState.isLanguageDialogOpen) {
             SelectLanguageDialog(appSettingEvent)
         }
+        if (appSettingState.isRatingDialogOpen) {
+            RatingBottomSheet(
+                appSettingEvent,
+                hapticFeedback ={
+                    hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
+                }
+            )
+        }
     }
 }
 
+
+data class SettingItemData(
+    val leadingIcon: Painter,
+    val tabName: String,
+    val onClick: () -> Unit = {},
+    val trailingIcon: Painter
+)
 
 @Composable
 fun SettingItemCard(

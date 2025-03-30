@@ -20,8 +20,6 @@ interface ProfileRepository {
     val profileState: StateFlow<ProfileState>
     val authState: LiveData<AuthState>
     val profileActionState: LiveData<ProfileAction>
-    fun inviteFriend()
-    fun rateUs(activity: Activity)
     fun updateProfilePicture(uri: Uri)
     suspend fun updateName(userData: UserData): Result<UserDataSuccess, UserDataError>
     fun fetchUserData()
@@ -36,8 +34,5 @@ interface ProfileRepository {
     fun refreshProfile()
 
     fun saveProfilePictureLocally(uri: Uri)
-
-    fun openRatingDialog()
-    fun goToRate()
 
 }
