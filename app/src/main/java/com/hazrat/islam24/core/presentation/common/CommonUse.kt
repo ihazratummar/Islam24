@@ -42,6 +42,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -224,10 +225,11 @@ fun WebViewScreen(
 
 @Composable
 fun BackIcon(
-    onBackClick:() -> Unit
+    onBackClick:() -> Unit,
+    icon: Painter = painterResource(R.drawable.backicon)
 ) {
     Icon(
-        painter = painterResource(R.drawable.backicon),
+        painter = icon,
         contentDescription = null,
         modifier = Modifier.padding(dimens.size20)
             .clickable(

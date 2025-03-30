@@ -7,10 +7,6 @@ import android.app.Activity
  */
 
 sealed interface ProfileEvent {
-    data object InviteFriend : ProfileEvent
-    data class RateUs(val activity: Activity) : ProfileEvent
-    data object OpenRatingDialog: ProfileEvent
-    data object GoToRate: ProfileEvent
 
 }
 
