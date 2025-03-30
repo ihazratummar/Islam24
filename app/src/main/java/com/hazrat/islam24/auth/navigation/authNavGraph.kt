@@ -98,19 +98,28 @@ fun NavGraphBuilder.authNavGraph(
             val profileViewModel = hiltViewModel<ProfileViewModel>()
             val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
             val profileState by profileViewModel.profileState.collectAsState()
-            val profileEvent = profileViewModel::onEvent
             ProfileScreen(
                 navController = navController,
                 authState = authState,
-                profileEvent = profileEvent,
                 profileState = profileState,
-                isHapticFeedback = isHapticFeedback
+                onSettingClick = {
+                    navController.navigate(ProfileSettingScreen) {
+                        popUpTo(ProfileSettingScreen) {
+                            inclusive = true
+                            saveState = false
+                        }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
         composable<ProfileSettingScreen> {
+            val profileViewModel = hiltViewModel<ProfileViewModel>()
             val authState by appSettingViewModel.authState.observeAsState(AuthState.Loading)
             val appSettingEvent = appSettingViewModel::onAppSettingEvent
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
+            val profileEvent = profileViewModel::onEvent
+            val profileState by profileViewModel.profileState.collectAsState()
             AppSettingScreen(
                 authState = authState,
                 appSettingEvent = appSettingEvent,
@@ -119,7 +128,9 @@ fun NavGraphBuilder.authNavGraph(
                 onPolicyClick = {
                     navController.navigate(PoliciesScreenRoute)
                 },
-                onBackClick = {navController.navigateUp()}
+                onBackClick = {navController.navigateUp()},
+                profileEvent = profileEvent,
+                profileState = profileState
             )
         }
         composable<ProfileDetailsScreen> {
