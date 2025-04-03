@@ -41,6 +41,11 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.authNavGraph
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
+import com.hazrat.islam24.auth.presentation.login.LoginViewModel
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
+import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
+import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
 import com.hazrat.islam24.core.presentation.al_quran.QuranScreen
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.al_quran.SurahScreen
@@ -77,6 +82,13 @@ fun AppNavigator(
     prayerTimeViewModel: PrayerTimeViewModel,
     appSettingViewModel: AppSettingViewModel,
     qiblaViewModel: QiblaViewModel,
+    mainViewModel: MainViewModel ,
+    homeViewModel: HomeViewModel,
+    profileViewModel: ProfileViewModel,
+    loginViewModel: LoginViewModel,
+    signUpViewModel: SingupViewModel,
+    profileDetailsViewModel: ProfileDetailsViewModel,
+    forgetPasswordViewModel: ForgetPasswordViewModel,
     isHapticFeedback: Boolean = false
 ) {
     val navController = rememberNavController()
@@ -97,12 +109,9 @@ fun AppNavigator(
             composable<MainRoute.HomeScreen>(
                 deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top" })
             ) {
-                val mainViewModel: MainViewModel = hiltViewModel()
                 val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
-                val quranViewModel: QuranViewModel = hiltViewModel()
                 val quranState by quranViewModel.quranState.collectAsStateWithLifecycle()
                 val locationName by mainViewModel.locationName.collectAsState()
-                val homeViewModel: HomeViewModel = hiltViewModel()
                 val homeState by homeViewModel.homeState.collectAsStateWithLifecycle()
                 HomeScreen(
                     navigateToPrayerTime = {
@@ -267,7 +276,12 @@ fun AppNavigator(
             authNavGraph(
                 navController = navController,
                 appSettingViewModel = appSettingViewModel,
-                isHapticFeedback = isHapticFeedback
+                isHapticFeedback = isHapticFeedback,
+                profileViewModel =  profileViewModel,
+                loginViewModel = loginViewModel,
+                signUpViewModel = signUpViewModel,
+                profileDetailsViewModel = profileDetailsViewModel,
+                forgetPasswordViewModel = forgetPasswordViewModel
             )
             zakatNavGraph(
                 navController = navController,
