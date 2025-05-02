@@ -1,10 +1,8 @@
 package com.hazrat.islam24.core.domain.repository.prayertime
 
-import com.hazrat.islam24.core.data.dao.PrayerSettingDao
 import com.hazrat.islam24.core.data.entity.PrayerCalculationEntity
 import com.hazrat.islam24.core.data.entity.PrayerJuristicEntity
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 interface PrayerSettingRepository {
 
@@ -13,14 +11,14 @@ interface PrayerSettingRepository {
      *
      * @return Flow representing the prayer calculation method as a PrayerCalculationEntity object.
      */
-    fun getCalculationMethod(): Flow<PrayerCalculationEntity?>
+    suspend fun getCalculationMethod(): Flow<PrayerCalculationEntity?>
 
     /**
      * Retrieves the prayer juristic method from the database.
      *
      * @return Flow representing the prayer juristic method as a PrayerJuristicEntity object.
      */
-    fun getJuristicMethod(): Flow<PrayerJuristicEntity?>
+    suspend fun getJuristicMethod(): Flow<PrayerJuristicEntity?>
 
     /**
      * Inserts or updates a prayer calculation method into the database.
