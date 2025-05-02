@@ -10,7 +10,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,9 +22,15 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.findNavController
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
+import com.hazrat.islam24.auth.presentation.login.LoginViewModel
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
+import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
+import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.common.rememberImageLoader
+import com.hazrat.islam24.core.presentation.home.HomeViewModel
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
@@ -34,6 +43,7 @@ import com.hazrat.islam24.service.LocationManager
 import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.islam24.ui.theme.Islam24Theme
+import com.hazrat.islam24.util.LocaleContextWrapper
 import com.hazrat.islam24.util.LocaleHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -79,11 +89,19 @@ class MainActivity : ComponentActivity() {
     // Permissions manager, initialized in onCreate
     private lateinit var permissionsManager: PermissionsManager
 
-    private val appSettingViewModel by viewModels<AppSettingViewModel>()
-    private val quranViewModel by viewModels<QuranViewModel>()
-    private val prayerTimeViewModel by viewModels<PrayerTimeViewModel>()
-    private val mainViewModel by viewModels<MainViewModel>()
-    private val qiblaViewModel by viewModels<QiblaViewModel>()
+    // Inject ViewModels properly
+    private val appSettingViewModel: AppSettingViewModel by viewModels()
+    private val quranViewModel: QuranViewModel by viewModels()
+    private val prayerTimeViewModel: PrayerTimeViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
+    private val qiblaViewModel: QiblaViewModel by viewModels()
+    private val zakatViewModel: ZakatViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
+    private val singupViewModel: SingupViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
+    private val forgetPasswordViewModel: ForgetPasswordViewModel by viewModels()
+    private val profileDetailsViewModel: ProfileDetailsViewModel by viewModels()
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -112,20 +130,32 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
+            val languageCode by mainViewModel.languageCode.collectAsStateWithLifecycle()
+            val context = LocalContext.current
+            val updateContext = remember(languageCode) {
+                LocaleContextWrapper.wrap(context = context, languageCode = languageCode.name)
+            }
             Islam24Theme(
                 darkTheme = !isDarkModeEnabled
             ) {
                 rememberImageLoader(this)
-                val zakatViewModel by viewModels<ZakatViewModel>()
                 NavGraph(
                     zakatViewModel = zakatViewModel,
                     quranViewModel = quranViewModel,
                     prayerTimeViewModel = prayerTimeViewModel,
                     appSettingViewModel = appSettingViewModel,
                     isHapticFeedback = isHapticFeedback,
-                    qiblaViewModel = qiblaViewModel
+                    qiblaViewModel = qiblaViewModel,
+                    mainViewModel = mainViewModel,
+                    homeViewModel = homeViewModel,
+                    profileViewModel = profileViewModel,
+                    loginViewModel = loginViewModel,
+                    signUpViewModel = singupViewModel,
+                    profileDetailsViewModel = profileDetailsViewModel,
+                    forgetPasswordViewModel = forgetPasswordViewModel
                 )
             }
+
         }
         // Check for app updates
         updateManager.checkForAppUpdates(this)

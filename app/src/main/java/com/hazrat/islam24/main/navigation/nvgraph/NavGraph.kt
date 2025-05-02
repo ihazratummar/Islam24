@@ -10,10 +10,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
+import com.hazrat.islam24.auth.presentation.login.LoginViewModel
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
+import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
+import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
+import com.hazrat.islam24.core.presentation.home.HomeViewModel
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.AppNavigator
 import com.hazrat.islam24.main.navigation.MainRoute
 import kotlinx.serialization.Serializable
@@ -26,6 +33,13 @@ fun NavGraph(
     prayerTimeViewModel : PrayerTimeViewModel,
     appSettingViewModel : AppSettingViewModel,
     qiblaViewModel: QiblaViewModel,
+    mainViewModel: MainViewModel,
+    homeViewModel: HomeViewModel,
+    profileViewModel: ProfileViewModel,
+    loginViewModel: LoginViewModel,
+    signUpViewModel: SingupViewModel,
+    profileDetailsViewModel: ProfileDetailsViewModel,
+    forgetPasswordViewModel: ForgetPasswordViewModel,
     isHapticFeedback : Boolean = false
 ) {
     val navController = rememberNavController()
@@ -42,7 +56,14 @@ fun NavGraph(
                     prayerTimeViewModel = prayerTimeViewModel,
                     appSettingViewModel = appSettingViewModel,
                     isHapticFeedback = isHapticFeedback,
-                    qiblaViewModel = qiblaViewModel
+                    qiblaViewModel = qiblaViewModel,
+                    mainViewModel = mainViewModel,
+                    homeViewModel = homeViewModel,
+                    profileViewModel = profileViewModel,
+                    loginViewModel = loginViewModel,
+                    signUpViewModel = signUpViewModel,
+                    profileDetailsViewModel = profileDetailsViewModel,
+                    forgetPasswordViewModel = forgetPasswordViewModel
                 )
             }
         }
