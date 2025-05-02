@@ -6,6 +6,7 @@ import com.hazrat.islam24.core.presentation.zakat.DateType
 import com.hazrat.islam24.util.Constants.KEY_SORT_BY
 import com.hazrat.islam24.util.Languages
 import javax.inject.Inject
+import androidx.core.content.edit
 
 class DataStorePreference @Inject constructor(
     private val context: Context
@@ -45,7 +46,7 @@ class DataStorePreference @Inject constructor(
 
     fun setLanguage( language: Languages) {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        pref.edit().putString(KEY_LANGUAGE, language.name).apply()
+        pref.edit { putString(KEY_LANGUAGE, language.name) }
     }
 
     fun getLanguage(): Languages {
@@ -58,7 +59,7 @@ class DataStorePreference @Inject constructor(
 
     fun setSortType(sortType: DateType) {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        pref.edit().putString(KEY_SORT_BY, sortType.name).apply()
+        pref.edit { putString(KEY_SORT_BY, sortType.name) }
     }
 
     fun getSortType(): DateType {

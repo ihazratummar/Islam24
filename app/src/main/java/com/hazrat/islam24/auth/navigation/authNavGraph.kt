@@ -36,11 +36,15 @@ import kotlinx.serialization.Serializable
 fun NavGraphBuilder.authNavGraph(
     navController: NavController,
     appSettingViewModel: AppSettingViewModel,
+    profileViewModel: ProfileViewModel,
+    loginViewModel: LoginViewModel,
+    signUpViewModel: SingupViewModel,
+    profileDetailsViewModel: ProfileDetailsViewModel,
+    forgetPasswordViewModel: ForgetPasswordViewModel,
     isHapticFeedback: Boolean = false
 ) {
     navigation<Auth>(startDestination = MainRoute.ProfileScreen) {
         composable<Login> {
-            val loginViewModel = hiltViewModel<LoginViewModel>()
             val loginState by loginViewModel.loginState.collectAsState()
             val loginEvent = loginViewModel::onEvent
             val authState by loginViewModel.authState.observeAsState(initial = AuthState.Loading)
@@ -66,10 +70,9 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<SignUp> {
-            val singUpViewModel = hiltViewModel<SingupViewModel>()
-            val signUpState by singUpViewModel.state.collectAsState()
-            val signUpEvent = singUpViewModel::onEvent
-            val authState by singUpViewModel.authState.observeAsState(initial = AuthState.Loading)
+            val signUpState by signUpViewModel.state.collectAsState()
+            val signUpEvent = signUpViewModel::onEvent
+            val authState by signUpViewModel.authState.observeAsState(initial = AuthState.Loading)
             AuthSignupScreen(
                 signUpState = signUpState,
                 onEvent = signUpEvent,
@@ -95,7 +98,6 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<MainRoute.ProfileScreen> {
-            val profileViewModel = hiltViewModel<ProfileViewModel>()
             val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
             val profileState by profileViewModel.profileState.collectAsState()
             ProfileScreen(
@@ -114,7 +116,6 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<ProfileSettingScreen> {
-            val profileViewModel = hiltViewModel<ProfileViewModel>()
             val authState by appSettingViewModel.authState.observeAsState(AuthState.Loading)
             val appSettingEvent = appSettingViewModel::onAppSettingEvent
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
@@ -134,7 +135,6 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<ProfileDetailsScreen> {
-            val profileDetailsViewModel = hiltViewModel<ProfileDetailsViewModel>()
             val appSettingState1 by profileDetailsViewModel.profileState.collectAsState()
             val profileDetailsEvent = profileDetailsViewModel::onEvent
             val userEvent by profileDetailsViewModel.events.collectAsState(initial = null)
@@ -147,7 +147,6 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<ForgettingPassword> {
-            val forgetPasswordViewModel = hiltViewModel<ForgetPasswordViewModel>()
             val forgetPasswordState by forgetPasswordViewModel.forgetPasswordState.collectAsState()
             val channelEvent by forgetPasswordViewModel.events.collectAsState(initial = null)
             ForgetPassword(
