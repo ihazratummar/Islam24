@@ -415,7 +415,6 @@ class QuranRepositoryImpl @Inject constructor(
                 val firestorelastReadSurah = documentSnapshot.getLong("lastReadSurah")?.toInt()?:1
                 val firestoreLastReadAyah = documentSnapshot.getLong("lastReadAyah")?.toInt()?:1
                 dataStorePreference.saveQuranLastRead(firestorelastReadSurah, firestoreLastReadAyah)
-                Toast.makeText(context, "Quran Last Read Updated", Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "syncQuranDataOnLogin: Quran Last Read Updated")
             }else{
                 Log.w(TAG, "syncQuranDataOnLogin: User document does not exist")
