@@ -1,6 +1,7 @@
 package com.hazrat.islam24.ui.theme
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
@@ -105,7 +106,7 @@ private val darkScheme = darkColorScheme(
 fun Islam24Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    activity: Activity = LocalContext.current as MainActivity,
+    activity: Activity = LocalActivity.current as MainActivity,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
