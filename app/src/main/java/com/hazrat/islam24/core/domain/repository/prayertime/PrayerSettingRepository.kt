@@ -6,23 +6,21 @@ import com.hazrat.islam24.core.data.entity.PrayerJuristicEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class PrayerSettingRepository @Inject constructor(
-    private val prayerSettingDao: PrayerSettingDao
-) {
+interface PrayerSettingRepository {
 
     /**
      * Retrieves the prayer calculation method from the database.
      *
      * @return Flow representing the prayer calculation method as a PrayerCalculationEntity object.
      */
-    fun getCalculationMethod(): Flow<PrayerCalculationEntity> = prayerSettingDao.getCalculationMethod()
+    fun getCalculationMethod(): Flow<PrayerCalculationEntity?>
 
     /**
      * Retrieves the prayer juristic method from the database.
      *
      * @return Flow representing the prayer juristic method as a PrayerJuristicEntity object.
      */
-    fun getJuristicMethod(): Flow<PrayerJuristicEntity> = prayerSettingDao.getJuristicMethod()
+    fun getJuristicMethod(): Flow<PrayerJuristicEntity?>
 
     /**
      * Inserts or updates a prayer calculation method into the database.
@@ -30,7 +28,7 @@ class PrayerSettingRepository @Inject constructor(
      *
      * @param prayerSettingEntity The PrayerCalculationEntity object to be inserted or updated.
      */
-    suspend fun insertCalculationMethod(prayerSettingEntity: PrayerCalculationEntity) = prayerSettingDao.insertCalculationMethod(prayerSettingEntity)
+    suspend fun insertCalculationMethod(prayerSettingEntity: PrayerCalculationEntity)
 
     /**
      * Inserts or updates a prayer juristic method into the database.
@@ -38,5 +36,5 @@ class PrayerSettingRepository @Inject constructor(
      *
      * @param prayerSettingEntity The PrayerJuristicEntity object to be inserted or updated.
      */
-    suspend fun insertJuristicMethod(prayerSettingEntity: PrayerJuristicEntity) = prayerSettingDao.insertJuristicMethod(prayerSettingEntity)
+    suspend fun insertJuristicMethod(prayerSettingEntity: PrayerJuristicEntity)
 }
