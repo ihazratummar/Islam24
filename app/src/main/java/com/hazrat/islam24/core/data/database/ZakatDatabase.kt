@@ -10,7 +10,7 @@ import com.hazrat.islam24.core.domain.model.zakat.ZakatEntity
  * @author Hazrat Ummar Shaikh
  */
 
-@Database(entities = [NisabEntity::class, ZakatEntity::class], version = 9, exportSchema = false)
+@Database(entities = [NisabEntity::class, ZakatEntity::class], version = 12, exportSchema = false)
 abstract class ZakatDatabase : RoomDatabase(){
     abstract fun zakatDao(): ZakatDao
 }
