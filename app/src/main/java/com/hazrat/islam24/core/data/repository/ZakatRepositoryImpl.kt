@@ -109,15 +109,10 @@ class ZakatRepositoryImpl @Inject constructor(
                 }
             }
 
-            // Import Firestore data to local
             for (firestoreEntity in firestoreZakatEntities) {
                 if (!localZakatEntities.any { it.id == firestoreEntity.id }) {
                     dao.insertZakatDetails(firestoreEntity)
                 }
-            }
-
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Data synchronized successfully", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             // Log detailed error information

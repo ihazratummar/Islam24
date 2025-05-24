@@ -42,7 +42,7 @@ class PrayerTimeRepositoryImpl(
     private val prayerSettingRepository: PrayerSettingRepository,
     private val prayerTimeDao: PrayerTimeDao,
     private val context: Context,
-    private val networkRepository: NetworkRepository
+    networkRepository: NetworkRepository
 ) : PrayerTimeRepository {
 
     private val networkStatus: StateFlow<ConnectivityObserver.Status> =

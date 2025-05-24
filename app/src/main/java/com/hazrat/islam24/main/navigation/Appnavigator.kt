@@ -141,7 +141,7 @@ fun AppNavigator(
                         navController.navigate(
                             MainRoute.SurahScreenRoute(
                                 surahNumber = surah,
-                                ayahNumber = ayah,
+                                ayahNumber = ayah - 2,
                                 isTracking = false
                             )
                         )

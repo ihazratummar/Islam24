@@ -57,7 +57,7 @@ fun NavGraphBuilder.authNavGraph(
                 },
                 navigateToProfile = {
                     navController.navigate(MainRoute.ProfileScreen) {
-                        popUpTo(Login) { inclusive = true }
+                        popUpTo(Login)
                     }
                 },
                 onBackClick = {

@@ -1,6 +1,6 @@
 [versions]
 accompanistSystemuicontroller = "0.34.0"
-agp = "8.9.2"
+agp = "8.10.0"
 androidsvg = "1.4"
 chromecastSender = "0.28"
 glanceAppwidget = "1.1.1"

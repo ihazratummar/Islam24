@@ -1,20 +1,17 @@
 package com.hazrat.islam24.auth.repository
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.android.play.core.review.ReviewManagerFactory
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
-import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
@@ -27,11 +24,15 @@ import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError
 import com.hazrat.islam24.util.error.UserDataSuccess
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.util.UUID
@@ -47,6 +48,8 @@ class ProfileRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore,
     private val storage: FirebaseStorage,
     private val networkRepository: NetworkRepository,
+    private val syncRepository: SyncRepository,
+    private val coroutineScope: CoroutineScope
 ) : ProfileRepository {
 
     private val _authState = MutableLiveData<AuthState>()
@@ -60,6 +63,88 @@ class ProfileRepositoryImpl @Inject constructor(
 
     private val _profileActionState = MutableLiveData<ProfileAction>()
     override val profileActionState: LiveData<ProfileAction> = _profileActionState
+
+    override suspend fun login(email: String, password: String): Boolean {
+        _authState.value = AuthState.Loading
+
+        return suspendCancellableCoroutine { continuation ->
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val user = auth.currentUser
+                        if (user == null) {
+                            _authState.value = AuthState.Unauthenticated
+                            continuation.resume(false) {}
+                            return@addOnCompleteListener
+                        }
+
+                        coroutineScope.launch(Dispatchers.IO) {
+                            try {
+                                fetchUserData()
+                                val syncTime = syncRepository.syncDataOnLogin()
+                                delay(syncTime)
+                                val imageRef = storage.reference.child("image/${user.uid}/profile_image")
+                                imageRef.downloadUrl.addOnSuccessListener { uri ->
+                                    saveProfilePictureLocally(uri)
+                                }
+                                _authState.postValue(AuthState.Authenticated)
+                                continuation.resume(true) {}
+                            } catch (e: Exception) {
+                                _authState.value = AuthState.Error(e.message ?: "Login failed")
+                                continuation.resume(false) {}
+                            }
+                        }
+                    } else {
+                        _authState.value = AuthState.Unauthenticated
+                        continuation.resume(false) {}
+                    }
+                }
+        }
+    }
+
+    override suspend fun signup(
+        name: String,
+        email: String,
+        password: String,
+        confirmPassword: String
+    ): Boolean {
+        _authState.value = AuthState.Loading
+
+        return suspendCancellableCoroutine { continuation ->
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val user = auth.currentUser
+                        if (user == null) {
+                            _authState.value = AuthState.Unauthenticated
+                            continuation.resume(false) {}
+                            return@addOnCompleteListener
+                        }
+
+                        val userId = user.uid
+                        val userData = UserData(
+                            userId = userId,
+                            fullName = name,
+                            email = email
+                        )
+                        fireStore.collection("user").document(userId)
+                            .set(userData)
+                            .addOnSuccessListener {
+                                _authState.value = AuthState.Authenticated
+                                continuation.resume(true) {}
+                            }
+                            .addOnFailureListener { e ->
+                                _authState.value = AuthState.Error(e.message.toString())
+                                continuation.resume(false) {}
+                            }
+                    } else {
+                        _authState.value = AuthState.Unauthenticated
+                        continuation.resume(false) {}
+                    }
+                }
+        }
+    }
+
 
     override fun updateProfilePicture(uri: Uri) {
         val compressUri = compressImage(context, uri) ?: uri
@@ -163,7 +248,7 @@ class ProfileRepositoryImpl @Inject constructor(
     }
 
     override fun fetchUserData() {
-        _authState.value = AuthState.Loading
+        _authState.postValue(AuthState.Loading)
         val userId = auth.currentUser?.uid ?: return
         fireStore.collection("user").document(userId)
             .get()
@@ -181,19 +266,21 @@ class ProfileRepositoryImpl @Inject constructor(
                         )
                     }
                 }
-                _authState.value = AuthState.Authenticated
+                _authState.postValue(AuthState.Authenticated)
             }.addOnFailureListener { e ->
-                _authState.value = AuthState.Error(e.message ?: "Something went wrong")
+                _authState.postValue(AuthState.Error(e.message ?: "Something went wrong"))
             }
     }
 
     override fun checkAuthStatus() {
+        Log.d("ProfileRepository", "checkAuthStatus called")
         if (auth.currentUser == null) {
             _authState.value = AuthState.Unauthenticated
+            Log.d("ProfileRepository", "User is not authenticated")
         } else {
             _authState.value = AuthState.Authenticated
             fetchUserData()
-
+            Log.d("ProfileRepository", "User is authenticated")
         }
     }
 

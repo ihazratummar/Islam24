@@ -21,6 +21,8 @@ interface ProfileRepository {
     val authState: LiveData<AuthState>
     val profileActionState: LiveData<ProfileAction>
     fun updateProfilePicture(uri: Uri)
+    suspend fun login(email: String, password: String) : Boolean
+    suspend fun signup(name: String, email: String, password: String, confirmPassword: String): Boolean
     suspend fun updateName(userData: UserData): Result<UserDataSuccess, UserDataError>
     fun fetchUserData()
     fun checkAuthStatus()

@@ -1,25 +1,18 @@
 package com.hazrat.islam24.auth.presentation.login
 
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
-import com.hazrat.islam24.auth.repository.SyncRepository
-import com.hazrat.islam24.core.domain.repository.QiblaRepository
-import com.hazrat.islam24.core.domain.repository.QuranRepository
-import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 /**
@@ -28,15 +21,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val auth: FirebaseAuth,
     private val profileRepository: ProfileRepository,
-    private val storage: FirebaseStorage,
-    private val syncRepository: SyncRepository
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
 
-    private val _authState = MutableLiveData<AuthState>()
-    val authState: LiveData<AuthState> = _authState
+    val authState: LiveData<AuthState> = profileRepository.authState
 
     private val _loginState = MutableStateFlow(LoginState())
     val loginState: StateFlow<LoginState> = _loginState
@@ -47,21 +37,8 @@ class LoginViewModel @Inject constructor(
     }
 
     init {
-        checkAuthStatus()
-
+        profileRepository.checkAuthStatus()
     }
-
-    private fun checkAuthStatus() {
-        if (auth.currentUser == null) {
-            _authState.value = AuthState.Unauthenticated
-        } else {
-            _authState.value = AuthState.Authenticated
-            viewModelScope.launch {
-                syncRepository.syncDataOnLogin()
-            }
-        }
-    }
-
 
     fun onEvent(event: LoginEvent) {
         when (event) {
@@ -104,41 +81,23 @@ class LoginViewModel @Inject constructor(
             }
 
             LoginEvent.Refresh -> {
-                checkAuthStatus()
+                profileRepository.checkAuthStatus()
             }
         }
     }
 
     private suspend fun login(email: String, password: String) {
         if (!isLoginFormValid(_loginState.value)) {
-            _authState.value = AuthState.Error("Please fill all fields")
+            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
-
-        _authState.value = AuthState.Loading
-        delay(2000L)
-
-        try {
-            auth.signInWithEmailAndPassword(email, password).await()
-            val syncTime = syncRepository.syncDataOnLogin() // Now calls SyncRepository
-            Log.d("Login", "Total sync time: $syncTime ms")
-            delay(syncTime) // Delay based on sync time
-
-            _authState.value = AuthState.Authenticated
+        val result = profileRepository.login(email, password)
+        if (result){
             _loginState.update {
                 it.copy(email = "", password = "")
             }
-
-            val userId = auth.currentUser?.uid ?: return
-            val storageRef = storage.reference
-            val imageRef = storageRef.child("image/$userId/profile_image")
-            imageRef.downloadUrl.addOnSuccessListener {
-                profileRepository.saveProfilePictureLocally(uri = it)
-            }
-        } catch (e: Exception) {
-            _authState.value = AuthState.Loading
-            delay(1000L)
-            _authState.value = AuthState.Error(e.message ?: "Authentication failed")
+        }else{
+            Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show()
         }
     }
 
