@@ -83,6 +83,14 @@ class QuranViewModel @Inject constructor(
                     arAyah = event.arAyah
                 )
             }
+
+            QuranEvent.AyahDropDownClick -> {
+                quranRepository.onAyahDropDownClick()
+            }
+            QuranEvent.OpenQuranSettingDialog -> {
+                quranRepository.onQuranSettingClick()
+            }
+
         }
     }
 }

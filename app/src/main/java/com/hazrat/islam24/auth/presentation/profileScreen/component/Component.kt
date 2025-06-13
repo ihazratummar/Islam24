@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import com.hazrat.islam24.R
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
 import com.hazrat.islam24.ui.theme.dimens
 
@@ -81,12 +82,12 @@ fun Modifier.profileCardShimmerEffect(): Modifier = composed {
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun RatingBottomSheet(
-    profileEvent: (ProfileEvent) -> Unit,
+    appSettingEvent: (AppSettingEvent) -> Unit,
     hapticFeedback: () -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = {
-            profileEvent(ProfileEvent.OpenRatingDialog)
+            appSettingEvent(AppSettingEvent.OpenRatingDialog)
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -144,7 +145,7 @@ fun RatingBottomSheet(
                 )
                 Button(
                     onClick = {
-                        profileEvent(ProfileEvent.GoToRate)
+                        appSettingEvent(AppSettingEvent.GoToRate)
                         hapticFeedback()
                     },
                     modifier = Modifier

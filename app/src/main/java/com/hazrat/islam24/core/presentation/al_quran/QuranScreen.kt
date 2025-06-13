@@ -167,7 +167,8 @@ fun QuranScreen(
                                                 false
                                             )
                                         },
-                                        index = index
+                                        index = index,
+                                        ayat = "${juzDetails.start} - ${juzDetails.end}"
                                     )
                                 }
                             }

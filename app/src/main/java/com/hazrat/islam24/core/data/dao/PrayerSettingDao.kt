@@ -17,7 +17,7 @@ interface PrayerSettingDao {
      * @return Flow representing the list of prayer calculation method settings as PrayerCalculationEntity objects.
      */
     @Query("SELECT * FROM calculation_method_entity WHERE  id = 1")
-    fun getCalculationMethod(): Flow<PrayerCalculationEntity>
+    fun getCalculationMethod(): Flow<PrayerCalculationEntity?>
 
     /**
      * Retrieves all prayer juristic method settings from the database.
@@ -25,7 +25,7 @@ interface PrayerSettingDao {
      * @return Flow representing the list of prayer juristic method settings as PrayerJuristicEntity objects.
      */
     @Query("SELECT * FROM juristic_method_entity WHERE  id = 1")
-    fun getJuristicMethod(): Flow<PrayerJuristicEntity>
+    fun getJuristicMethod(): Flow<PrayerJuristicEntity?>
 
     /**
      * Inserts or updates a prayer calculation method setting into the database.

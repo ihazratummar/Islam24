@@ -1,6 +1,8 @@
 package com.hazrat.islam24.core.presentation.prayertime.setting
 
+import android.app.AlarmManager
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
@@ -18,13 +20,16 @@ import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 @HiltViewModel
 class PrayerSettingViewModel @Inject constructor(
@@ -81,32 +86,41 @@ class PrayerSettingViewModel @Inject constructor(
         when (event) {
             is PrayerSettingEvent.CalculationChanged -> {
                 viewModelScope.launch {
+                    _state.update { it.copy(isRefresh = true) }
                     if (networkStatus.value == ConnectivityObserver.Status.Available) {
                         repository.insertCalculationMethod(
                             PrayerCalculationEntity(method = event.value)
                         )
-                        prayerTimeRepository.newPrayerTimesRequest()
+                        val apiTime = measureTimeMillis { prayerTimeRepository.newPrayerTimesRequest() }
                         reScheduleAlarm()
+                        delay(apiTime)
                     } else {
-                        Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
-                            .show()
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
+                    _state.update { it.copy(isRefresh = false) }
                 }
             }
 
             is PrayerSettingEvent.JuristicChanged -> {
                 viewModelScope.launch {
+                    _state.update { it.copy(isRefresh = true) }
                     if (networkStatus.value == ConnectivityObserver.Status.Available) {
                         repository.insertJuristicMethod(
                             PrayerJuristicEntity(school = event.value)
                         )
-                        prayerTimeRepository.newPrayerTimesRequest()
+                        val apiTime = measureTimeMillis { prayerTimeRepository.newPrayerTimesRequest() }
                         reScheduleAlarm()
-
+                        delay(apiTime)
                     } else {
-                        Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
-                            .show()
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
+                    _state.update { it.copy(isRefresh = false) }
                 }
             }
 
@@ -129,6 +143,12 @@ class PrayerSettingViewModel @Inject constructor(
     }
 
     private fun reScheduleAlarm() {
+
+        if (!requestScheduleExactAlarmPermission(context = context)){
+            Log.d("PrayerSettingViewModel", "Exact Alarm Permission Not Granted")
+            return
+        }
+
         val today = getCurrentDate()
         val getPrayer = prayerTime.value.find { it.gregorianDate == today }!!
         if (dataStorePreference.getFajrNotification()) {
@@ -145,6 +165,15 @@ class PrayerSettingViewModel @Inject constructor(
         }
         if (dataStorePreference.getIshaNotification()) {
             prayerAlarmManager.setIshaPrayerAlarm(getPrayer.ishaTime)
+        }
+    }
+
+    fun requestScheduleExactAlarmPermission(context: Context) : Boolean{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            val alermManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alermManager.canScheduleExactAlarms()
+        }else{
+            true
         }
     }
 }

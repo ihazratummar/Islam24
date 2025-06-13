@@ -2,6 +2,7 @@ package com.hazrat.islam24.receiver
 
 import android.Manifest
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
 import com.hazrat.islam24.R
 import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.main.mainActivity.MainActivity
@@ -43,6 +45,7 @@ import com.hazrat.islam24.util.datastore.NotificationType
 import com.hazrat.islam24.util.datastore.PrayerName
 import com.hazrat.islam24.util.fetchPrayerTimeForNotification
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -125,14 +128,12 @@ class PrayerTimeReceiver : BroadcastReceiver() {
         message: String,
         prayerName: PrayerName
     ): NotificationCompat.Builder {
-        val notificationClickIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-        val pendingIntent = PendingIntent.getActivity(
+
+        val clickIntent = Intent(
+            Intent.ACTION_VIEW,
+            "https://islam24.hazratdev.top/prayertime".toUri(),
             context,
-            0,
-            notificationClickIntent,
-            PendingIntent.FLAG_IMMUTABLE
+            MainActivity::class.java
         )
 
         val muteIntent = PendingIntent.getBroadcast(
@@ -141,6 +142,13 @@ class PrayerTimeReceiver : BroadcastReceiver() {
             Intent(context, MuteReceiver::class.java),
             PendingIntent.FLAG_IMMUTABLE
         )
+
+        val clickPendingIntent : PendingIntent = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(clickIntent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+
         val pattern = longArrayOf(0, 500, 1000)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.naviconhome)
@@ -148,11 +156,11 @@ class PrayerTimeReceiver : BroadcastReceiver() {
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
+            .setContentIntent(clickPendingIntent)
             .setDeleteIntent(muteIntent)
             .setVibrate(pattern)
 
-        val notificationType = runBlocking {
+        val notificationType = runBlocking(Dispatchers.IO) {
             dataStore.getPrayerNotificationType(prayerName).firstOrNull() ?: NotificationType.DEFAULT
         }
         Log.d("NotificationTypeCheck", "Notification type for $prayerName: $notificationType")

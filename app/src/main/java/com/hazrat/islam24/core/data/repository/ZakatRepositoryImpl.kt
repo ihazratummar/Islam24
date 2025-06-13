@@ -16,6 +16,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -41,7 +42,14 @@ class ZakatRepositoryImpl @Inject constructor(
     }
 
     override fun getNisab(): Flow<NisabEntity> {
-        return dao.getNisab()
+        return dao.getNisab().transform { entity ->
+            if (entity == null){
+                insertNisab(NisabEntity(silverPrice = 0.0))
+                emit(NisabEntity(silverPrice = 0.0))
+            }else{
+                emit(entity)
+            }
+        }
     }
 
     override suspend fun insertZakat(zakatEntity: ZakatEntity) {
@@ -101,15 +109,10 @@ class ZakatRepositoryImpl @Inject constructor(
                 }
             }
 
-            // Import Firestore data to local
             for (firestoreEntity in firestoreZakatEntities) {
                 if (!localZakatEntities.any { it.id == firestoreEntity.id }) {
                     dao.insertZakatDetails(firestoreEntity)
                 }
-            }
-
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Data synchronized successfully", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             // Log detailed error information

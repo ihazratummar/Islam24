@@ -1,6 +1,7 @@
 package com.hazrat.islam24.core.di
 
 import com.hazrat.islam24.core.remote.api.AthkarApiCall
+import com.hazrat.islam24.core.remote.api.GoogleCloudConsoleApi
 import com.hazrat.islam24.core.remote.api.GregorianToHijriApi
 import com.hazrat.islam24.core.remote.api.LocationNameApi
 import com.hazrat.islam24.core.remote.api.NamesApi
@@ -9,6 +10,7 @@ import com.hazrat.islam24.core.remote.api.QuranApi
 import com.hazrat.islam24.util.Constants.ATHKAR_BASE_URL_NAME
 import com.hazrat.islam24.util.Constants.BASE_URL
 import com.hazrat.islam24.util.Constants.BASE_URL_NAME
+import com.hazrat.islam24.util.Constants.GOOGLE_COULD_BASE_URL
 import com.hazrat.islam24.util.Constants.GTH_BASE_URL
 import com.hazrat.islam24.util.Constants.LOCATION_IQ_BASE_URL
 import com.hazrat.islam24.util.Constants.QURAN_AR_BASE_URL
@@ -68,6 +70,17 @@ object RetrofitModule {
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
             .create(PrayerTimeApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoogleCloudConsoleApi() : GoogleCloudConsoleApi {
+        return Retrofit.Builder()
+            .baseUrl(GOOGLE_COULD_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+            .create(GoogleCloudConsoleApi::class.java)
     }
 
     @Singleton

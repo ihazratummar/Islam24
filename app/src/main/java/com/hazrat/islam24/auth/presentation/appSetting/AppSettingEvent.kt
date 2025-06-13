@@ -1,5 +1,7 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
+import android.app.Activity
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
 import com.hazrat.islam24.util.Languages
 
 /**
@@ -22,4 +24,10 @@ sealed interface AppSettingEvent {
     data object RefreshAuth: AppSettingEvent
 
     data object HapticFeedbackClick: AppSettingEvent
+
+
+    data object InviteFriend : AppSettingEvent
+    data class RateUs(val activity: Activity) : AppSettingEvent
+    data object OpenRatingDialog: AppSettingEvent
+    data object GoToRate: AppSettingEvent
 }

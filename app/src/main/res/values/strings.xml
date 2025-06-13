@@ -141,4 +141,7 @@
     <string name="widget_icon_desc" translatable="false">WuzuIconDescription</string>
     <string name="enable_haptic">Haptic Feedback</string>
     <string name="no_wuzu">No Wuzu</string>
+    <string name="hajj_live">Hajj Live</string>
+    <string name="legal">Legal</string>
+    <string name="policies">Policies</string>
 </resources>

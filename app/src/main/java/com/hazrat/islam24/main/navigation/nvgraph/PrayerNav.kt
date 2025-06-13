@@ -4,10 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
@@ -27,13 +27,17 @@ fun NavGraphBuilder.prayerNav(
     navController: NavController,
     prayerTimeViewModel: PrayerTimeViewModel
 ){
-    navigation<PrayerTime>(PrayerTimeScreen){
-        composable<PrayerTimeScreen> {
+    navigation<PrayerTime>(PrayerTimeScreenRoute){
+        composable<PrayerTimeScreenRoute>(
+            deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top/prayertime" })
+        ) {
             val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
+            val isRefreshing by prayerTimeViewModel.isPrayerTimeRefreshing.collectAsState()
             PrayerTimeScreen(
                 navController = navController,
                 event = prayerTimeViewModel::onEvent,
-                prayerTimes = prayerTimes
+                prayerTimes = prayerTimes,
+                isRefreshing = isRefreshing
             )
         }
         composable<FajrSetting> {
@@ -90,7 +94,7 @@ fun NavGraphBuilder.prayerNav(
 data object PrayerTime
 
 @Serializable
-data object PrayerTimeScreen
+data object PrayerTimeScreenRoute
 
 @Serializable
 data object FajrSetting

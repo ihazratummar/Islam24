@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.util.changeLanguage
@@ -24,6 +26,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.net.toUri
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.hazrat.islam24.R
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -45,11 +50,11 @@ class AppSettingViewModel @Inject constructor(
             currentLanguage = dataStorePreference.getLanguage(),
         )
     )
-    val appSettingState : StateFlow<AppSettingState> = combine(
+    val appSettingState: StateFlow<AppSettingState> = combine(
         _state,
         appDataStore.isDarkModeEnabled,
         appDataStore.isHapticEnabled
-    ){ state, isDarkModeEnabled, isHapticEnabled ->
+    ) { state, isDarkModeEnabled, isHapticEnabled ->
         state.copy(
             toggleTheme = isDarkModeEnabled,
             isHapticFeedbackEnabled = isHapticEnabled
@@ -62,10 +67,11 @@ class AppSettingViewModel @Inject constructor(
 
 
     val authState: LiveData<AuthState> = profileRepository.authState
+
     init {
         profileRepository.checkAuthStatus()
 
-        viewModelScope.launch{
+        viewModelScope.launch {
             val darkMode = appDataStore.getDarkModeEnabled()
             val hapticFeedback = appDataStore.getHapticEnabled()
 
@@ -74,7 +80,7 @@ class AppSettingViewModel @Inject constructor(
                     toggleTheme = darkMode,
                     isHapticFeedbackEnabled = hapticFeedback,
 
-                )
+                    )
             }
         }
 
@@ -98,10 +104,11 @@ class AppSettingViewModel @Inject constructor(
                             currentLanguage = newLanguage,
                         )
                     }
-                    dataStorePreference.setLanguage( language = newLanguage)
+                    dataStorePreference.setLanguage(language = newLanguage)
                     changeLanguage(language = newLanguage, context = context)
                 }
             }
+
             AppSettingEvent.OpenAppSetting -> {
                 val intent: Intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.fromParts("package", context.packageName, null)
@@ -113,20 +120,24 @@ class AppSettingViewModel @Inject constructor(
             AppSettingEvent.SignOut -> {
                 viewModelScope.launch {
                     profileRepository.signOut()
+                    launch {
+                        quranRepository.syncQuranDataIfLoggedIn()
+                    }
+                    launch {
+                        userDataStore.clearSelectedCompassId()
+                    }
                 }
-                syncQuranData()
-                clearDataStore()
             }
 
             AppSettingEvent.RefreshAuth -> {
                 profileRepository.checkAuthStatus()
             }
 
-            AppSettingEvent.HapticFeedbackClick ->{
+            AppSettingEvent.HapticFeedbackClick -> {
                 _state.update {
                     it.copy(isHapticFeedbackEnabled = !it.isHapticFeedbackEnabled)
                 }
-                viewModelScope.launch{
+                viewModelScope.launch {
                     appDataStore.enableHaptic(_state.value.isHapticFeedbackEnabled)
                 }
             }
@@ -136,23 +147,70 @@ class AppSettingViewModel @Inject constructor(
                 _state.update {
                     it.copy(toggleTheme = newTheme)
                 }
-                viewModelScope.launch{
+                viewModelScope.launch {
                     appDataStore.enableDarkTheme(newTheme)
+                }
+            }
+
+            AppSettingEvent.GoToRate -> {
+                val intent: Intent = Intent(Intent.ACTION_VIEW).apply {
+                    data =
+                        "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
+                    setPackage("com.android.vending")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(intent)
+                _state.update {
+                    it.copy(
+                        isRatingDialogOpen = false
+                    )
+
+                }
+            }
+
+            AppSettingEvent.InviteFriend -> {
+                val text = context.getString(R.string.invite_friend)
+                val intent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, text)
+                    type = "text/plain"
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                val shareIntent = Intent.createChooser(intent, null).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(shareIntent)
+            }
+
+            AppSettingEvent.OpenRatingDialog -> {
+                _state.update {
+                    it.copy(isRatingDialogOpen = !it.isRatingDialogOpen)
+                }
+            }
+
+            is AppSettingEvent.RateUs -> {
+                val reviewManager = ReviewManagerFactory.create(context)
+                val request = reviewManager.requestReviewFlow()
+
+                request.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val reviewInfo = task.result
+                        reviewManager.launchReviewFlow(event.activity, reviewInfo)
+                            .addOnCompleteListener { launchTask ->
+                                Log.d("ProfileRepositoryImpl", "rateUs: ${launchTask.result}")
+                                if (launchTask.exception == null) {
+                                    _state.update {
+                                        it.copy(
+                                            isRatingDialogOpen = true
+                                        )
+                                    }
+                                }
+                            }
+                    }
                 }
             }
         }
     }
 
-    private fun clearDataStore(){
-        viewModelScope.launch {
-            userDataStore.clearSelectedCompassId()
-        }
-    }
-
-    private fun syncQuranData(){
-        viewModelScope.launch{
-            quranRepository.syncQuranDataIfLoggedIn()
-        }
-    }
 }
 

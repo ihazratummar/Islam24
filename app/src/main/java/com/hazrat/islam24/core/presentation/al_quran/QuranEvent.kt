@@ -17,4 +17,10 @@ sealed interface QuranEvent {
 
     data class SaveFavorite(val quranAr : LocalQuranModelArItem,val  arAyah :  ArAyah) : QuranEvent
 
+    data object OpenQuranSettingDialog : QuranEvent
+
+    data object AyahDropDownClick: QuranEvent
+
+
+
 }

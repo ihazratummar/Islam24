@@ -42,7 +42,7 @@ class PrayerTimeRepositoryImpl(
     private val prayerSettingRepository: PrayerSettingRepository,
     private val prayerTimeDao: PrayerTimeDao,
     private val context: Context,
-    private val networkRepository: NetworkRepository
+    networkRepository: NetworkRepository
 ) : PrayerTimeRepository {
 
     private val networkStatus: StateFlow<ConnectivityObserver.Status> =
@@ -58,7 +58,9 @@ class PrayerTimeRepositoryImpl(
             val location: LocationEntity? = locationRepository.getLocation()
             val latitude = location?.latitude ?: 21.422487
             val longitude = location?.longitude ?: 39.826206
+            Log.d("NewPrayerTimeRepositoryImpl", "Latitude: $latitude, Longitude: $longitude")
             val methodList = prayerSettingRepository.getCalculationMethod().firstOrNull()
+            Log.d("NewPrayerTimeRepositoryImpl", "Method: $methodList")
             val juristicList = prayerSettingRepository.getJuristicMethod().firstOrNull()
             val methodValue = methodList?.method ?: 1
             val schoolValue = juristicList?.school ?: 0
@@ -77,6 +79,7 @@ class PrayerTimeRepositoryImpl(
                 school = schoolValue,
                 annual = true
             )
+            Log.d("NewPrayerTimeRepositoryImpl", "Api called ${apiResponse.data.values.flatten().find { it.date.gregorian.date == getCurrentDate() }}")
             prayerTimeDao.insertAllPrayerTimes(apiResponse.data.values.flatten().toEntityList())
             apiResponse.data.values.flatten().toEntityList()
         } catch (e: HttpException) {

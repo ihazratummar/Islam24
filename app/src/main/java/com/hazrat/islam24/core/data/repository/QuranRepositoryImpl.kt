@@ -106,7 +106,7 @@ class QuranRepositoryImpl @Inject constructor(
                             parentFolderName = parentFolderName,
                             subFolderName = subFolderName,
                             fileName = fileName,
-                            body = response.body()
+                            body = response.body(),
                         )
                         if (isSaved) {
                             Log.d(TAG, "$fileName downloaded and saved successfully.")
@@ -415,13 +415,28 @@ class QuranRepositoryImpl @Inject constructor(
                 val firestorelastReadSurah = documentSnapshot.getLong("lastReadSurah")?.toInt()?:1
                 val firestoreLastReadAyah = documentSnapshot.getLong("lastReadAyah")?.toInt()?:1
                 dataStorePreference.saveQuranLastRead(firestorelastReadSurah, firestoreLastReadAyah)
-                Toast.makeText(context, "Quran Last Read Updated", Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "syncQuranDataOnLogin: Quran Last Read Updated")
             }else{
                 Log.w(TAG, "syncQuranDataOnLogin: User document does not exist")
             }
         }catch (e: Exception){
             Log.e(TAG, "syncQuranDataOnLogin: ${e.message}")
+        }
+    }
+
+    override fun onAyahDropDownClick() {
+        _quranState.update {
+            it.copy(
+                isAyahDropDownOpen = !it.isAyahDropDownOpen
+            )
+        }
+    }
+
+    override fun onQuranSettingClick() {
+        _quranState.update {
+            it.copy(
+                isQuranSettingDiloagOpen = !it.isQuranSettingDiloagOpen
+            )
         }
     }
 

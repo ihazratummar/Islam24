@@ -12,14 +12,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,10 +30,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -46,12 +41,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
-import coil.disk.DiskCache
 import coil.imageLoader
-import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.hazrat.islam24.R
 import com.hazrat.islam24.ui.theme.dimens
@@ -307,22 +299,35 @@ fun SurahCard(
 fun JuzCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    index: Int
+    index: Int,
+    ayat: String
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(vertical = dimens.size10),
         onClick = {
             onClick()
         },
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
-        Text(
-            text = "${stringResource(R.string.juz)} ${ index + 1}",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Normal
-            ),
-            modifier = Modifier.padding(dimens.size5)
-        )
+        Column (
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(dimens.size4)
+        ){
+            Text(
+                text = "${stringResource(R.string.juz)} ${ index + 1}",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier.padding(dimens.size5)
+            )
+            Text(
+                text = "${stringResource(R.string.ayah)} $ayat",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier.padding(dimens.size5)
+            )
+        }
     }
 }
 

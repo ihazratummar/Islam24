@@ -1,7 +1,10 @@
 package com.hazrat.islam24.notification
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
@@ -11,7 +14,10 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.provider.Settings
 import android.util.Log
+import com.hazrat.islam24.util.isMp3FileValid
 import dagger.hilt.android.qualifiers.ApplicationContext
+import okio.IOException
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -27,6 +33,31 @@ class MediaPlayerHelper @Inject constructor(
     private var vibrator: Vibrator? = null
 
     private val pattern = longArrayOf(0, 500, 1000)
+
+    private var isReceiverRegistered = false
+
+    private val volumeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "android.media.VOLUME_CHANGED_ACTION"){
+                stopAzan()
+            }
+        }
+    }
+
+    fun registerVolumeReceiver() {
+        if (!isReceiverRegistered) { // Only register if not already registered
+            context.registerReceiver(volumeReceiver, IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
+            isReceiverRegistered = true
+        }
+    }
+
+    fun unregisterVolumeReceiver() {
+        if (isReceiverRegistered) { // Only unregister if registered
+            context.unregisterReceiver(volumeReceiver)
+            isReceiverRegistered = false
+        }
+    }
+
 
     fun prepareAzanNotification(filePath: String){
         mediaPlayer = MediaPlayer().apply {
@@ -64,20 +95,43 @@ class MediaPlayerHelper @Inject constructor(
         }
     }
 
-    fun playAzan(resourceInd: Int){
+    fun playAzan(filePath: String) {
+        Log.d("MediaPlayerHelper", "Trying to play MP3: $filePath")
+
+        if (!isMp3FileValid(filePath)) {
+            Log.e("MediaPlayerHelper", "Invalid MP3 file: $filePath")
+            return
+        }
+
         stopAzan()
+
+        val file = File(filePath)
+        if (!file.exists()) {
+            Log.e("MediaPlayerHelper", "File not found: $filePath")
+            return
+        }
+
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION) // Use MUSIC instead of SONIFICATION
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION) // Use MEDIA instead of NOTIFICATION
                     .build()
             )
             isLooping = false
-            setDataSource(context, Uri.Builder().scheme("android.resource").authority(context.packageName).appendPath(resourceInd.toString()).build())
-            prepare()
+
+            try {
+                setDataSource(file.absolutePath) // Use absolute path
+                prepare()
+                start()
+                registerVolumeReceiver()
+                Log.d("MediaPlayerHelper", "Azan is playing...")
+            } catch (e: IOException) {
+                Log.e("MediaPlayerHelper", "Error preparing Azan: ${e.message}", e)
+            }
         }
     }
+
 
     fun startAzan(){
         mediaPlayer?.start()
@@ -90,6 +144,7 @@ class MediaPlayerHelper @Inject constructor(
                     it.stop()
                 }
             }
+            unregisterVolumeReceiver()
             vibrator?.cancel()
             mediaPlayer = null
             vibrator = null

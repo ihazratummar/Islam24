@@ -1,5 +1,8 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
+import android.app.Activity
+import android.content.pm.PackageManager
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +22,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -45,13 +47,17 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
+import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
+import com.hazrat.islam24.core.presentation.common.BackIcon
+import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.ui.theme.dimens
 import com.hazrat.islam24.util.Languages
 import com.hazrat.islam24.util.hapticFeedbacks
@@ -64,14 +70,18 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Composable
 fun AppSettingScreen(
-    navController: NavController,
     authState: AuthState,
     appSettingEvent: (AppSettingEvent) -> Unit,
     appSettingState: AppSettingState,
-    isHapticFeedback: Boolean = false
+    isHapticFeedback: Boolean = false,
+    onPolicyClick: () -> Unit = {},
+    onBackClick: () -> Unit,
+    profileEvent: (ProfileEvent) -> Unit,
+    profileState: ProfileState,
 ) {
 
     val context = LocalContext.current
+    val activity: Activity = LocalActivity.current as MainActivity
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -118,21 +128,35 @@ fun AppSettingScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        modifier = Modifier.padding(dimens.size5),
-                        onClick = {
-                            navController.popBackStack()
-                        }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.backicon),
-                            contentDescription = null
-                        )
-                    }
+                    BackIcon(
+                        onBackClick = { onBackClick() }
+                    )
                 },
                 windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
             )
         }
     ) { paddingValues ->
+
+        val listOfSocialTabs = listOf<SettingItemData>(
+            SettingItemData(
+                leadingIcon = painterResource(id = R.drawable.like),
+                tabName = stringResource(id = R.string.rate),
+                onClick = {
+                    appSettingEvent(AppSettingEvent.RateUs(activity))
+                },
+                trailingIcon = painterResource(id = R.drawable.chevron_right)
+            ),
+            SettingItemData(
+                leadingIcon = painterResource(id = R.drawable.share),
+                tabName = stringResource(id = R.string.invite_a_friend),
+                onClick = {
+                    appSettingEvent(AppSettingEvent.InviteFriend)
+                },
+                trailingIcon = painterResource(id = R.drawable.chevron_right)
+            )
+
+        )
+
         LazyColumn(
             modifier = Modifier
                 .padding(horizontal = dimens.size10)
@@ -157,7 +181,7 @@ fun AppSettingScreen(
                             )
                         )
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.language),
+                            leadingIcon = painterResource(id = R.drawable.language),
                             text = stringResource(id = R.string.language),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.ClickLanguageDialog)
@@ -173,7 +197,7 @@ fun AppSettingScreen(
                         )
 
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.theme_light_dark),
+                            leadingIcon = painterResource(id = R.drawable.theme_light_dark),
                             text = stringResource(R.string.theme),
                             onClick = {
                                 hapticFeedbacks(
@@ -187,7 +211,7 @@ fun AppSettingScreen(
                         )
 
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.vibrate),
+                            leadingIcon = painterResource(id = R.drawable.vibrate),
                             text = stringResource(R.string.enable_haptic),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.HapticFeedbackClick)
@@ -201,7 +225,7 @@ fun AppSettingScreen(
                         )
 
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.sysemsetting),
+                            leadingIcon = painterResource(id = R.drawable.sysemsetting),
                             text = stringResource(R.string.system_seeting),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.OpenAppSetting)
@@ -210,12 +234,63 @@ fun AppSettingScreen(
                     }
                 }
             }
+
             item {
-                Spacer(modifier = Modifier.height(dimens.size10))
+                Spacer(modifier = Modifier.height(dimens.size20))
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.legal),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(
+                                horizontal = dimens.size15,
+                                vertical = dimens.size10
+                            )
+                        )
+                        SettingItemCard(
+                            leadingIcon = painterResource(id = R.drawable.policy),
+                            text = stringResource(R.string.policies),
+                            onClick = {
+                                onPolicyClick()
+                            }
+                        )
+
+                    }
+                }
+            }
+
+            item{
+                Spacer(modifier = Modifier.height(dimens.size20))
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
+                    Column {
+                        listOfSocialTabs.forEach {
+                            SettingItemCard(
+                                leadingIcon = it.leadingIcon,
+                                text = it.tabName,
+                                onClick = {it.onClick()},
+
+                            )
+                        }
+                    }
+                }
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(dimens.size40))
                 when (authState) {
                     is AuthState.Authenticated, is AuthState.Error -> {
                         SettingItemCard(
-                            painter = painterResource(id = R.drawable.logout),
+                            leadingIcon = painterResource(id = R.drawable.logout),
                             text = stringResource(R.string.logout),
                             onClick = {
                                 if (appSettingState.isHapticFeedbackEnabled) {
@@ -233,7 +308,7 @@ fun AppSettingScreen(
                     AuthState.Loading -> {
                         SettingItemCard(
                             modifier = Modifier.logOutCardShimmerEffect(),
-                            painter = painterResource(id = R.drawable.logout),
+                            leadingIcon = painterResource(id = R.drawable.logout),
                             text = stringResource(R.string.logout),
                             onClick = {
                                 appSettingEvent(AppSettingEvent.SignOut)
@@ -246,18 +321,45 @@ fun AppSettingScreen(
                     else -> Unit
                 }
             }
+
+            item {
+                val versionName = context.packageName?.let {
+                    context.packageManager.getPackageInfo(
+                        it,
+                        PackageManager.GET_META_DATA
+                    ).versionName
+                }
+                Text(text = "Islam24 $versionName")
+            }
+
+
         }
         if (appSettingState.isLanguageDialogOpen) {
             SelectLanguageDialog(appSettingEvent)
+        }
+        if (appSettingState.isRatingDialogOpen) {
+            RatingBottomSheet(
+                appSettingEvent,
+                hapticFeedback ={
+                    hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
+                }
+            )
         }
     }
 }
 
 
+data class SettingItemData(
+    val leadingIcon: Painter,
+    val tabName: String,
+    val onClick: () -> Unit = {},
+    val trailingIcon: Painter
+)
+
 @Composable
-private fun SettingItemCard(
+fun SettingItemCard(
     modifier: Modifier = Modifier,
-    painter: Painter,
+    leadingIcon: Painter,
     text: String,
     onClick: () -> Unit = {},
     iconColor: Color = MaterialTheme.colorScheme.onBackground,
@@ -292,7 +394,7 @@ private fun SettingItemCard(
                     modifier = Modifier
                         .padding(horizontal = dimens.size10)
                         .size(dimens.size40),
-                    painter = painter,
+                    painter = leadingIcon,
                     contentDescription = text,
                     tint = iconColor
                 )
