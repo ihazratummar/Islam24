@@ -136,7 +136,7 @@ class MainActivity : ComponentActivity() {
                 LocaleContextWrapper.wrap(context = context, languageCode = languageCode.name)
             }
             Islam24Theme(
-                darkTheme = !isDarkModeEnabled
+                darkTheme = isDarkModeEnabled
             ) {
                 rememberImageLoader(this)
                 NavGraph(
