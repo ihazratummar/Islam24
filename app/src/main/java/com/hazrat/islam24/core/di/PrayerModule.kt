@@ -12,6 +12,7 @@ import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.database.LocationDatabase
 import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.core.data.repository.LocationRepositoryImpl
+import com.hazrat.islam24.core.data.repository.PrayerSettingRepositoryImpl
 import com.hazrat.islam24.core.data.repository.PrayerTimeRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
@@ -84,7 +85,7 @@ object PrayerModule {
     fun providePrayerSettingRepository(
         methodDao: PrayerSettingDao
     ): PrayerSettingRepository {
-        return PrayerSettingRepository(methodDao)
+        return PrayerSettingRepositoryImpl(methodDao)
     }
 
 

@@ -23,7 +23,7 @@ interface ZakatDao {
     suspend fun deleteNisab(nisabEntity: NisabEntity)
 
     @Query("SELECT * FROM nisabentity WHERE id = 1")
-    fun getNisab(): Flow<NisabEntity>
+    fun getNisab(): Flow<NisabEntity?>
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

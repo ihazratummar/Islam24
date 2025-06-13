@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class NisabEntity(
-    val silverPrice: Double,
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 1
+    @PrimaryKey
+    val id: Int = 1,
+    val silverPrice: Double = 0.0
 )

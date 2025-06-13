@@ -8,13 +8,13 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.presentation.profiledetails.UserEvent
@@ -33,9 +33,9 @@ import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.MyFileUtils.isFilePresent
 import com.hazrat.islam24.util.MyFileUtils.saveMp3File
 import com.hazrat.islam24.util.datastore.DataStorePreference
-import com.hazrat.islam24.util.datastore.UserDataStore
 import com.hazrat.islam24.util.datastore.NotificationType
 import com.hazrat.islam24.util.datastore.PrayerName
+import com.hazrat.islam24.util.datastore.UserDataStore
 import com.hazrat.islam24.util.downloader.Downloader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -64,7 +64,7 @@ class PrayerTimeViewModel @Inject constructor(
     private val dataStorePreference: DataStorePreference,
     private val mediaPlayerHelper: MediaPlayerHelper,
     private val dataStore: UserDataStore,
-    private val networkRepository: NetworkRepository,
+    networkRepository: NetworkRepository,
     private val downloader: Downloader
 ) : ViewModel() {
 
@@ -138,17 +138,20 @@ class PrayerTimeViewModel @Inject constructor(
             }
 
             PrayerEvent.RefreshPrayer -> {
+                Log.d("PrayerTimeViewModel", "Refreshing prayer times")
                 viewModelScope.launch {
                     isPrayerTimeRefreshing.value = true
                     if (networkStatus.value == ConnectivityObserver.Status.Available) {
+                        Log.d("PrayerTimeViewModel", "Network is available, fetching new prayer times")
                         val apiTime = measureTimeMillis { repository.newPrayerTimesRequest() }
+                        Log.d("PrayerTimeViewModel", "API call took $apiTime ms")
                         val minExecutionTime = 2000L
                         val totalExecutionTime = apiTime
                         if (totalExecutionTime < minExecutionTime) {
                             delay(minExecutionTime - totalExecutionTime)
                         }
                     } else {
-                        withContext(Dispatchers.Main) {
+                        withContext(Dispatchers.IO) {
                             Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT)
                                 .show()
                         }
@@ -534,7 +537,7 @@ class PrayerTimeViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.S)
     private fun openAppSettings() {
         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-            data = Uri.parse("package:${context.packageName}")
+            data = "package:${context.packageName}".toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(intent)

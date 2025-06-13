@@ -120,9 +120,13 @@ class AppSettingViewModel @Inject constructor(
             AppSettingEvent.SignOut -> {
                 viewModelScope.launch {
                     profileRepository.signOut()
+                    launch {
+                        quranRepository.syncQuranDataIfLoggedIn()
+                    }
+                    launch {
+                        userDataStore.clearSelectedCompassId()
+                    }
                 }
-                syncQuranData()
-                clearDataStore()
             }
 
             AppSettingEvent.RefreshAuth -> {
@@ -208,16 +212,5 @@ class AppSettingViewModel @Inject constructor(
         }
     }
 
-    private fun clearDataStore() {
-        viewModelScope.launch {
-            userDataStore.clearSelectedCompassId()
-        }
-    }
-
-    private fun syncQuranData() {
-        viewModelScope.launch {
-            quranRepository.syncQuranDataIfLoggedIn()
-        }
-    }
 }
 
