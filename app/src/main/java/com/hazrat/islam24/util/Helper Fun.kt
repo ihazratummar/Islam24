@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -53,15 +54,13 @@ fun Context.getActivity(): Activity? = when (this) {
 
 @Composable
 fun getSystemLanguage(): String {
-    val context = LocalContext.current
-    val locale: Locale = context.resources.configuration.locales[0]
+    val locale: Locale = LocalConfiguration.current.locales[0]
     return locale.language
 }
 
-
+@Suppress("LocalContextConfigurationRead")
 fun checkSystemLanguage(context: Context): String {
-    val locale: Locale =
-        context.resources.configuration.locales[0]
+    val locale: Locale = context.resources.configuration.locales[0]
     return locale.language
 }
 

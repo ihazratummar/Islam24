@@ -52,7 +52,6 @@ import com.hazrat.islam24.core.presentation.al_quran.SurahScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
 import com.hazrat.calendar.CalendarScreen
-import com.hazrat.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.haj_live.HajjLive
 import com.hazrat.islam24.core.presentation.haj_live.HajjLiveViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
@@ -212,11 +211,11 @@ fun AppNavigator(
 
             prayerNav(navController, prayerTimeViewModel)
             composable<MainRoute.QiblaDirectionScreen> {
-//                val viewModel: QiblaViewModel = hiltViewModel()
-                val locationName by qiblaViewModel.locationName.collectAsState()
-                val state by qiblaViewModel.qiblaState.collectAsStateWithLifecycle()
-                val qiblaEvent = qiblaViewModel::onEvent
-                val authState by qiblaViewModel.authState.observeAsState(initial = AuthState.Unauthenticated)
+                val viewModel: QiblaViewModel = hiltViewModel()
+                val locationName by viewModel.locationName.collectAsState()
+                val state by viewModel.qiblaState.collectAsStateWithLifecycle()
+                val qiblaEvent = viewModel::onEvent
+                val authState by viewModel.authState.observeAsState(initial = AuthState.Unauthenticated)
                 QiblaScreen(
                     locationName = locationName,
                     state = state,

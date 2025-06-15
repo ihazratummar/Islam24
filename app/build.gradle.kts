@@ -49,7 +49,15 @@ android {
                 "proguard-rules.pro"
             )
             ndk.debugSymbolLevel = "FULL"
-
+        }
+        debug {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            ndk.debugSymbolLevel = "FULL"
         }
     }
 
@@ -80,7 +88,6 @@ android {
 
 dependencies {
 
-    implementation(project(":feature:calendar"))
     implementation(project(":core:ui"))
     implementation(project(":core:di"))
     implementation(project(":core:datastore"))

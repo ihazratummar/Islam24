@@ -24,3 +24,55 @@
 -keep @interface javax.inject.** { *; }
 -keep @interface dagger.** { *; }
 -keep @interface androidx.room.** { *; }
+
+# Dagger Hilt
+-keep class dagger.hilt.** { *; }
+-keep interface dagger.hilt.** { *; }
+
+# Keep Hilt generated components
+-keep class * extends dagger.hilt.android.internal.lifecycle.HiltViewModelFactory { *; }
+
+# Keep annotated Hilt modules and components
+-keep @dagger.Module class * { *; }
+-keep @dagger.hilt.InstallIn class * { *; }
+
+# Prevent R8 from removing Hilt-injected classes
+-keep class * {
+    @dagger.hilt.android.lifecycle.HiltViewModel <fields>;
+}
+
+
+# Retrofit
+-keep class retrofit2.** { *; }
+-keep class okhttp3.** { *; }
+-keep class com.squareup.moshi.** { *; }
+-keep class com.google.gson.** { *; }
+-dontwarn retrofit2.**
+-dontwarn okhttp3.**
+-dontwarn com.squareup.moshi.**
+-dontwarn com.google.gson.**
+
+# Retrofit interfaces
+-keep interface * {
+    @retrofit2.http.* <methods>;
+}
+
+# GSON
+-keep class com.google.gson.** { *; }
+-keep class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+-keepattributes *Annotation*
+
+# Keep model classes (optional but helpful)
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Jetpack DataStore (safe default)
+-dontwarn androidx.datastore.**
+-keep class androidx.datastore.** { *; }
+
+# Preference KTX
+-dontwarn androidx.preference.**
+-keep class androidx.preference.** { *; }

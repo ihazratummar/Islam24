@@ -10,8 +10,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
@@ -35,9 +33,8 @@ import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
 import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
-import com.hazrat.ui.theme.Islam24Theme
-import com.hazrat.islam24.util.LocaleContextWrapper
 import com.hazrat.islam24.util.LocaleHelper
+import com.hazrat.ui.theme.Islam24Theme
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 import javax.inject.Inject
@@ -115,7 +112,9 @@ class MainActivity : ComponentActivity() {
         permissionsManager.onPermissionGranted = {
             locationManager.getLastKnownLocation()
         }
-        permissionsManager.requestPermission()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionsManager.requestPermission()
+        }
         permissionsManager.requestExactAlarmPermission()
         notificationHelper.createNotificationChannels()
         setContent {

@@ -20,8 +20,37 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# Keep everything in Umm al-Qura calendar library
+-keep class com.github.msarhan.ummalqura.calendar.** { *; }
 
-# Keep annotation classes
--keep @interface javax.inject.** { *; }
--keep @interface dagger.** { *; }
--keep @interface androidx.room.** { *; }
+# Keep everything in Hijri calendar (adjust if using another package)
+-keep class com.github.eltohamy.materialhijricalendarview.** { *; }
+
+# If using kiziton/hijricalendar-view
+-keep class com.github.kizitonwose.calendar.** { *; }
+
+# Keep Kotlin Metadata (used for reflection and Compose)
+-keep class kotlin.Metadata { *; }
+
+# Preserve Compose functionality
+-keep class androidx.compose.** { *; }
+-keepclassmembers class androidx.compose.** { *; }
+-dontwarn androidx.compose.**
+
+
+# Keep Kotlin metadata for Compose
+-keepclassmembers class ** {
+    @kotlin.Metadata *;
+}
+
+# Prevent Compose class removal
+-keep class *Kt {
+    *;
+}
+
+# Optional: keep all annotations (useful for Room, Hilt, etc.)
+-keepattributes *Annotation*
+
+# Dagger Hilt
+-keep class dagger.hilt.** { *; }
+-keep interface dagger.hilt.** { *; }

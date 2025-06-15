@@ -20,7 +20,6 @@ import com.hazrat.common.BasicTopBarWithAction
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(

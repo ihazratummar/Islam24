@@ -13,8 +13,6 @@ import com.github.eltohamy.materialhijricalendarview.MaterialHijriCalendarView
 fun HijriCalendarHomeScreen(
 ) {
 
-
-
     val textColorRes = when {
         else -> MaterialTheme.colorScheme.onBackground.toArgb()
     }

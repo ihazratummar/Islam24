@@ -3,12 +3,9 @@ package com.hazrat.calendar
 import android.graphics.drawable.GradientDrawable
 import android.icu.util.IslamicCalendar
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import com.github.eltohamy.materialhijricalendarview.CalendarDay
 import com.github.eltohamy.materialhijricalendarview.DayViewDecorator
 import com.github.eltohamy.materialhijricalendarview.DayViewFacade
-import java.util.Calendar
-import java.util.Locale
 
 /**
  * @author Hazrat Ummar Shaikh

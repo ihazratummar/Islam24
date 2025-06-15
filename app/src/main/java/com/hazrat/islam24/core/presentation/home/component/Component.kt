@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -36,20 +36,20 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.withStyle
-import com.hazrat.ui.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.model.ui_text_model.benefitsOfRecitingDataList
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
 import com.hazrat.islam24.core.presentation.common.LocationOnCard
 import com.hazrat.islam24.core.presentation.home.HomeState
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.islam24.util.getSystemLanguage
+import com.hazrat.ui.R
 import com.hazrat.ui.theme.Hidaya
 import com.hazrat.ui.theme.Kitab
 import com.hazrat.ui.theme.Poppins
 import com.hazrat.ui.theme.Uthmani
 import com.hazrat.ui.theme.dimens
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
-import com.hazrat.islam24.util.getSystemLanguage
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -224,7 +224,7 @@ fun RamadanCard() {
     val currentDay = LocalDate.now()
     val targetDate = LocalDate.of(2025, 3, 2)
     val daysRemaining = ChronoUnit.DAYS.between(currentDay, targetDate)
-    val locale = LocalContext.current.resources.configuration.locales[0]
+    val locale = LocalConfiguration.current.locales[0]
     val formattedDaysRemaining = NumberFormat.getInstance(locale).format(daysRemaining)
     Card(
         modifier = Modifier
