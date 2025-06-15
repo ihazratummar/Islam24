@@ -50,11 +50,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.presentation.component.ButtonLoading
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.auth.presentation.component.OtpInputField
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 import com.hazrat.islam24.util.hapticFeedbacks
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

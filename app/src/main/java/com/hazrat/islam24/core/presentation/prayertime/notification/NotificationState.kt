@@ -1,7 +1,6 @@
 package com.hazrat.islam24.core.presentation.prayertime.notification
 
 import com.hazrat.islam24.core.presentation.prayertime.component.listOfAzan
-import com.hazrat.islam24.util.datastore.NotificationType
 
 data class NotificationState(
     val isFajrNotification: Boolean = false,

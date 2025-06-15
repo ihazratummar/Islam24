@@ -3,9 +3,6 @@ package com.hazrat.islam24.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedback
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.glance.GlanceId
@@ -27,8 +24,8 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.R
+import com.hazrat.ui.theme.dimens
+import com.hazrat.ui.R
 
 /**
  * @author Hazrat Ummar Shaikh

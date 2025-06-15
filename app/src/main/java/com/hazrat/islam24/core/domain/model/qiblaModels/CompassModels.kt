@@ -1,6 +1,6 @@
 package com.hazrat.islam24.core.domain.model.qiblaModels
 
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 
 data class CompassModels(
     val id: Int,

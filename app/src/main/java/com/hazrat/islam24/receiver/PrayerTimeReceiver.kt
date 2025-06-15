@@ -13,7 +13,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
-import com.hazrat.islam24.R
+import com.hazrat.datastore.NotificationType
+import com.hazrat.datastore.PrayerName
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.notification.MediaPlayerHelper
@@ -40,10 +42,8 @@ import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_TITLE_KEY
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
 import com.hazrat.islam24.util.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
-import com.hazrat.islam24.util.datastore.UserDataStore
-import com.hazrat.islam24.util.datastore.NotificationType
-import com.hazrat.islam24.util.datastore.PrayerName
 import com.hazrat.islam24.util.fetchPrayerTimeForNotification
+import com.hazrat.ui.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull

@@ -8,7 +8,6 @@ import com.hazrat.islam24.core.data.entity.LocationEntity
 import com.hazrat.islam24.core.data.error.LocationError
 import com.hazrat.islam24.core.domain.model.locationmodel.Address
 import com.hazrat.islam24.core.domain.model.locationmodel.LocationNameFinder
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.util.Constants.LOCATION_IQ_API_KEY
 import kotlinx.coroutines.Dispatchers
@@ -26,8 +25,7 @@ import kotlin.math.abs
 class LocationNameRepositoryImpl @Inject constructor(
     private val locationNameApi: LocationNameApi,
     private val locationRepository: LocationRepositoryImpl,
-    private val locationNameDao: LocationNameDao,
-    private val networkRepository: NetworkRepository
+    private val locationNameDao: LocationNameDao
 ) : LocationNameRepository {
 
     private val _locationName = MutableStateFlow<List<LocationDetailsEntity>>(emptyList())

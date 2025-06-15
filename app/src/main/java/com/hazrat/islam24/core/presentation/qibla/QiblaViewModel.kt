@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
@@ -15,7 +16,6 @@ import com.hazrat.islam24.sensor.CompassSensorQualifier
 import com.hazrat.islam24.sensor.MeasurableSensor
 import com.hazrat.islam24.sensor.RotationSensorQualifier
 import com.hazrat.islam24.service.LocationManager
-import com.hazrat.islam24.util.datastore.UserDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

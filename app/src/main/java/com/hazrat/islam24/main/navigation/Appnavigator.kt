@@ -36,7 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.authNavGraph
@@ -51,8 +51,8 @@ import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.al_quran.SurahScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
-import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
-import com.hazrat.islam24.core.presentation.calendar.GregorianCalendarScreen
+import com.hazrat.calendar.CalendarScreen
+import com.hazrat.calendar.CalendarViewModel
 import com.hazrat.islam24.core.presentation.haj_live.HajjLive
 import com.hazrat.islam24.core.presentation.haj_live.HajjLiveViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
@@ -71,7 +71,7 @@ import com.hazrat.islam24.main.navigation.MainRoute.BenifitsOfRecitingRoute
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -258,11 +258,8 @@ fun AppNavigator(
                 )
             }
             composable<MainRoute.CalendarScreen> {
-                val viewModel: CalendarViewModel = hiltViewModel()
-                val gregorianToHijriEntity by viewModel.gregorianToHijriEntity.collectAsState()
-                GregorianCalendarScreen(
-                    onBackClick = { navController.popBackStack() },
-                    gregorianToHijriEntity = gregorianToHijriEntity
+                CalendarScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
             composable<MainRoute.AthkarScreen> {

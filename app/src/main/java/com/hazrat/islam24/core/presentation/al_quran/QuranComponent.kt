@@ -45,8 +45,8 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.hazrat.islam24.R
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.R
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh

@@ -17,6 +17,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.datastore.NotificationType
+import com.hazrat.datastore.PrayerName
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.islam24.auth.presentation.profiledetails.UserEvent
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
@@ -33,9 +36,6 @@ import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.MyFileUtils.isFilePresent
 import com.hazrat.islam24.util.MyFileUtils.saveMp3File
 import com.hazrat.islam24.util.datastore.DataStorePreference
-import com.hazrat.islam24.util.datastore.NotificationType
-import com.hazrat.islam24.util.datastore.PrayerName
-import com.hazrat.islam24.util.datastore.UserDataStore
 import com.hazrat.islam24.util.downloader.Downloader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

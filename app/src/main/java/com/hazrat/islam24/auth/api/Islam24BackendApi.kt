@@ -17,11 +17,8 @@ import javax.inject.Singleton
  */
 
 @Singleton
-<<<<<<<< HEAD:app/src/main/java/com/hazrat/islam24/auth/api/RenderApi.kt
-interface RenderApi {
-========
+
 interface Islam24BackendApi {
->>>>>>>> origin:app/src/main/java/com/hazrat/islam24/auth/api/Islam24BackendApi.kt
     @POST("request_otp")
     suspend fun requestOtp(@Body body: RequestOtpBody): Response<RequestOtpResponse>
 

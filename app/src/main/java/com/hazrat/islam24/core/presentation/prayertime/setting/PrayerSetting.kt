@@ -14,13 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.common.BasicTopBar
 import com.hazrat.islam24.core.presentation.prayertime.component.JuristicSelectionDialog
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerCalculationDialog
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerSettingCard
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

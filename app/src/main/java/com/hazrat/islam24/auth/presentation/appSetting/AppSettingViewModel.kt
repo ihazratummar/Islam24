@@ -5,17 +5,19 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.hazrat.datastore.AppDataStore
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.util.changeLanguage
-import com.hazrat.islam24.util.datastore.AppDataStore
 import com.hazrat.islam24.util.datastore.DataStorePreference
-import com.hazrat.islam24.util.datastore.UserDataStore
+import com.hazrat.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,9 +28,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.core.net.toUri
-import com.google.android.play.core.review.ReviewManagerFactory
-import com.hazrat.islam24.R
 
 /**
  * @author Hazrat Ummar Shaikh

@@ -32,6 +32,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -49,7 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
@@ -58,7 +59,7 @@ import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
 import com.hazrat.islam24.core.presentation.common.BackIcon
 import com.hazrat.islam24.main.mainActivity.MainActivity
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 import com.hazrat.islam24.util.Languages
 import com.hazrat.islam24.util.hapticFeedbacks
 import kotlinx.coroutines.launch
@@ -76,8 +77,6 @@ fun AppSettingScreen(
     isHapticFeedback: Boolean = false,
     onPolicyClick: () -> Unit = {},
     onBackClick: () -> Unit,
-    profileEvent: (ProfileEvent) -> Unit,
-    profileState: ProfileState,
 ) {
 
     val context = LocalContext.current
@@ -119,6 +118,7 @@ fun AppSettingScreen(
         },
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 modifier = Modifier.padding(top = dimens.size30),
                 title = {
                     Text(

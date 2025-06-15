@@ -119,8 +119,6 @@ fun NavGraphBuilder.authNavGraph(
             val authState by appSettingViewModel.authState.observeAsState(AuthState.Loading)
             val appSettingEvent = appSettingViewModel::onAppSettingEvent
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
-            val profileEvent = profileViewModel::onEvent
-            val profileState by profileViewModel.profileState.collectAsState()
             AppSettingScreen(
                 authState = authState,
                 appSettingEvent = appSettingEvent,
@@ -130,8 +128,6 @@ fun NavGraphBuilder.authNavGraph(
                     navController.navigate(PoliciesScreenRoute)
                 },
                 onBackClick = {navController.navigateUp()},
-                profileEvent = profileEvent,
-                profileState = profileState
             )
         }
         composable<ProfileDetailsScreen> {

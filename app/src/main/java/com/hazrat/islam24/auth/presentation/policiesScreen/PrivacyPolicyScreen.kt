@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.hazrat.islam24.core.presentation.common.BackIcon
 import com.hazrat.islam24.core.presentation.common.WebViewScreen
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh

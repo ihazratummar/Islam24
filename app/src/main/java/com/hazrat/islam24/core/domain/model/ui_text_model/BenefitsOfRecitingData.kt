@@ -1,7 +1,7 @@
 package com.hazrat.islam24.core.domain.model.ui_text_model
 
 import androidx.annotation.StringRes
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 
 data class BenefitsOfRecitingData(
     val number: Int,
