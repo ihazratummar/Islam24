@@ -15,4 +15,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "Islam-24"
 include(":app")
- 
+include(":feature:calendar")
+include(":core:ui")
+include(":feature:common")
+include(":core:di")
+include(":core:utils")
+include(":core:datastore")
+include(":domain:usecase")

@@ -28,11 +28,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.hazrat.islam24.R
-import com.hazrat.islam24.core.presentation.common.BasicTopBarWithAction
+import com.hazrat.common.BasicTopBarWithAction
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.presentation.zakat.ZakatEvent
 import com.hazrat.islam24.core.presentation.zakat.ZakatState
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.getDateFromLong
 
 /**

@@ -28,8 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.hazrat.islam24.R
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.R
+import com.hazrat.ui.theme.dimens
 
 
 @Composable

@@ -1,8 +1,6 @@
 package com.hazrat.islam24.util.downloader
 
-import android.app.DownloadManager
 import android.content.Context
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.Log
 import com.hazrat.islam24.util.Constants.DOWNLOADED_AZAN_FOLDER

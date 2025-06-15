@@ -9,9 +9,8 @@ import android.os.Build
 import android.os.LocaleList
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import java.util.Locale
 

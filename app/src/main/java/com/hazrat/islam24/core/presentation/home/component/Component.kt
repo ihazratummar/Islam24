@@ -2,7 +2,6 @@ package com.hazrat.islam24.core.presentation.home.component
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -38,18 +36,18 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.withStyle
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.model.ui_text_model.benefitsOfRecitingDataList
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
 import com.hazrat.islam24.core.presentation.common.LocationOnCard
 import com.hazrat.islam24.core.presentation.home.HomeState
-import com.hazrat.islam24.ui.theme.Hidaya
-import com.hazrat.islam24.ui.theme.Kitab
-import com.hazrat.islam24.ui.theme.Poppins
-import com.hazrat.islam24.ui.theme.Uthmani
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.Hidaya
+import com.hazrat.ui.theme.Kitab
+import com.hazrat.ui.theme.Poppins
+import com.hazrat.ui.theme.Uthmani
+import com.hazrat.ui.theme.dimens
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.getSystemLanguage
 import java.text.NumberFormat

@@ -22,27 +22,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Singleton
-    @Provides
-    @Named(APP_DATA_STORE)
-    fun provideDataStore(
-        @ApplicationContext context: Context
-    ): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create {
-            context.preferencesDataStoreFile(APP_DATA_STORE)
-        }
-    }
-
-    @Singleton
-    @Provides
-    @Named(USER_DATA_SORE)
-    fun provideUserDataStore(
-        @ApplicationContext context: Context
-    ): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create {
-            context.preferencesDataStoreFile(USER_DATA_SORE)
-        }
-    }
 
     @Singleton
     @Provides

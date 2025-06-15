@@ -39,7 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
@@ -50,7 +50,7 @@ import com.hazrat.islam24.main.navigation.nvgraph.DhuhrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.FajrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.IshaSetting
 import com.hazrat.islam24.main.navigation.nvgraph.MaghribSetting
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText

@@ -24,10 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.JuristicMethodDetails
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

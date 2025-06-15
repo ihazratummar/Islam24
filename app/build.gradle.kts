@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.google.devtools.ksp)
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
@@ -21,8 +21,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 35
-        versionCode = 92
-        versionName = "2.3.4"
+        versionCode = 93
+        versionName = "2.3.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -79,6 +79,13 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":feature:calendar"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:di"))
+    implementation(project(":core:datastore"))
+    implementation(project(":feature:common"))
+    implementation(project(":feature:calendar"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -144,6 +151,9 @@ dependencies {
     //Datastore
     implementation (libs.androidx.datastore.preferences)
 
+    //dataStorePreference
+    implementation(libs.androidx.preference.ktx)
+
     //Compose Foundation
     implementation (libs.androidx.foundation)
 
@@ -155,7 +165,6 @@ dependencies {
     implementation (libs.androidx.paging.compose)
 
     //Room
-
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
@@ -186,9 +195,6 @@ dependencies {
     implementation(libs.review)
     implementation(libs.review.ktx)
 
-    //dataStorePreference
-    implementation(libs.androidx.preference.ktx)
-
     //Cloudy for blurring effect
     implementation(libs.cloudy)
 
@@ -211,7 +217,5 @@ dependencies {
     implementation (libs.maps.utils.ktx)
 
     implementation (libs.chromecast.sender)
-
-
 
 }

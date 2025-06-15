@@ -3,7 +3,7 @@ package com.hazrat.islam24.core.data.repository
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.entity.LocationEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity

@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.hazrat.islam24.ui.theme.Islam24Theme
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.Islam24Theme
+import com.hazrat.ui.theme.dimens
 
 @Composable
 fun ContinueButton(

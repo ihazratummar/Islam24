@@ -35,7 +35,7 @@ import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
 import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
-import com.hazrat.islam24.ui.theme.Islam24Theme
+import com.hazrat.ui.theme.Islam24Theme
 import com.hazrat.islam24.util.LocaleContextWrapper
 import com.hazrat.islam24.util.LocaleHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -121,11 +121,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
-            val languageCode by mainViewModel.languageCode.collectAsStateWithLifecycle()
-            val context = LocalContext.current
-            val updateContext = remember(languageCode) {
-                LocaleContextWrapper.wrap(context = context, languageCode = languageCode.name)
-            }
+
             Islam24Theme(
                 darkTheme = isDarkModeEnabled
             ) {

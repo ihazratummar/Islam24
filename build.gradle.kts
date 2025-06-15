@@ -7,13 +7,13 @@ plugins {
     alias(libs.plugins.android.room) apply false
     alias(libs.plugins.google.devtools.ksp) apply false
     alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.kotlin.compose) apply false
 }
 
 buildscript {
     dependencies {
         classpath(libs.google.services)
         classpath(libs.onesignal.gradle.plugin)
-        classpath(libs.compose.compiler.gradle.plugin)
         classpath(libs.hilt.android.gradle.plugin)
         classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
     }
