@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+# Keep annotation classes
+-keep @interface javax.inject.** { *; }
+-keep @interface dagger.** { *; }
+-keep @interface androidx.room.** { *; }
