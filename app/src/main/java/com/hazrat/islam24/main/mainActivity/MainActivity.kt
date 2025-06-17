@@ -10,7 +10,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
+import androidx.glance.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
@@ -33,6 +35,7 @@ import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
 import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
+import com.hazrat.islam24.util.LocaleContextWrapper
 import com.hazrat.islam24.util.LocaleHelper
 import com.hazrat.ui.theme.Islam24Theme
 import dagger.hilt.android.AndroidEntryPoint
@@ -120,9 +123,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
+            val languageCode by mainViewModel.languageCode.collectAsStateWithLifecycle()
+            val updatedContext = remember(languageCode) {
+                LocaleContextWrapper.wrap(this, languageCode.toString())
+            }
 
             Islam24Theme(
-                darkTheme = isDarkModeEnabled
+                darkTheme = isDarkModeEnabled,
+                updatedContext = updatedContext
             ) {
                 rememberImageLoader(this)
                 NavGraph(

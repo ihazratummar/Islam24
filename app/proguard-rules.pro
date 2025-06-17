@@ -124,3 +124,7 @@
 -keep class com.github.msarhan.ummalqura.calendar.** { *; }
 -keep class com.github.eltohamy.materialhijricalendarview.** { *; }
 -keep class com.github.kizitonwose.calendar.** { *; }
+
+-keep class com.hazrat.ui.theme.Dimens.**{ *; }
+-keep class com.hazrat.ui.theme.ThemeKt.**{ *; }
+-keep class com.hazrat.ui.theme.TypeKt.**{ *; }

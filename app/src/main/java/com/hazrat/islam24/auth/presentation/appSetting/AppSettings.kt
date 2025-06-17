@@ -80,7 +80,7 @@ fun AppSettingScreen(
 ) {
 
     val context = LocalContext.current
-    val activity: Activity = LocalActivity.current as MainActivity
+    val activity = LocalActivity.current as? MainActivity
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -142,7 +142,9 @@ fun AppSettingScreen(
                 leadingIcon = painterResource(id = R.drawable.like),
                 tabName = stringResource(id = R.string.rate),
                 onClick = {
-                    appSettingEvent(AppSettingEvent.RateUs(activity))
+                    activity?.let {
+                        appSettingEvent(AppSettingEvent.RateUs(activity))
+                    }
                 },
                 trailingIcon = painterResource(id = R.drawable.chevron_right)
             ),

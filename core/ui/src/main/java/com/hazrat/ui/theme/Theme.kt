@@ -1,6 +1,7 @@
 package com.hazrat.ui.theme
 
 import android.app.Activity
+import android.content.ContextWrapper
 import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
@@ -95,12 +96,12 @@ private val darkScheme = darkColorScheme(
 )
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun Islam24Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     activity: Activity = LocalActivity.current as Activity,
+    updatedContext: ContextWrapper,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -143,7 +144,10 @@ fun Islam24Theme(
             typography = ExpandedTypography
         }
     }
-    AppUtils(appDimens = appDimens, ){
+    AppUtils(
+        appDimens = appDimens,
+        updatedContext = updatedContext
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = typography,

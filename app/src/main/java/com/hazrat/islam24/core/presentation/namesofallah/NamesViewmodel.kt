@@ -32,8 +32,7 @@ class NamesViewmodel @Inject constructor(
     private val _names = MutableStateFlow<List<NameEntity>>(emptyList())
     val names = _names.asStateFlow()
 
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
-        networkRepository.networkStatus
+    private val networkStatus: StateFlow<ConnectivityObserver.Status> = networkRepository.networkStatus
 
     init {
         observeNetworkStatus()
