@@ -1,15 +1,14 @@
 package com.hazrat.islam24.auth.presentation.signup
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.model.UserData
+import com.hazrat.islam24.auth.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -22,27 +21,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SingupViewModel @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val fireStore: FirebaseFirestore
+    @ApplicationContext private val context: Context,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
-    private val _authState = MutableLiveData<AuthState>()
-    val authState: LiveData<AuthState> = _authState
+
+    val authState: LiveData<AuthState> = profileRepository.authState
 
     private val _state = MutableStateFlow(SingupState())
     val state: StateFlow<SingupState> = _state
 
 
     init {
-        checkAuthStatus()
+        profileRepository.checkAuthStatus()
     }
 
-    private fun checkAuthStatus() {
-        if (auth.currentUser == null) {
-            _authState.value = AuthState.Unauthenticated
-        } else {
-            _authState.value = AuthState.Authenticated
-        }
-    }
 
     private fun isFormValid(): Boolean {
         return _state.value.name.isNotEmpty() &&
@@ -138,47 +130,26 @@ class SingupViewModel @Inject constructor(
             }
 
             SingupEvent.Refresh -> {
-                checkAuthStatus()
+                profileRepository.checkAuthStatus()
             }
         }
     }
 
     private suspend fun signup(name: String, email: String, password: String, confirmPassword: String) {
         if (name.isEmpty() && email.isEmpty() && password.isEmpty() && confirmPassword.isEmpty()) {
-            _authState.value = AuthState.Error("Please fill all fields")
+            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
-        _authState.value = AuthState.Loading
-        delay(1000L)
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val user = auth.currentUser
-                    val userId = auth.currentUser?.uid ?: ""
-                    val userDate = UserData(
-                        userId = user?.uid?:"",
-                        fullName = name,
-                        email = email
-                    )
-                    fireStore.collection("user").document(userId)
-                        .set(userDate)
-                        .addOnCompleteListener {
-                            _authState.value = AuthState.Authenticated
-                        }
-                        .addOnFailureListener { e ->
-                            viewModelScope.launch {
-                                _authState.value = AuthState.Loading
-                                delay(1000L)
-                                _authState.value = AuthState.Error(e.message.toString())
-                            }
-                        }
-                } else {
-                    viewModelScope.launch {
-                        _authState.value = AuthState.Loading
-                        delay(1000L)
-                        _authState.value = AuthState.Error(it.exception?.message.toString())
-                    }
-                }
-            }
+
+        val result =  profileRepository.signup(
+            name = name,
+            email = email,
+            password = password, confirmPassword = confirmPassword
+        )
+        if (result){
+            Toast.makeText(context, "Signup successful", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(context, "Signup failed", Toast.LENGTH_SHORT).show()
+        }
     }
 }

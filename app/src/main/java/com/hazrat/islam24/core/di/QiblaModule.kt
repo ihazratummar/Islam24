@@ -1,11 +1,13 @@
 package com.hazrat.islam24.core.di
 
-import android.content.Context
-import android.hardware.SensorManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.hazrat.datastore.UserDataStore
+import com.hazrat.islam24.core.data.repository.QiblaRepositoryImpl
+import com.hazrat.islam24.core.domain.repository.QiblaRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -13,11 +15,19 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object QiblaModule {
 
-
     @Provides
     @Singleton
-    fun provideSensorManager(@ApplicationContext context: Context): SensorManager {
-        return context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    fun provideQiblaRepository(
+        userDataStore: UserDataStore,
+        firebaseAuth: FirebaseAuth,
+        firebaseFirestore: FirebaseFirestore
+    ): QiblaRepository {
+        return QiblaRepositoryImpl(
+            userDataStore = userDataStore,
+            firebaseAuth = firebaseAuth,
+            firebaseFirestore = firebaseFirestore
+        )
     }
+
 
 }

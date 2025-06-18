@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.hazrat.islam24.core.data.entity.NameEntity
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -25,5 +26,5 @@ interface NameDao {
      * @return A list of NameEntity objects representing all the names stored in the database.
      */
     @Query("SELECT * FROM  names")
-    suspend fun getAllNames(): List<NameEntity>
+    fun getAllNames(): Flow<List<NameEntity>>
 }

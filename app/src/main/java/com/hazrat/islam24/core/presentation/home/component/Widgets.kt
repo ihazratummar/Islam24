@@ -4,18 +4,20 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,142 +36,111 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.hazrat.islam24.R
-import com.hazrat.islam24.main.navigation.AthkarScreen
-import com.hazrat.islam24.main.navigation.CalendarScreen
-import com.hazrat.islam24.main.navigation.NamesOfAllahScreen
-import com.hazrat.islam24.main.navigation.QiblaDirectionScreen
-import com.hazrat.islam24.main.navigation.nvgraph.Zakat
-import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.Dimens
-import okhttp3.internal.immutableListOf
+import com.hazrat.ui.R
+import com.hazrat.islam24.main.navigation.MainRoute
+import com.hazrat.ui.theme.dimens
+
 
 @Composable
-fun LazyVerticalGridCardIcons(navController: NavController) {
+fun LazyHorizontalManyIcons(
+    onClick: (HomePageNavIcons) -> Unit
+) {
 
-    val icons = immutableListOf(
-        R.drawable.allah_logo,
-        R.drawable.calendar,
-        R.drawable.athkar,
-        R.drawable.qibla,
-        R.drawable.zakat
+
+    val navIcons = listOf(
+        HomePageNavIcons.AsmaUlHusna,
+        HomePageNavIcons.Calendar,
+        HomePageNavIcons.Athkar,
+        HomePageNavIcons.Qibla,
+        HomePageNavIcons.Zakat,
+        HomePageNavIcons.HajjLive,
     )
 
-    val names = immutableListOf(
-        stringResource(R.string.names),
-        stringResource(R.string.calendar),
-        stringResource(R.string.athkar),
-        stringResource(id = R.string.qibla),
-        stringResource(id = R.string.zakat)
-    )
-
-    val onClickLabel = immutableListOf(
-        stringResource(R.string.names),
-        stringResource(R.string.calendar),
-        stringResource(R.string.athkar),
-        stringResource(id = R.string.qibla),
-        stringResource(id = R.string.zakat)
-    )
-
-    Box(modifier = Modifier
-        .height(dimens.size200)
-        .fillMaxWidth()) {
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth(),
-            columns = GridCells.Fixed(4),
-            horizontalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            items(names.size) { index ->
-                Column(
-                    modifier = Modifier.padding(vertical = dimens.size10),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .width(dimens.size60)
-                            .height(dimens.size60)
-                            .padding(dimens.size1)
-                            .clickable(
-                                onClick = {
-                                    when (index) {
-                                        0 -> navController.navigate(NamesOfAllahScreen) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = false
-                                        }
-
-                                        1 -> navController.navigate(CalendarScreen) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-
-                                        2 -> navController.navigate(AthkarScreen) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-
-                                        3 -> navController.navigate(QiblaDirectionScreen) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                        4-> navController.navigate(Zakat){
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    }
-                                },
-                                onClickLabel = onClickLabel[index]
-                            )
-                            .clip(RoundedCornerShape(dimens.size8)),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer
-                        )
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = icons[index]),
-                            contentDescription = null,
-                            tint = Color.Unspecified,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(dimens.size5)
-                        )
-                    }
-                    Text(
-                        names[index],
-                        color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.labelSmall
+            navIcons.forEach {
+                item {
+                    HomeWidgetsIcons(
+                        iconData = it,
+                        onClick = { onClick(it) }
                     )
                 }
-
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun HomeWidgetsIcons(
+    iconData: HomePageNavIcons,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isSystemInDarkTheme()) {
+        iconData.backgroundColor.dark
+    } else {
+        iconData.backgroundColor.light
+    }
 
-fun Modifier.shimmerEffect(): Modifier = composed {
+    Column(
+        modifier = Modifier.padding(vertical = dimens.size10, horizontal = dimens.size10),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Card(
+            modifier = Modifier
+                .size(dimens.size80)
+                .padding(dimens.size1)
+                .combinedClickable(
+                    onClick = { onClick() },
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
+                .clip(CircleShape),
+            colors = CardDefaults.cardColors(
+                containerColor = backgroundColor
+            )
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(iconData.icons),
+                    contentDescription = iconData.name.toString(),
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .size(dimens.size60)
+                        .padding(dimens.size1)
+                )
+            }
+        }
+        Text(
+            text = stringResource(iconData.name),
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+
+fun Modifier.shimmerEffect(
+    animationSpeed: Int = 3000
+): Modifier = composed {
     var size by remember {
         mutableStateOf(IntSize.Zero)
     }
@@ -178,22 +149,22 @@ fun Modifier.shimmerEffect(): Modifier = composed {
         initialValue = -2 * size.width.toFloat(),
         targetValue = 2 * size.width.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(1000)
+            animation = tween(animationSpeed)
         ), label = ""
     )
     background(
         brush = Brush.linearGradient(
             colors = listOf(
-                Color(0xD71F581F),
-                Color(0xFA277006),
-                Color(0xD71F581F),
+                MaterialTheme.colorScheme.secondaryContainer,
+                MaterialTheme.colorScheme.primary,
+                MaterialTheme.colorScheme.secondaryContainer,
             ),
             start = Offset(startOffsetX, 0F),
             end = Offset(
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(dimens.size30)
+        shape = RoundedCornerShape(dimens.size10)
     ).onGloballyPositioned {
         size = it.size
     }
@@ -227,3 +198,79 @@ fun Modifier.generalShimmerEffect(): Modifier = composed {
         size = it.size
     }
 }
+
+
+sealed class HomePageNavIcons(
+    val icons: Int,
+    val name: Int,
+    val route: MainRoute,
+    val backgroundColor: AppColor
+) {
+    data object AsmaUlHusna :
+        HomePageNavIcons(
+            icons = R.drawable.allah,
+            name = R.string.names,
+            route = MainRoute.NamesOfAllahScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFE0F2F7),
+                light = Color(0xFFA8D4FD)
+            ) // Light blue shades
+        )
+
+    data object Calendar :
+        HomePageNavIcons(
+            icons = R.drawable.calendar,
+            name = R.string.calendar,
+            route = MainRoute.CalendarScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFF8EBD0),
+                light = Color(0xFFFAE194)
+            ) // Yellow shades
+        )
+
+    data object Athkar :
+        HomePageNavIcons(
+            icons = R.drawable.zikir,
+            name = R.string.athkar,
+            route = MainRoute.AthkarScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFDEFFDF),
+                light = Color(0xFFCFFCAE)
+            ) // Green shades
+        )
+
+    data object Qibla :
+        HomePageNavIcons(
+            icons = R.drawable.kaba,
+            name = R.string.qibla,
+            route = MainRoute.QiblaDirectionScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFCFEDFF),
+                light = Color(0xFFC6B8FF)
+            ) // Light blue shades
+        )
+
+    data object Zakat :
+        HomePageNavIcons(
+            icons = R.drawable.zakat,
+            name = R.string.zakat,
+            route = MainRoute.ZakatScreen,
+            backgroundColor = AppColor(
+                dark = Color(0xFFFFE5BE),
+                light = Color(0xFFE7B987)
+            ) // Orange shades
+        )
+
+    data object HajjLive :
+        HomePageNavIcons(
+            icons = R.drawable.hajj_live,
+            name = R.string.hajj_live,
+            route = MainRoute.HajjLiveScreenRoute,
+            backgroundColor = AppColor(
+                dark = Color(0xFFC4FDB1),
+                light = Color(0xFFFAFD95)
+            ) // Orange shades
+        )
+}
+
+data class AppColor(val light: Color, val dark: Color)

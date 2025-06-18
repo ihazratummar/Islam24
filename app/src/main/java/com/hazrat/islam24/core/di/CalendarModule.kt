@@ -6,12 +6,12 @@ import androidx.room.Room
 import com.hazrat.islam24.core.data.dao.GregorianToHijriDao
 import com.hazrat.islam24.core.data.dao.HijriCalendarDao
 import com.hazrat.islam24.core.data.database.CalendarDatabase
-import com.hazrat.islam24.core.data.manager.GregorianToHijriRepositoryImpl
-import com.hazrat.islam24.core.data.manager.HijriCalendarRepositoryImpl
+import com.hazrat.islam24.core.data.repository.GregorianToHijriRepositoryImpl
+import com.hazrat.islam24.core.data.repository.HijriCalendarRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
 import com.hazrat.islam24.core.domain.repository.HijriCalendarRepository
-import com.hazrat.islam24.core.network.GregorianToHijriApi
-import com.hazrat.islam24.core.network.HijriCalendarApi
+import com.hazrat.islam24.core.remote.api.GregorianToHijriApi
+import com.hazrat.islam24.core.remote.api.HijriCalendarApi
 import com.hazrat.islam24.util.Constants.HIJRI_CALENDAR_URL
 import dagger.Module
 import dagger.Provides

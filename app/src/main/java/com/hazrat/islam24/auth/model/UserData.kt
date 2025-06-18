@@ -5,5 +5,8 @@ data class UserData(
     val fullName: String? ="",
     val email: String? = "",
     val profilePictureUrl: String? = "",
-    val bio: String ? = ""
+    val bio: String ? = "",
+    val lastReadSurah: Int? = 0,
+    val lastReadAyah: Int? = 0,
+    val compassModelId : Int ? = 1
 )

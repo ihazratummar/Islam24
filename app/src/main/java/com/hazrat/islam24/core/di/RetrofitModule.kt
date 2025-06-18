@@ -1,18 +1,27 @@
 package com.hazrat.islam24.core.di
 
-import com.hazrat.islam24.core.network.GregorianToHijriApi
-import com.hazrat.islam24.core.network.LocationNameApi
-import com.hazrat.islam24.core.network.NamesApi
-import com.hazrat.islam24.core.network.PrayerTimeApi
+import com.hazrat.islam24.core.remote.api.AthkarApiCall
+import com.hazrat.islam24.core.remote.api.GoogleCloudConsoleApi
+import com.hazrat.islam24.core.remote.api.GregorianToHijriApi
+import com.hazrat.islam24.core.remote.api.LocationNameApi
+import com.hazrat.islam24.core.remote.api.NamesApi
+import com.hazrat.islam24.core.remote.api.PrayerTimeApi
+import com.hazrat.islam24.core.remote.api.QuranApi
+import com.hazrat.islam24.util.Constants.ATHKAR_BASE_URL_NAME
 import com.hazrat.islam24.util.Constants.BASE_URL
 import com.hazrat.islam24.util.Constants.BASE_URL_NAME
+import com.hazrat.islam24.util.Constants.GOOGLE_COULD_BASE_URL
 import com.hazrat.islam24.util.Constants.GTH_BASE_URL
-import com.hazrat.islam24.util.Constants.LOCATION_BASE_URL
+import com.hazrat.islam24.util.Constants.LOCATION_IQ_BASE_URL
+import com.hazrat.islam24.util.Constants.QURAN_AR_BASE_URL
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,7 +34,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
-
     private val logging = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
     }
@@ -34,13 +42,17 @@ object RetrofitModule {
         var response = chain.proceed(chain.request())
         var tryCount = 0
         val maxLimit = 3 // Number of retries
+
         while (!response.isSuccessful && tryCount < maxLimit) {
             tryCount++
+            response.close() // Close the previous response before retrying
             response = chain.proceed(chain.request())
         }
         response
     }
 
+    val json = Json { ignoreUnknownKeys = true }
+    val contentType = "application/json".toMediaType()
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(logging)
         .addInterceptor(retryInterceptor)
@@ -49,32 +61,38 @@ object RetrofitModule {
         .readTimeout(5, TimeUnit.MINUTES)
         .build()
 
-
-    //Prayer Time Api
     @Singleton
     @Provides
     fun providePrayerApi(): PrayerTimeApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
             .create(PrayerTimeApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideGoogleCloudConsoleApi() : GoogleCloudConsoleApi {
+        return Retrofit.Builder()
+            .baseUrl(GOOGLE_COULD_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+            .create(GoogleCloudConsoleApi::class.java)
+    }
 
-    //LocationApi Name
     @Singleton
     @Provides
     fun provideLocationNameApi(): LocationNameApi {
         return Retrofit.Builder()
-            .baseUrl(LOCATION_BASE_URL)
+            .baseUrl(LOCATION_IQ_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(LocationNameApi::class.java)
     }
-
 
     @Singleton
     @Provides
@@ -87,7 +105,6 @@ object RetrofitModule {
             .create(NamesApi::class.java)
     }
 
-
     @Singleton
     @Provides
     fun provideGregorianToHijriApi(): GregorianToHijriApi {
@@ -99,4 +116,25 @@ object RetrofitModule {
             .create(GregorianToHijriApi::class.java)
     }
 
+    @Singleton
+    @Provides
+    fun provideAthkarApi(): AthkarApiCall {
+        return Retrofit.Builder()
+            .baseUrl(ATHKAR_BASE_URL_NAME)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AthkarApiCall::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideQuranApi(): QuranApi {
+        return Retrofit.Builder()
+            .baseUrl(QURAN_AR_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(QuranApi::class.java)
+    }
 }

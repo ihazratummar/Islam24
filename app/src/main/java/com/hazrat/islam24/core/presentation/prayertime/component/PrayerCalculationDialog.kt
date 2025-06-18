@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,10 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.CalculationMethodDetails
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.prayerMethods
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +43,7 @@ fun PrayerCalculationDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier.fillMaxHeight(),
         shape = MaterialTheme.shapes.medium,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     ) {
         LazyColumn(
@@ -51,7 +52,7 @@ fun PrayerCalculationDialog(
             item {
                 Text(
                     text = stringResource(id = R.string.prayer_times),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(top = dimens.size30)
                 )
@@ -59,14 +60,13 @@ fun PrayerCalculationDialog(
             item {
                 Spacer(modifier = Modifier.height(dimens.size10))
             }
-            items(prayerMethods.size) { index ->
-                val method = prayerMethods[index]
+            items(prayerMethods) { methods ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = dimens.size15)
                         .clickable {
-                            onMethodSelected(method)
+                            onMethodSelected(methods)
                             onDismiss()
                         },
                     colors = CardDefaults.cardColors(Color.Transparent),
@@ -80,9 +80,9 @@ fun PrayerCalculationDialog(
                         horizontalArrangement = Arrangement.Start
                     ) {
                         Text(
-                            text = method.name,
+                            text = methods.name,
                             color = MaterialTheme.colorScheme.onSurface,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(start = dimens.size10)
                         )
                     }

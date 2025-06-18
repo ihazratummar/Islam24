@@ -2,15 +2,15 @@ package com.hazrat.islam24.core.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "prayer_times")
+@Entity(
+    tableName = "prayer_times")
 data class PrayerTimeEntity(
-    @PrimaryKey val day: Int,
-
+    val day: Int,
     @ColumnInfo("Fajr Time")
     val fajrTime: Long,
-
     @ColumnInfo("Sunrise Time")
     val sunriseTime: Long,
     @ColumnInfo("Dhuhr Time")
@@ -34,7 +34,7 @@ data class PrayerTimeEntity(
     @ColumnInfo("Readable Date")
     val readableDate: String,
     @ColumnInfo("GregorianDate")
-    val gregorianDate: String,
+    @PrimaryKey val gregorianDate: String,
     @ColumnInfo("GregorianDay")
     val gregorianDay: String,
     @ColumnInfo("GregorianWeekDay")
@@ -45,21 +45,21 @@ data class PrayerTimeEntity(
     @ColumnInfo("HijriDate")
     val hijriDate: String,
     @ColumnInfo("HijriDay")
-    val hijriDay: String,
+    val hijriDay: Int,
     @ColumnInfo("HijriWeekDayEn")
     val hijriWeekdayEn: String,
     @ColumnInfo("HijriWeekDayAr")
     val hijriWeekdayEr: String,
     val hijriMonthAr: String,
     val hijriMonthEn: String,
-    val hijriMonthNumber:Int,
-    val hijriYear: String,
+    val hijriMonthNumber: Int,
+    val hijriYear: Int,
     val hijriab: String,
     val timezone: String,
     val methodId: Int,
     val methodName: String?,
-    val methodFajrParam: Int,
-    val methodIshaParam: Int,
+    val methodFajrParam: Double,
+    val methodIshaParam: Double,
     val latitudeAdjustmentMethod: String,
     val midnightMode: String,
     val school: String

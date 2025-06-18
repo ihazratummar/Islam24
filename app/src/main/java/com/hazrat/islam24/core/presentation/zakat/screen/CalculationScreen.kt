@@ -18,7 +18,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -29,10 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -48,9 +44,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.hazrat.islam24.R
+import com.hazrat.common.TopBarWithTwoAction
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.presentation.zakat.ZakatEvent
 import com.hazrat.islam24.core.presentation.zakat.ZakatState
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -71,57 +69,39 @@ fun CalculationScreen(
     onSaveClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.zakat_calculator)) },
-                actions = {
-                    TextButton(
-                        onClick = {
-                            zakatEvent(ZakatEvent.SaveZakat)
-                            onSaveClick()
-                            zakatEvent(ZakatEvent.ResetAllState)
-                            Toast.makeText(context,
-                                context.getString(R.string.done), Toast.LENGTH_SHORT).show()
-                        },
-                        enabled = zakatState.money != "0.0" || zakatState.gold != "0.0" ||
-                                zakatState.silver != "0.0" || zakatState.tradeAmount != "0.0"
-                                || zakatState.monthCost != "0.0" || zakatState.debt != "0.0"
-                    ) {
-                        Text(text = "Save")
-                    }
-                    IconButton(
-                        onClick = {
-                            zakatEvent(ZakatEvent.ResetAllState)
-                        }
-                    ) {
-                        Icon(imageVector = Icons.Default.Refresh, contentDescription = null)
-                    }
+
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Spacer(Modifier.height(dimens.size40))
+            TopBarWithTwoAction(
+                topBarTitle = stringResource(R.string.zakat_calculator),
+                onBackClick = { onBackClick.invoke() },
+                firstActionIcon = painterResource(R.drawable.save),
+                secondActionIcon = painterResource(R.drawable.refresh),
+                isFirstActionEnabled = zakatState.money != "0.0" || zakatState.gold != "0.0" ||
+                        zakatState.silver != "0.0" || zakatState.tradeAmount != "0.0"
+                        || zakatState.monthCost != "0.0" || zakatState.debt != "0.0",
+                onFirstActionClick = {
+                    zakatEvent(ZakatEvent.SaveZakat)
+                    onSaveClick()
+                    zakatEvent(ZakatEvent.ResetAllState)
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.done), Toast.LENGTH_SHORT
+                    ).show()
                 },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onBackClick()
-                            zakatEvent(ZakatEvent.ResetAllState)
-                        }
-                    ) {
-                        Icon(painter = painterResource(id = R.drawable.backicon), contentDescription = "Back")
-                    }
+                onSecondActionClick = {
+                    zakatEvent(ZakatEvent.ResetAllState)
                 }
             )
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-        ) {
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(10.dp)
-                    .align(Alignment.TopCenter)
             ) {
                 item {
                     CalculateItems(
@@ -165,34 +145,35 @@ fun CalculationScreen(
                     )
                 }
             }
+        }
 
-            BottomAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .align(Alignment.BottomCenter)
+        BottomAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .align(Alignment.BottomCenter),
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    BottomBarItem(
-                        text = stringResource(R.string.nisab),
-                        amount = zakatState.nisabAmount
-                    )
-                    BottomBarItem(
-                        text = stringResource(R.string.total_asset1),
-                        amount = "${zakatState.totalAsset}"
-                    )
-                    BottomBarItem(
-                        text = stringResource(R.string.zakat_amount1),
-                        amount = "${zakatState.zakatAmount}"
-                    )
-                }
+                BottomBarItem(
+                    text = stringResource(R.string.nisab),
+                    amount = zakatState.nisabAmount
+                )
+                BottomBarItem(
+                    text = stringResource(R.string.total_asset1),
+                    amount = "${zakatState.totalAsset}"
+                )
+                BottomBarItem(
+                    text = stringResource(R.string.zakat_amount1),
+                    amount = "${zakatState.zakatAmount}"
+                )
             }
         }
     }
-
     if (zakatState.isMoneyDialogOpen) {
         CalculationItemDialogs(
             onDismiss = { zakatEvent(ZakatEvent.OpenMoneyDialog) },
@@ -299,8 +280,6 @@ fun CalculationScreen(
             }
         )
     }
-
-
 }
 
 @Composable
@@ -375,7 +354,7 @@ fun CalculateItems(
                 onClick()
             },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
         Row(
@@ -397,13 +376,12 @@ fun CalculateItems(
 @Composable
 private fun BottomBarItem(
     text: String,
-    onClick: () -> Unit = {},
     amount: String = "0.0"
 ) {
     Card(
         modifier = Modifier.padding(vertical = 1.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = Color.Transparent
         ),
         shape = RoundedCornerShape(2.dp)
     ) {

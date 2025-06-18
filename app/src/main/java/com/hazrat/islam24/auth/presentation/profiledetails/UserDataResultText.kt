@@ -1,6 +1,6 @@
 package com.hazrat.islam24.auth.presentation.profiledetails
 
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.presentation.UiText
 import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError
@@ -13,19 +13,19 @@ import com.hazrat.islam24.util.error.UserDataSuccess
 fun UserDataError.asUiText(): UiText {
     return when(this){
         UserDataError.NO_INTERNET -> {
-            UiText.StringResource(id = com.hazrat.islam24.R.string.check_internet)
+            UiText.StringResource(id = R.string.check_internet)
         }
         UserDataError.INVALID_NAME -> {
-            UiText.StringResource(id = com.hazrat.islam24.R.string.invalid_name)
+            UiText.StringResource(id = R.string.invalid_name)
         }
         UserDataError.INVALID_BIO -> {
-            UiText.StringResource(id = com.hazrat.islam24.R.string.invalid_bio)
+            UiText.StringResource(id = R.string.invalid_bio)
         }
         UserDataError.INVALID_USER_ID -> {
-            UiText.StringResource(id = com.hazrat.islam24.R.string.user_id)
+            UiText.StringResource(id = R.string.user_id)
         }
         UserDataError.UNKNOWN_ERROR -> {
-            UiText.StringResource(id = com.hazrat.islam24.R.string.unknown_error)
+            UiText.StringResource(id = R.string.unknown_error)
         }
     }
 }

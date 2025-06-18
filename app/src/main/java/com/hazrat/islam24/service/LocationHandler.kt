@@ -13,7 +13,6 @@ import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.hazrat.islam24.core.data.manager.LocationRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -49,7 +48,7 @@ class LocationHandler @Inject constructor (
                         onLocationReceived(location)
                         Log.d(
                             "LocationHandler",
-                            "Location received: ${location.latitude}, ${location.longitude}"
+                            "LocationOnCard received: ${location.latitude}, ${location.longitude}"
                         )
                     }
                 }
@@ -75,7 +74,7 @@ class LocationHandler @Inject constructor (
         if (!permissionRequested) {
             if (!isLocationEnabled()) {
                 AlertDialog.Builder(activity)
-                    .setMessage("Location is disabled. Do you want to enable it?")
+                    .setMessage("LocationOnCard is disabled. Do you want to enable it?")
                     .setPositiveButton("Yes") { _, _ ->
                         activity.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     }

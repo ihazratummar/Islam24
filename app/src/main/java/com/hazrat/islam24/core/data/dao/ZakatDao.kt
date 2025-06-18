@@ -23,14 +23,14 @@ interface ZakatDao {
     suspend fun deleteNisab(nisabEntity: NisabEntity)
 
     @Query("SELECT * FROM nisabentity WHERE id = 1")
-    fun getNisab(): Flow<NisabEntity>
+    fun getNisab(): Flow<NisabEntity?>
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertZakatDetails(zakatEntity: ZakatEntity)
 
     @Query("DELETE FROM zakatentity WHERE id =:zakatId")
-    suspend fun deleteZakatDetails(zakatId: Int)
+    suspend fun deleteZakatDetails(zakatId: String)
 
     @Query("SELECT * FROM zakatentity")
     fun getZakatDetails(): Flow<List<ZakatEntity>>

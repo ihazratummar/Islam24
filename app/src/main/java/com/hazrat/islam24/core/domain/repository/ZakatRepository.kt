@@ -20,9 +20,10 @@ interface ZakatRepository {
     Zakat Details edit get delete
      */
     suspend fun insertZakat(zakatEntity: ZakatEntity)
-    suspend fun deleteZakat(zakatId: Int)
+    suspend fun deleteZakat(zakatId: String)
     fun getZakatDetails(): Flow<List<ZakatEntity>>
     fun getZakatDetailsByDateDesc(): Flow<List<ZakatEntity>>
     fun getZakatDetailsByDateAsc(): Flow<List<ZakatEntity>>
+    suspend fun syncData()
 
 }

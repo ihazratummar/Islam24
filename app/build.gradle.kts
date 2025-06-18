@@ -1,3 +1,4 @@
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -5,24 +6,32 @@ plugins {
     alias(libs.plugins.google.devtools.ksp)
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 
 }
 
 android {
     namespace = "com.hazrat.islam24"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        targetSdk= 34
-        versionCode = 68
-        versionName = "1.6.6"
+        targetSdk= 35
+        versionCode = 94
+        versionName = "2.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "LOCATION_IQ_API_KEY", properties.getProperty("LOCATION_IQ_API_KEY"))
+        buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
+        buildConfigField("String", "MAPS_API_KEY", properties.getProperty("MAPS_API_KEY"))
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -44,17 +53,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     buildFeatures{
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -69,37 +79,44 @@ android {
 
 dependencies {
 
+    implementation(project(":core:ui"))
+    implementation(project(":core:di"))
+    implementation(project(":core:datastore"))
+    implementation(project(":feature:common"))
+    implementation(project(":feature:calendar"))
+
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx.v281)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
-    implementation(libs.play.services.location)
-    implementation(libs.transportation.consumer)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
-
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit.v115)
-    androidTestImplementation(libs.androidx.espresso.core.v351)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling)
-    implementation(libs.androidx.material.android)
-
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended.android)
 
+
+
+
+    implementation(libs.play.services.location)
 
     /*
     FireBase
      */
     implementation (libs.play.services.auth)
+
     implementation(libs.firebase.auth.ktx)
     implementation (libs.firebase.database)
     platform(libs.firebase.bom.v2821)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
 
     //window size
@@ -127,9 +144,13 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 
     //Datastore
     implementation (libs.androidx.datastore.preferences)
+
+    //dataStorePreference
+    implementation(libs.androidx.preference.ktx)
 
     //Compose Foundation
     implementation (libs.androidx.foundation)
@@ -142,15 +163,18 @@ dependencies {
     implementation (libs.androidx.paging.compose)
 
     //Room
-
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    //Room Encryption
+    implementation( libs.android.database.sqlcipher)
+    implementation( libs.androidx.sqlite)
+
 
     //Observe
-    implementation (libs.androidx.lifecycle.viewmodel.compose.v281)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.runtime.livedata)
 
     implementation(libs.androidx.viewpager2)
@@ -169,7 +193,27 @@ dependencies {
     implementation(libs.review)
     implementation(libs.review.ktx)
 
-    //dataStorePreference
-    implementation(libs.androidx.preference.ktx)
-}
+    //Cloudy for blurring effect
+    implementation(libs.cloudy)
 
+    implementation (libs.kotlin.reflect)
+
+    //Glance App Widget
+
+    implementation (libs.androidx.glance)
+    implementation (libs.androidx.glance.appwidget)
+
+    implementation (libs.androidsvg)
+
+
+    implementation (libs.play.services.maps)
+    implementation (libs.play.services.location)
+    implementation (libs.maps.compose)
+
+
+    implementation (libs.maps.ktx)
+    implementation (libs.maps.utils.ktx)
+
+    implementation (libs.chromecast.sender)
+
+}

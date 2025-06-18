@@ -5,7 +5,6 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,16 +33,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
-import com.hazrat.islam24.R
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.R
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -64,9 +62,9 @@ fun Modifier.profileCardShimmerEffect(): Modifier = composed {
     background(
         brush = Brush.linearGradient(
             colors = listOf(
-                MaterialTheme.colorScheme.primaryContainer,
+                MaterialTheme.colorScheme.secondaryContainer,
                 MaterialTheme.colorScheme.primary,
-                MaterialTheme.colorScheme.primaryContainer,
+                MaterialTheme.colorScheme.secondaryContainer,
             ),
             start = Offset(startOffsetX, 0F),
             end = Offset(
@@ -82,10 +80,13 @@ fun Modifier.profileCardShimmerEffect(): Modifier = composed {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun RatingBottomSheet(profileEvent: (ProfileEvent) -> Unit) {
+fun RatingBottomSheet(
+    appSettingEvent: (AppSettingEvent) -> Unit,
+    hapticFeedback: () -> Unit
+) {
     ModalBottomSheet(
         onDismissRequest = {
-            profileEvent(ProfileEvent.OpenRatingDialog)
+            appSettingEvent(AppSettingEvent.OpenRatingDialog)
         },
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -112,7 +113,9 @@ fun RatingBottomSheet(profileEvent: (ProfileEvent) -> Unit) {
             ) {
                 repeat(5) { index ->
                     Icon(
-                        painter = if (rating > index) painterResource(id = R.drawable.star) else painterResource(R.drawable.outlinstar),
+                        painter = if (rating > index) painterResource(id = R.drawable.star) else painterResource(
+                            R.drawable.outlinstar
+                        ),
                         contentDescription = "Star",
                         modifier = Modifier
                             .size(dimens.size60)
@@ -141,7 +144,8 @@ fun RatingBottomSheet(profileEvent: (ProfileEvent) -> Unit) {
                 )
                 Button(
                     onClick = {
-                        profileEvent(ProfileEvent.GoToRate)
+                        appSettingEvent(AppSettingEvent.GoToRate)
+                        hapticFeedback()
                     },
                     modifier = Modifier
                         .padding(dimens.size10)
@@ -149,8 +153,8 @@ fun RatingBottomSheet(profileEvent: (ProfileEvent) -> Unit) {
                         .height(dimens.size60),
                     shape = RoundedCornerShape(dimens.size10),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Text(

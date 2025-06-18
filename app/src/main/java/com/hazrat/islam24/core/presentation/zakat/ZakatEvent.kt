@@ -43,5 +43,5 @@ sealed interface ZakatEvent {
 
     data object ToggleSortType: ZakatEvent
 
-    data class DeleteZakat(val zakatId: Int): ZakatEvent
+    data class DeleteZakat(val zakatId: String): ZakatEvent
 }

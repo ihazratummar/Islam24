@@ -11,20 +11,21 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingScreen
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingState
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPassword
+import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.islam24.auth.presentation.login.AuthLoginScreen
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
+import com.hazrat.islam24.auth.presentation.policiesScreen.PoliciesScreen
+import com.hazrat.islam24.auth.presentation.policiesScreen.PrivacyPolicyScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
-import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsScreen
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.auth.presentation.signup.AuthSignupScreen
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
-import com.hazrat.islam24.main.navigation.ProfileScreen
+import com.hazrat.islam24.main.navigation.MainRoute
 import kotlinx.serialization.Serializable
 
 /**
@@ -34,12 +35,16 @@ import kotlinx.serialization.Serializable
 @RequiresApi(Build.VERSION_CODES.S)
 fun NavGraphBuilder.authNavGraph(
     navController: NavController,
-    appSettingState: AppSettingState,
-    appSettingEvent: (AppSettingEvent) -> Unit
+    appSettingViewModel: AppSettingViewModel,
+    profileViewModel: ProfileViewModel,
+    loginViewModel: LoginViewModel,
+    signUpViewModel: SingupViewModel,
+    profileDetailsViewModel: ProfileDetailsViewModel,
+    forgetPasswordViewModel: ForgetPasswordViewModel,
+    isHapticFeedback: Boolean = false
 ) {
-    navigation<Auth>(startDestination = ProfileScreen) {
+    navigation<Auth>(startDestination = MainRoute.ProfileScreen) {
         composable<Login> {
-            val loginViewModel = hiltViewModel<LoginViewModel>()
             val loginState by loginViewModel.loginState.collectAsState()
             val loginEvent = loginViewModel::onEvent
             val authState by loginViewModel.authState.observeAsState(initial = AuthState.Loading)
@@ -51,20 +56,23 @@ fun NavGraphBuilder.authNavGraph(
                     navController.navigate(SignUp)
                 },
                 navigateToProfile = {
-                    navController.navigate(ProfileScreen) {
-                        popUpTo(Login) { inclusive = true }
+                    navController.navigate(MainRoute.ProfileScreen) {
+                        popUpTo(Login)
                     }
                 },
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
+                navigateToForgotPassword = {
+                    navController.navigate(ForgettingPassword)
+                },
+                isHapticFeedback = isHapticFeedback
             )
         }
         composable<SignUp> {
-            val singUpViewModel = hiltViewModel<SingupViewModel>()
-            val signUpState by singUpViewModel.state.collectAsState()
-            val signUpEvent = singUpViewModel::onEvent
-            val authState by singUpViewModel.authState.observeAsState(initial = AuthState.Loading)
+            val signUpState by signUpViewModel.state.collectAsState()
+            val signUpEvent = signUpViewModel::onEvent
+            val authState by signUpViewModel.authState.observeAsState(initial = AuthState.Loading)
             AuthSignupScreen(
                 signUpState = signUpState,
                 onEvent = signUpEvent,
@@ -73,8 +81,8 @@ fun NavGraphBuilder.authNavGraph(
                     navController.popBackStack()
                 },
                 navigateToLogin = {
-                    navController.navigate(Login){
-                        popUpTo(SignUp){
+                    navController.navigate(Login) {
+                        popUpTo(SignUp) {
                             inclusive = true
                             saveState = true
                         }
@@ -82,49 +90,89 @@ fun NavGraphBuilder.authNavGraph(
                     }
                 },
                 navigateToProfile = {
-                    navController.navigate(ProfileScreen) {
+                    navController.navigate(MainRoute.ProfileScreen) {
                         popUpTo(SignUp) { inclusive = true }
+                    }
+                },
+                isHapticFeedback = isHapticFeedback
+            )
+        }
+        composable<MainRoute.ProfileScreen> {
+            val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
+            val profileState by profileViewModel.profileState.collectAsState()
+            ProfileScreen(
+                navController = navController,
+                authState = authState,
+                profileState = profileState,
+                onSettingClick = {
+                    navController.navigate(ProfileSettingScreen) {
+                        popUpTo(ProfileSettingScreen) {
+                            inclusive = true
+                            saveState = false
+                        }
+                        launchSingleTop = true
                     }
                 }
             )
         }
-        composable<ProfileScreen> {
-            val profileViewModel = hiltViewModel<ProfileViewModel>()
-            val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
-            val profileState by profileViewModel.profileState.collectAsState()
-            val profileEvent = profileViewModel::onEvent
-            ProfileScreen(
-                navController = navController,
-                authState = authState,
-                profileEvent = profileEvent,
-                profileState = profileState
-            )
-        }
         composable<ProfileSettingScreen> {
-            val appSettingViewModel = hiltViewModel<AppSettingViewModel>()
             val authState by appSettingViewModel.authState.observeAsState(AuthState.Loading)
-            val appSettingState1 by appSettingViewModel.appSettingState.collectAsState()
-            val appSettingEvent1 = appSettingViewModel::onAppSettingEvent
+            val appSettingEvent = appSettingViewModel::onAppSettingEvent
+            val appSettingState by appSettingViewModel.appSettingState.collectAsState()
             AppSettingScreen(
-                navController = navController,
                 authState = authState,
-                appSettingState = appSettingState1,
-                appSettingEvent = appSettingEvent1,
-                appSettingStateTheme = appSettingState,
-                appSettingEventTheme = appSettingEvent
+                appSettingEvent = appSettingEvent,
+                appSettingState = appSettingState,
+                isHapticFeedback = isHapticFeedback,
+                onPolicyClick = {
+                    navController.navigate(PoliciesScreenRoute)
+                },
+                onBackClick = {navController.navigateUp()},
             )
         }
         composable<ProfileDetailsScreen> {
-            val profileDetailsViewModel = hiltViewModel<ProfileDetailsViewModel>()
             val appSettingState1 by profileDetailsViewModel.profileState.collectAsState()
             val profileDetailsEvent = profileDetailsViewModel::onEvent
-            val profileAction by profileDetailsViewModel.profileActionState.observeAsState(initial = ProfileAction.Idle)
             val userEvent by profileDetailsViewModel.events.collectAsState(initial = null)
             ProfileDetailsScreen(
                 navController = navController,
                 profileState = appSettingState1,
                 profileDetailsEvent = profileDetailsEvent,
-                userEvent = userEvent
+                userEvent = userEvent,
+                isHapticFeedback = isHapticFeedback
+            )
+        }
+        composable<ForgettingPassword> {
+            val forgetPasswordState by forgetPasswordViewModel.forgetPasswordState.collectAsState()
+            val channelEvent by forgetPasswordViewModel.events.collectAsState(initial = null)
+            ForgetPassword(
+                forgetPasswordState = forgetPasswordState,
+                forgetPasswordEvent = forgetPasswordViewModel::onEvent,
+                onBackClick = { navController.popBackStack() },
+                channelEvent = channelEvent,
+                navigateToLogin = {
+                    navController.navigate(Login) {
+                        popUpTo(ForgettingPassword) {
+                            inclusive = true
+                            saveState = false
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                isHapticFeedback = isHapticFeedback
+            )
+        }
+
+        composable <PoliciesScreenRoute>{
+            PoliciesScreen(
+                onBackClick = { navController.popBackStack() },
+                onPolicyClick = {navController.navigate(PrivacyPolicyScreenRoute)}
+            )
+        }
+
+        composable <PrivacyPolicyScreenRoute>{
+            PrivacyPolicyScreen(
+                onBackClick = { navController.popBackStack() },
             )
         }
     }
@@ -141,7 +189,18 @@ data object Login
 data object SignUp
 
 @Serializable
+data object ForgettingPassword
+
+
+@Serializable
 data object ProfileSettingScreen
 
 @Serializable
 data object ProfileDetailsScreen
+
+@Serializable
+data object PoliciesScreenRoute
+
+
+@Serializable
+data object PrivacyPolicyScreenRoute

@@ -1,14 +1,14 @@
 package com.hazrat.islam24.auth.presentation.login
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
 import com.hazrat.islam24.auth.AuthState
+import com.hazrat.islam24.auth.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -21,12 +21,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val auth: FirebaseAuth
+    private val profileRepository: ProfileRepository,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
 
-    private val _authState = MutableLiveData<AuthState>()
-    val authState: LiveData<AuthState> = _authState
+    val authState: LiveData<AuthState> = profileRepository.authState
 
     private val _loginState = MutableStateFlow(LoginState())
     val loginState: StateFlow<LoginState> = _loginState
@@ -37,15 +37,7 @@ class LoginViewModel @Inject constructor(
     }
 
     init {
-        checkAuthStatus()
-    }
-
-    private fun checkAuthStatus() {
-        if (auth.currentUser == null) {
-            _authState.value = AuthState.Unauthenticated
-        } else {
-            _authState.value = AuthState.Authenticated
-        }
+        profileRepository.checkAuthStatus()
     }
 
     fun onEvent(event: LoginEvent) {
@@ -89,43 +81,24 @@ class LoginViewModel @Inject constructor(
             }
 
             LoginEvent.Refresh -> {
-                checkAuthStatus()
+                profileRepository.checkAuthStatus()
             }
         }
     }
 
     private suspend fun login(email: String, password: String) {
         if (!isLoginFormValid(_loginState.value)) {
-            _authState.value = AuthState.Error("Please fill all fields")
+            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
-        _authState.value = AuthState.Loading
-        delay(2000L)
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    _authState.value = AuthState.Authenticated
-                    _loginState.update {
-                        it.copy(
-                            email = "",
-                            password = ""
-                        )
-                    }
-                } else {
-                    viewModelScope.launch {
-                        _authState.value = AuthState.Loading
-                        delay(1000L)
-                        _authState.value =
-                            AuthState.Error(task.exception?.message ?: "Authentication failed")
-                    }
-                }
+        val result = profileRepository.login(email, password)
+        if (result){
+            _loginState.update {
+                it.copy(email = "", password = "")
             }
-            .addOnFailureListener { e ->
-                viewModelScope.launch {
-                    _authState.value = AuthState.Loading
-                    delay(1000L)
-                    _authState.value = AuthState.Error(e.message ?: "Authentication failed")
-                }
-            }
+        }else{
+            Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show()
+        }
     }
+
 }

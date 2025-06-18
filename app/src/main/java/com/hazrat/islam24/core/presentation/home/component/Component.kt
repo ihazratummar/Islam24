@@ -28,48 +28,65 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.hazrat.islam24.R
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.text.withStyle
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.presentation.common.LocationName
-import com.hazrat.islam24.main.mainActivity.MainViewModel
-import com.hazrat.islam24.ui.theme.Hidaya
-import com.hazrat.islam24.ui.theme.Poppins
-import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.islam24.core.domain.model.ui_text_model.benefitsOfRecitingDataList
+import com.hazrat.islam24.core.presentation.al_quran.QuranState
+import com.hazrat.islam24.core.presentation.common.LocationOnCard
+import com.hazrat.islam24.core.presentation.home.HomeState
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.islam24.util.getSystemLanguage
+import com.hazrat.ui.R
+import com.hazrat.ui.theme.Hidaya
+import com.hazrat.ui.theme.Kitab
+import com.hazrat.ui.theme.Poppins
+import com.hazrat.ui.theme.Uthmani
+import com.hazrat.ui.theme.dimens
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
 fun isPrayerTime(
-    data: List<PrayerTimeEntity>,
-    gregorianDay: Int,
-    hijriDay: String
+    data: PrayerTimeEntity
 ): Boolean {
-    val currentDayPrayerTimes =
-        data.find { it.gregorianDay == gregorianDay.toString() && it.hijriDay == hijriDay }
+
+    val currentDayPrayerTimes = data
     val currentTime = System.currentTimeMillis()
-    val isFajrTime = currentTime in (currentDayPrayerTimes?.fajrTime
-        ?: 0)..(currentDayPrayerTimes?.sunriseTime?.minus(300000) ?: 0)
-    val isSunriseTime = currentTime in (currentDayPrayerTimes?.sunriseTime?.minus(300000)
-        ?: 0)..(currentDayPrayerTimes?.sunriseTime?.plus(300000) ?: 0)
-    val isDhuhrTime = currentTime in (currentDayPrayerTimes?.dhuhrTime
-        ?: 0)..((currentDayPrayerTimes?.dhuhrTime?.plus(3600000)) ?: 0)
-    val isAsrTime = currentTime in (currentDayPrayerTimes?.asrTime
-        ?: 0)..((currentDayPrayerTimes?.maghribTime?.minus(3600000)) ?: 0)
-    val isMaghribTime = currentTime in (currentDayPrayerTimes?.maghribTime
-        ?: 0)..((currentDayPrayerTimes?.ishaTime?.minus(1800000)) ?: 0)
-    val isIshaTime = currentTime in (currentDayPrayerTimes?.ishaTime
-        ?: 0)..(currentDayPrayerTimes?.midnightTime ?: 0)
+    val isFajrTime =
+        currentTime in currentDayPrayerTimes.fajrTime..currentDayPrayerTimes.sunriseTime.minus(
+            300000
+        )
+    val isSunriseTime =
+        currentTime in currentDayPrayerTimes.sunriseTime.minus(300000)..currentDayPrayerTimes.sunriseTime.plus(
+            300000
+        )
+    val isDhuhrTime =
+        currentTime in currentDayPrayerTimes.dhuhrTime..(currentDayPrayerTimes.dhuhrTime.plus(
+            3600000
+        ))
+    val isAsrTime =
+        currentTime in currentDayPrayerTimes.asrTime..(currentDayPrayerTimes.maghribTime.minus(
+            3600000
+        ))
+    val isMaghribTime =
+        currentTime in currentDayPrayerTimes.maghribTime..(currentDayPrayerTimes.ishaTime.minus(
+            1800000
+        ))
+    val isIshaTime =
+        currentTime in currentDayPrayerTimes.ishaTime..currentDayPrayerTimes.midnightTime
 
     return isFajrTime || isSunriseTime || isDhuhrTime || isAsrTime || isMaghribTime || isIshaTime
 }
@@ -80,31 +97,34 @@ fun TimeLocationCard(
     prayerTimeEntity: List<PrayerTimeEntity>,
     navigateToPrayerTime: () -> Unit,
     locationDetailsEntity: LocationDetailsEntity,
-    viewModel: MainViewModel = hiltViewModel(),
 ) {
+    val currentGregorianDay = getCurrentDate()
+    val prayerTimeIndex = prayerTimeEntity.indexOfFirst {
+        it.gregorianDate == currentGregorianDay
+    }
+    val prayerTimes = prayerTimeEntity[prayerTimeIndex]
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(dimens.size5)
-            .height(dimens.size200)
+            .height(dimens.size250)
             .clickable(
                 onClick = { navigateToPrayerTime() },
                 onClickLabel = stringResource(id = R.string.prayertimesandlocation)
             ),
         shape = RoundedCornerShape(dimens.size30),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            val today = getCurrentDay()
-            val index = today - 1
-            Log.d("Today", "$index")
-            if (index in prayerTimeEntity.indices) {
+            if (prayerTimeIndex in prayerTimeEntity.indices) {
                 HomePrayerTimeCardAnimation(
                     modifier = Modifier
                         .fillMaxSize(),
-                    prayerTimeEntity = prayerTimeEntity[index]
+                    prayerTimeEntity = prayerTimes
 
                 )
+                Log.d("Today MainScreen", prayerTimes.gregorianDate)
 
             }
 
@@ -124,12 +144,12 @@ fun TimeLocationCard(
                     verticalArrangement = Arrangement.Bottom
                 ) {
                     DisplayCurrentPrayerName(
-                        prayerTimeEntity,
+                        data = prayerTimes,
                     )
 
                     Text(
                         text = stringResource(R.string.view_salat_times),
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -147,19 +167,19 @@ fun TimeLocationCard(
                     horizontalAlignment = Alignment.End
                 ) {
 
-                    LocationName(locationDetailsEntity)
+                    LocationOnCard(
+                        locationDetailsEntity = locationDetailsEntity
+                    )
                     Spacer(modifier = Modifier.height(dimens.size8))
-                    val grday = getCurrentDay()
-                    val hijriday = viewModel.getHijriDay()
-                    if (isPrayerTime(prayerTimeEntity, grday, hijriday)) {
+                    if (isPrayerTime(prayerTimes)) {
                         Text(
                             text = stringResource(id = R.string.now),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     } else {
-                        DisplayCurrentPrayerTime(prayerTimeEntity, hijriday)
+                        DisplayCurrentPrayerTime(prayerTimes)
                     }
                 }
             }
@@ -168,35 +188,6 @@ fun TimeLocationCard(
     }
 }
 
-////BACKGROUND CARD WITH MASJID ICON
-//@Preview
-@Composable
-fun BackGroundCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(
-            bottomEnd = dimens.size50,
-            bottomStart = dimens.size50
-        ),
-        colors = CardDefaults.cardColors(Color.Transparent)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.group),
-            contentDescription = "masjidimage",
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(
-                    shape = RoundedCornerShape(
-                        bottomStart = dimens.size50,
-                        bottomEnd = dimens.size50
-                    )
-                )
-                .size(dimens.size300),
-            colorFilter = ColorFilter.colorMatrix(colorMatrix = ColorMatrix())
-        )
-    }
-}
 
 
 @Composable
@@ -204,8 +195,7 @@ fun RamadanCard() {
     val currentDay = LocalDate.now()
     val targetDate = LocalDate.of(2025, 3, 2)
     val daysRemaining = ChronoUnit.DAYS.between(currentDay, targetDate)
-    // Retrieve the current device locale
-    val locale = LocalContext.current.resources.configuration.locales[0]
+    val locale = LocalConfiguration.current.locales[0]
     val formattedDaysRemaining = NumberFormat.getInstance(locale).format(daysRemaining)
     Card(
         modifier = Modifier
@@ -213,7 +203,7 @@ fun RamadanCard() {
             .height(dimens.size100)
             .padding(horizontal = dimens.size15),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
         Box(
@@ -231,18 +221,176 @@ fun RamadanCard() {
             Text(
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = stringResource(R.string.ramadan),
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
                 modifier = Modifier.align(Alignment.CenterEnd),
                 text = stringResource(R.string.days, formattedDaysRemaining),
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontFamily = Hidaya
             )
+        }
+    }
+}
+
+@Composable
+fun BenefitsOfRecitingWidget(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimens.size20)
+            .clip(
+                shape = RoundedCornerShape(dimens.size10)
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor =  MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimens.size20, vertical = dimens.size10)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(R.string.benefits_of_reciting_the_quran),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Thin,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                )
+                Text(
+                    text = "Details",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Thin
+                    ),
+                    modifier = Modifier.clickable(onClick = { onClick() })
+                )
+            }
+            Spacer(modifier = Modifier.height(dimens.size30))
+
+            benefitsOfRecitingDataList.take(5).forEach {
+                Text(
+                    text = "${it.number}. ${stringResource(it.title)}",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    ),
+                    modifier = Modifier.padding(horizontal = dimens.size10, vertical = dimens.size5)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DailyQuranAyat(
+    modifier: Modifier = Modifier,
+    quranState: QuranState,
+    homeState: HomeState,
+    onClick: (Int, Int) -> Unit
+) {
+    val systemLanguage = getSystemLanguage()
+    val arquran = quranState.arQuranData
+    val enQuran = quranState.quranEnData
+    val bnQuran = quranState.quranBnData
+
+    val allArAyah = arquran?.flatMap { it.ayahs } ?: emptyList()
+    val arAyah = allArAyah.find { it.number == homeState.randomAyatNumber }
+    val surah =
+        arquran?.find { surah -> surah.ayahs.any { it.number == homeState.randomAyatNumber } }
+
+    val arNumber = arAyah?.numberInSurah?.let {
+        NumberFormat.getInstance(Locale.forLanguageTag("ar")).format(it)
+    } ?: "N/A"
+
+    val enAllAyah = enQuran?.find { it.id == surah?.number }
+    val enAyah = enAllAyah?.verses?.find { it.id == arAyah?.numberInSurah }
+
+    val bnAllAyah = bnQuran?.find { it.id == surah?.number }
+    val bnAyah = bnAllAyah?.verses?.find { it.id == arAyah?.numberInSurah }
+
+
+    if (!arquran.isNullOrEmpty() && !enQuran.isNullOrEmpty() && !bnQuran.isNullOrEmpty()) {
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimens.size20),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            ),
+            onClick = {
+                onClick.invoke(surah?.number ?: 1, arAyah?.numberInSurah ?: 1)
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimens.size10, vertical = dimens.size5)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = dimens.size10, horizontal = dimens.size10)
+                ) {
+                    Text(
+                        text = "Daily Quran",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = Kitab
+                            )
+                        ) {
+                            append(arAyah?.text)
+                        }
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = Uthmani
+                            )
+                        ) {
+                            append(" $arNumber")
+                        }
+                    },
+                    style = MaterialTheme.typography.displayMedium.copy(
+                        textDirection = TextDirection.Rtl
+                    )
+                )
+                Spacer(Modifier.height(dimens.size10))
+
+                Text(
+                    text = when (systemLanguage) {
+                        "bn" -> {
+                            "${bnAyah?.translation} - ${bnAyah?.id}"
+                        }
+
+                        else -> {
+                            "${enAyah?.translation} - ${enAyah?.id}"
+                        }
+                    },
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(Modifier.height(dimens.size30))
+                Text(text = "${surah?.number}:${enAyah?.id}")
+            }
         }
     }
 }

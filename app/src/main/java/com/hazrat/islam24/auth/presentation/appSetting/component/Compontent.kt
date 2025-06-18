@@ -17,7 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -32,7 +32,7 @@ fun Modifier.logOutCardShimmerEffect(): Modifier = composed {
         initialValue = -2 * size.width.toFloat(),
         targetValue = 2 * size.width.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(1000)
+            animation = tween(2000)
         ), label = ""
     )
     background(

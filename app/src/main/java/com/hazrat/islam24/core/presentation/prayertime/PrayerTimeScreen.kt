@@ -5,8 +5,10 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,43 +24,135 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerDateCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeCard
 import com.hazrat.islam24.core.presentation.prayertime.component.PrayerTimeScreenAnimation
-import com.hazrat.islam24.main.navigation.CalendarScreen
-import com.hazrat.islam24.main.navigation.PrayerSetting
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.islam24.main.navigation.MainRoute
+import com.hazrat.islam24.main.navigation.nvgraph.AsrSetting
+import com.hazrat.islam24.main.navigation.nvgraph.DhuhrSetting
+import com.hazrat.islam24.main.navigation.nvgraph.FajrSetting
+import com.hazrat.islam24.main.navigation.nvgraph.IshaSetting
+import com.hazrat.islam24.main.navigation.nvgraph.MaghribSetting
+import com.hazrat.ui.theme.dimens
+import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.DateUtil.dateLongToString
 import com.hazrat.islam24.util.DateUtil.getCountdownText
+import com.hazrat.islam24.util.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.DateUtil.getCurrentDay
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun PrayerTimeScreen(
     navController: NavController,
     event: (PrayerEvent) -> Unit,
     prayerTimes: List<PrayerTimeEntity>,
+    isRefreshing: Boolean
 ) {
-    ShowData(
-        navController = navController,
-        event = event,
-        prayerTimes = prayerTimes,
-    )
+    val methods = prayerTimes.firstOrNull()
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val today = getCurrentDate()
+        Log.d("Today", today)
+        val todayPrayerIndex = prayerTimes.indexOfFirst { it.gregorianDate == today }
+        val initialPage = if (todayPrayerIndex != -1) {
+            todayPrayerIndex
+        } else {
+            0
+        }
+        if (prayerTimes.any { it.gregorianDate == today }) {
+            PrayerTimeScreenAnimation(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimens.size250),
+                prayerTimeEntity = prayerTimes[initialPage]
+
+            )
+        }
+    }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column(
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.prayer_times),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Black,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { event(PrayerEvent.SharePrayer) },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.share),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+
+                        )
+                    }
+                    IconButton(
+                        onClick = { navController.navigate(MainRoute.PrayerSetting) },
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+
+                        )
+                    }
+                },
+                windowInsets = WindowInsets(top = dimens.size40),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            )
+        },
+        containerColor = Color.Transparent
+    ) { paddingValue ->
+
+        val pullToRefreshState = rememberPullToRefreshState()
+
+        PullToRefreshBox(
+            state = pullToRefreshState,
+            onRefresh = {event(PrayerEvent.RefreshPrayer)},
+            isRefreshing = isRefreshing
+        ){
+            ShowData(
+                modifier = Modifier.padding(paddingValue),
+                navController = navController,
+                prayerTimes = prayerTimes
+            )
+        }
+    }
 
 }
 
@@ -66,121 +160,45 @@ fun PrayerTimeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowData(
+    modifier: Modifier = Modifier,
     navController: NavController,
-    event: (PrayerEvent) -> Unit,
     prayerTimes: List<PrayerTimeEntity>,
 ) {
-    val methods = prayerTimes.firstOrNull()
-    Scaffold(
-        modifier = Modifier,
-        containerColor = Color.Transparent,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.prayer_times),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text = "${methods?.methodName ?: ""} - ${methods?.methodFajrParam}°/${methods?.methodIshaParam}°",
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(
-                        modifier = Modifier,
-                        onClick = { event(PrayerEvent.SharePrayer) }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.share),
-                            contentDescription = "Setting Icon",
-                            modifier = Modifier,
-                            tint = MaterialTheme.colorScheme.onBackground
-
-                        )
-                    }
-                    IconButton(
-                        modifier = Modifier.padding(end = dimens.size20),
-                        onClick = { navController.navigate(PrayerSetting) }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.settings),
-                            contentDescription = "Setting Icon",
-                            modifier = Modifier,
-                            tint = MaterialTheme.colorScheme.onBackground
-
-                        )
-                    }
-
-                },
-                colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
-
-            )
-        }
+    Column(
+        modifier = modifier.fillMaxSize()
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            val today = getCurrentDay()
-            val index = today - 1
-            if (index in prayerTimes.indices) {
-                PrayerTimeScreenAnimation(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimens.size250),
-                    prayerTimeEntity = prayerTimes[index]
-
-                )
-            }
-            Column(
-                modifier = Modifier.padding(it)
-            ) {
-                ViewPager(
-                    prayerTimes = prayerTimes,
-                    navController = navController,
-                    prayerEvent = event,
-                )
-            }
-
-        }
+        ViewPager(
+            prayerTimes = prayerTimes,
+            navController = navController,
+        )
     }
+
 }
+
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun ViewPager(
     prayerTimes: List<PrayerTimeEntity>,
     navController: NavController,
-    prayerEvent: (PrayerEvent) -> Unit = {},
 ) {
 
-    val todayDay = getCurrentDay()
-    val todayIndex = prayerTimes.indexOfFirst { data ->
-        val day = data.day
-        todayDay == day
+    val currentGregorianDay = getCurrentDate()
+    val prayerTimeIndex = prayerTimes.indexOfFirst {
+        it.gregorianDate == currentGregorianDay
     }
-    val initialPage =
-        if (todayIndex != -1) todayIndex else todayDay - 1 // Use 0 as the default page if today's date is not found
+
     val pagerState = rememberPagerState(
         pageCount = { prayerTimes.size },
-        initialPage = initialPage
+        initialPage = prayerTimeIndex  // Default to the first page or modify as needed
     )
 
-    LaunchedEffect(pagerState) {
-        // Collect from the a snapshotFlow reading the currentPage
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            // Do something with each page change, for example:
-            // viewModel.sendPageSelectedEvent(page)
-            Log.d("Page change", "Page changed to $page")
-        }
-    }
 
     HorizontalPager(
         state = pagerState,
     ) { page ->
         PrayerTimesDay(
-            prayerTimes[page], navController,
+            prayerTimes[page], navController
         )
     }
 }
@@ -190,7 +208,7 @@ fun ViewPager(
 @Composable
 fun PrayerTimesDay(
     data: PrayerTimeEntity,
-    navController: NavController,
+    navController: NavController
 ) {
     val gregorianDay = data.gregorianDay.toInt()
 
@@ -223,7 +241,7 @@ fun PrayerTimesDay(
         item {
             PrayerDateCard(
                 modifier = Modifier.clickable {
-                    navController.navigate(CalendarScreen)
+                    navController.navigate(MainRoute.CalendarScreen)
                 },
                 enDate = "${data.gregorianWeekday},${data.gregorianDay} ${data.gregorianMonthName} ",
                 hrDate = "${data.hijriDay} ${data.hijriMonthEn} ${data.hijriYear} ${data.hijriab}"
@@ -239,6 +257,7 @@ fun PrayerTimesDay(
                 asrCountDown,
                 maghribCountDown,
                 ishaCountDown,
+                navController = navController
             )
         }
     }
@@ -253,16 +272,19 @@ private fun PrayerTime(
     asrCountDown: String,
     maghribCountDown: String,
     ishaCountDown: String,
+    navController: NavController
 ) {
+
     val currentTime = System.currentTimeMillis()
+    val context = LocalContext.current
+    val dataStorePreference = DataStorePreference(context = context)
 
-
-    val isFajrTime = currentTime in (data.fajrTime + 1)..(data.sunriseTime- 300000)
+    val isFajrTime = currentTime in (data.fajrTime + 1)..(data.sunriseTime - 300000)
     val isSunriseTime = currentTime in (data.sunriseTime + 1)..(data.sunriseTime)
     val isDhuhrTime = currentTime in (data.dhuhrTime + 1)..(data.dhuhrTime + 3600000)
     val isAsrTime = currentTime in (data.asrTime + 1)..(data.maghribTime - 600000)
     val isMaghribTime = currentTime in (data.maghribTime + 1)..(data.ishaTime - 600000)
-    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.midnightTime)
+    val isIshaTime = currentTime in (data.ishaTime + 1)..(data.firstThirdTime)
 
     val isNextFajrTime = currentTime in (data.lastThirdTime + 1)..(data.fajrTime)
     val isNextDhurTime = currentTime in (data.sunriseTime + 1)..(data.dhuhrTime)
@@ -275,7 +297,10 @@ private fun PrayerTime(
         time = dateLongToString(data.fajrTime),
         countDownText = if (prayerDay && isNextFajrTime) fajrCountDown else "",
         isPrayerTime = isFajrTime,
-        isNow = if (isFajrTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(FajrSetting)
+        },
+        isNotification = dataStorePreference.getFajrNotification()
 
     )
     PrayerTimeCard(
@@ -284,7 +309,6 @@ private fun PrayerTime(
         time = dateLongToString(data.sunriseTime),
         countDownText = "",
         isPrayerTime = isSunriseTime,
-        isNow = "",
     )
     PrayerTimeCard(
         icon = R.drawable.dhuhr,
@@ -292,7 +316,10 @@ private fun PrayerTime(
         time = dateLongToString(data.dhuhrTime),
         countDownText = if (prayerDay && isNextDhurTime) dhuhrCountDown else "",
         isPrayerTime = isDhuhrTime,
-        isNow = if (isDhuhrTime) stringResource(id = R.string.now) else ""
+        onClick = {
+            navController.navigate(DhuhrSetting)
+        },
+        isNotification = dataStorePreference.getDhuhrNotification()
     )
     PrayerTimeCard(
         icon = R.drawable.asr,
@@ -300,7 +327,10 @@ private fun PrayerTime(
         time = dateLongToString(data.asrTime),
         countDownText = if (prayerDay && isNextAsrTime) asrCountDown else "",
         isPrayerTime = isAsrTime,
-        isNow = if (isAsrTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(AsrSetting)
+        },
+        isNotification = dataStorePreference.getAsrNotification()
     )
     PrayerTimeCard(
         icon = R.drawable.maghrib,
@@ -308,7 +338,10 @@ private fun PrayerTime(
         time = dateLongToString(data.maghribTime),
         countDownText = if (prayerDay && isNextMaghribTime) maghribCountDown else "",
         isPrayerTime = isMaghribTime,
-        isNow = if (isMaghribTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(MaghribSetting)
+        },
+        isNotification = dataStorePreference.getMaghribNotification()
     )
     PrayerTimeCard(
         icon = R.drawable.isha,
@@ -316,7 +349,10 @@ private fun PrayerTime(
         time = dateLongToString(data.ishaTime),
         countDownText = if (prayerDay && isNextIshaTime) ishaCountDown else "",
         isPrayerTime = isIshaTime,
-        isNow = if (isIshaTime) stringResource(id = R.string.now) else "",
+        onClick = {
+            navController.navigate(IshaSetting)
+        },
+        isNotification = dataStorePreference.getIshaNotification()
     )
 }
 

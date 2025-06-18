@@ -8,14 +8,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -25,10 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.JuristicMethodDetails
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.schoolDetailsList
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +41,7 @@ fun JuristicSelectionDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier.fillMaxHeight(),
         shape = MaterialTheme.shapes.medium,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     ) {
         Surface(
@@ -63,7 +62,7 @@ fun JuristicSelectionDialog(
                     Text(
                         text = stringResource(R.string.determining_the_time_of_asr_the_method_of_the_jurists),
                         color = MaterialTheme.colorScheme.onBackground,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.bodyLarge
                     )
 
                 }
@@ -89,11 +88,11 @@ fun JuristicSelectionDialog(
                             Text(
                                 text = school.name,
                                 color = MaterialTheme.colorScheme.onSurface,
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(start = dimens.size10)
                             )
                         }
-                        HorizontalDivider(color = MaterialTheme.colorScheme.inverseOnSurface)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceDim)
                     }
                 }
             }

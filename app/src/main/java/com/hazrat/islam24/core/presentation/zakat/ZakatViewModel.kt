@@ -1,14 +1,12 @@
 package com.hazrat.islam24.core.presentation.zakat
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.domain.model.zakat.NisabEntity
 import com.hazrat.islam24.core.domain.model.zakat.ZakatEntity
 import com.hazrat.islam24.core.domain.repository.ZakatRepository
-import com.hazrat.islam24.util.DataStorePreference
+import com.hazrat.islam24.util.datastore.DataStorePreference
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,11 +29,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ZakatViewModel @Inject constructor(
     private val repository: ZakatRepository,
-    @ApplicationContext private val context: Context
+    private val dataStorePreference: DataStorePreference
 ) : ViewModel() {
 
 
-    private val _sortType = MutableStateFlow(DataStorePreference.getSortType(context))
+    private val _sortType = MutableStateFlow(dataStorePreference.getSortType())
     private val _state = MutableStateFlow(ZakatState(zakatEntity = emptyList()))
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -392,7 +390,6 @@ class ZakatViewModel @Inject constructor(
                             monthCost = _state.value.monthCost.toDouble(),
                             debt = _state.value.debt.toDouble(),
                             zakatAmount = _state.value.zakatAmount,
-
                             )
                     )
                 }
@@ -402,7 +399,7 @@ class ZakatViewModel @Inject constructor(
                 val newSortType =
                     if (_sortType.value == DateType.DATE_DESC) DateType.DATE_ASC else DateType.DATE_DESC
                 _sortType.value = newSortType
-                DataStorePreference.setSortType(context, newSortType)
+                dataStorePreference.setSortType(newSortType)
             }
 
             is ZakatEvent.DeleteZakat -> {

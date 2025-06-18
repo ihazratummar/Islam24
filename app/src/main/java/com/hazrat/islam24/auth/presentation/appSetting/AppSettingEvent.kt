@@ -1,6 +1,7 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
-import com.hazrat.islam24.auth.presentation.AuthEvent
+import android.app.Activity
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
 import com.hazrat.islam24.util.Languages
 
 /**
@@ -14,17 +15,19 @@ sealed interface AppSettingEvent {
     data class SelectLanguage(val language: Languages) : AppSettingEvent
 
 
-    data class ChangeTheme(val theme: Themes) : AppSettingEvent
-    data object ClickThemeDialog : AppSettingEvent
+    data object ToggleTheme: AppSettingEvent
 
     data object OpenAppSetting : AppSettingEvent
 
     data object SignOut: AppSettingEvent
 
     data object RefreshAuth: AppSettingEvent
-}
 
-enum class Themes {
-    DARK,
-    LIGHT
+    data object HapticFeedbackClick: AppSettingEvent
+
+
+    data object InviteFriend : AppSettingEvent
+    data class RateUs(val activity: Activity) : AppSettingEvent
+    data object OpenRatingDialog: AppSettingEvent
+    data object GoToRate: AppSettingEvent
 }
