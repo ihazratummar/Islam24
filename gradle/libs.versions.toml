@@ -61,6 +61,10 @@ lifecycleRuntimeKtx = "2.9.1"
 
 material3 = "1.3.2"
 
+kizitn_calendar = "2.7.0"
+appcompat = "1.7.1"
+material = "1.12.0"
+
 [libraries]
 
 
@@ -140,6 +144,14 @@ cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 android-database-sqlcipher = { module = "net.zetetic:android-database-sqlcipher", version.ref = "androidDatabaseSqlcipher" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 
+kiziton-calendar = {module = "com.kizitonwose.calendar:compose", version.ref = "kizitn_calendar"}
+
+hijri = { group = "io.github.eltohamy", name = "material-hijri-calendarview", version = "1.1.3" }
+ummalqura = { group = "com.github.msarhan", name = "ummalqura-calendar", version = "1.1.9" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
 
 
 [plugins]
@@ -148,5 +160,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref ="ksp"}
 android-room = {id= "androidx.room", version.ref ="roomCompiler"}
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref ="kotlin"}
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }

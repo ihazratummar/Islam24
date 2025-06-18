@@ -17,7 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh

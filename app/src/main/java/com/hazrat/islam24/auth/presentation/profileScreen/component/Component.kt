@@ -39,10 +39,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh

@@ -41,9 +41,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.main.navigation.MainRoute
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 
 @Composable

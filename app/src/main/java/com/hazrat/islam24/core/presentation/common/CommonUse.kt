@@ -36,7 +36,7 @@ import coil.disk.DiskCache
 import coil.request.CachePolicy
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -46,7 +46,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 
 
 

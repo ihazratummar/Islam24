@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,7 +24,7 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 
 
 /**

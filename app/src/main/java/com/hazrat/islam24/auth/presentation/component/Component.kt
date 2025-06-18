@@ -33,16 +33,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import coil.compose.AsyncImage
 import coil.imageLoader
-import coil.memory.MemoryCache
-import coil.request.ImageRequest
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 import com.skydoves.cloudy.Cloudy
 
 /**

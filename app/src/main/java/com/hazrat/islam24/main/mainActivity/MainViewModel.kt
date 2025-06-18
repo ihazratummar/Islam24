@@ -3,6 +3,7 @@ package com.hazrat.islam24.main.mainActivity
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.datastore.AppDataStore
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
@@ -10,7 +11,6 @@ import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Languages
-import com.hazrat.islam24.util.datastore.AppDataStore
 import com.hazrat.islam24.util.datastore.DataStorePreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

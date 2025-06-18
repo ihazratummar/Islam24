@@ -1,7 +1,7 @@
 package com.hazrat.islam24.core.presentation.prayertime.notification
 
-import com.hazrat.islam24.util.datastore.NotificationType
-import com.hazrat.islam24.util.datastore.PrayerName
+import com.hazrat.datastore.NotificationType
+import com.hazrat.datastore.PrayerName
 
 /**
  * @author Hazrat Ummar Shaikh

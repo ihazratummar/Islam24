@@ -58,7 +58,7 @@ object LocationModule {
         locationRepository: LocationRepositoryImpl,
         locationNameDao: LocationNameDao,
         networkRepository: NetworkRepository
-    ): LocationNameRepository = LocationNameRepositoryImpl(api, locationRepository, locationNameDao, networkRepository)
+    ): LocationNameRepository = LocationNameRepositoryImpl(api, locationRepository, locationNameDao)
 
     @Singleton
     @Provides

@@ -1,8 +1,5 @@
 package com.hazrat.islam24.auth.presentation.profileScreen
 
-import android.app.Activity
-import android.content.pm.PackageManager
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -14,16 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,10 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -57,19 +49,15 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.ProfileDetailsScreen
-import com.hazrat.islam24.auth.navigation.ProfileSettingScreen
-import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.core.presentation.common.BackIcon
 import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
-import com.hazrat.islam24.main.mainActivity.MainActivity
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 import com.hazrat.islam24.util.getCacheProfilePicture
-import com.hazrat.islam24.util.hapticFeedbacks
 import com.hazrat.islam24.util.toUri
 
 /**
@@ -98,6 +86,7 @@ fun ProfileScreen(
                     )
                 },
                 windowInsets = WindowInsets(top = dimens.size20, bottom = 0.dp),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ){paddingValues ->

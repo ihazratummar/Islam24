@@ -3,7 +3,6 @@ package com.hazrat.islam24.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.MediaMetadataRetriever
@@ -14,21 +13,19 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.hazrat.datastore.PrayerName
 import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
 import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
 import com.hazrat.islam24.util.DateUtil.getCurrentDate
-import com.hazrat.islam24.util.datastore.PrayerName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.util.Locale
-import kotlin.concurrent.thread
 
 fun drawableToBitmap(context: Context, drawableId: Int): Bitmap {
     val drawable: Drawable = ContextCompat.getDrawable(context, drawableId)!!
@@ -57,15 +54,13 @@ fun Context.getActivity(): Activity? = when (this) {
 
 @Composable
 fun getSystemLanguage(): String {
-    val context = LocalContext.current
-    val locale: Locale = context.resources.configuration.locales[0]
+    val locale: Locale = LocalConfiguration.current.locales[0]
     return locale.language
 }
 
-
+@Suppress("LocalContextConfigurationRead")
 fun checkSystemLanguage(context: Context): String {
-    val locale: Locale =
-        context.resources.configuration.locales[0]
+    val locale: Locale = context.resources.configuration.locales[0]
     return locale.language
 }
 

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,10 +28,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.findLocalQuranSurahNumberByAyahNumber
-import com.hazrat.islam24.ui.theme.Lafadz
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.Lafadz
+import com.hazrat.ui.theme.dimens
 import com.hazrat.islam24.util.getSystemLanguage
 
 /**

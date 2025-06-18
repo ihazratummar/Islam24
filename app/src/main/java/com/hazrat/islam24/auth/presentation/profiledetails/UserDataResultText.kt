@@ -1,6 +1,6 @@
 package com.hazrat.islam24.auth.presentation.profiledetails
 
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.presentation.UiText
 import com.hazrat.islam24.util.error.Result
 import com.hazrat.islam24.util.error.UserDataError

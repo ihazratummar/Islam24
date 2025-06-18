@@ -11,19 +11,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.domain.model.hajjlive.HajjLiveYoutubeModel
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
-import com.hazrat.islam24.core.presentation.common.YoutubePlayer
 import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingWidget
 import com.hazrat.islam24.core.presentation.home.component.DailyQuranAyat
 import com.hazrat.islam24.core.presentation.home.component.HomePageNavIcons
 import com.hazrat.islam24.core.presentation.home.component.HomeScreenTopBoxLoading
 import com.hazrat.islam24.core.presentation.home.component.LazyHorizontalManyIcons
 import com.hazrat.islam24.core.presentation.home.component.TimeLocationCard
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 
 @Composable
