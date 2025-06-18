@@ -131,7 +131,7 @@ fun QiblaScreen(
     ) {
 
         Image(
-            painter = painterResource(R.drawable.background),
+            painter = painterResource(R.drawable.compass_screen_background),
             contentDescription = "Background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds,

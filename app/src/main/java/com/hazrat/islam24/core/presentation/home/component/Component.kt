@@ -188,35 +188,6 @@ fun TimeLocationCard(
     }
 }
 
-////BACKGROUND CARD WITH MASJID ICON
-//@Preview
-@Composable
-fun BackGroundCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(
-            bottomEnd = dimens.size50,
-            bottomStart = dimens.size50
-        ),
-        colors = CardDefaults.cardColors(Color.Transparent)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.group),
-            contentDescription = "masjidimage",
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(
-                    shape = RoundedCornerShape(
-                        bottomStart = dimens.size50,
-                        bottomEnd = dimens.size50
-                    )
-                )
-                .size(dimens.size300),
-            colorFilter = ColorFilter.colorMatrix(colorMatrix = ColorMatrix())
-        )
-    }
-}
 
 
 @Composable
