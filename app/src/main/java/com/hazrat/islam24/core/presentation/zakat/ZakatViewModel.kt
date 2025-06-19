@@ -407,6 +407,42 @@ class ZakatViewModel @Inject constructor(
                     repository.deleteZakat(event.zakatId)
                 }
             }
+
+            ZakatEvent.ToggleGoldInfoDialog -> {
+                _state.update {
+                    it.copy(
+                        isGoldInfoDialogOpen = !it.isGoldInfoDialogOpen
+                    )
+                }
+            }
+            ZakatEvent.ToggleMoneyInfoDialog -> {
+                _state.update {
+                    it.copy(
+                        isMoneyInfoDialogOpen = !it.isMoneyInfoDialogOpen
+                    )
+                }
+            }
+            ZakatEvent.ToggleMonthlyInfoDialog -> {
+                _state.update {
+                    it.copy(
+                        isMonthCostInfoDialogOpen = !it.isMonthCostInfoDialogOpen
+                    )
+                }
+            }
+            ZakatEvent.ToggleSilverInfoDialog -> {
+                _state.update {
+                    it.copy(
+                        isSilverInfoDialogOpen = !it.isSilverInfoDialogOpen
+                    )
+                }
+            }
+            ZakatEvent.ToggleTotalDebtInfoDialog -> {
+                _state.update {
+                    it.copy(
+                        isDebtInfoDialogOpen = !it.isDebtInfoDialogOpen
+                    )
+                }
+            }
         }
     }
 

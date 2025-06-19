@@ -3,7 +3,6 @@ package com.hazrat.islam24.core.presentation.zakat.screen
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -28,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,9 +46,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.hazrat.common.TopBarWithTwoAction
-import com.hazrat.ui.R
 import com.hazrat.islam24.core.presentation.zakat.ZakatEvent
 import com.hazrat.islam24.core.presentation.zakat.ZakatState
+import com.hazrat.islam24.core.presentation.zakat.screen.info.goldInfoText
+import com.hazrat.islam24.core.presentation.zakat.screen.info.moneyInfoBullet
+import com.hazrat.islam24.core.presentation.zakat.screen.info.moneyInfoText
+import com.hazrat.islam24.core.presentation.zakat.screen.info.monthlyCostBullet
+import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 
 /**
@@ -61,22 +66,45 @@ fun CalculationScreen(
     zakatState: ZakatState,
     zakatEvent: (ZakatEvent) -> Unit,
     onBackClick: () -> Unit,
-    moneyInfoNav: () -> Unit = {},
-    goldInfoNav: () -> Unit = {},
-    silverInfoNav: () -> Unit = {},
-    monthInfoNav: () -> Unit = {},
-    totalDebtInfoNav: () -> Unit = {},
     onSaveClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
+    Scaffold(
+        modifier = modifier.statusBarsPadding(),
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimens.size200),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    BottomBarItem(
+                        text = stringResource(R.string.nisab),
+                        amount = zakatState.nisabAmount
+                    )
+                    BottomBarItem(
+                        text = stringResource(R.string.total_asset1),
+                        amount = "${zakatState.totalAsset}"
+                    )
+                    BottomBarItem(
+                        text = stringResource(R.string.zakat_amount1),
+                        amount = "${zakatState.zakatAmount}"
+                    )
+                }
+            }
+        }
+    ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
-            Spacer(Modifier.height(dimens.size40))
             TopBarWithTwoAction(
                 topBarTitle = stringResource(R.string.zakat_calculator),
                 onBackClick = { onBackClick.invoke() },
@@ -109,20 +137,20 @@ fun CalculationScreen(
                         amount = zakatState.money,
                         onClick = { zakatEvent(ZakatEvent.OpenMoneyDialog) },
                         infoNavigation = {
-                            moneyInfoNav()
+                            zakatEvent(ZakatEvent.ToggleMoneyInfoDialog)
                         }
                     )
                     CalculateItems(
                         text = stringResource(R.string.gold),
                         amount = zakatState.gold,
                         onClick = { zakatEvent(ZakatEvent.OpenGoldDialog) },
-                        infoNavigation = { goldInfoNav() }
+                        infoNavigation = { zakatEvent(ZakatEvent.ToggleGoldInfoDialog) }
                     )
                     CalculateItems(
                         text = stringResource(R.string.silver),
                         amount = zakatState.silver,
                         onClick = { zakatEvent(ZakatEvent.OpenSilverDialog) },
-                        infoNavigation = { silverInfoNav() }
+                        infoNavigation = { zakatEvent(ZakatEvent.ToggleSilverInfoDialog) }
                     )
                     CalculateItems(
                         text = stringResource(R.string.trade_amount),
@@ -133,47 +161,75 @@ fun CalculationScreen(
                         text = stringResource(R.string.monthly_living_cost),
                         amount = zakatState.monthCost,
                         onClick = { zakatEvent(ZakatEvent.OpenMonthCostDialog) },
-                        infoNavigation = { monthInfoNav() },
+                        infoNavigation = { zakatEvent(ZakatEvent.ToggleMonthlyInfoDialog) },
                         fontColor = MaterialTheme.colorScheme.error
                     )
                     CalculateItems(
                         text = stringResource(R.string.total_debt_on_you),
                         amount = zakatState.debt,
                         onClick = { zakatEvent(ZakatEvent.OpenDebtDialog) },
-                        infoNavigation = { totalDebtInfoNav() },
+                        infoNavigation = { zakatEvent(ZakatEvent.ToggleTotalDebtInfoDialog) },
                         fontColor = MaterialTheme.colorScheme.error
                     )
                 }
             }
         }
 
-        BottomAppBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .align(Alignment.BottomCenter),
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                BottomBarItem(
-                    text = stringResource(R.string.nisab),
-                    amount = zakatState.nisabAmount
-                )
-                BottomBarItem(
-                    text = stringResource(R.string.total_asset1),
-                    amount = "${zakatState.totalAsset}"
-                )
-                BottomBarItem(
-                    text = stringResource(R.string.zakat_amount1),
-                    amount = "${zakatState.zakatAmount}"
-                )
-            }
+        if (zakatState.isGoldInfoDialogOpen) {
+            AssetsInfoModal(
+                title = R.string.gold,
+                infoText = goldInfoText,
+                onDismiss = {
+                    zakatEvent(ZakatEvent.ToggleGoldInfoDialog)
+                }
+            )
+        }
+
+        if (zakatState.isSilverInfoDialogOpen) {
+            AssetsInfoModal(
+                title = R.string.silver,
+                infoText = listOf(R.string.silverinfo),
+                onDismiss = {
+                    zakatEvent(ZakatEvent.ToggleSilverInfoDialog)
+                }
+            )
+        }
+
+        if (zakatState.isMoneyInfoDialogOpen) {
+            AssetsInfoModal(
+                title = R.string.money,
+                infoText = moneyInfoText,
+                bulletPointText = moneyInfoBullet,
+                conclusionText = R.string.moneyinfo1,
+                onDismiss = {
+                    zakatEvent(ZakatEvent.ToggleMoneyInfoDialog)
+                }
+            )
+        }
+
+        if (zakatState.isMonthCostInfoDialogOpen) {
+            AssetsInfoModal(
+                title = R.string.monthly_living_cost,
+                infoText = listOf(R.string.monthlyinfo),
+                keyPoints = R.string.key_points_to_consider,
+                bulletPointText = monthlyCostBullet,
+                conclusionText = R.string.note_exclude_luxury_expenses_such_as_vacations_luxury_goods_or_excessive_entertainment,
+                onDismiss = {
+                    zakatEvent(ZakatEvent.ToggleMonthlyInfoDialog)
+                }
+            )
+        }
+        if (zakatState.isDebtInfoDialogOpen) {
+            AssetsInfoModal(
+                title = R.string.debt,
+                infoText = listOf(R.string.debtinfo, R.string.debtinfo1),
+                onDismiss = {
+                    zakatEvent(ZakatEvent.ToggleTotalDebtInfoDialog)
+                }
+            )
         }
     }
+
     if (zakatState.isMoneyDialogOpen) {
         CalculationItemDialogs(
             onDismiss = { zakatEvent(ZakatEvent.OpenMoneyDialog) },
@@ -379,16 +435,16 @@ private fun BottomBarItem(
     amount: String = "0.0"
 ) {
     Card(
-        modifier = Modifier.padding(vertical = 1.dp),
+        modifier = Modifier.padding(vertical = dimens.size1),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
-        shape = RoundedCornerShape(2.dp)
+        shape = RoundedCornerShape(dimens.size3)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 10.dp),
+                .padding(dimens.size10),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = text)

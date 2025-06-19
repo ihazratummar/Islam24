@@ -9,12 +9,7 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.core.presentation.zakat.screen.CalculationScreen
-import com.hazrat.islam24.core.presentation.zakat.screen.GoldInfo
-import com.hazrat.islam24.core.presentation.zakat.screen.MoneyInfo
-import com.hazrat.islam24.core.presentation.zakat.screen.MonthlyLivingCostInfo
 import com.hazrat.islam24.core.presentation.zakat.screen.NisabScreen
-import com.hazrat.islam24.core.presentation.zakat.screen.SilverInfo
-import com.hazrat.islam24.core.presentation.zakat.screen.TotalDebtInfo
 import com.hazrat.islam24.core.presentation.zakat.screen.ZakatDetails
 import com.hazrat.islam24.core.presentation.zakat.screen.ZakatScreen
 import com.hazrat.islam24.main.navigation.MainRoute
@@ -68,21 +63,6 @@ fun NavGraphBuilder.zakatNavGraph(
                     zakatEntity = zakat,
                     onBackClick = {
                         navController.popBackStack()
-                    },
-                    moneyInfoNav = {
-                        navController.navigate(MoneyInfoScreen)
-                    },
-                    goldInfoNav = {
-                        navController.navigate(GoldInfoScreen)
-                    },
-                    silverInfoNav = {
-                        navController.navigate(SilverInfoScreen)
-                    },
-                    monthInfoNav = {
-                        navController.navigate(MonthlyLivingCostInfoScreen)
-                    },
-                    totalDebtInfoNav = {
-                        navController.navigate(TotalDebtInfoScreen)
                     }
                 )
             }
@@ -100,57 +80,6 @@ fun NavGraphBuilder.zakatNavGraph(
                     }
                 },
                 onBackClick = {
-                    navController.popBackStack()
-                },
-                moneyInfoNav = {
-                    navController.navigate(MoneyInfoScreen)
-                },
-                goldInfoNav = {
-                    navController.navigate(GoldInfoScreen)
-                },
-                silverInfoNav = {
-                    navController.navigate(SilverInfoScreen)
-                },
-                monthInfoNav = {
-                    navController.navigate(MonthlyLivingCostInfoScreen)
-                },
-                totalDebtInfoNav = {
-                    navController.navigate(TotalDebtInfoScreen)
-                }
-            )
-        }
-
-        composable<MonthlyLivingCostInfoScreen> {
-            MonthlyLivingCostInfo(
-                onBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-        composable<TotalDebtInfoScreen> {
-            TotalDebtInfo(
-                onBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-        composable<GoldInfoScreen> {
-            GoldInfo(
-                onBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-        composable<SilverInfoScreen> {
-            SilverInfo(
-                onBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-        composable<MoneyInfoScreen> {
-            MoneyInfo(
-                onBack = {
                     navController.popBackStack()
                 }
             )
@@ -172,17 +101,3 @@ data object NisabScreen
 @Serializable
 data object CalculationScreen
 
-@Serializable
-data object MonthlyLivingCostInfoScreen
-
-@Serializable
-data object TotalDebtInfoScreen
-
-@Serializable
-data object GoldInfoScreen
-
-@Serializable
-data object SilverInfoScreen
-
-@Serializable
-data object MoneyInfoScreen

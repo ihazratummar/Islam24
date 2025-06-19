@@ -34,7 +34,16 @@ data class ZakatState(
     val isDebtAmountValid: Boolean = false,
     val isMonthCostValid: Boolean = false,
 
-    val sortType: DateType = DateType.DATE_DESC
+    val sortType: DateType = DateType.DATE_DESC,
+
+
+    val isGoldInfoDialogOpen: Boolean = false,
+    val isSilverInfoDialogOpen: Boolean = false,
+    val isMoneyInfoDialogOpen: Boolean = false,
+    val isBankCashInfoDialogOpen: Boolean = false,
+    val isTradeAmountInfoDialogOpen: Boolean = false,
+    val isMonthCostInfoDialogOpen: Boolean = false,
+    val isDebtInfoDialogOpen: Boolean = false,
     )
 
 enum class DateType{

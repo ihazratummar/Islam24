@@ -44,4 +44,10 @@ sealed interface ZakatEvent {
     data object ToggleSortType: ZakatEvent
 
     data class DeleteZakat(val zakatId: String): ZakatEvent
+
+    data object ToggleGoldInfoDialog: ZakatEvent
+    data object ToggleSilverInfoDialog: ZakatEvent
+    data object ToggleMoneyInfoDialog: ZakatEvent
+    data object ToggleMonthlyInfoDialog: ZakatEvent
+    data object ToggleTotalDebtInfoDialog: ZakatEvent
 }

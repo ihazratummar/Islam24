@@ -26,12 +26,7 @@ import com.hazrat.ui.theme.dimens
 fun ZakatDetails(
     modifier: Modifier = Modifier,
     zakatEntity: ZakatEntity,
-    onBackClick: () -> Unit = {},
-    moneyInfoNav: () -> Unit,
-    goldInfoNav: () -> Unit,
-    silverInfoNav: () -> Unit,
-    monthInfoNav: () -> Unit,
-    totalDebtInfoNav: () -> Unit
+    onBackClick: () -> Unit = {}
 ) {
 
     Box(
@@ -56,18 +51,18 @@ fun ZakatDetails(
                         text = stringResource(R.string.money),
                         amount = "${zakatEntity.money}",
                         infoNavigation = {
-                            moneyInfoNav()
+
                         }
                     )
                     CalculateItems(
                         text = stringResource(R.string.gold),
                         amount = "${zakatEntity.gold}",
-                        infoNavigation = { goldInfoNav() }
+                        infoNavigation = {  }
                     )
                     CalculateItems(
                         text = stringResource(R.string.silver),
                         amount = "${zakatEntity.silver}",
-                        infoNavigation = { silverInfoNav() }
+                        infoNavigation = { }
                     )
                     CalculateItems(
                         text = stringResource(R.string.trade_amount),
@@ -76,13 +71,13 @@ fun ZakatDetails(
                     CalculateItems(
                         text = stringResource(R.string.monthly_living_cost),
                         amount = "${zakatEntity.monthCost}",
-                        infoNavigation = { monthInfoNav() },
+                        infoNavigation = {  },
                         fontColor = MaterialTheme.colorScheme.error
                     )
                     CalculateItems(
                         text = stringResource(R.string.total_debt_on_you),
                         amount = "${zakatEntity.debt}",
-                        infoNavigation = { totalDebtInfoNav() },
+                        infoNavigation = {  },
                         fontColor = MaterialTheme.colorScheme.error
                     )
                 }
