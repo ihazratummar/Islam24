@@ -64,13 +64,13 @@ import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
-import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.MainRoute.BenifitsOfRecitingRoute
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
 import com.hazrat.ui.theme.dimens
+import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)

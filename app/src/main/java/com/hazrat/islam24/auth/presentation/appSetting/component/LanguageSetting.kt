@@ -20,8 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.hazrat.ui.R
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingEvent
+import com.hazrat.model.Languages
 import com.hazrat.ui.theme.dimens
-import com.hazrat.islam24.util.Languages
 
 /**
  * @author Hazrat Ummar Shaikh

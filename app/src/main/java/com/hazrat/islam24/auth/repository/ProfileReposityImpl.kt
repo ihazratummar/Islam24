@@ -20,9 +20,9 @@ import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
 import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
-import com.hazrat.islam24.util.error.Result
-import com.hazrat.islam24.util.error.UserDataError
-import com.hazrat.islam24.util.error.UserDataSuccess
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.UserDataError
+import com.hazrat.utils.result.error.UserDataSuccess
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

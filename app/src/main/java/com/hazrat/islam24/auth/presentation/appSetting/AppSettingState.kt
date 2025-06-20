@@ -1,6 +1,7 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
-import com.hazrat.islam24.util.Languages
+
+import com.hazrat.model.Languages
 
 data class AppSettingState(
     val currentLanguage: Languages ? = null ,

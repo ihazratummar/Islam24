@@ -32,10 +32,10 @@ import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Constants.DOWNLOADED_AZAN_FOLDER
 import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
 import com.hazrat.islam24.util.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.utils.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.MyFileUtils.isFilePresent
 import com.hazrat.islam24.util.MyFileUtils.saveMp3File
-import com.hazrat.islam24.util.datastore.DataStorePreference
+import com.hazrat.datastore.DataStorePreference
 import com.hazrat.islam24.util.downloader.Downloader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

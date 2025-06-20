@@ -14,14 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.hazrat.datastore.PrayerName
 import com.hazrat.islam24.core.data.database.PrayerDatabase
-import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
-import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.utils.Constants.INTERNALSTORAGEPICTUREFOLDER
+import com.hazrat.utils.Constants.PROFILE_PICTURE
+import com.hazrat.utils.DateUtil.getCurrentDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.io.File

@@ -6,7 +6,7 @@ import com.hazrat.islam24.core.data.dao.GregorianToHijriDao
 import com.hazrat.islam24.core.data.entity.GregorianToHijriEntity
 import com.hazrat.islam24.core.domain.model.gregoriantohijri.GregorianToHijriResponse
 import com.hazrat.islam24.core.domain.repository.GregorianToHijriRepository
-import com.hazrat.islam24.util.DateUtil
+import com.hazrat.utils.DateUtil
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import java.io.IOException

@@ -2,8 +2,7 @@ package com.hazrat.islam24.core.di
 
 import android.content.Context
 import androidx.room.Room
-import com.hazrat.islam24.core.remote.api.AthkarApiCall
-import com.hazrat.islam24.core.remote.api.NamesApi
+import com.hazrat.datastore.DataStorePreference
 import com.hazrat.islam24.core.data.dao.AthkarDao
 import com.hazrat.islam24.core.data.dao.NameDao
 import com.hazrat.islam24.core.data.database.AthkarDatabase
@@ -16,9 +15,10 @@ import com.hazrat.islam24.core.domain.repository.AthkarRepository
 import com.hazrat.islam24.core.domain.repository.HajjLiveRepository
 import com.hazrat.islam24.core.domain.repository.NamesRepository
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
+import com.hazrat.islam24.core.remote.api.AthkarApiCall
 import com.hazrat.islam24.core.remote.api.GoogleCloudConsoleApi
+import com.hazrat.islam24.core.remote.api.NamesApi
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.MyFileUtils
 import com.hazrat.islam24.util.NetworkConnectivityObserver
 import dagger.Module

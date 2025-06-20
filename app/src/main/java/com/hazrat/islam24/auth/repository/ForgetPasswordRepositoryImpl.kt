@@ -7,9 +7,9 @@ import com.hazrat.islam24.auth.model.RequestOtpBody
 import com.hazrat.islam24.auth.model.ResetPasswordBody
 import com.hazrat.islam24.auth.model.VerifyOtpBody
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.error.ForgetPasswordError
-import com.hazrat.islam24.util.error.ForgetPasswordSuccess
-import com.hazrat.islam24.util.error.Result
+import com.hazrat.utils.result.error.ForgetPasswordError
+import com.hazrat.utils.result.error.ForgetPasswordSuccess
+import com.hazrat.utils.result.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

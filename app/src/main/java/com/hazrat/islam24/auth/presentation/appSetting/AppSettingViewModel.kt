@@ -16,7 +16,7 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.util.changeLanguage
-import com.hazrat.islam24.util.datastore.DataStorePreference
+import com.hazrat.datastore.DataStorePreference
 import com.hazrat.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

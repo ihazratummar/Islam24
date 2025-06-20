@@ -10,9 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
-import androidx.glance.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
@@ -26,7 +24,6 @@ import com.hazrat.islam24.core.presentation.common.rememberImageLoader
 import com.hazrat.islam24.core.presentation.home.HomeViewModel
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
-import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.notification.MediaPlayerHelper
 import com.hazrat.islam24.notification.NotificationChannels
@@ -35,9 +32,9 @@ import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
 import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
-import com.hazrat.islam24.util.LocaleContextWrapper
 import com.hazrat.islam24.util.LocaleHelper
 import com.hazrat.ui.theme.Islam24Theme
+import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 import javax.inject.Inject
@@ -123,14 +120,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
-            val languageCode by mainViewModel.languageCode.collectAsStateWithLifecycle()
-            val updatedContext = remember(languageCode) {
-                LocaleContextWrapper.wrap(this, languageCode.toString())
-            }
 
             Islam24Theme(
-                darkTheme = isDarkModeEnabled,
-                updatedContext = updatedContext
+                darkTheme = isDarkModeEnabled
             ) {
                 rememberImageLoader(this)
                 NavGraph(

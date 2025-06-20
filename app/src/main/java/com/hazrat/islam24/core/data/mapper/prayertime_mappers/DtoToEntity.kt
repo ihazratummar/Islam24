@@ -2,7 +2,7 @@ package com.hazrat.islam24.core.data.mapper.prayertime_mappers
 
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.remote.dto.DailyDataDto
-import com.hazrat.islam24.util.DateUtil.timeStringToLong
+import com.hazrat.utils.DateUtil.timeStringToLong
 
 /**
  * @author Hazrat Ummar Shaikh

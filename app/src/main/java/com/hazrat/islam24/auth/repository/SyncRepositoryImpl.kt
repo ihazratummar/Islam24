@@ -3,7 +3,7 @@ package com.hazrat.islam24.auth.repository
 import android.util.Log
 import com.hazrat.islam24.core.domain.repository.QiblaRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
-import com.hazrat.islam24.core.domain.repository.ZakatRepository
+import com.hazrat.zakat.domain.repository.ZakatRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async

@@ -36,8 +36,10 @@ android {
 dependencies {
 
     implementation(project(":core:utils"))
+    implementation(project(":core:database"))
     implementation(project(":core:datastore"))
     implementation(project(":domain:usecase"))
+    implementation(project(":feature:zakat"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -59,4 +61,26 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
     //Datastore
     implementation (libs.androidx.datastore.preferences)
+
+
+    //Room
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    //Room Encryption
+    implementation( libs.android.database.sqlcipher)
+    implementation( libs.androidx.sqlite)
+
+    /*
+    FireBase
+     */
+    implementation (libs.play.services.auth)
+
+    implementation(libs.firebase.auth.ktx)
+    implementation (libs.firebase.database)
+    platform(libs.firebase.bom.v2821)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 }
