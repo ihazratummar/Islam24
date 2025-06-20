@@ -13,10 +13,10 @@ import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingReposit
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.remote.api.PrayerTimeApi
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.DateUtil
-import com.hazrat.islam24.util.DateUtil.dateLongToString
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
-import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.utils.DateUtil
+import com.hazrat.utils.DateUtil.dateLongToString
+import com.hazrat.utils.DateUtil.getCurrentDate
+import com.hazrat.utils.DateUtil.getCurrentDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

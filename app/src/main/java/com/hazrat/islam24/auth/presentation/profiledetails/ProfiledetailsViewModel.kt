@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.auth.presentation.UiText
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.repository.ProfileRepository
-import com.hazrat.islam24.util.error.Result
+import com.hazrat.utils.result.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow

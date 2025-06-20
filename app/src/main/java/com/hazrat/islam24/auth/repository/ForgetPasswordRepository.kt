@@ -1,8 +1,8 @@
 package com.hazrat.islam24.auth.repository
 
-import com.hazrat.islam24.util.error.ForgetPasswordError
-import com.hazrat.islam24.util.error.ForgetPasswordSuccess
-import com.hazrat.islam24.util.error.Result
+import com.hazrat.utils.result.error.ForgetPasswordError
+import com.hazrat.utils.result.error.ForgetPasswordSuccess
+import com.hazrat.utils.result.Result
 
 /**
  * @author Hazrat Ummar Shaikh

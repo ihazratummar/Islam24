@@ -1,8 +1,7 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
 import android.app.Activity
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
-import com.hazrat.islam24.util.Languages
+import com.hazrat.model.Languages
 
 /**
  * @author Hazrat Ummar Shaikh

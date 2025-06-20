@@ -9,15 +9,13 @@ import androidx.compose.runtime.remember
 @Composable
 fun AppUtils(
     appDimens: Dimens,
-    updatedContext: ContextWrapper,
     content: @Composable () -> Unit
 ) {
     val dimens = remember {
         appDimens
     }
     CompositionLocalProvider(
-        LocalAppDimens provides dimens,
-        LocalWrappedContext provides updatedContext
+        LocalAppDimens provides dimens
     ) {
         content()
     }

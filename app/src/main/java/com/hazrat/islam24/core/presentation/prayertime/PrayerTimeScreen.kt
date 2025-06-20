@@ -51,11 +51,11 @@ import com.hazrat.islam24.main.navigation.nvgraph.FajrSetting
 import com.hazrat.islam24.main.navigation.nvgraph.IshaSetting
 import com.hazrat.islam24.main.navigation.nvgraph.MaghribSetting
 import com.hazrat.ui.theme.dimens
-import com.hazrat.islam24.util.datastore.DataStorePreference
-import com.hazrat.islam24.util.DateUtil.dateLongToString
-import com.hazrat.islam24.util.DateUtil.getCountdownText
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
-import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.datastore.DataStorePreference
+import com.hazrat.utils.DateUtil.dateLongToString
+import com.hazrat.utils.DateUtil.getCountdownText
+import com.hazrat.utils.DateUtil.getCurrentDate
+import com.hazrat.utils.DateUtil.getCurrentDay
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)

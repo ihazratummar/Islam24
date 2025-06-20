@@ -65,6 +65,8 @@ kizitn_calendar = "2.7.0"
 appcompat = "1.7.1"
 material = "1.12.0"
 
+lottieCompose = "6.1.0"
+
 [libraries]
 
 
@@ -151,7 +153,7 @@ ummalqura = { group = "com.github.msarhan", name = "ummalqura-calendar", version
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 
 
 [plugins]

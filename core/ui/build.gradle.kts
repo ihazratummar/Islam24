@@ -64,4 +64,8 @@ dependencies {
 
     //Splash Api
     implementation (libs.androidx.core.splashscreen)
+
+    //Lottie Animation
+    implementation(libs.lottie.compose)
+
 }

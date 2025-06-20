@@ -81,9 +81,12 @@ dependencies {
 
     implementation(project(":core:ui"))
     implementation(project(":core:di"))
+    implementation(project(":core:utils"))
+    implementation(project(":domain:model"))
     implementation(project(":core:datastore"))
     implementation(project(":feature:common"))
     implementation(project(":feature:calendar"))
+    implementation(project(":feature:zakat"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -2,9 +2,9 @@ package com.hazrat.islam24.auth.presentation.forgetPassword
 
 import com.hazrat.ui.R
 import com.hazrat.islam24.auth.presentation.UiText
-import com.hazrat.islam24.util.error.ForgetPasswordError
-import com.hazrat.islam24.util.error.ForgetPasswordSuccess
-import com.hazrat.islam24.util.error.Result
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.ForgetPasswordError
+import com.hazrat.utils.result.error.ForgetPasswordSuccess
 
 fun ForgetPasswordError.asUiText(): UiText {
     return when(this){

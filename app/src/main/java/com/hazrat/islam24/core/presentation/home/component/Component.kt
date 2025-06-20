@@ -42,7 +42,7 @@ import com.hazrat.islam24.core.domain.model.ui_text_model.benefitsOfRecitingData
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
 import com.hazrat.islam24.core.presentation.common.LocationOnCard
 import com.hazrat.islam24.core.presentation.home.HomeState
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.utils.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.getSystemLanguage
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.Hidaya

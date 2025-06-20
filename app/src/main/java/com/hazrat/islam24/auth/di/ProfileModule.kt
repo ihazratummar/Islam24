@@ -14,9 +14,9 @@ import com.hazrat.islam24.auth.repository.SyncRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.QiblaRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
-import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Constants.ISLAM24_BACKEND_BASE_URL
+import com.hazrat.zakat.domain.repository.ZakatRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

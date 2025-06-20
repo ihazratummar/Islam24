@@ -19,10 +19,10 @@ import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.home.HomeViewModel
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
-import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.AppNavigator
 import com.hazrat.islam24.main.navigation.MainRoute
+import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)

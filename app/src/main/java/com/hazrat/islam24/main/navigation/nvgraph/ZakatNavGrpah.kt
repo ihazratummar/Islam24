@@ -2,17 +2,17 @@ package com.hazrat.islam24.main.navigation.nvgraph
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.navigation.toRoute
-import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
-import com.hazrat.islam24.core.presentation.zakat.screen.CalculationScreen
-import com.hazrat.islam24.core.presentation.zakat.screen.NisabScreen
-import com.hazrat.islam24.core.presentation.zakat.screen.ZakatDetails
-import com.hazrat.islam24.core.presentation.zakat.screen.ZakatScreen
 import com.hazrat.islam24.main.navigation.MainRoute
+import com.hazrat.zakat.screen.zakat.ZakatViewModel
+import com.hazrat.zakat.screen.zakat.screen.CalculationScreen
+import com.hazrat.zakat.screen.zakat.screen.NisabScreen
+import com.hazrat.zakat.screen.zakat.screen.zakat_screen.ZakatScreen
+import com.hazrat.zakat.screen.zakat.screen.zakat_screen.ZakatScreenViewModel
 import kotlinx.serialization.Serializable
 
 /**
@@ -25,18 +25,19 @@ fun NavGraphBuilder.zakatNavGraph(
 ) {
     navigation<Zakat>(MainRoute.ZakatScreen) {
         composable<MainRoute.ZakatScreen> {
-            val zakatState by zakatViewModel.zakatState.collectAsState()
+            val zakatScreenViewModel = hiltViewModel<ZakatScreenViewModel>()
+            val zakatScreenState by zakatScreenViewModel.zakatState.collectAsState()
             ZakatScreen(
-                zakatState = zakatState,
-                zakatEvent = zakatViewModel::event,
+                zakatScreenState =zakatScreenState ,
+                zakatScreenEvent = zakatScreenViewModel::zakatScreenEvent,
                 onNewAddClick = {
                     navController.navigate(NisabScreen)
                 },
-                openZakat = { id ->
-                    navController.navigate(ZakatDetailsScreen(zakatId = id))
-                },
                 onBackClick = {
                     navController.popBackStack()
+                },
+                getZakatDetails = {
+                    zakatScreenViewModel.getZakatDetails(it)
                 }
             )
         }
@@ -53,19 +54,6 @@ fun NavGraphBuilder.zakatNavGraph(
                     navController.popBackStack()
                 }
             )
-        }
-        composable<ZakatDetailsScreen> { backStackEntry ->
-            val zakatState by zakatViewModel.zakatState.collectAsState()
-            val zakatId = backStackEntry.toRoute<ZakatDetailsScreen>()
-            val zakat = zakatState.zakatEntity.find { it.id == zakatId.zakatId }
-            if (zakat != null) {
-                ZakatDetails(
-                    zakatEntity = zakat,
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
-                )
-            }
         }
         composable<CalculationScreen> {
             val zakatState by zakatViewModel.zakatState.collectAsState()
@@ -91,9 +79,6 @@ fun NavGraphBuilder.zakatNavGraph(
 @Serializable
 data object Zakat
 
-
-@Serializable
-data class ZakatDetailsScreen(val zakatId: String)
 
 @Serializable
 data object NisabScreen

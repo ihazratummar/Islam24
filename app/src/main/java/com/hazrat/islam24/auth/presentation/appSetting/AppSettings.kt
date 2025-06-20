@@ -1,6 +1,5 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
-import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
@@ -50,18 +49,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
-import com.hazrat.ui.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
 import com.hazrat.islam24.core.presentation.common.BackIcon
 import com.hazrat.islam24.main.mainActivity.MainActivity
-import com.hazrat.ui.theme.dimens
-import com.hazrat.islam24.util.Languages
 import com.hazrat.islam24.util.hapticFeedbacks
+import com.hazrat.model.Languages
+import com.hazrat.ui.R
+import com.hazrat.ui.theme.dimens
 import kotlinx.coroutines.launch
 
 /**

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.datastore.UserDataStore
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.utils.DateUtil.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
