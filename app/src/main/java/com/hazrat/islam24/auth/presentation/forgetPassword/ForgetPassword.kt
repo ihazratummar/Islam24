@@ -405,7 +405,6 @@ fun ForgetPassword(
                                     Spacer(modifier = Modifier.width(dimens.size5))
                                     Text(
                                         text = "Password do not match",
-                                        fontFamily = FontFamily(Font(R.font.nunitoregular)),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.error
                                     )

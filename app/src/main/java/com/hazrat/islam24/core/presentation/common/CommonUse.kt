@@ -231,7 +231,7 @@ fun BackIcon(
     Icon(
         painter = icon,
         contentDescription = null,
-        modifier = Modifier.padding(dimens.size20)
+        modifier = Modifier.padding(dimens.size5)
             .clickable(
                 onClick = {
                     onBackClick()

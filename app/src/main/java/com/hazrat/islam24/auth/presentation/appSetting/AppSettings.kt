@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
@@ -116,12 +117,12 @@ fun AppSettingScreen(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                modifier = Modifier.padding(top = dimens.size30),
                 title = {
                     Text(
                         text = stringResource(id = R.string.setting),
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.fillMaxWidth()
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.ExtraBold
+                        )
                     )
                 },
                 navigationIcon = {
@@ -129,7 +130,7 @@ fun AppSettingScreen(
                         onBackClick = { onBackClick() }
                     )
                 },
-                windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
+                windowInsets = WindowInsets(top = dimens.size20)
             )
         }
     ) { paddingValues ->
@@ -173,7 +174,7 @@ fun AppSettingScreen(
                     Column {
                         Text(
                             text = stringResource(R.string.app_setting),
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(
                                 horizontal = dimens.size15,
                                 vertical = dimens.size10
@@ -245,7 +246,7 @@ fun AppSettingScreen(
                     Column {
                         Text(
                             text = stringResource(R.string.legal),
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(
                                 horizontal = dimens.size15,
                                 vertical = dimens.size10
@@ -300,7 +301,7 @@ fun AppSettingScreen(
                                 context.imageLoader.memoryCache?.clear()
                             },
                             iconColor = MaterialTheme.colorScheme.error,
-                            cardContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            cardContainerColor = MaterialTheme.colorScheme.tertiaryContainer
                         )
                     }
 

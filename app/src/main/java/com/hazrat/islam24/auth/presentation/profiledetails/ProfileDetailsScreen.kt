@@ -47,6 +47,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -64,6 +65,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
@@ -146,8 +148,15 @@ fun ProfileDetailsScreen(
         },
         topBar = {
             TopAppBar(
-                modifier = Modifier.padding(top = dimens.size30),
-                title = { Text(text = "Profile") },
+                windowInsets = WindowInsets(top = dimens.size20),
+                title = {
+                    Text(
+                        text = "Profile",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -158,7 +167,7 @@ fun ProfileDetailsScreen(
                         )
                     }
                 },
-                windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
         modifier = Modifier
@@ -173,9 +182,9 @@ fun ProfileDetailsScreen(
             item {
                 ProfilePicture(
                     profileDetailsEvent = profileDetailsEvent,
-                    onImageDragStart = {imageUri ->
+                    onImageDragStart = { imageUri ->
                         activeImage = imageUri
-                        showImagePreview  = true
+                        showImagePreview = true
                     },
                     onImageDragEnd = { showImagePreview = false },
                     context = context

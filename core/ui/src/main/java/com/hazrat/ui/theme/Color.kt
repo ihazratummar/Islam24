@@ -3,49 +3,57 @@ package com.hazrat.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // 🌞 Light Theme
-val primaryLight = Color(0xFF1E726D)
-val onPrimaryLight = Color(0xFFFFFFFF)
-val primaryContainerLight = Color(0xFFA8E7E4)
-val onPrimaryContainerLight = Color(0xFF00201F)
 
-val secondaryLight = Color(0xFF40798C)
-val onSecondaryLight = Color(0xFFFFFFFF)
-val secondaryContainerLight = Color(0xFFCBEAF5)
-val onSecondaryContainerLight = Color(0xFF062B39)
+val primaryLight = Color(0xFF1E726D) // ✅ Main brand color – buttons, top app bars, toggles
+val onPrimaryLight = Color(0xFFFFFFFF) // ✅ Text/icons on primary buttons/app bars
 
-val tertiaryLight = Color(0xFFEF6C57)
-val onTertiaryLight = Color(0xFFFFFFFF)
-val tertiaryContainerLight = Color(0xFFFFDAD3)
-val onTertiaryContainerLight = Color(0xFF3E1914)
+val primaryContainerLight = Color(0xFFA8E7E4) // ✅ Used for elevated button containers, cards
+val onPrimaryContainerLight = Color(0xFF00201F) // ✅ Text/icons inside primaryContainer
 
-val errorLight = Color(0xFFD32F2F)
-val onErrorLight = Color.White
-val errorContainerLight = Color(0xFFFFDAD4)
-val onErrorContainerLight = Color(0xFF410002)
+val secondaryLight = Color(0xFF40798C) // ✅ For chips, FABs, tab indicators
+val onSecondaryLight = Color(0xFFFFFFFF) // ✅ Text/icons on secondary elements
 
-val backgroundLight = Color(0xFFF2FAF9)
-val onBackgroundLight = Color(0xFF0A1B1B)
+val secondaryContainerLight = Color(0xFFCBEAF5) // ✅ Background of secondary cards/chips
+val onSecondaryContainerLight = Color(0xFF062B39) // ✅ Text/icons on secondaryContainer
 
-val surfaceLight = Color(0xFFFFFFFF)
-val onSurfaceLight = Color(0xFF1B3131)
+val tertiaryLight = Color(0xFFEF6C57) // ✅ Accent color – sliders, checkboxes, icons
+val onTertiaryLight = Color(0xFFFFFFFF) // ✅ Text/icons on accent background
 
-val surfaceVariantLight = Color(0xFFDDEFEF)
-val onSurfaceVariantLight = Color(0xFF3B4D4D)
+val tertiaryContainerLight = Color(0xFFFFDAD3) // ✅ Background for tertiary cards/surfaces
+val onTertiaryContainerLight = Color(0xFF3E1914) // ✅ Text/icons for tertiaryContainer
 
-val outlineLight = Color(0xFFB3D4D1)
-val outlineVariantLight = Color(0xFF88AAA8)
-val scrimLight = Color(0xFF0F302B)
+val errorLight = Color(0xFFD32F2F) // ❗ Used for error buttons, outlines, text
+val onErrorLight = Color.White // ✅ Text/icons on error background
 
-val inverseSurfaceLight = Color(0xFF164E4A)
-val inverseOnSurfaceLight = Color(0xFFE8F6F3)
+val errorContainerLight = Color(0xFFFFDAD4) // ❗ Error surfaces like forms, alerts
+val onErrorContainerLight = Color(0xFF410002) // ❗ Text/icons on errorContainer
 
-val surfaceDimLight = Color(0xFFF2FAF9)
-val surfaceBrightLight = Color(0xFFECF8F6)
-val surfaceContainerLowestLight = Color(0xFFEFFAF8)
-val surfaceContainerLowLight = Color(0xFFF4FBFA)
-val surfaceContainerLight = Color(0xFFF6FDFC)
-val surfaceContainerHighLight = Color(0xFFF3FAF9)
-val surfaceContainerHighestLight = Color(0xFFF1F8F7)
+val backgroundLight = Color(0xFFF2FAF9) // ✅ Scaffold background
+val onBackgroundLight = Color(0xFF0A1B1B) // ✅ Default readable text on background
+
+val surfaceLight = Color(0xFFFFFFFF) // ✅ Main surface – cards, sheets, modals
+val onSurfaceLight = Color(0xFF1B3131) // ✅ Text/icons on top of surfaces
+
+val surfaceVariantLight = Color(0xFFDDEFEF) // ✅ Variant surface – list items, inputs
+val onSurfaceVariantLight = Color(0xFF3B4D4D) // ✅ Text/icons on surfaceVariant
+
+val outlineLight = Color(0xFFB3D4D1) // ✅ Border strokes, dividers
+val outlineVariantLight = Color(0xFF88AAA8) // ✅ Subtle outlines, separators
+
+val scrimLight = Color(0xFF0F302B) // ✅ Used behind dialogs, drawers
+
+val inverseSurfaceLight = Color(0xFF164E4A) // ✅ Used for inverted app bar or sheets
+val inverseOnSurfaceLight = Color(0xFFE8F6F3) // ✅ Text/icons on inverseSurface
+
+// Elevation color levels
+val surfaceDimLight = Color(0xFFF2FAF9) // ✅ Slightly elevated surfaces (low elevation)
+val surfaceBrightLight = Color(0xFFECF8F6) // ✅ Slight highlight (e.g., hover or pressed)
+val surfaceContainerLowestLight = Color(0xFFEFFAF8) // ✅ Used for flat backgrounds
+val surfaceContainerLowLight = Color(0xFFF4FBFA) // ✅ Slightly raised cards
+val surfaceContainerLight = Color(0xFFF6FDFC) // ✅ Common surface container background
+val surfaceContainerHighLight = Color(0xFFF3FAF9) // ✅ Cards, buttons with shadow
+val surfaceContainerHighestLight = Color(0xFFF1F8F7) // ✅ Most elevated elements (dialogs, modals)
+
 
 
 // 🌚 Dark Theme

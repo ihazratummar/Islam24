@@ -100,13 +100,11 @@ fun AuthSignupScreen(
                     Text(
                         text = "Sign Up",
                         style = MaterialTheme.typography.displayLarge,
-                        fontFamily = FontFamily(Font(R.font.nunitobold))
                     )
                     Spacer(modifier = Modifier.height(dimens.size20))
                     Text(
                         text = "First create your account",
                         style = MaterialTheme.typography.bodyLarge,
-                        fontFamily = FontFamily(Font(R.font.nunitobold)),
                         color = Color(0xFFA8A6A7)
                     )
                     Spacer(modifier = Modifier.height(dimens.size40))
@@ -217,7 +215,6 @@ fun AuthSignupScreen(
                             Spacer(modifier = Modifier.width(dimens.size5))
                             Text(
                                 text = "Password do not match",
-                                fontFamily = FontFamily(Font(R.font.nunitoregular)),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -233,13 +230,11 @@ fun AuthSignupScreen(
                     Row {
                         Text(
                             text = "Already have an account?",
-                            fontFamily = FontFamily(Font(R.font.nunitoregular)),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Spacer(modifier = Modifier.width(dimens.size2))
                         Text(
                             text = "Sign In",
-                            fontFamily = FontFamily(Font(R.font.nunitoregular)),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.primary,
                             textDecoration = TextDecoration.Underline,
@@ -290,7 +285,6 @@ private fun SignupButton(
     ) {
         Text(
             text = "SIGN UP",
-            fontFamily = FontFamily(Font(R.font.nunitoregular)),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold
         )
