@@ -3,20 +3,17 @@ package com.hazrat.islam24.main.mainActivity
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.datastore.AppDataStore
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.Languages
-import com.hazrat.islam24.util.datastore.AppDataStore
-import com.hazrat.islam24.util.datastore.DataStorePreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -29,8 +26,7 @@ class MainViewModel @Inject constructor(
     profileRepository: ProfileRepository,
     private val locationRepository: LocationRepository,
     networkRepository: NetworkRepository,
-    private val appDataStore: AppDataStore,
-    private val dataStorePreference: DataStorePreference
+    private val appDataStore: AppDataStore
 ) : ViewModel() {
 
 
@@ -43,7 +39,7 @@ class MainViewModel @Inject constructor(
 
     val isDarkMode : StateFlow<Boolean>
     val isHapticFeedback  : StateFlow<Boolean>
-    val languageCode : StateFlow<Languages>
+
 
     private val networkStatus: StateFlow<ConnectivityObserver.Status> =
         networkRepository.networkStatus
@@ -71,12 +67,6 @@ class MainViewModel @Inject constructor(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = initialHaptic
-        )
-        val language = runBlocking { dataStorePreference.getLanguage() }
-        languageCode = flowOf(language).stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = language
         )
     }
 

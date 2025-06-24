@@ -15,8 +15,8 @@ import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingReposit
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.notification.PrayerAlarmManager
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.datastore.DataStorePreference
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
+import com.hazrat.datastore.DataStorePreference
+import com.hazrat.utils.DateUtil.getCurrentDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

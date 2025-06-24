@@ -8,9 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import com.hazrat.islam24.ui.theme.Islam24Theme
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 @Composable
 fun ContinueButton(
@@ -29,11 +27,11 @@ fun ContinueButton(
     }
 }
 
-@Preview
-@Composable
-fun ContinueButtonPreview(){
-    Islam24Theme {
-        ContinueButton(buttonText = "Continue", onClick = {}
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun ContinueButtonPreview(){
+//    Islam24Theme {
+//        ContinueButton(buttonText = "Continue", onClick = {}
+//        )
+//    }
+//}

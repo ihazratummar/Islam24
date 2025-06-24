@@ -20,11 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.islam24.R
-import com.hazrat.islam24.core.domain.model.ui_text_model.BenefitsOfRecitingData
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.domain.model.ui_text_model.benefitsOfRecitingDataList
 import com.hazrat.islam24.core.presentation.common.BasicTopBar
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh

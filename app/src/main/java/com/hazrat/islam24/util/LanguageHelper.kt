@@ -7,12 +7,10 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
-import com.hazrat.islam24.R
 import com.hazrat.islam24.main.mainActivity.MainActivity
+import com.hazrat.model.Languages
 import java.util.Locale
 
 /**
@@ -53,16 +51,4 @@ fun changeLanguage(context: Context, language: Languages) {
         // Set application-wide locale using AppCompatDelegate
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageString))
     }
-}
-
-enum class Languages {
-    ENGLISH {
-        override fun getString() = R.string.english
-    },
-    BENGALI {
-        override fun getString() = R.string.bengali
-    };
-
-    @StringRes
-    abstract fun getString(): Int
 }

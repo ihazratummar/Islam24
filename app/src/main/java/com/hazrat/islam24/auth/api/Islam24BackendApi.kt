@@ -17,6 +17,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
+
 interface Islam24BackendApi {
     @POST("request_otp")
     suspend fun requestOtp(@Body body: RequestOtpBody): Response<RequestOtpResponse>

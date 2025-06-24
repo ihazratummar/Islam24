@@ -36,7 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.authNavGraph
@@ -51,8 +51,7 @@ import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.al_quran.SurahScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
-import com.hazrat.islam24.core.presentation.calendar.CalendarViewModel
-import com.hazrat.islam24.core.presentation.calendar.GregorianCalendarScreen
+import com.hazrat.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.haj_live.HajjLive
 import com.hazrat.islam24.core.presentation.haj_live.HajjLiveViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
@@ -65,13 +64,13 @@ import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
 import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
-import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.MainRoute.BenifitsOfRecitingRoute
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
+import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import kotlinx.serialization.Serializable
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -141,7 +140,7 @@ fun AppNavigator(
                         navController.navigate(
                             MainRoute.SurahScreenRoute(
                                 surahNumber = surah,
-                                ayahNumber = ayah,
+                                ayahNumber = ayah - 2,
                                 isTracking = false
                             )
                         )
@@ -212,11 +211,11 @@ fun AppNavigator(
 
             prayerNav(navController, prayerTimeViewModel)
             composable<MainRoute.QiblaDirectionScreen> {
-//                val viewModel: QiblaViewModel = hiltViewModel()
-                val locationName by qiblaViewModel.locationName.collectAsState()
-                val state by qiblaViewModel.qiblaState.collectAsStateWithLifecycle()
-                val qiblaEvent = qiblaViewModel::onEvent
-                val authState by qiblaViewModel.authState.observeAsState(initial = AuthState.Unauthenticated)
+                val viewModel: QiblaViewModel = hiltViewModel()
+                val locationName by viewModel.locationName.collectAsState()
+                val state by viewModel.qiblaState.collectAsStateWithLifecycle()
+                val qiblaEvent = viewModel::onEvent
+                val authState by viewModel.authState.observeAsState(initial = AuthState.Unauthenticated)
                 QiblaScreen(
                     locationName = locationName,
                     state = state,
@@ -258,11 +257,8 @@ fun AppNavigator(
                 )
             }
             composable<MainRoute.CalendarScreen> {
-                val viewModel: CalendarViewModel = hiltViewModel()
-                val gregorianToHijriEntity by viewModel.gregorianToHijriEntity.collectAsState()
-                GregorianCalendarScreen(
-                    onBackClick = { navController.popBackStack() },
-                    gregorianToHijriEntity = gregorianToHijriEntity
+                CalendarScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
             composable<MainRoute.AthkarScreen> {

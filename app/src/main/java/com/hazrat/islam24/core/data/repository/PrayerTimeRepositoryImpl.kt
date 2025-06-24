@@ -3,7 +3,7 @@ package com.hazrat.islam24.core.data.repository
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.entity.LocationEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
@@ -13,10 +13,10 @@ import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingReposit
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.remote.api.PrayerTimeApi
 import com.hazrat.islam24.util.ConnectivityObserver
-import com.hazrat.islam24.util.DateUtil
-import com.hazrat.islam24.util.DateUtil.dateLongToString
-import com.hazrat.islam24.util.DateUtil.getCurrentDate
-import com.hazrat.islam24.util.DateUtil.getCurrentDay
+import com.hazrat.utils.DateUtil
+import com.hazrat.utils.DateUtil.dateLongToString
+import com.hazrat.utils.DateUtil.getCurrentDate
+import com.hazrat.utils.DateUtil.getCurrentDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +42,7 @@ class PrayerTimeRepositoryImpl(
     private val prayerSettingRepository: PrayerSettingRepository,
     private val prayerTimeDao: PrayerTimeDao,
     private val context: Context,
-    private val networkRepository: NetworkRepository
+    networkRepository: NetworkRepository
 ) : PrayerTimeRepository {
 
     private val networkStatus: StateFlow<ConnectivityObserver.Status> =
@@ -58,7 +58,9 @@ class PrayerTimeRepositoryImpl(
             val location: LocationEntity? = locationRepository.getLocation()
             val latitude = location?.latitude ?: 21.422487
             val longitude = location?.longitude ?: 39.826206
+            Log.d("NewPrayerTimeRepositoryImpl", "Latitude: $latitude, Longitude: $longitude")
             val methodList = prayerSettingRepository.getCalculationMethod().firstOrNull()
+            Log.d("NewPrayerTimeRepositoryImpl", "Method: $methodList")
             val juristicList = prayerSettingRepository.getJuristicMethod().firstOrNull()
             val methodValue = methodList?.method ?: 1
             val schoolValue = juristicList?.school ?: 0

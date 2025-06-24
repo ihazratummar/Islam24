@@ -1,10 +1,10 @@
 package com.hazrat.islam24.auth.presentation.profiledetails
 
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.auth.presentation.UiText
-import com.hazrat.islam24.util.error.Result
-import com.hazrat.islam24.util.error.UserDataError
-import com.hazrat.islam24.util.error.UserDataSuccess
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.UserDataError
+import com.hazrat.utils.result.error.UserDataSuccess
 
 /**
  * @author Hazrat Ummar Shaikh

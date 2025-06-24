@@ -14,15 +14,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    profileRepository: ProfileRepository
 ) : ViewModel() {
 
 
     val profileState: StateFlow<ProfileState> = profileRepository.profileState
+    val authState: LiveData<AuthState> = profileRepository.authState
     init {
         profileRepository.checkAuthStatus()
     }
-    val authState: LiveData<AuthState> = profileRepository.authState
     fun onEvent(event: ProfileEvent) {
 
     }

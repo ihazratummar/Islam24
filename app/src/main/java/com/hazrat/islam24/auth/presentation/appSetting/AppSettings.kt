@@ -1,6 +1,5 @@
 package com.hazrat.islam24.auth.presentation.appSetting
 
-import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
@@ -32,6 +31,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -49,18 +49,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
-import com.hazrat.islam24.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileEvent
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
 import com.hazrat.islam24.core.presentation.common.BackIcon
 import com.hazrat.islam24.main.mainActivity.MainActivity
-import com.hazrat.islam24.ui.theme.dimens
-import com.hazrat.islam24.util.Languages
 import com.hazrat.islam24.util.hapticFeedbacks
+import com.hazrat.model.Languages
+import com.hazrat.ui.R
+import com.hazrat.ui.theme.dimens
 import kotlinx.coroutines.launch
 
 /**
@@ -76,12 +74,10 @@ fun AppSettingScreen(
     isHapticFeedback: Boolean = false,
     onPolicyClick: () -> Unit = {},
     onBackClick: () -> Unit,
-    profileEvent: (ProfileEvent) -> Unit,
-    profileState: ProfileState,
 ) {
 
     val context = LocalContext.current
-    val activity: Activity = LocalActivity.current as MainActivity
+    val activity = LocalActivity.current as? MainActivity
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -119,6 +115,7 @@ fun AppSettingScreen(
         },
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 modifier = Modifier.padding(top = dimens.size30),
                 title = {
                     Text(
@@ -142,7 +139,9 @@ fun AppSettingScreen(
                 leadingIcon = painterResource(id = R.drawable.like),
                 tabName = stringResource(id = R.string.rate),
                 onClick = {
-                    appSettingEvent(AppSettingEvent.RateUs(activity))
+                    activity?.let {
+                        appSettingEvent(AppSettingEvent.RateUs(activity))
+                    }
                 },
                 trailingIcon = painterResource(id = R.drawable.chevron_right)
             ),

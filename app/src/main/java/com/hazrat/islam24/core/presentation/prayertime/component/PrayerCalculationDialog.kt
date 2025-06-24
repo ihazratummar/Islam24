@@ -25,10 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.hazrat.islam24.R
+import com.hazrat.ui.R
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.CalculationMethodDetails
 import com.hazrat.islam24.core.domain.model.prayertime.prayersettingmodel.prayerMethods
-import com.hazrat.islam24.ui.theme.dimens
+import com.hazrat.ui.theme.dimens
 
 
 @OptIn(ExperimentalMaterial3Api::class)

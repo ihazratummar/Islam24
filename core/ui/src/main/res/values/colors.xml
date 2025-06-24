@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Calendar Customization -->
+    <color name="calendar_day_text">#000000</color>
+    <color name="calendar_day_text_light">#FFFFFF</color>
+    <color name="calendar_selected_day_background">#FFEB3B</color>
+    <color name="calendar_today_stroke">#3F51B5</color>
+    <color name="calendar_holiday_text">#D32F2F</color>
+
+</resources>

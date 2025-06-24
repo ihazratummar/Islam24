@@ -8,13 +8,10 @@ package com.hazrat.islam24.notification
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.net.toUri
-import com.hazrat.islam24.main.mainActivity.MainActivity
-import com.hazrat.islam24.receiver.PrayerTimeReceiver
+import com.hazrat.datastore.PrayerName
 import com.hazrat.islam24.notification.NotificationConstant.ASR_MESSAGE_CONTENT
 import com.hazrat.islam24.notification.NotificationConstant.ASR_MESSAGE_KEY
 import com.hazrat.islam24.notification.NotificationConstant.ASR_TITLE_CONTENT
@@ -35,7 +32,7 @@ import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_MESSAGE_CONT
 import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_MESSAGE_KEY
 import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_TITLE_CONTENT
 import com.hazrat.islam24.notification.NotificationConstant.MAGHRIB_TITLE_KEY
-import com.hazrat.islam24.util.datastore.PrayerName
+import com.hazrat.islam24.receiver.PrayerTimeReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Calendar
 import javax.inject.Inject

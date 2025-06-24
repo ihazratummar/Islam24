@@ -14,15 +14,15 @@ import com.hazrat.islam24.auth.repository.SyncRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.QiblaRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
-import com.hazrat.islam24.core.domain.repository.ZakatRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Constants.ISLAM24_BACKEND_BASE_URL
-import com.hazrat.islam24.util.Constants.RENDER_BASE_URL
+import com.hazrat.zakat.domain.repository.ZakatRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -39,11 +39,16 @@ object ProfileModule {
         auth: FirebaseAuth,
         firestore: FirebaseFirestore,
         storage: FirebaseStorage,
-        networkRepository: NetworkRepository
+        networkRepository: NetworkRepository,
+        firebaseAuth: FirebaseAuth,
+        coroutineScope: CoroutineScope,
+        syncRepository: SyncRepository
     ): ProfileRepository {
         return ProfileRepositoryImpl(
             context = context, auth = auth, fireStore = firestore,
-            storage = storage, networkRepository = networkRepository
+            storage = storage, networkRepository = networkRepository,
+            coroutineScope = coroutineScope,
+            syncRepository = syncRepository
         )
     }
 

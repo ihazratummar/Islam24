@@ -4,23 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findNavController
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
 import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.islam24.auth.presentation.login.LoginViewModel
@@ -33,7 +24,6 @@ import com.hazrat.islam24.core.presentation.common.rememberImageLoader
 import com.hazrat.islam24.core.presentation.home.HomeViewModel
 import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
-import com.hazrat.islam24.core.presentation.zakat.ZakatViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.notification.MediaPlayerHelper
 import com.hazrat.islam24.notification.NotificationChannels
@@ -42,12 +32,10 @@ import com.hazrat.islam24.service.LocationHandler
 import com.hazrat.islam24.service.LocationManager
 import com.hazrat.islam24.service.PermissionsManager
 import com.hazrat.islam24.service.UpdateManager
-import com.hazrat.islam24.ui.theme.Islam24Theme
-import com.hazrat.islam24.util.LocaleContextWrapper
 import com.hazrat.islam24.util.LocaleHelper
+import com.hazrat.ui.theme.Islam24Theme
+import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
@@ -124,19 +112,17 @@ class MainActivity : ComponentActivity() {
         permissionsManager.onPermissionGranted = {
             locationManager.getLastKnownLocation()
         }
-        permissionsManager.requestPermission()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionsManager.requestPermission()
+        }
         permissionsManager.requestExactAlarmPermission()
         notificationHelper.createNotificationChannels()
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
-            val languageCode by mainViewModel.languageCode.collectAsStateWithLifecycle()
-            val context = LocalContext.current
-            val updateContext = remember(languageCode) {
-                LocaleContextWrapper.wrap(context = context, languageCode = languageCode.name)
-            }
+
             Islam24Theme(
-                darkTheme = !isDarkModeEnabled
+                darkTheme = isDarkModeEnabled
             ) {
                 rememberImageLoader(this)
                 NavGraph(

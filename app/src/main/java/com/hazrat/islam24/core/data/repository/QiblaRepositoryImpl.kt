@@ -3,9 +3,9 @@ package com.hazrat.islam24.core.data.repository
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.islam24.core.domain.repository.QiblaRepository
 import com.hazrat.islam24.util.Constants.USER_COLLECTION
-import com.hazrat.islam24.util.datastore.UserDataStore
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await

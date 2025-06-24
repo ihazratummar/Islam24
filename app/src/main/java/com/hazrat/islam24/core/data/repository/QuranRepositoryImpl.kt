@@ -2,12 +2,10 @@ package com.hazrat.islam24.core.data.repository
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.hazrat.islam24.core.remote.api.QuranApi
 import com.hazrat.islam24.core.domain.model.al_quran_model.FavoriteAyah
 import com.hazrat.islam24.core.domain.model.al_quran_model.FavoritesList
 import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_ar.ArAyah
@@ -18,11 +16,12 @@ import com.hazrat.islam24.core.domain.model.al_quran_model.local_quran_translite
 import com.hazrat.islam24.core.domain.model.al_quran_model.meta_data_juz.parseJuzJson
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranState
+import com.hazrat.islam24.core.remote.api.QuranApi
 import com.hazrat.islam24.util.Constants.PARENT_FOLDER_NAME_DOWNLOAD
 import com.hazrat.islam24.util.Constants.USER_COLLECTION
-import com.hazrat.islam24.util.datastore.DataStorePreference
 import com.hazrat.islam24.util.MyFileUtils
 import com.hazrat.islam24.util.checkSystemLanguage
+import com.hazrat.datastore.DataStorePreference
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
