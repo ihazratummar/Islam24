@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -189,7 +190,6 @@ fun TimeLocationCard(
 }
 
 
-
 @Composable
 fun RamadanCard() {
     val currentDay = LocalDate.now()
@@ -250,7 +250,7 @@ fun BenefitsOfRecitingWidget(
                 shape = RoundedCornerShape(dimens.size10)
             ),
         colors = CardDefaults.cardColors(
-            containerColor =  MaterialTheme.colorScheme.secondaryContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
         Column(
@@ -269,13 +269,13 @@ fun BenefitsOfRecitingWidget(
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 )
-                Text(
-                    text = "Details",
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Thin
-                    ),
-                    modifier = Modifier.clickable(onClick = { onClick() })
+                Icon(
+                    painter = painterResource(R.drawable.arrowright),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable(onClick = { onClick() })
+                        .padding(horizontal = dimens.size20),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
             Spacer(modifier = Modifier.height(dimens.size30))
@@ -283,7 +283,7 @@ fun BenefitsOfRecitingWidget(
             benefitsOfRecitingDataList.take(5).forEach {
                 Text(
                     text = "${it.number}. ${stringResource(it.title)}",
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = MaterialTheme.typography.bodySmall.copy(
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     ),
