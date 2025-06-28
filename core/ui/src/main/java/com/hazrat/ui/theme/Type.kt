@@ -30,7 +30,7 @@ val Uthmani = FontFamily(
 
 val IndoPak = FontFamily(
     fonts = listOf(
-        Font(R.font.indopak)
+        Font(R.font.uthmanic)
     )
 )
 
@@ -45,11 +45,6 @@ val Hidaya = FontFamily(
 val Lafadz  = FontFamily(
     fonts = listOf(
         Font(R.font.lafadz)
-    )
-)
-val SurahFont  = FontFamily(
-    fonts = listOf(
-        Font(R.font.surahfont)
     )
 )
 

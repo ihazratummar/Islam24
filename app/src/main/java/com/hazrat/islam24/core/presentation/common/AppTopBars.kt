@@ -48,8 +48,8 @@ fun BasicTopBar(
         }
         Text(
             text = topBarTitle,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.ExtraBold,
             color = textColor
         )
     }

@@ -100,7 +100,7 @@ fun PrayerTimeScreen(
                         Text(
                             text = stringResource(R.string.prayer_times),
                             style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Black,
+                            fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
@@ -132,7 +132,7 @@ fun PrayerTimeScreen(
                         )
                     }
                 },
-                windowInsets = WindowInsets(top = dimens.size40),
+                windowInsets = WindowInsets(top = dimens.size20),
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },

@@ -270,7 +270,7 @@ fun AyahRow(
 
                     withStyle(
                         style = SpanStyle(
-                            fontFamily = Uthmani
+                            fontFamily = IndoPak
                         )
                     ) {
                         append(" $number")

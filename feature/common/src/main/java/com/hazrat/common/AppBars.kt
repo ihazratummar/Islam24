@@ -46,7 +46,12 @@ fun BasicTopBarWithAction(
                 modifier = Modifier.size(dimens.size20)
             )
         }
-        Text(text = topBarTitle)
+        Text(
+            text = topBarTitle,
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.ExtraBold,
+            )
+        )
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
             modifier = Modifier.padding(dimens.size10),

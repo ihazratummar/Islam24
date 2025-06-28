@@ -29,21 +29,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import com.hazrat.ui.R
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.presentation.component.CustomTextField
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.islam24.core.presentation.common.BasicTopBar
-import com.hazrat.ui.theme.dimens
 import com.hazrat.islam24.util.hapticFeedbacks
+import com.hazrat.ui.R
+import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -105,14 +103,12 @@ fun AuthLoginScreen(
                     Spacer(modifier = Modifier.height(dimens.size60))
                     Text(
                         text = "Sign In",
-                        fontFamily = FontFamily(Font(R.font.nunitobold)),
                         style = MaterialTheme.typography.displayLarge
                     )
                     Spacer(modifier = Modifier.height(dimens.size20))
                     Text(
                         text = "Enter your email and password",
                         style = MaterialTheme.typography.bodyLarge,
-                        fontFamily = FontFamily(Font(R.font.nunitobold)),
                         color = Color(0xFFA8A6A7)
                     )
                     Spacer(modifier = Modifier.height(dimens.size60))
@@ -169,7 +165,6 @@ fun AuthLoginScreen(
                     Spacer(modifier = Modifier.height(dimens.size15))
                     Text(
                         text = "Forgotten Password?",
-                        fontFamily = FontFamily(Font(R.font.nunitoregular)),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.clickable {
@@ -181,13 +176,11 @@ fun AuthLoginScreen(
                     Row {
                         Text(
                             text = "Don't have an account?",
-                            fontFamily = FontFamily(Font(R.font.nunitoregular)),
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Spacer(modifier = Modifier.width(dimens.size4))
                         Text(
                             text = "Sign Up",
-                            fontFamily = FontFamily(Font(R.font.nunitoregular)),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.primary,
                             textDecoration = TextDecoration.Underline,
@@ -230,7 +223,6 @@ fun LoginButton(
     ) {
         Text(
             text = text,
-            fontFamily = FontFamily(Font(R.font.nunitoregular)),
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold
         )
