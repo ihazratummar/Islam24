@@ -40,13 +40,15 @@ object ProfileModule {
         firestore: FirebaseFirestore,
         storage: FirebaseStorage,
         networkRepository: NetworkRepository,
-        firebaseAuth: FirebaseAuth,
         coroutineScope: CoroutineScope,
         syncRepository: SyncRepository
     ): ProfileRepository {
         return ProfileRepositoryImpl(
-            context = context, auth = auth, fireStore = firestore,
-            storage = storage, networkRepository = networkRepository,
+            context = context,
+            auth = auth,
+            fireStore = firestore,
+            storage = storage,
+            networkRepository = networkRepository,
             coroutineScope = coroutineScope,
             syncRepository = syncRepository
         )
@@ -63,9 +65,9 @@ object ProfileModule {
 
     @Singleton
     @Provides
-    fun provideRenderApi():Islam24BackendApi{
+    fun provideRenderApi(): Islam24BackendApi {
 
-        return  Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(ISLAM24_BACKEND_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -81,7 +83,7 @@ object ProfileModule {
         qiblaRepository: QiblaRepository
     ): SyncRepository {
         return SyncRepositoryImpl(
-            zakatRepository =zakatRepository,
+            zakatRepository = zakatRepository,
             quranRepository = quranRepository,
             qiblaRepository = qiblaRepository
         )

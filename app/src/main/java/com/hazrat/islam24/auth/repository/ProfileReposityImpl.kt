@@ -7,7 +7,6 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
@@ -43,11 +42,11 @@ import javax.inject.Inject
  */
 
 class ProfileRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val context: Context,
     private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    private val networkRepository: NetworkRepository,
+    networkRepository: NetworkRepository,
     private val syncRepository: SyncRepository,
     private val coroutineScope: CoroutineScope
 ) : ProfileRepository {
@@ -293,7 +292,7 @@ class ProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateName(userData: UserData): Result<UserDataSuccess, UserDataError> {
-        return try {
+        try {
             if (networkStatus.value == ConnectivityObserver.Status.Available) {
                 val userId =
                     auth.currentUser?.uid
@@ -326,7 +325,7 @@ class ProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateBio(userData: UserData): Result<UserDataSuccess, UserDataError> {
-        return try {
+        try {
             if (networkStatus.value == ConnectivityObserver.Status.Available) {
                 val userId =
                     auth.currentUser?.uid
