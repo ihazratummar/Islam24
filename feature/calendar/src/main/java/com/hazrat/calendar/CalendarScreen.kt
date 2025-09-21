@@ -1,14 +1,11 @@
 package com.hazrat.calendar
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,14 +17,15 @@ import com.hazrat.common.BasicTopBarWithAction
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
-    onBackClick:() -> Unit
-
+    onBackClick: () -> Unit
 ) {
     var toggleCalendar by remember { mutableStateOf(false) }
-    val topBarTitle = if (toggleCalendar) " Gregorian Calendar" else "Hijri Calendar"
+    val topBarTitle = if (toggleCalendar) "Gregorian Calendar" else "Hijri Calendar"
+
+    // compute painter in a local val to reduce possible FIR confusion
+    val actionIcon = painterResource(id = R.drawable.calendar1)
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -38,12 +36,12 @@ fun CalendarScreen(
             Spacer(Modifier.height(dimens.size40))
             BasicTopBarWithAction(
                 topBarTitle = topBarTitle,
-                onBackClick = {onBackClick.invoke()},
-                actionIcon = painterResource(R.drawable.calendar1),
+                onBackClick = { onBackClick.invoke() },
+                actionIcon = actionIcon,
                 onActionClick = { toggleCalendar = !toggleCalendar }
             )
             LazyColumn(
-                modifier = Modifier
+                modifier = Modifier.fillMaxSize()
             ) {
                 item {
                     if (!toggleCalendar) {

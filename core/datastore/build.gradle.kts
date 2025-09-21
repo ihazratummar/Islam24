@@ -6,10 +6,10 @@ plugins {
 
 android {
     namespace = "com.hazrat.datastore"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

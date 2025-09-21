@@ -40,7 +40,6 @@ import coil.compose.AsyncImage
 import coil.imageLoader
 import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
 import com.hazrat.ui.theme.dimens
-import com.skydoves.cloudy.Cloudy
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -96,10 +95,7 @@ fun ZoomedProfileImage(
         contentAlignment = Alignment.Center
     ) {
         if (isVisible) {
-            Cloudy(
-                modifier = Modifier.fillMaxSize(),
-                radius = 25
-            ) { }
+
         }
         AnimatedVisibility(
             visible = isVisible,

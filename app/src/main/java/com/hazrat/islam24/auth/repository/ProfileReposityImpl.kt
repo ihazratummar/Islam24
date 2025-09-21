@@ -74,7 +74,7 @@ class ProfileRepositoryImpl @Inject constructor(
                         val user = auth.currentUser
                         if (user == null) {
                             _authState.value = AuthState.Unauthenticated
-                            continuation.resume(false) {}
+                            continuation.resume(false) { cause, _, _ -> }
                             return@addOnCompleteListener
                         }
 

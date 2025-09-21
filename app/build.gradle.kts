@@ -10,19 +10,18 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-
 }
 
 android {
     namespace = "com.hazrat.islam24"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 35
-        versionCode = 95
-        versionName = "2.5.0"
+        versionCode = 96
+        versionName = "2.5.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -72,8 +71,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    ndkVersion = "26.1.10909125"
-
+    ndkVersion = "29.0.14033849 rc4"
 
 }
 
@@ -172,7 +170,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     //Room Encryption
-    implementation( libs.android.database.sqlcipher)
     implementation( libs.androidx.sqlite)
 
 

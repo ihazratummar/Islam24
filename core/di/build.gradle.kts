@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.hazrat.di"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -69,8 +69,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    //Room Encryption
-    implementation( libs.android.database.sqlcipher)
+   //Room Encryption
     implementation( libs.androidx.sqlite)
 
     /*
