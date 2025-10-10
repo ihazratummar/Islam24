@@ -87,15 +87,15 @@ class ProfileRepositoryImpl @Inject constructor(
                                     saveProfilePictureLocally(uri)
                                 }
                                 _authState.postValue(AuthState.Authenticated)
-                                continuation.resume(true) {}
+                                continuation.resume(true) { cause, _, _ -> }
                             } catch (e: Exception) {
                                 _authState.value = AuthState.Error(e.message ?: "Login failed")
-                                continuation.resume(false) {}
+                                continuation.resume(false) { cause, _, _ -> }
                             }
                         }
                     } else {
                         _authState.value = AuthState.Unauthenticated
-                        continuation.resume(false) {}
+                        continuation.resume(false) { cause, _, _ -> }
                     }
                 }
         }
@@ -116,7 +116,7 @@ class ProfileRepositoryImpl @Inject constructor(
                         val user = auth.currentUser
                         if (user == null) {
                             _authState.value = AuthState.Unauthenticated
-                            continuation.resume(false) {}
+                            continuation.resume(false) { cause, _, _ -> }
                             return@addOnCompleteListener
                         }
 
@@ -130,15 +130,15 @@ class ProfileRepositoryImpl @Inject constructor(
                             .set(userData)
                             .addOnSuccessListener {
                                 _authState.value = AuthState.Authenticated
-                                continuation.resume(true) {}
+                                continuation.resume(true) { cause, _, _ -> }
                             }
                             .addOnFailureListener { e ->
                                 _authState.value = AuthState.Error(e.message.toString())
-                                continuation.resume(false) {}
+                                continuation.resume(false) { cause, _, _ -> }
                             }
                     } else {
                         _authState.value = AuthState.Unauthenticated
-                        continuation.resume(false) {}
+                        continuation.resume(false) { cause, _, _ -> }
                     }
                 }
         }
