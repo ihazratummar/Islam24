@@ -91,6 +91,29 @@
 -keep @interface androidx.room.** { *; }
 
 # Logging
+# Coil
+-keep class coil.** { *; }
+-keep class coil.RealImageLoader { *; }
+-dontwarn coil.gif.GifDecoder
+-dontwarn com.airbnb.lottie.**
+
+# OneSignal
+-keep class com.onesignal.** { *; }
+
+# Lottie
+-keep class com.airbnb.lottie.** { *; }
+
+
+# Keep all data classes
+-keep class * extends kotlin.coroutines.jvm.internal.SuspendLambda
+-keep class * implements kotlinx.coroutines.flow.FlowCollector
+
+
+# Keep Hilt view models
+-keep class * extends androidx.lifecycle.ViewModel
+-keep class * implements androidx.lifecycle.ViewModelProvider.Factory
+
+
 -keep class com.hazrat.islam24.core.data.entity.** { *; }
 -keep class com.hazrat.islam24.core.domain.model.** { *; }
 -keep class com.hazrat.islam24.auth.model.** { *; }

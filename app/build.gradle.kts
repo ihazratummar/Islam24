@@ -20,7 +20,7 @@ android {
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        targetSdk= 35
+        targetSdk= 36
         versionCode = 96
         versionName = "2.5.1"
 
@@ -123,7 +123,7 @@ dependencies {
 
     implementation(libs.firebase.auth.ktx)
     implementation (libs.firebase.database)
-    platform(libs.firebase.bom.v2821)
+    platform(libs.firebase.bom)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
 

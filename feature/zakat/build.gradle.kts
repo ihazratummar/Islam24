@@ -76,7 +76,7 @@ dependencies {
 
     implementation(libs.firebase.auth.ktx)
     implementation (libs.firebase.database)
-    platform(libs.firebase.bom.v2821)
+    platform(libs.firebase.bom)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
 
