@@ -26,7 +26,7 @@ import javax.inject.Inject
  */
 
 class MediaPlayerHelper @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
 
     private var mediaPlayer: MediaPlayer? = null

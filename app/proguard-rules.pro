@@ -132,6 +132,12 @@
 -keep class com.google.firebase.auth.** { *; }
 -dontwarn com.google.firebase.auth.**
 
+# Play Services Auth (Fix R8 Invalid Stack Map Table warnings)
+-keep class com.google.android.gms.auth.api.identity.** { *; }
+-keep class com.google.android.gms.auth.api.signin.internal.** { *; }
+-dontwarn com.google.android.gms.auth.api.identity.**
+-dontwarn com.google.android.gms.auth.api.signin.internal.**
+
 # Firebase Storage
 -keep class com.google.firebase.storage.** { *; }
 -dontwarn com.google.firebase.storage.**

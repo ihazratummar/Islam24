@@ -3,7 +3,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.devtools.ksp)
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
@@ -11,7 +10,10 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    alias(libs.plugins.kotlin.android)
 }
+
+
 
 android {
     namespace = "com.hazrat.islam24"
@@ -57,11 +59,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
+
 
 
 
@@ -79,9 +77,13 @@ android {
         }
     }
     ndkVersion = "29.0.14033849 rc4"
-
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+    }
+}
 
 dependencies {
 
@@ -187,10 +189,6 @@ dependencies {
 
     implementation(libs.androidx.viewpager2)
 
-
-    implementation (libs.androidx.runtime)
-    implementation (libs.androidx.compose.ui.ui)
-    implementation (libs.androidx.animation.core)
 
     implementation (libs.logging.interceptor)
     implementation(libs.onesignal)

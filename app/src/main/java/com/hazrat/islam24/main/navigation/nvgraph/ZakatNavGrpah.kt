@@ -2,7 +2,7 @@ package com.hazrat.islam24.main.navigation.nvgraph
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -25,7 +25,7 @@ fun NavGraphBuilder.zakatNavGraph(
 ) {
     navigation<Zakat>(MainRoute.ZakatScreen) {
         composable<MainRoute.ZakatScreen> {
-            val zakatScreenViewModel = hiltViewModel<ZakatScreenViewModel>()
+            val zakatScreenViewModel: ZakatScreenViewModel = hiltViewModel()
             val zakatScreenState by zakatScreenViewModel.zakatState.collectAsState()
             ZakatScreen(
                 zakatScreenState =zakatScreenState ,

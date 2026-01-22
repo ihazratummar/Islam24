@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -12,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 sealed class UiText {
     data class DynamicString(val value: String): UiText()
     class  StringResource(
-        @StringRes val id: Int,
+        @param:StringRes val id: Int,
         val args: Array<Any> = arrayOf()
     ): UiText()
 
@@ -20,7 +21,7 @@ sealed class UiText {
     fun asString(): String{
         return when(this){
             is DynamicString -> value
-            is StringResource -> LocalContext.current.getString(id, *args)
+            is StringResource -> stringResource(id, *args)
         }
     }
 

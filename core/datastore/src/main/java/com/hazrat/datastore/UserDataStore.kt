@@ -18,7 +18,7 @@ import javax.inject.Named
  */
 
 class UserDataStore @Inject constructor(
-    @Named(USER_DATA_SORE) private val userDataStore: DataStore<Preferences>,
+    @param:Named(USER_DATA_SORE) private val userDataStore: DataStore<Preferences>,
 ) {
     companion object {
 
@@ -115,7 +115,6 @@ class UserDataStore @Inject constructor(
             PrayerName.ASR -> ASR_KEY
             PrayerName.MAGHRIB -> MAGHRIB_KEY
             PrayerName.ISHA -> ISHA_KEY
-            else -> throw IllegalArgumentException("Invalid prayer name")
         }
         userDataStore.edit { pref ->
             pref[key] = notificationType.name
@@ -129,7 +128,6 @@ class UserDataStore @Inject constructor(
             PrayerName.ASR -> ASR_KEY
             PrayerName.MAGHRIB -> MAGHRIB_KEY
             PrayerName.ISHA -> ISHA_KEY
-            else -> throw IllegalArgumentException("Invalid prayer name")
         }
         Log.d("DataStore", "Retrieving notification type for $prayerName")
         return userDataStore.data.map { pref ->

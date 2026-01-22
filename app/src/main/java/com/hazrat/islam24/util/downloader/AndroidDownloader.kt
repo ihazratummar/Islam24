@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
+import androidx.core.net.toUri
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -19,13 +20,13 @@ import java.io.IOException
  */
 
 class AndroidDownloader(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : Downloader {
     private val client = OkHttpClient()
 
     override suspend fun downloadFile(url: String, mimeType: String, title: String): Long {
         return withContext(Dispatchers.IO) {
-            val fileName = Uri.parse(url).lastPathSegment ?: "Downloaded_File"
+            val fileName = url.toUri().lastPathSegment ?: "Downloaded_File"
             val request = Request.Builder().url(url).build()
 
             try {
@@ -38,7 +39,7 @@ class AndroidDownloader(
                         throw IOException("Download failed: ${response.code} ${response.message}")
                     }
 
-                    val contentLength = response.body?.contentLength() ?: -1L
+                    val contentLength = response.body.contentLength()
                     Log.d("FileCheck", "Expected Content-Length: $contentLength")
 
                     response.body?.use { body ->

@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.islam24.core.data.entity.PrayerCalculationEntity
 import com.hazrat.islam24.core.data.entity.PrayerJuristicEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.notification.PrayerAlarmManager
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,12 +33,12 @@ import kotlin.system.measureTimeMillis
 
 @HiltViewModel
 class PrayerSettingViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val repository: PrayerSettingRepository,
     private val prayerTimeRepository: PrayerTimeRepository,
-    private val networkRepository: NetworkRepository,
     private val prayerAlarmManager: PrayerAlarmManager,
-    private val dataStorePreference: DataStorePreference
+    private val dataStorePreference: DataStorePreference,
+    private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PrayerSettingState())
@@ -52,8 +52,6 @@ class PrayerSettingViewModel @Inject constructor(
 
     val prayerTime: StateFlow<List<PrayerTimeEntity>> = prayerTimeRepository.prayerTimes
 
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
-        networkRepository.networkStatus
 
     init {
         getJuristicMethod()
@@ -61,7 +59,6 @@ class PrayerSettingViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             prayerTimeRepository.getAllPrayerTimes()
         }
-        Log.d("PrayerSettingViewModel", "Network status: ${networkStatus.value}")
     }
 
     private fun getCalculationMethod() {
@@ -87,7 +84,8 @@ class PrayerSettingViewModel @Inject constructor(
             is PrayerSettingEvent.CalculationChanged -> {
                 viewModelScope.launch {
                     _state.update { it.copy(isRefresh = true) }
-                    if (networkStatus.value == ConnectivityObserver.Status.Available) {
+                    val networkStatus = connectivityObserver.observer().first()
+                    if (networkStatus == ConnectivityObserver.Status.Available) {
                         repository.insertCalculationMethod(
                             PrayerCalculationEntity(method = event.value)
                         )
@@ -107,7 +105,8 @@ class PrayerSettingViewModel @Inject constructor(
             is PrayerSettingEvent.JuristicChanged -> {
                 viewModelScope.launch {
                     _state.update { it.copy(isRefresh = true) }
-                    if (networkStatus.value == ConnectivityObserver.Status.Available) {
+                    val networkStatus = connectivityObserver.observer().first()
+                    if (networkStatus == ConnectivityObserver.Status.Available) {
                         repository.insertJuristicMethod(
                             PrayerJuristicEntity(school = event.value)
                         )
@@ -170,8 +169,8 @@ class PrayerSettingViewModel @Inject constructor(
 
     fun requestScheduleExactAlarmPermission(context: Context) : Boolean{
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-            val alermManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alermManager.canScheduleExactAlarms()
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.canScheduleExactAlarms()
         }else{
             true
         }

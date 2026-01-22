@@ -38,7 +38,7 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class PrayerAlarmManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.datastore.AppDataStore
 import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.util.ConnectivityObserver
@@ -14,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -25,10 +25,9 @@ class MainViewModel @Inject constructor(
     private val locationNameRepository: LocationNameRepository,
     profileRepository: ProfileRepository,
     private val locationRepository: LocationRepository,
-    networkRepository: NetworkRepository,
-    private val appDataStore: AppDataStore
+    private val appDataStore: AppDataStore,
+    private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
-
 
 
     /**
@@ -37,32 +36,28 @@ class MainViewModel @Inject constructor(
 
     val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
 
-    val isDarkMode : StateFlow<Boolean>
-    val isHapticFeedback  : StateFlow<Boolean>
-
-
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
-        networkRepository.networkStatus
+    val isDarkMode: StateFlow<Boolean>
+    val isHapticFeedback: StateFlow<Boolean>
 
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            val networkStatus = connectivityObserver.observer().first()
             fetchDataFromDB()
-            networkStatus.collect { status ->
-                Log.d("MainViewModel", "Network Status : $status")
-                if (status == ConnectivityObserver.Status.Available) {
-                    fetchInitialData()
-                }
+            Log.d("MainViewModel", "Network Status : $networkStatus")
+            if (networkStatus == ConnectivityObserver.Status.Available) {
+                fetchInitialData()
             }
+
         }
         profileRepository.checkAuthStatus()
-        val initialDarkMode = runBlocking{ appDataStore.getDarkModeEnabled() }
+        val initialDarkMode = runBlocking { appDataStore.getDarkModeEnabled() }
         isDarkMode = appDataStore.isDarkModeEnabled.stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = initialDarkMode
         )
-        val initialHaptic = runBlocking { appDataStore.getHapticEnabled()}
+        val initialHaptic = runBlocking { appDataStore.getHapticEnabled() }
         isHapticFeedback = appDataStore.isHapticEnabled.stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
@@ -73,7 +68,7 @@ class MainViewModel @Inject constructor(
     private fun fetchDataFromDB() {
         viewModelScope.launch {
             locationNameRepository.locationName()
-            locationNameRepository.getLocationDetails()
+            locationNameRepository.getLocationDetails().first()
         }
     }
 

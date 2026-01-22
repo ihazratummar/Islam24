@@ -22,7 +22,6 @@ import com.hazrat.datastore.PrayerName
 import com.hazrat.datastore.UserDataStore
 import com.hazrat.islam24.auth.presentation.profiledetails.UserEvent
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationEvent
 import com.hazrat.islam24.core.presentation.prayertime.notification.NotificationState
@@ -46,6 +45,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -58,20 +58,21 @@ import kotlin.system.measureTimeMillis
 
 @HiltViewModel
 class PrayerTimeViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val repository: PrayerTimeRepository,
     private val prayerAlarmManager: PrayerAlarmManager,
     private val dataStorePreference: DataStorePreference,
     private val mediaPlayerHelper: MediaPlayerHelper,
     private val dataStore: UserDataStore,
-    networkRepository: NetworkRepository,
+    private val connectivityObserver: ConnectivityObserver,
     private val downloader: Downloader
 ) : ViewModel() {
 
 
     var isPrayerTimeRefreshing = MutableStateFlow(false)
         private set
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> = networkRepository.networkStatus
+
+
     private val eventChannel = Channel<UserEvent>()
     val events = eventChannel.receiveAsFlow()
     val prayerTimes: StateFlow<List<PrayerTimeEntity>> = repository.prayerTimes
@@ -141,14 +142,17 @@ class PrayerTimeViewModel @Inject constructor(
                 Log.d("PrayerTimeViewModel", "Refreshing prayer times")
                 viewModelScope.launch {
                     isPrayerTimeRefreshing.value = true
-                    if (networkStatus.value == ConnectivityObserver.Status.Available) {
-                        Log.d("PrayerTimeViewModel", "Network is available, fetching new prayer times")
+                    val networkStatus = connectivityObserver.observer().first()
+                    if (networkStatus == ConnectivityObserver.Status.Available) {
+                        Log.d(
+                            "PrayerTimeViewModel",
+                            "Network is available, fetching new prayer times"
+                        )
                         val apiTime = measureTimeMillis { repository.newPrayerTimesRequest() }
                         Log.d("PrayerTimeViewModel", "API call took $apiTime ms")
                         val minExecutionTime = 2000L
-                        val totalExecutionTime = apiTime
-                        if (totalExecutionTime < minExecutionTime) {
-                            delay(minExecutionTime - totalExecutionTime)
+                        if (apiTime < minExecutionTime) {
+                            delay(minExecutionTime - apiTime)
                         }
                     } else {
                         withContext(Dispatchers.IO) {
@@ -336,74 +340,116 @@ class PrayerTimeViewModel @Inject constructor(
             }
 
             is NotificationEvent.OnFajrAzanClick -> {
-               val isAzanPresent =  isAzanExist(notificationEvent.fileName)
+                val isAzanPresent = isAzanExist(notificationEvent.fileName)
                 viewModelScope.launch {
                     if (!isAzanPresent) {
-                        downloadAzan(azanUrl = notificationEvent.azanUrl, fileName = notificationEvent.fileName)
+                        downloadAzan(
+                            azanUrl = notificationEvent.azanUrl,
+                            fileName = notificationEvent.fileName
+                        )
                     } else {
-                        saveSelectedAzan(sourceFileName = notificationEvent.fileName, fileName = "fajrAzan.mp3", prayerName = PrayerName.FAJR )
+                        saveSelectedAzan(
+                            sourceFileName = notificationEvent.fileName,
+                            fileName = "fajrAzan.mp3",
+                            prayerName = PrayerName.FAJR
+                        )
                     }
                 }
             }
 
             is NotificationEvent.OnDhuhrAzanClick -> {
-                val isAzanPresent =  isAzanExist(notificationEvent.fileName)
+                val isAzanPresent = isAzanExist(notificationEvent.fileName)
                 viewModelScope.launch {
                     if (!isAzanPresent) {
-                        downloadAzan(azanUrl = notificationEvent.azanUrl, fileName = notificationEvent.fileName)
+                        downloadAzan(
+                            azanUrl = notificationEvent.azanUrl,
+                            fileName = notificationEvent.fileName
+                        )
                     } else {
-                        saveSelectedAzan(sourceFileName = notificationEvent.fileName, fileName = "dhurAzan.mp3", prayerName = PrayerName.DHUHR )
+                        saveSelectedAzan(
+                            sourceFileName = notificationEvent.fileName,
+                            fileName = "dhurAzan.mp3",
+                            prayerName = PrayerName.DHUHR
+                        )
                     }
                 }
             }
 
             is NotificationEvent.OnAsrAzanClick -> {
-                val isAzanPresent =  isAzanExist(notificationEvent.fileName)
+                val isAzanPresent = isAzanExist(notificationEvent.fileName)
                 viewModelScope.launch {
                     if (!isAzanPresent) {
-                        downloadAzan(azanUrl = notificationEvent.azanUrl, fileName = notificationEvent.fileName)
+                        downloadAzan(
+                            azanUrl = notificationEvent.azanUrl,
+                            fileName = notificationEvent.fileName
+                        )
                     } else {
-                        saveSelectedAzan(sourceFileName = notificationEvent.fileName, fileName = "asrAzan.mp3", prayerName = PrayerName.ASR )
+                        saveSelectedAzan(
+                            sourceFileName = notificationEvent.fileName,
+                            fileName = "asrAzan.mp3",
+                            prayerName = PrayerName.ASR
+                        )
                     }
                 }
             }
 
             is NotificationEvent.OnMaghribAzanClick -> {
-                val isAzanPresent =  isAzanExist(notificationEvent.fileName)
+                val isAzanPresent = isAzanExist(notificationEvent.fileName)
                 viewModelScope.launch {
                     if (!isAzanPresent) {
-                        downloadAzan(azanUrl = notificationEvent.azanUrl, fileName = notificationEvent.fileName)
+                        downloadAzan(
+                            azanUrl = notificationEvent.azanUrl,
+                            fileName = notificationEvent.fileName
+                        )
                     } else {
-                        saveSelectedAzan(sourceFileName = notificationEvent.fileName, fileName = "maghribAzan.mp3", prayerName = PrayerName.MAGHRIB )
+                        saveSelectedAzan(
+                            sourceFileName = notificationEvent.fileName,
+                            fileName = "maghribAzan.mp3",
+                            prayerName = PrayerName.MAGHRIB
+                        )
                     }
                 }
             }
 
             is NotificationEvent.OnIshaAzanClick -> {
-                val isAzanPresent =  isAzanExist(notificationEvent.fileName)
+                val isAzanPresent = isAzanExist(notificationEvent.fileName)
                 viewModelScope.launch {
                     if (!isAzanPresent) {
-                        downloadAzan(azanUrl = notificationEvent.azanUrl, fileName = notificationEvent.fileName)
+                        downloadAzan(
+                            azanUrl = notificationEvent.azanUrl,
+                            fileName = notificationEvent.fileName
+                        )
                     } else {
-                        saveSelectedAzan(sourceFileName = notificationEvent.fileName, fileName = "ishaAzan.mp3", prayerName = PrayerName.ISHA )
+                        saveSelectedAzan(
+                            sourceFileName = notificationEvent.fileName,
+                            fileName = "ishaAzan.mp3",
+                            prayerName = PrayerName.ISHA
+                        )
                     }
                 }
             }
 
             is NotificationEvent.OnAzanPlayClick -> {
-                val filePath = "${context.filesDir}/$PARENT_FOLDER_NAME_DOWNLOAD/$DOWNLOADED_AZAN_FOLDER/${notificationEvent.fileName}.mp3"
+                val filePath =
+                    "${context.filesDir}/$PARENT_FOLDER_NAME_DOWNLOAD/$DOWNLOADED_AZAN_FOLDER/${notificationEvent.fileName}.mp3"
                 val file = File(filePath)
-                if (file.exists()){
+                if (file.exists()) {
                     _notificationState.update { state ->
                         state.copy(isAzanPlaying = state.isAzanPlaying.mapIndexed { index, isPlaying ->
                             index == notificationEvent.aazanIndex
                         })
                     }
-                    Log.d("MediaPlayerHelper", "Trying to play: $filePath, Exists: ${file.exists()}")
+                    Log.d(
+                        "MediaPlayerHelper",
+                        "Trying to play: $filePath, Exists: ${file.exists()}"
+                    )
                     mediaPlayerHelper.playAzan(filePath)
                     mediaPlayerHelper.startAzan()
-                }else{
-                    downloadAzan(azanUrl = notificationEvent.azanUrl, fileName = notificationEvent.fileName)
+                } else {
+                    downloadAzan(
+                        azanUrl = notificationEvent.azanUrl,
+                        fileName = notificationEvent.fileName
+                    )
                 }
 
             }
@@ -563,28 +609,33 @@ class PrayerTimeViewModel @Inject constructor(
     }
 
 
-    private fun downloadAzan(azanUrl: String, fileName: String){
-        if (networkStatus.value == ConnectivityObserver.Status.Available){
-            viewModelScope.launch{
+    private fun downloadAzan(azanUrl: String, fileName: String) {
+        viewModelScope.launch {
+            val networkStatus = connectivityObserver.observer().first()
+            if (networkStatus == ConnectivityObserver.Status.Available) {
                 _notificationState.update { it.copy(isAzanDownloading = true) }
                 val result = downloader.downloadFile(
                     url = azanUrl,
                     mimeType = "audio/mpeg",
                     title = fileName
                 )
-                if (result >= 1L){
+                if (result >= 1L) {
                     _notificationState.update { it.copy(isAzanDownloading = false) }
                     Toast.makeText(context, "Downloaded Successfully", Toast.LENGTH_SHORT).show()
-                }else{
+                } else {
                     _notificationState.update { it.copy(isAzanDownloading = false) }
                 }
+            } else {
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show()
             }
-        }else{
-            Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private suspend fun saveSelectedAzan(sourceFileName: String, fileName: String, prayerName: PrayerName){
+    private suspend fun saveSelectedAzan(
+        sourceFileName: String,
+        fileName: String,
+        prayerName: PrayerName
+    ) {
         val success = saveMp3File(
             context = context,
             sourceFilePath = "${context.filesDir}/$PARENT_FOLDER_NAME_DOWNLOAD/$DOWNLOADED_AZAN_FOLDER/${sourceFileName}.mp3",
@@ -598,7 +649,8 @@ class PrayerTimeViewModel @Inject constructor(
                 NotificationType.AZAN
             )
             Log.d(
-                "PrayerTimeViewModel", "Aazn $fileName: , NotificationType: ${NotificationType.AZAN}"
+                "PrayerTimeViewModel",
+                "Aazn $fileName: , NotificationType: ${NotificationType.AZAN}"
             )
         } else {
             Log.e("PrayerTimeViewModel", "Failed to save MP3.")

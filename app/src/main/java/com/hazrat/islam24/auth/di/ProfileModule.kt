@@ -11,7 +11,6 @@ import com.hazrat.islam24.auth.repository.ProfileRepository
 import com.hazrat.islam24.auth.repository.ProfileRepositoryImpl
 import com.hazrat.islam24.auth.repository.SyncRepository
 import com.hazrat.islam24.auth.repository.SyncRepositoryImpl
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.QiblaRepository
 import com.hazrat.islam24.core.domain.repository.QuranRepository
 import com.hazrat.islam24.util.ConnectivityObserver
@@ -39,18 +38,18 @@ object ProfileModule {
         auth: FirebaseAuth,
         firestore: FirebaseFirestore,
         storage: FirebaseStorage,
-        networkRepository: NetworkRepository,
         coroutineScope: CoroutineScope,
-        syncRepository: SyncRepository
+        syncRepository: SyncRepository,
+        connectivityObserver: ConnectivityObserver
     ): ProfileRepository {
         return ProfileRepositoryImpl(
             context = context,
             auth = auth,
             fireStore = firestore,
             storage = storage,
-            networkRepository = networkRepository,
             coroutineScope = coroutineScope,
-            syncRepository = syncRepository
+            syncRepository = syncRepository,
+            connectivityObserver = connectivityObserver
         )
     }
 

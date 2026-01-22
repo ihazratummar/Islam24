@@ -30,7 +30,7 @@ class ZakatRepositoryImpl @Inject constructor(
     private val dao: ZakatDao,
     private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,
-    @ApplicationContext  private val context: Context
+    private val context: Context
 ) : ZakatRepository {
     override suspend fun insertNisab(nisabEntity: NisabEntity) {
 

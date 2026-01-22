@@ -14,11 +14,11 @@ import com.hazrat.islam24.core.data.database.PrayerDatabase
 import com.hazrat.islam24.core.data.repository.LocationRepositoryImpl
 import com.hazrat.islam24.core.data.repository.PrayerSettingRepositoryImpl
 import com.hazrat.islam24.core.data.repository.PrayerTimeRepositoryImpl
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.remote.api.PrayerTimeApi
+import com.hazrat.islam24.util.ConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,7 +32,7 @@ import javax.inject.Singleton
 object PrayerModule {
 
 
-//    /prayerTime repository
+    //    /prayerTime repository
     @Singleton
     @Provides
     fun providePrayerTimeRepository(
@@ -41,14 +41,14 @@ object PrayerModule {
         prayerSettingRepository: PrayerSettingRepository,
         prayerTimeDao: PrayerTimeDao,
         @ApplicationContext context: Context,
-        networkRepository: NetworkRepository
+        connectivityObserver: ConnectivityObserver
     ): PrayerTimeRepository = PrayerTimeRepositoryImpl(
         api = api,
         locationRepository = locationRepository,
         prayerSettingRepository = prayerSettingRepository,
         prayerTimeDao = prayerTimeDao,
         context = context,
-    networkRepository = networkRepository
+        connectivityObserver = connectivityObserver
     )
 
 
@@ -58,10 +58,10 @@ object PrayerModule {
     fun provideAppDatabase(@ApplicationContext context: Context): PrayerDatabase {
         Log.d("AppDatabase", "Creating database instance")
         return Room.databaseBuilder(
-            context.applicationContext,
-            PrayerDatabase::class.java,
-            "prayer-database"
-        ).fallbackToDestructiveMigration()
+                context.applicationContext,
+                PrayerDatabase::class.java,
+                "prayer-database"
+            ).fallbackToDestructiveMigration(false)
             .build()
     }
 
@@ -69,9 +69,6 @@ object PrayerModule {
     fun providePrayerTimeDao(appDatabase: PrayerDatabase): PrayerTimeDao {
         return appDatabase.prayerTimeDao()
     }
-
-
-
 
 
     @Singleton

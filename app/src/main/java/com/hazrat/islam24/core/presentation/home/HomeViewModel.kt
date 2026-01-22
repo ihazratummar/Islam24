@@ -23,10 +23,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val prayerTimeRepository: PrayerTimeRepository,
-//    private val locationNameRepository: LocationNameRepository,
     private val dataStore: UserDataStore,
-):ViewModel() {
-//    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
+) : ViewModel() {
+
     val prayerTimes: StateFlow<List<PrayerTimeEntity>> = prayerTimeRepository.prayerTimes
 
     private val _homeState = MutableStateFlow(HomeState())
@@ -34,10 +33,9 @@ class HomeViewModel @Inject constructor(
     val homeState = _homeState.asStateFlow()
 
 
-
     init {
         viewModelScope.launch {
-//            locationNameRepository.locationName()
+
             prayerTimeRepository.getAllPrayerTimes()
         }
         getRandomAyatNumber()

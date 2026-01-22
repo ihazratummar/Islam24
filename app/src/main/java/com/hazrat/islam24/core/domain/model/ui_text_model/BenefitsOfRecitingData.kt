@@ -5,8 +5,8 @@ import com.hazrat.ui.R
 
 data class BenefitsOfRecitingData(
     val number: Int,
-    @StringRes val title: Int,
-    @StringRes val description: Int,
+    @param:StringRes val title: Int,
+    @param:StringRes val description: Int,
 )
 val benefitsOfRecitingDataList = listOf(
     BenefitsOfRecitingData(

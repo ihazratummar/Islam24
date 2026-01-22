@@ -15,20 +15,19 @@ import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.model.UserData
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileAction
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.util.ConnectivityObserver
 import com.hazrat.islam24.util.Constants.INTERNALSTORAGEPICTUREFOLDER
 import com.hazrat.islam24.util.Constants.PROFILE_PICTURE
+import com.hazrat.islam24.util.NetworkConnectivityObserver
 import com.hazrat.utils.result.Result
 import com.hazrat.utils.result.error.UserDataError
 import com.hazrat.utils.result.error.UserDataSuccess
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -46,9 +45,9 @@ class ProfileRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,
     private val storage: FirebaseStorage,
-    networkRepository: NetworkRepository,
     private val syncRepository: SyncRepository,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    private val connectivityObserver: ConnectivityObserver
 ) : ProfileRepository {
 
     private val _authState = MutableLiveData<AuthState>()
@@ -56,9 +55,6 @@ class ProfileRepositoryImpl @Inject constructor(
 
     private val _profileState = MutableStateFlow(ProfileState())
     override val profileState = _profileState.asStateFlow()
-
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> = networkRepository.networkStatus
-
 
     private val _profileActionState = MutableLiveData<ProfileAction>()
     override val profileActionState: LiveData<ProfileAction> = _profileActionState
@@ -293,7 +289,8 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateName(userData: UserData): Result<UserDataSuccess, UserDataError> {
         try {
-            if (networkStatus.value == ConnectivityObserver.Status.Available) {
+            val status = connectivityObserver.observer().first()
+            if (status== ConnectivityObserver.Status.Available) {
                 val userId =
                     auth.currentUser?.uid
                         ?: return Result.Error(UserDataError.INVALID_USER_ID)
@@ -326,7 +323,9 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateBio(userData: UserData): Result<UserDataSuccess, UserDataError> {
         try {
-            if (networkStatus.value == ConnectivityObserver.Status.Available) {
+            val status  = connectivityObserver.observer().first()
+            if ( status == ConnectivityObserver.Status.Available) {
+
                 val userId =
                     auth.currentUser?.uid
                         ?: return Result.Error(UserDataError.INVALID_USER_ID)
@@ -390,7 +389,9 @@ class ProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun signOut() {
-        if (networkStatus.value == ConnectivityObserver.Status.Available) {
+        val status = connectivityObserver.observer().first()
+
+        if (status== ConnectivityObserver.Status.Available) {
             _authState.value = AuthState.Loading
             delay(2000)
             auth.signOut()

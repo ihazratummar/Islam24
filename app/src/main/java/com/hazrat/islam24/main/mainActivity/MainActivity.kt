@@ -18,7 +18,6 @@ import com.hazrat.islam24.auth.presentation.login.LoginViewModel
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.common.rememberImageLoader
 import com.hazrat.islam24.core.presentation.home.HomeViewModel
@@ -67,9 +66,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var prayerAlarmManager: PrayerAlarmManager
-
-    @Inject
-    lateinit var networkRepository: NetworkRepository
 
     @Inject
     lateinit var mediaPlayerHelper: MediaPlayerHelper
@@ -148,7 +144,6 @@ class MainActivity : ComponentActivity() {
 
         // Show location permission dialog if needed
         locationHandler.showLocationPermissionDialog(this)
-        networkRepository.observeNetworkStatus()
     }
 
     /**

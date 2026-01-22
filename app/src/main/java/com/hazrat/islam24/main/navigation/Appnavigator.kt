@@ -25,7 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -36,7 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import com.hazrat.ui.R
+import com.hazrat.calendar.CalendarScreen
 import com.hazrat.islam24.auth.AuthState
 import com.hazrat.islam24.auth.navigation.Login
 import com.hazrat.islam24.auth.navigation.authNavGraph
@@ -51,7 +51,6 @@ import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
 import com.hazrat.islam24.core.presentation.al_quran.SurahScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
 import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
-import com.hazrat.calendar.CalendarScreen
 import com.hazrat.islam24.core.presentation.haj_live.HajjLive
 import com.hazrat.islam24.core.presentation.haj_live.HajjLiveViewModel
 import com.hazrat.islam24.core.presentation.home.HomeScreen
@@ -69,9 +68,11 @@ import com.hazrat.islam24.main.navigation.MainRoute.BenifitsOfRecitingRoute
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
+import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import kotlinx.serialization.Serializable
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -392,7 +393,7 @@ sealed class MainRoute {
 
 
 @Serializable
-sealed class ContentDestination<T>(val name: String, @DrawableRes val icon: Int, val route: T) {
+sealed class ContentDestination<T>(val name: String, @param:DrawableRes val icon: Int, val route: T) {
 
     @Serializable
     data object Home :

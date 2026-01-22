@@ -8,7 +8,6 @@ import com.hazrat.islam24.core.data.dao.LocationNameDao
 import com.hazrat.islam24.core.data.database.LocationDatabase
 import com.hazrat.islam24.core.data.repository.LocationNameRepositoryImpl
 import com.hazrat.islam24.core.data.repository.LocationRepositoryImpl
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
 import com.hazrat.islam24.core.remote.api.LocationNameApi
 import com.hazrat.islam24.service.LocationHandler
@@ -53,8 +52,7 @@ object LocationModule {
     fun provideLocationNameRepository(
         api: LocationNameApi,
         locationRepository: LocationRepositoryImpl,
-        locationNameDao: LocationNameDao,
-        networkRepository: NetworkRepository
+        locationNameDao: LocationNameDao
     ): LocationNameRepository = LocationNameRepositoryImpl(api, locationRepository, locationNameDao)
 
     @Singleton

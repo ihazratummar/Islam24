@@ -19,7 +19,7 @@ import javax.inject.Named
  */
 
 class AppDataStore @Inject constructor(
-    @Named(APP_DATA_STORE) private val appDataStore: DataStore<Preferences>
+    @param:Named(APP_DATA_STORE) private val appDataStore: DataStore<Preferences>
 ) {
 
     private object DataStoreKeys {

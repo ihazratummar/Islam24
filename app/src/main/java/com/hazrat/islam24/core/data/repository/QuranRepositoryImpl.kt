@@ -44,7 +44,7 @@ import javax.inject.Inject
 class QuranRepositoryImpl @Inject constructor(
     private val quranApi: QuranApi,
     private val fileUtils: MyFileUtils,
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val dataStorePreference: DataStorePreference,
     private val firebaseAuth: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore

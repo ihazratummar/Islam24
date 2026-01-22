@@ -42,6 +42,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,6 +73,7 @@ fun CalculationScreen(
     onSaveClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val localResource = LocalResources.current
 
     Scaffold(
         modifier = modifier
@@ -128,7 +130,7 @@ fun CalculationScreen(
                     zakatEvent(ZakatEvent.ResetAllState)
                     Toast.makeText(
                         context,
-                        context.getString(R.string.done), Toast.LENGTH_SHORT
+                        localResource.getString(R.string.done), Toast.LENGTH_SHORT
                     ).show()
                 },
                 onSecondActionClick = {

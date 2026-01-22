@@ -23,7 +23,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 
 class UpdateManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val appUpdateManager: AppUpdateManager
 ) {
 

@@ -47,6 +47,7 @@ import com.hazrat.utils.DateUtil.getCurrentDate
 import com.hazrat.islam24.util.getSystemLanguage
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.Hidaya
+import com.hazrat.ui.theme.IndoPak
 import com.hazrat.ui.theme.Kitab
 import com.hazrat.ui.theme.Poppins
 import com.hazrat.ui.theme.Uthmani
@@ -364,7 +365,7 @@ fun DailyQuranAyat(
 
                         withStyle(
                             style = SpanStyle(
-                                fontFamily = Uthmani
+                                fontFamily = IndoPak
                             )
                         ) {
                             append(" $arNumber")

@@ -10,11 +10,9 @@ import com.hazrat.islam24.core.data.database.NamesDataBase
 import com.hazrat.islam24.core.data.repository.AthkarRepositoryImpl
 import com.hazrat.islam24.core.data.repository.HajjLiveRepositoryImpl
 import com.hazrat.islam24.core.data.repository.NamesRepositoryImpl
-import com.hazrat.islam24.core.data.repository.NetworkRepositoryImpl
 import com.hazrat.islam24.core.domain.repository.AthkarRepository
 import com.hazrat.islam24.core.domain.repository.HajjLiveRepository
 import com.hazrat.islam24.core.domain.repository.NamesRepository
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.remote.api.AthkarApiCall
 import com.hazrat.islam24.core.remote.api.GoogleCloudConsoleApi
 import com.hazrat.islam24.core.remote.api.NamesApi
@@ -50,10 +48,10 @@ object AppModule {
     @Provides
     fun provideNamesDatabase(@ApplicationContext context: Context): NamesDataBase {
         return Room.databaseBuilder(
-            context.applicationContext,
-            NamesDataBase::class.java,
-            "names_database"
-        ).fallbackToDestructiveMigration()
+                context.applicationContext,
+                NamesDataBase::class.java,
+                "names_database"
+            ).fallbackToDestructiveMigration(false)
             .build()
     }
 
@@ -71,10 +69,10 @@ object AppModule {
     @Provides
     fun provideAthkarDatabase(@ApplicationContext context: Context): AthkarDatabase {
         return Room.databaseBuilder(
-            context.applicationContext,
-            AthkarDatabase::class.java,
-            "athkar_database"
-        ).fallbackToDestructiveMigration()
+                context.applicationContext,
+                AthkarDatabase::class.java,
+                "athkar_database"
+            ).fallbackToDestructiveMigration(false)
             .build()
     }
 
@@ -96,13 +94,6 @@ object AppModule {
         return CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }
 
-    @Singleton
-    @Provides
-    fun provideNetworkRepository(
-        connectivityObserver: ConnectivityObserver
-    ): NetworkRepository {
-        return NetworkRepositoryImpl(connectivityObserver = connectivityObserver)
-    }
 
     @Singleton
     @Provides

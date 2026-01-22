@@ -42,10 +42,10 @@ object CalendarModule {
     fun provideAppDatabase(@ApplicationContext context: Context): CalendarDatabase {
         Log.d("AppDatabase", "Creating database instance")
         return Room.databaseBuilder(
-            context.applicationContext,
-            CalendarDatabase::class.java,
-            "app_database"
-        ).fallbackToDestructiveMigration()
+                context.applicationContext,
+                CalendarDatabase::class.java,
+                "app_database"
+            ).fallbackToDestructiveMigration(false)
             .build()
     }
 

@@ -123,7 +123,7 @@ fun QiblaMapView(
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50))
 
             val path = listOf(
-                myLocation?:qiblaLocation,
+                myLocation,
                 qiblaLocation
             )
             val polylineOptions = PolylineOptions()

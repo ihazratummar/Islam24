@@ -50,7 +50,7 @@ fun DisplayCurrentPrayerName(
     // Filter prayer times for the current day
     val currentDayPrayer = data
 
-    val currentPrayerName: String? = currentDayPrayer?.let {
+    val currentPrayerName: String? = currentDayPrayer.let {
         val isFajrTime = currentTime in (it.fajrTime + 1)..it.sunriseTime
         val isSunriseTime = currentTime in (it.sunriseTime - 300000)..(it.sunriseTime + 300000)
         val isDhuhrTime = currentTime in (it.sunriseTime + 1)..(it.asrTime)

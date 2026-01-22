@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class LocationHandler @Inject constructor (
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val locationRepository: LocationRepository,
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ) {

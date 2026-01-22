@@ -8,7 +8,6 @@ import com.hazrat.islam24.core.data.dao.PrayerTimeDao
 import com.hazrat.islam24.core.data.entity.LocationEntity
 import com.hazrat.islam24.core.data.entity.PrayerTimeEntity
 import com.hazrat.islam24.core.data.mapper.prayertime_mappers.toEntityList
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerSettingRepository
 import com.hazrat.islam24.core.domain.repository.prayertime.PrayerTimeRepository
 import com.hazrat.islam24.core.remote.api.PrayerTimeApi
@@ -20,11 +19,11 @@ import com.hazrat.utils.DateUtil.getCurrentDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -42,11 +41,9 @@ class PrayerTimeRepositoryImpl(
     private val prayerSettingRepository: PrayerSettingRepository,
     private val prayerTimeDao: PrayerTimeDao,
     private val context: Context,
-    networkRepository: NetworkRepository
+    private val connectivityObserver: ConnectivityObserver
 ) : PrayerTimeRepository {
 
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
-        networkRepository.networkStatus
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeEntity>>(emptyList())
     override val prayerTimes = _prayerTimes.asStateFlow()
 
@@ -67,7 +64,10 @@ class PrayerTimeRepositoryImpl(
 
             val year = DateUtil.getCurrentYear()
             val month = DateUtil.getCurrentMonth()
-            if (networkStatus.value != ConnectivityObserver.Status.Available) {
+
+            val networkStatus = connectivityObserver.observer().first()
+
+            if (networkStatus != ConnectivityObserver.Status.Available) {
                 throw IOException("No network available to fetch prayer times.")
             }
             val apiResponse = api.newPrayerTimesRequest(
@@ -137,7 +137,8 @@ class PrayerTimeRepositoryImpl(
             .collectLatest { prayerList: List<PrayerTimeEntity> ->
                 val currentYear = DateUtil.getCurrentYear()
                 if (prayerList.isEmpty() || currentYear != prayerList[0].gregorianYear.toInt()) {
-                    if (networkStatus.value == ConnectivityObserver.Status.Available) {
+                    val networkStatus = connectivityObserver.observer().first()
+                    if (networkStatus == ConnectivityObserver.Status.Available) {
                         newPrayerTimesRequest()
                     }
                 } else {
