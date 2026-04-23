@@ -45,6 +45,10 @@ dependencies {
     implementation(project(":feature:common"))
     implementation(project(":feature:auth:domain"))
 
+    implementation(project(":core:datastore"))
+    implementation(libs.review)
+    implementation(libs.review.ktx)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

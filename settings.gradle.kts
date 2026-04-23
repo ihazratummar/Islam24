@@ -56,9 +56,6 @@ include(":feature:alQuran:ui")
 include(":feature:alQuran:data")
 include(":feature:alQuran:domain")
 
-include(":feature:hajjlive:ui")
-include(":feature:hajjlive:data")
-
 include(":feature:prayertime:ui")
 include(":feature:prayertime:data")
 

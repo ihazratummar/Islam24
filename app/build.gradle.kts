@@ -117,9 +117,6 @@ dependencies {
     implementation(project(":feature:alQuran:data"))
     implementation(project(":feature:alQuran:domain"))
 
-    implementation(project(":feature:hajjlive:ui"))
-    implementation(project(":feature:hajjlive:data"))
-
     implementation(project(":feature:prayertime:ui"))
     implementation(project(":feature:prayertime:data"))
 

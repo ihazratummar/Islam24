@@ -56,8 +56,7 @@ fun LazyHorizontalManyIcons(
         HomePageNavIcons.Calendar,
         HomePageNavIcons.Athkar,
         HomePageNavIcons.Qibla,
-        HomePageNavIcons.Zakat,
-        HomePageNavIcons.HajjLive,
+        HomePageNavIcons.Zakat
     )
 
     Box(
@@ -180,14 +179,6 @@ sealed class HomePageNavIcons(
             route = HomeRoutes.Zakat
             // Orange shades
         )
-
-    data object HajjLive :
-        HomePageNavIcons(
-            icons = R.drawable.hajj_live,
-            name = R.string.hajj_live,
-            route = HomeRoutes.HajjLive
-            // Orange shades
-        )
 }
 
 data class AppColor(val light: Color, val dark: Color)
@@ -204,6 +195,5 @@ sealed class HomeRoutes {
     data object Qibla : HomeRoutes()
     @Serializable
     data object Zakat : HomeRoutes()
-    @Serializable
-    data object HajjLive : HomeRoutes()
+
 }

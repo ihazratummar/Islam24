@@ -9,11 +9,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.auth.ui.appSetting.AppSettingViewModel
 import com.hazrat.auth.ui.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.auth.ui.login.LoginViewModel
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
-import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
+import com.hazrat.auth.ui.profileScreen.ProfileViewModel
+import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.auth.ui.signup.SignUpViewModel
 import com.hazrat.alQuran.ui.QuranViewModel
 import com.hazrat.prayer.ui.PrayerTimeViewModel

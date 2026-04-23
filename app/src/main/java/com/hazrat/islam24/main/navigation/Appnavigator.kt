@@ -49,15 +49,13 @@ import com.hazrat.auth.ui.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.auth.ui.login.LoginViewModel
 import com.hazrat.auth.ui.signup.SignUpViewModel
 import com.hazrat.calendar.CalendarScreen
-import com.hazrat.hajjlive.ui.HajjLive
-import com.hazrat.hajjlive.ui.HajjLiveViewModel
 import com.hazrat.home.ui.HomeScreen
 import com.hazrat.home.ui.HomeViewModel
 import com.hazrat.home.ui.component.BenefitsOfRecitingScreen
 import com.hazrat.home.ui.component.HomeRoutes
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
-import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
+import com.hazrat.auth.ui.appSetting.AppSettingViewModel
+import com.hazrat.auth.ui.profileScreen.ProfileViewModel
+import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.main.navigation.MainRoute.BenifitsOfRecitingRoute
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
@@ -266,17 +264,6 @@ fun AppNavigator(
                 AthkarScreen(
                     athkar = athkarEntity,
                     onBackClick = { navController.popBackStack() }
-                )
-            }
-
-            composable<HomeRoutes.HajjLive> {
-                val viewModel : HajjLiveViewModel = koinViewModel()
-                val hajjLiveYoutubeModel by viewModel.hajjLiveYoutubeModel.collectAsStateWithLifecycle()
-                HajjLive(
-                    hajjLiveYoutubeModel = hajjLiveYoutubeModel,
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
                 )
             }
 

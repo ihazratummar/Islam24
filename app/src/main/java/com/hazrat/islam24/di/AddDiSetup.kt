@@ -12,8 +12,6 @@ import com.hazrat.auth.ui.di.getAuthUiModule
 import com.hazrat.database.getDatabaseModule
 import com.hazrat.datastore.di.getDatastoreModule
 import com.hazrat.downloader.di.getDownloadModule
-import com.hazrat.hajjlive.data.di.getHajjliveDataModule
-import com.hazrat.hajjlive.ui.di.getHajjliveUiModule
 import com.hazrat.home.ui.di.getHomeUiModule
 import com.hazrat.location.di.getLocationModule
 import com.hazrat.notification.di.getNotificationModule
@@ -53,8 +51,6 @@ fun initKoin(app: Application) {
             getAlQuranUiModule(),
             getAlQuranDataModule(),
             getQiblaDataModule(),
-            getHajjliveUiModule(),
-            getHajjliveDataModule(),
             getPrayerUiModule(),
             getPrayerDataModule(),
             getHomeUiModule()

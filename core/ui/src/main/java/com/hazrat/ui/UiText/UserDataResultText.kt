@@ -1,6 +1,6 @@
 package com.hazrat.ui.UiText
 
-import android.R.attr.data
+
 import com.hazrat.ui.R
 import com.hazrat.utils.result.error.UserDataError
 import com.hazrat.utils.result.error.UserDataSuccess

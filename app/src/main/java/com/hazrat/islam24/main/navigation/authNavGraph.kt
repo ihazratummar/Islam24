@@ -10,18 +10,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.hazrat.model.AuthState
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingScreen
-import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.auth.ui.appSetting.AppSettingScreen
+import com.hazrat.auth.ui.appSetting.AppSettingViewModel
 import com.hazrat.auth.ui.forgetPassword.ForgetPassword
 import com.hazrat.auth.ui.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.auth.ui.login.AuthLoginScreen
 import com.hazrat.auth.ui.login.LoginViewModel
-import com.hazrat.islam24.auth.presentation.policiesScreen.PoliciesScreen
-import com.hazrat.islam24.auth.presentation.policiesScreen.PrivacyPolicyScreen
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileScreen
-import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
-import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsScreen
-import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
+import com.hazrat.auth.ui.policiesScreen.PoliciesScreen
+import com.hazrat.auth.ui.policiesScreen.PrivacyPolicyScreen
+import com.hazrat.auth.ui.profileScreen.ProfileScreen
+import com.hazrat.auth.ui.profileScreen.ProfileViewModel
+import com.hazrat.auth.ui.profiledetails.ProfileDetailsScreen
+import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.auth.ui.signup.AuthSignupScreen
 import com.hazrat.auth.ui.signup.SignUpViewModel
 import kotlinx.serialization.Serializable
@@ -99,7 +99,6 @@ fun NavGraphBuilder.authNavGraph(
             val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
             val profileState by profileViewModel.profileState.collectAsState()
             ProfileScreen(
-                navController = navController,
                 authState = authState,
                 profileState = profileState,
                 onSettingClick = {
@@ -109,6 +108,15 @@ fun NavGraphBuilder.authNavGraph(
                             saveState = false
                         }
                         launchSingleTop = true
+                    }
+                },
+                navigateToLogin = { navController.navigate(Login) },
+                navigateToProfileDetails = {
+                    navController.navigate(ProfileDetailsScreen) {
+                        popUpTo(ProfileDetailsScreen) {
+                            inclusive = true
+                            saveState = true
+                        }
                     }
                 }
             )
@@ -133,7 +141,7 @@ fun NavGraphBuilder.authNavGraph(
             val profileDetailsEvent = profileDetailsViewModel::onEvent
             val userEvent by profileDetailsViewModel.events.collectAsState(initial = null)
             ProfileDetailsScreen(
-                navController = navController,
+                onBackClick = { navController.popBackStack() },
                 profileState = appSettingState1,
                 profileDetailsEvent = profileDetailsEvent,
                 userEvent = userEvent,
