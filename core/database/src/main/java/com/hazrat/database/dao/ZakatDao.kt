@@ -32,7 +32,7 @@ interface ZakatDao {
     @Query("DELETE FROM zakatentity WHERE id =:zakatId")
     suspend fun deleteZakatDetails(zakatId: String)
 
-    @Query("SELECT * FROM zakatentity")
+    @Query("SELECT * FROM zakatentity ORDER BY date DESC")
     fun getZakatList(): Flow<List<ZakatEntity>>
 
     @Query("SELECT * FROM zakatentity WHERE id =:id")

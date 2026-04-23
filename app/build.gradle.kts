@@ -4,8 +4,6 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.devtools.ksp)
-    id("kotlin-parcelize")
-    id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
@@ -30,7 +28,6 @@ android {
 
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "LOCATION_IQ_API_KEY", properties.getProperty("LOCATION_IQ_API_KEY"))
         buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
         buildConfigField("String", "MAPS_API_KEY", properties.getProperty("MAPS_API_KEY"))
 
@@ -59,10 +56,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-
-
-
-
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
     }
@@ -88,13 +81,50 @@ kotlin {
 dependencies {
 
     implementation(project(":core:ui"))
-    implementation(project(":core:di"))
     implementation(project(":core:utils"))
-    implementation(project(":domain:model"))
+    implementation(project(":core:sensor"))
+    implementation(project(":core:remote"))
+    implementation(project(":core:location"))
+    implementation(project(":core:database"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:downloader"))
+    implementation(project(":core:permission"))
+    implementation(project(":core:notification"))
+
+    implementation(project(":domain:model"))
+    implementation(project(":domain:repository"))
+
+    implementation(project(":feature:zakat"))
     implementation(project(":feature:common"))
     implementation(project(":feature:calendar"))
-    implementation(project(":feature:zakat"))
+
+    implementation(project(":feature:auth:ui"))
+    implementation(project(":feature:auth:data"))
+    implementation(project(":feature:auth:domain"))
+
+    implementation(project(":feature:qibla:ui"))
+    implementation(project(":feature:qibla:data"))
+
+    implementation(project(":feature:allahNames:ui"))
+    implementation(project(":feature:allahNames:data"))
+    implementation(project(":feature:allahNames:domain"))
+
+    implementation(project(":feature:athkar:ui"))
+    implementation(project(":feature:athkar:data"))
+    implementation(project(":feature:athkar:domain"))
+
+    implementation(project(":feature:alQuran:ui"))
+    implementation(project(":feature:alQuran:data"))
+    implementation(project(":feature:alQuran:domain"))
+
+    implementation(project(":feature:hajjlive:ui"))
+    implementation(project(":feature:hajjlive:data"))
+
+    implementation(project(":feature:prayertime:ui"))
+    implementation(project(":feature:prayertime:data"))
+
+    implementation(project(":feature:home:ui"))
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -113,23 +143,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended.android)
 
-
-
-
-    implementation(libs.play.services.location)
-
-    /*
-    FireBase
-     */
-    implementation (libs.play.services.auth)
-
-    implementation(libs.firebase.auth.ktx)
-    implementation (libs.firebase.database)
-    platform(libs.firebase.bom)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
-
-
     //window size
     implementation(libs.androidx.window)
 
@@ -139,29 +152,13 @@ dependencies {
     //Compose Navigation
     implementation (libs.androidx.navigation.compose)
 
-    //Dagger Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    //Retrofit
-    implementation (libs.retrofit)
-    implementation(libs.converter.gson)
-
+    //koin
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.navigation)
 
     //Kotlinx Serialization
     implementation (libs.kotlinx.serialization.json)
     implementation (libs.retrofit2.kotlinx.serialization.converter)
-
-    //Coil
-    implementation(libs.coil.compose)
-    implementation(libs.coil.svg)
-
-    //Datastore
-    implementation (libs.androidx.datastore.preferences)
-
-    //dataStorePreference
-    implementation(libs.androidx.preference.ktx)
 
     //Compose Foundation
     implementation (libs.androidx.foundation)
@@ -173,25 +170,11 @@ dependencies {
     implementation (libs.androidx.paging.runtime.ktx)
     implementation (libs.androidx.paging.compose)
 
-    //Room
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
-    //Room Encryption
-    implementation( libs.androidx.sqlite)
-
-
     //Observe
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.runtime.livedata)
 
     implementation(libs.androidx.viewpager2)
-
-
-    implementation (libs.logging.interceptor)
-    implementation(libs.onesignal)
 
     //Google Play Store Update
     implementation(libs.app.update)
@@ -211,15 +194,5 @@ dependencies {
 
     implementation (libs.androidsvg)
 
-
-    implementation (libs.play.services.maps)
-    implementation (libs.play.services.location)
-    implementation (libs.maps.compose)
-
-
-    implementation (libs.maps.ktx)
-    implementation (libs.maps.utils.ktx)
-
-    implementation (libs.chromecast.sender)
-
+    implementation(libs.timber)
 }

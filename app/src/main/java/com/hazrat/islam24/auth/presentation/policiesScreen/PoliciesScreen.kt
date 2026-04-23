@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import com.hazrat.ui.R
 import com.hazrat.islam24.auth.presentation.appSetting.SettingItemCard
-import com.hazrat.islam24.core.presentation.common.BackIcon
+import com.hazrat.ui.common.BackIcon
 import com.hazrat.ui.theme.dimens
 
 /**

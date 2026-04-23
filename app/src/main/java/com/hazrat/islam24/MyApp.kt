@@ -7,12 +7,20 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import dagger.hilt.android.HiltAndroidApp
+import com.hazrat.islam24.di.initKoin
+import timber.log.Timber
 
 //MyApp.kt
-@HiltAndroidApp
+
 class MyApp: Application() , ImageLoaderFactory {
 
+    override fun onCreate() {
+        super.onCreate()
+        initKoin(this)
+        if (BuildConfig.DEBUG){
+            Timber.plant(Timber.DebugTree())
+        }
+    }
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader(this).newBuilder()

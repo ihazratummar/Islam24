@@ -1,0 +1,10 @@
+com.hazrat.auth.data-pngs-0 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/build/generated/res/pngs/debug
+com.hazrat.auth.data-resValues-1 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/build/generated/res/resValues/debug
+com.hazrat.auth.data-updated_navigation_xml-2 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/build/generated/updated_navigation_xml/debug
+com.hazrat.auth.data-mergeDebugResources-3 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/build/intermediates/incremental/debug/mergeDebugResources/merged.dir
+com.hazrat.auth.data-mergeDebugResources-4 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+com.hazrat.auth.data-debug-5 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/build/intermediates/merged_res/debug/mergeDebugResources
+com.hazrat.auth.data-debug-6 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/build/intermediates/packaged_res/debug/packageDebugResources
+com.hazrat.auth.data-debug-7 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/src/debug/res
+com.hazrat.auth.data-main-8 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/auth/data/src/main/res
+gradleHome-0 /Volumes/SSD/dev-caches/gradle

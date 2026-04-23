@@ -100,3 +100,9 @@ val surfaceContainerLowDark = Color(0xFF204844)
 val surfaceContainerDark = Color(0xFF2A5854)
 val surfaceContainerHighDark = Color(0xFF335C58)
 val surfaceContainerHighestDark = Color(0xFF3E6C68)
+
+// Modern Spiritual Palette (Restored)
+val DeepPineGreen = Color(0xFF0F3D3E)
+val AmberGold = Color(0xFFD4AF37)
+val MintGlass = Color(0xFFF0FFF4)
+

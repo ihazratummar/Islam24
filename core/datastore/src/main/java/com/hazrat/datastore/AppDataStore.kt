@@ -6,20 +6,17 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import com.hazrat.utils.Constants.APP_DATA_STORE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author Hazrat Ummar Shaikh
  * Created on 22-01-2025
  */
 
-class AppDataStore @Inject constructor(
-    @param:Named(APP_DATA_STORE) private val appDataStore: DataStore<Preferences>
+class AppDataStore (
+    private val appDataStore: DataStore<Preferences>
 ) {
 
     private object DataStoreKeys {

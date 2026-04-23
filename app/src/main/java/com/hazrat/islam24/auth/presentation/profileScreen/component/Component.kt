@@ -47,35 +47,6 @@ import com.hazrat.ui.theme.dimens
  * @author Hazrat Ummar Shaikh
  */
 
-fun Modifier.profileCardShimmerEffect(): Modifier = composed {
-    var size by remember {
-        mutableStateOf(IntSize.Zero)
-    }
-    val transition = rememberInfiniteTransition(label = "")
-    val startOffsetX by transition.animateFloat(
-        initialValue = -2 * size.width.toFloat(),
-        targetValue = 2 * size.width.toFloat(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000)
-        ), label = ""
-    )
-    background(
-        brush = Brush.linearGradient(
-            colors = listOf(
-                MaterialTheme.colorScheme.secondaryContainer,
-                MaterialTheme.colorScheme.primary,
-                MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            start = Offset(startOffsetX, 0F),
-            end = Offset(
-                startOffsetX + size.width.toFloat(), size.height.toFloat()
-            )
-        ),
-        shape = RoundedCornerShape(dimens.size10)
-    ).onGloballyPositioned {
-        size = it.size
-    }
-}
 
 
 @Composable

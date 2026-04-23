@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -16,13 +17,13 @@ android {
 
     defaultConfig {
         minSdk = 26
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "LOCATION_IQ_API_KEY", properties.getProperty("LOCATION_IQ_API_KEY"))
-        buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
-        buildConfigField("String", "MAPS_API_KEY", properties.getProperty("MAPS_API_KEY"))
+
     }
 
     buildTypes {
@@ -33,15 +34,9 @@ android {
                 "proguard-rules.pro"
             )
         }
-//        debug {
-//            isMinifyEnabled = true
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
     }
     buildFeatures{
+        buildConfig = true
         buildConfig = true
     }
 
@@ -58,12 +53,24 @@ android {
 }
 
 dependencies {
-
-
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.material.icons.extended.android)
+
+    implementation(libs.koin.compose)
+
+    implementation(libs.logging.interceptor)
 }

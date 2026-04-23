@@ -2,11 +2,11 @@ package com.hazrat.islam24.main.navigation.nvgraph
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.hazrat.home.ui.component.HomeRoutes
 import com.hazrat.islam24.main.navigation.MainRoute
 import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import com.hazrat.zakat.screen.zakat.screen.CalculationScreen
@@ -14,6 +14,7 @@ import com.hazrat.zakat.screen.zakat.screen.NisabScreen
 import com.hazrat.zakat.screen.zakat.screen.zakat_screen.ZakatScreen
 import com.hazrat.zakat.screen.zakat.screen.zakat_screen.ZakatScreenViewModel
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -23,9 +24,9 @@ fun NavGraphBuilder.zakatNavGraph(
     navController: NavController,
     zakatViewModel: ZakatViewModel
 ) {
-    navigation<Zakat>(MainRoute.ZakatScreen) {
-        composable<MainRoute.ZakatScreen> {
-            val zakatScreenViewModel: ZakatScreenViewModel = hiltViewModel()
+    navigation<Zakat>(HomeRoutes.Zakat) {
+        composable<HomeRoutes.Zakat> {
+            val zakatScreenViewModel: ZakatScreenViewModel = koinViewModel()
             val zakatScreenState by zakatScreenViewModel.zakatState.collectAsState()
             ZakatScreen(
                 zakatScreenState =zakatScreenState ,
@@ -62,7 +63,7 @@ fun NavGraphBuilder.zakatNavGraph(
                 zakatEvent = zakatViewModel::event,
                 onSaveClick = {
                     navController.navigate(Zakat){
-                        popUpTo(MainRoute.ZakatScreen){
+                        popUpTo(HomeRoutes.Zakat){
                             inclusive = true
                         }
                     }

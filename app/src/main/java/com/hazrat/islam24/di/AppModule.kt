@@ -1,35 +1,50 @@
 package com.hazrat.islam24.di
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
-import com.hazrat.islam24.util.Constants.APP_DATA_STORE
-import com.hazrat.islam24.util.Constants.USER_DATA_SORE
-import com.hazrat.islam24.util.downloader.AndroidDownloader
-import com.hazrat.islam24.util.downloader.Downloader
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
-import javax.inject.Singleton
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
+import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
+import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
+import com.hazrat.islam24.main.mainActivity.MainViewModel
+import com.hazrat.islam24.service.UpdateManager
+import org.koin.android.ext.koin.androidApplication
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
 
-@Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
+/**
+ * @author hazratummar
+ * Created on 22/01/26
+ */
 
 
-    @Singleton
-    @Provides
-    fun provideDownloader(
-        @ApplicationContext context: Context
-    ): Downloader {
-        return AndroidDownloader(context)
+fun getAppModule(): Module = module {
+
+    viewModel {
+        MainViewModel(
+            profileRepository = get(),
+            locationRepository = get(),
+            appDataStore = get()
+        )
     }
 
+    single<AppUpdateManager> { AppUpdateManagerFactory.create(get<Context>()) }
+    single { UpdateManager(context = androidApplication(), appUpdateManager = get()) }
+
+    viewModel {
+        AppSettingViewModel(
+            context = get(),
+            profileRepository = get(),
+            dataStorePreference = get(),
+            quranRepository = get(),
+            appDataStore = get(),
+            userDataStore = get()
+        )
+    }
+
+    viewModel {ProfileDetailsViewModel(profileRepository = get()) }
+    viewModel { ProfileViewModel(profileRepository = get()) }
 
 }

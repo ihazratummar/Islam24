@@ -1,39 +1,42 @@
 package com.hazrat.islam24.auth.presentation.profiledetails
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.islam24.auth.presentation.UiText
+import com.hazrat.domain.repository.ProfileRepository
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
-import com.hazrat.islam24.auth.repository.ProfileRepository
+import com.hazrat.ui.UiText.UiText
+import com.hazrat.ui.UiText.asSuccessUiText
+import com.hazrat.ui.UiText.asUiText
 import com.hazrat.utils.result.Result
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
-@HiltViewModel
-class ProfileDetailsViewModel @Inject constructor(
+
+class ProfileDetailsViewModel (
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     init {
-        profileRepository.checkAuthStatus()
+        viewModelScope.launch {
+            profileRepository.checkAuthStatus()
+        }
     }
 
     private val eventChannel = Channel<UserEvent>()
     val events = eventChannel.receiveAsFlow()
 
+    private val _profileState = MutableStateFlow(ProfileState())
+    val profileState = _profileState.asStateFlow()
 
-    val profileState: StateFlow<ProfileState> = profileRepository.profileState
 
-    val profileActionState:LiveData<ProfileAction> = profileRepository.profileActionState
 
     fun onEvent(profileDetailsEvent: ProfileDetailsEvent) {
         when (profileDetailsEvent) {
@@ -55,18 +58,38 @@ class ProfileDetailsViewModel @Inject constructor(
                 profileRepository.updateProfilePicture(profileDetailsEvent.uri)
             }
             ProfileDetailsEvent.NameUpdateDialog -> {
-                profileRepository.clickNameUpdateDialog()
+                _profileState.update {
+                    it.copy(
+                        isNameDialogOpen = !_profileState.value.isNameDialogOpen
+                    )
+                }
             }
             is ProfileDetailsEvent.NameValue -> {
-                profileRepository.updateNameValue(profileDetailsEvent.name)
+                _profileState.update {
+                    it.copy(
+                        userData = it.userData?.copy(
+                            fullName = profileDetailsEvent.name
+                        )
+                    )
+                }
             }
 
             is ProfileDetailsEvent.NewBio -> {
-                profileRepository.updateBioValue(profileDetailsEvent.bio)
+                _profileState.update {
+                    it.copy(
+                        userData = it.userData?.copy(
+                            bio = profileDetailsEvent.bio
+                        )
+                    )
+                }
             }
 
             ProfileDetailsEvent.BioUpdateDialog -> {
-                profileRepository.clickBioUpdateDialog()
+                _profileState.update {
+                    it.copy(
+                        isBioDialogOpen = !_profileState.value.isBioDialogOpen
+                    )
+                }
             }
             is ProfileDetailsEvent.UpdateBio -> {
                 viewModelScope.launch {
@@ -84,7 +107,7 @@ class ProfileDetailsViewModel @Inject constructor(
             }
 
             ProfileDetailsEvent.Refresh -> {
-                profileRepository.refreshProfile()
+//                profileRepository.refreshProfile()
             }
         }
     }

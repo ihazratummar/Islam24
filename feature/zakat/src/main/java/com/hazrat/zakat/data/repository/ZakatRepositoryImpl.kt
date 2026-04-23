@@ -12,7 +12,6 @@ import com.hazrat.database.entity.zakat.ZakatEntity
 import com.hazrat.utils.Constants.USER_COLLECTION
 import com.hazrat.utils.Constants.ZAKAT_COLLECTION
 import com.hazrat.zakat.domain.repository.ZakatRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -20,13 +19,12 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
-class ZakatRepositoryImpl @Inject constructor(
+class ZakatRepositoryImpl (
     private val dao: ZakatDao,
     private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore,

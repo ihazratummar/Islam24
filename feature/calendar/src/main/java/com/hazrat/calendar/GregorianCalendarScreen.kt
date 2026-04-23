@@ -41,7 +41,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GregorianCalendarScreen(
     modifier: Modifier = Modifier,
@@ -118,7 +117,6 @@ private fun MonthHeader(daysOfWeek: List<DayOfWeek>) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun Day(
     day: CalendarDay, isSelected: Boolean, today: LocalDate, onClick: (CalendarDay) -> Unit,

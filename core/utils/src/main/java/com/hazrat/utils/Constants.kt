@@ -12,7 +12,7 @@ object Constants {
     const val ATHKAR_BASE_URL_NAME = "https://raw.githubusercontent.com/ihazratummar/Muslim-Dua/refs/heads/main/"
 
     /** Base URL for the Aladhan API */
-    const val BASE_URL = "https://api.aladhan.com/v1/calendar/"
+    const val PRAYER_BASE_URL = "https://api.aladhan.com/v1/calendar/"
 
 
     /** LocationOnCard IQ Api Key */
@@ -49,14 +49,6 @@ object Constants {
 
 
     /*
-    DataStore Constants
-     */
-
-    const val APP_DATA_STORE = "APP_DATA_STORE"
-
-    const val USER_DATA_SORE = "USER_DATA_SORE"
-
-    /*
     Islam 24 Backend
      */
 
@@ -77,6 +69,6 @@ object Constants {
 
 
 
-    const val GOOGLE_COULD_BASE_URL = "https://www.googleapis.com/youtube/v3/"
+    const val GOOGLE_CLOUD_BASE_URL = "https://www.googleapis.com/youtube/v3/"
 
 }

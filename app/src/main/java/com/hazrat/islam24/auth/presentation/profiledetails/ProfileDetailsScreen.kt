@@ -16,14 +16,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,7 +38,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -74,14 +71,14 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.size.Size
 import com.hazrat.ui.R
-import com.hazrat.islam24.auth.model.UserData
-import com.hazrat.islam24.auth.presentation.component.CustomTextField
-import com.hazrat.islam24.auth.presentation.component.ZoomedProfileImage
+import com.hazrat.auth.ui.component.CustomTextField
+import com.hazrat.auth.ui.component.ZoomedProfileImage
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileState
+import com.hazrat.model.UserData
 import com.hazrat.ui.theme.dimens
-import com.hazrat.islam24.util.getCacheProfilePicture
-import com.hazrat.islam24.util.hapticFeedbacks
-import com.hazrat.islam24.util.toUri
+import com.hazrat.utils.getCacheProfilePicture
+import com.hazrat.utils.hapticFeedbacks
+import com.hazrat.utils.toUri
 import kotlinx.coroutines.launch
 
 /**
@@ -197,16 +194,16 @@ fun ProfileDetailsScreen(
                         profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog)
                     },
                     label = stringResource(id = R.string.name),
-                    value = if (profileState.userData?.fullName == null) "Not Set" else profileState.userData.fullName
+                    value = if (profileState.userData?.fullName == null) "Not Set" else profileState.userData.fullName?:""
                 )
                 ProfileDataCards(
                     label = stringResource(id = R.string.emal),
-                    value = if (profileState.userData?.email == null) "Not Set" else profileState.userData.email
+                    value = if (profileState.userData?.email == null) "Not Set" else profileState.userData.email ?:""
                 )
                 ProfileDataCards(
                     onClick = { profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog) },
                     label = stringResource(id = R.string.bio),
-                    value = if (profileState.userData?.bio == null) "Not Set" else profileState.userData.bio
+                    value = if (profileState.userData?.bio == null) "Not Set" else profileState.userData.bio?:""
                 )
 
             }

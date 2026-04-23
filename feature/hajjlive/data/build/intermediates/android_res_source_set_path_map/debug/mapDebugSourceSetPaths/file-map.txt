@@ -1,0 +1,10 @@
+com.hazrat.hajjlive.data-pngs-0 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/build/generated/res/pngs/debug
+com.hazrat.hajjlive.data-resValues-1 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/build/generated/res/resValues/debug
+com.hazrat.hajjlive.data-updated_navigation_xml-2 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/build/generated/updated_navigation_xml/debug
+com.hazrat.hajjlive.data-mergeDebugResources-3 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/build/intermediates/incremental/debug/mergeDebugResources/merged.dir
+com.hazrat.hajjlive.data-mergeDebugResources-4 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+com.hazrat.hajjlive.data-debug-5 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/build/intermediates/merged_res/debug/mergeDebugResources
+com.hazrat.hajjlive.data-debug-6 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/build/intermediates/packaged_res/debug/packageDebugResources
+com.hazrat.hajjlive.data-debug-7 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/src/debug/res
+com.hazrat.hajjlive.data-main-8 /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/hajjlive/data/src/main/res
+gradleHome-0 /Volumes/SSD/dev-caches/gradle

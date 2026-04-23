@@ -11,15 +11,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.hazrat.datastore.AppDataStore
-import com.hazrat.datastore.UserDataStore
-import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.repository.ProfileRepository
-import com.hazrat.islam24.core.domain.repository.QuranRepository
-import com.hazrat.islam24.util.changeLanguage
 import com.hazrat.datastore.DataStorePreference
+import com.hazrat.datastore.UserDataStore
+import com.hazrat.domain.repository.ProfileRepository
+import com.hazrat.domain.repository.QuranRepository
+import com.hazrat.islam24.util.changeLanguage
+import com.hazrat.model.AuthState
 import com.hazrat.ui.R
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -27,16 +25,15 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
 
-@HiltViewModel
-class AppSettingViewModel @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+
+class AppSettingViewModel (
+    private val context: Context,
     private val profileRepository: ProfileRepository,
     private val dataStorePreference: DataStorePreference,
     private val quranRepository: QuranRepository,
@@ -68,7 +65,9 @@ class AppSettingViewModel @Inject constructor(
     val authState: LiveData<AuthState> = profileRepository.authState
 
     init {
-        profileRepository.checkAuthStatus()
+        viewModelScope.launch {
+            profileRepository.checkAuthStatus()
+        }
 
         viewModelScope.launch {
             val darkMode = appDataStore.getDarkModeEnabled()
@@ -129,7 +128,9 @@ class AppSettingViewModel @Inject constructor(
             }
 
             AppSettingEvent.RefreshAuth -> {
-                profileRepository.checkAuthStatus()
+                viewModelScope.launch {
+                    profileRepository.checkAuthStatus()
+                }
             }
 
             AppSettingEvent.HapticFeedbackClick -> {

@@ -9,8 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.hazrat.islam24.core.presentation.common.BackIcon
-import com.hazrat.islam24.core.presentation.common.WebViewScreen
+import com.hazrat.ui.common.BackIcon
+import com.hazrat.ui.common.WebViewScreen
 import com.hazrat.ui.theme.dimens
 
 /**

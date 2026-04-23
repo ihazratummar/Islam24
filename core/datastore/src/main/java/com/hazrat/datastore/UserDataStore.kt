@@ -6,19 +6,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.hazrat.utils.Constants.USER_DATA_SORE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author Hazrat Ummar Shaikh
  * Created on 24-12-2024
  */
 
-class UserDataStore @Inject constructor(
-    @param:Named(USER_DATA_SORE) private val userDataStore: DataStore<Preferences>,
+class UserDataStore (
+    private val userDataStore: DataStore<Preferences>,
 ) {
     companion object {
 

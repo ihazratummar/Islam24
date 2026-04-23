@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
@@ -23,7 +21,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -47,16 +44,15 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
-import com.hazrat.islam24.auth.AuthState
+import com.hazrat.model.AuthState
 import com.hazrat.islam24.auth.presentation.appSetting.component.SelectLanguageDialog
 import com.hazrat.islam24.auth.presentation.appSetting.component.logOutCardShimmerEffect
 import com.hazrat.islam24.auth.presentation.profileScreen.component.RatingBottomSheet
-import com.hazrat.islam24.core.presentation.common.BackIcon
+import com.hazrat.ui.common.BackIcon
 import com.hazrat.islam24.main.mainActivity.MainActivity
-import com.hazrat.islam24.util.hapticFeedbacks
+import com.hazrat.utils.hapticFeedbacks
 import com.hazrat.model.Languages
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
@@ -135,7 +131,7 @@ fun AppSettingScreen(
         }
     ) { paddingValues ->
 
-        val listOfSocialTabs = listOf<SettingItemData>(
+        val listOfSocialTabs = listOf(
             SettingItemData(
                 leadingIcon = painterResource(id = R.drawable.like),
                 tabName = stringResource(id = R.string.rate),

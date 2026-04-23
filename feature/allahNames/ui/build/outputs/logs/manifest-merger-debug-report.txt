@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml:2:13-83
+INJECTED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml:2:13-83
+	package
+		INJECTED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml
+	xmlns:android
+		ADDED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml:2:23-81
+uses-sdk
+INJECTED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml reason: use-sdk injection requested
+INJECTED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml
+INJECTED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml
+	android:targetSdkVersion
+		INJECTED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml
+	android:minSdkVersion
+		INJECTED from /Volumes/SSD/Coding/Android/Main Project/islam24/app/Islam24/feature/allahNames/ui/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11429234488009442451.xml

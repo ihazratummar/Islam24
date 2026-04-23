@@ -51,11 +51,14 @@ dependencies {
 
 
     //Room
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
+    api(libs.androidx.room.common)
+    api(libs.androidx.room.runtime)
+    api(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
     //Room Encryption
     implementation( libs.androidx.sqlite)
+
+    //koin
+    implementation(libs.koin.compose)
 }

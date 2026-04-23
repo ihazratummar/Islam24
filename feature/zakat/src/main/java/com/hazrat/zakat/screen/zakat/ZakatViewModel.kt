@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.database.entity.zakat.NisabEntity
 import com.hazrat.database.entity.zakat.ZakatEntity
 import com.hazrat.zakat.domain.repository.ZakatRepository
-import com.hazrat.zakat.domain.usecase.GetZakatDetailsUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,16 +14,14 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
-import javax.inject.Inject
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
-@HiltViewModel
-class ZakatViewModel @Inject constructor(
-    private val repository: ZakatRepository,
-    private val getZakatDetailsUseCase: GetZakatDetailsUseCase
+
+class ZakatViewModel (
+    private val repository: ZakatRepository
 ) : ViewModel() {
 
 

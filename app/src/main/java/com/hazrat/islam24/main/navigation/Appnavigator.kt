@@ -17,6 +17,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,7 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -36,43 +38,41 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
+import com.hazrat.alQuran.ui.QuranScreen
+import com.hazrat.alQuran.ui.QuranViewModel
+import com.hazrat.alQuran.ui.SurahScreen
+import com.hazrat.allahNames.ui.namesofallah.NamesOfAllahScreen
+import com.hazrat.allahNames.ui.namesofallah.NamesViewmodel
+import com.hazrat.athkar.ui.AthkarScreen
+import com.hazrat.athkar.ui.AthkarViewModel
+import com.hazrat.auth.ui.forgetPassword.ForgetPasswordViewModel
+import com.hazrat.auth.ui.login.LoginViewModel
+import com.hazrat.auth.ui.signup.SignUpViewModel
 import com.hazrat.calendar.CalendarScreen
-import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.navigation.Login
-import com.hazrat.islam24.auth.navigation.authNavGraph
+import com.hazrat.hajjlive.ui.HajjLive
+import com.hazrat.hajjlive.ui.HajjLiveViewModel
+import com.hazrat.home.ui.HomeScreen
+import com.hazrat.home.ui.HomeViewModel
+import com.hazrat.home.ui.component.BenefitsOfRecitingScreen
+import com.hazrat.home.ui.component.HomeRoutes
 import com.hazrat.islam24.auth.presentation.appSetting.AppSettingViewModel
-import com.hazrat.islam24.auth.presentation.forgetPassword.ForgetPasswordViewModel
-import com.hazrat.islam24.auth.presentation.login.LoginViewModel
 import com.hazrat.islam24.auth.presentation.profileScreen.ProfileViewModel
 import com.hazrat.islam24.auth.presentation.profiledetails.ProfileDetailsViewModel
-import com.hazrat.islam24.auth.presentation.signup.SingupViewModel
-import com.hazrat.islam24.core.presentation.al_quran.QuranScreen
-import com.hazrat.islam24.core.presentation.al_quran.QuranViewModel
-import com.hazrat.islam24.core.presentation.al_quran.SurahScreen
-import com.hazrat.islam24.core.presentation.athkar.AthkarScreen
-import com.hazrat.islam24.core.presentation.athkar.AthkarViewModel
-import com.hazrat.islam24.core.presentation.haj_live.HajjLive
-import com.hazrat.islam24.core.presentation.haj_live.HajjLiveViewModel
-import com.hazrat.islam24.core.presentation.home.HomeScreen
-import com.hazrat.islam24.core.presentation.home.HomeViewModel
-import com.hazrat.islam24.core.presentation.home.component.BenefitsOfRecitingScreen
-import com.hazrat.islam24.core.presentation.namesofallah.NamesOfAllahScreen
-import com.hazrat.islam24.core.presentation.namesofallah.NamesViewmodel
-import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
-import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSetting
-import com.hazrat.islam24.core.presentation.prayertime.setting.PrayerSettingViewModel
-import com.hazrat.islam24.core.presentation.qibla.QiblaScreen
-import com.hazrat.islam24.core.presentation.qibla.QiblaViewModel
-import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.main.navigation.MainRoute.BenifitsOfRecitingRoute
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
+import com.hazrat.model.AuthState
+import com.hazrat.prayer.ui.PrayerTimeViewModel
+import com.hazrat.prayer.ui.setting.PrayerSetting
+import com.hazrat.prayer.ui.setting.PrayerSettingViewModel
+import com.hazrat.qibla.ui.QiblaScreen
+import com.hazrat.qibla.ui.QiblaViewModel
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import kotlinx.serialization.Serializable
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -81,12 +81,9 @@ fun AppNavigator(
     quranViewModel: QuranViewModel,
     prayerTimeViewModel: PrayerTimeViewModel,
     appSettingViewModel: AppSettingViewModel,
-    qiblaViewModel: QiblaViewModel,
-    mainViewModel: MainViewModel ,
-    homeViewModel: HomeViewModel,
     profileViewModel: ProfileViewModel,
     loginViewModel: LoginViewModel,
-    signUpViewModel: SingupViewModel,
+    signUpViewModel: SignUpViewModel,
     profileDetailsViewModel: ProfileDetailsViewModel,
     forgetPasswordViewModel: ForgetPasswordViewModel,
     isHapticFeedback: Boolean = false
@@ -108,11 +105,25 @@ fun AppNavigator(
         ) {
             composable<MainRoute.HomeScreen>(
                 deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top" })
-            ) {
-                val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
+            ) {navBackStackEntry ->
+
+                val homeViewModel = koinViewModel<HomeViewModel>()
+                val prayerTimes by homeViewModel.prayerTimes.collectAsState()
                 val quranState by quranViewModel.quranState.collectAsStateWithLifecycle()
-                val locationName by mainViewModel.locationName.collectAsState()
+                val locationName by homeViewModel.locationName.collectAsState()
                 val homeState by homeViewModel.homeState.collectAsStateWithLifecycle()
+
+                val lifecycle = navBackStackEntry.lifecycle
+                DisposableEffect(lifecycle) {
+                    val observer = LifecycleEventObserver { _, event ->
+                        if (event == Lifecycle.Event.ON_START){
+                            homeViewModel.refreshLocation()
+                        }
+                    }
+                    lifecycle.addObserver(observer)
+                    onDispose { lifecycle.removeObserver(observer) }
+                }
+
                 HomeScreen(
                     navigateToPrayerTime = {
                         navController.navigate(PrayerTimeScreenRoute) {
@@ -135,28 +146,17 @@ fun AppNavigator(
                     onBenefitsWidgetClick = {
                         navController.navigate(BenifitsOfRecitingRoute)
                     },
-                    quranState = quranState,
-                    homeState = homeState,
-                    onDailyQuranClick = { surah, ayah ->
-                        navController.navigate(
-                            MainRoute.SurahScreenRoute(
-                                surahNumber = surah,
-                                ayahNumber = ayah - 2,
-                                isTracking = false
-                            )
-                        )
-                    }
-                )
-            }
-
-            composable<MainRoute.HajjLiveScreenRoute>(
-                deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top/livehajj" })
-            ){
-                val hajjLiveViewModel: HajjLiveViewModel = hiltViewModel()
-                val hajjLiveYoutubeModel by hajjLiveViewModel.hajjLiveYoutubeModel.collectAsStateWithLifecycle()
-                HajjLive(
-                    hajjLiveYoutubeModel = hajjLiveYoutubeModel,
-                    onBackClick = { navController.navigateUp() }
+//                    quranState = quranState,
+//                    homeState = homeState,
+//                    onDailyQuranClick = { surah, ayah ->
+//                        navController.navigate(
+//                            MainRoute.SurahScreenRoute(
+//                                surahNumber = surah,
+//                                ayahNumber = ayah - 2,
+//                                isTracking = false
+//                            )
+//                        )
+//                    }
                 )
             }
 
@@ -211,14 +211,12 @@ fun AppNavigator(
             }
 
             prayerNav(navController, prayerTimeViewModel)
-            composable<MainRoute.QiblaDirectionScreen> {
-                val viewModel: QiblaViewModel = hiltViewModel()
-                val locationName by viewModel.locationName.collectAsState()
+            composable<HomeRoutes.Qibla> {
+                val viewModel: QiblaViewModel = koinViewModel()
                 val state by viewModel.qiblaState.collectAsStateWithLifecycle()
                 val qiblaEvent = viewModel::onEvent
                 val authState by viewModel.authState.observeAsState(initial = AuthState.Unauthenticated)
                 QiblaScreen(
-                    locationName = locationName,
                     state = state,
                     onBackClick = {
                         navController.popBackStack()
@@ -234,9 +232,9 @@ fun AppNavigator(
                 )
 
             }
-            composable<MainRoute.NamesOfAllahScreen> {
-                val viewModel: NamesViewmodel = hiltViewModel()
-                val names by viewModel.names.collectAsState()
+            composable<HomeRoutes.NamesOfAllah> {
+                val viewModel: NamesViewmodel =koinViewModel()
+                val names by viewModel.names.collectAsStateWithLifecycle()
                 NamesOfAllahScreen(
                     onBackClick = {
                         navController.popBackStack()
@@ -245,7 +243,7 @@ fun AppNavigator(
                 )
             }
             composable<MainRoute.PrayerSetting> {
-                val prayerTimeSettingViewmodel: PrayerSettingViewModel = hiltViewModel()
+                val prayerTimeSettingViewmodel: PrayerSettingViewModel = koinViewModel()
                 val prayerTimeEntity by prayerTimeSettingViewmodel.prayerTime.collectAsState()
                 val prayerSettingState by prayerTimeSettingViewmodel.state.collectAsState()
                 PrayerSetting(
@@ -257,19 +255,31 @@ fun AppNavigator(
                     event = prayerTimeSettingViewmodel::onEvent
                 )
             }
-            composable<MainRoute.CalendarScreen> {
+            composable<HomeRoutes.Calendar> {
                 CalendarScreen(
                     onBackClick = { navController.popBackStack() }
                 )
             }
-            composable<MainRoute.AthkarScreen> {
-                val viewModel: AthkarViewModel = hiltViewModel()
+            composable<HomeRoutes.Athkar> {
+                val viewModel: AthkarViewModel = koinViewModel()
                 val athkarEntity by viewModel.athkarList.collectAsState()
                 AthkarScreen(
                     athkar = athkarEntity,
                     onBackClick = { navController.popBackStack() }
                 )
             }
+
+            composable<HomeRoutes.HajjLive> {
+                val viewModel : HajjLiveViewModel = koinViewModel()
+                val hajjLiveYoutubeModel by viewModel.hajjLiveYoutubeModel.collectAsStateWithLifecycle()
+                HajjLive(
+                    hajjLiveYoutubeModel = hajjLiveYoutubeModel,
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
             authNavGraph(
                 navController = navController,
                 appSettingViewModel = appSettingViewModel,
@@ -348,13 +358,8 @@ private fun BottomBar(navController: NavHostController) {
 
 @Serializable
 sealed class MainRoute {
-
-
     @Serializable
     data object HomeScreen : MainRoute()
-
-    @Serializable
-    data object HajjLiveScreenRoute : MainRoute()
 
     @Serializable
     data object ProfileScreen : MainRoute()
@@ -369,23 +374,9 @@ sealed class MainRoute {
         val isTracking: Boolean = true
     ) : MainRoute()
 
-    @Serializable
-    data object QiblaDirectionScreen : MainRoute()
 
     @Serializable
     data object PrayerSetting : MainRoute()
-
-    @Serializable
-    data object CalendarScreen : MainRoute()
-
-    @Serializable
-    data object NamesOfAllahScreen : MainRoute()
-
-    @Serializable
-    data object AthkarScreen : MainRoute()
-
-    @Serializable
-    data object ZakatScreen : MainRoute()
 
     @Serializable
     data object BenifitsOfRecitingRoute : MainRoute()

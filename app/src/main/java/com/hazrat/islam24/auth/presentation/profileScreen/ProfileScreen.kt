@@ -49,16 +49,16 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import com.hazrat.islam24.main.navigation.Login
+import com.hazrat.islam24.main.navigation.ProfileDetailsScreen
+import com.hazrat.model.AuthState
 import com.hazrat.ui.R
-import com.hazrat.islam24.auth.AuthState
-import com.hazrat.islam24.auth.navigation.Login
-import com.hazrat.islam24.auth.navigation.ProfileDetailsScreen
-import com.hazrat.islam24.auth.presentation.profileScreen.component.profileCardShimmerEffect
-import com.hazrat.islam24.core.presentation.common.BackIcon
-import com.hazrat.islam24.core.presentation.home.component.shimmerEffect
+import com.hazrat.ui.common.BackIcon
+import com.hazrat.ui.profileCardShimmerEffect
+import com.hazrat.ui.shimmerEffect
 import com.hazrat.ui.theme.dimens
-import com.hazrat.islam24.util.getCacheProfilePicture
-import com.hazrat.islam24.util.toUri
+import com.hazrat.utils.getCacheProfilePicture
+import com.hazrat.utils.toUri
 
 /**
  * @author Hazrat Ummar Shaikh

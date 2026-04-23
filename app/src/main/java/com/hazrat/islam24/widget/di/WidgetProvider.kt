@@ -1,12 +1,8 @@
 package com.hazrat.islam24.widget.di
 
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object WidgetProvider {
-
+fun getWidgetModule():  Module = module {
 
 }

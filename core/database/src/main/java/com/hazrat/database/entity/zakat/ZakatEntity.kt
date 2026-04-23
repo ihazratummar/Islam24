@@ -8,7 +8,7 @@ import java.util.UUID
 @Entity
 data class ZakatEntity(
     @PrimaryKey
-    val id: String= UUID.randomUUID().toString(),
+    val id: String = UUID.randomUUID().toString(),
     val date: Long,
     val money: Double,
     val gold: Double,
@@ -20,5 +20,16 @@ data class ZakatEntity(
     val zakatAmount: Double
 ) {
     // No-argument constructor required for Firestore deserialization
-    constructor() : this(id = "", date = 0L, money = 0.0, gold = 0.0, silver = 0.0, tradeAmount = 0.0, monthCost = 0.0, debt = 0.0, totalAsset = 0.0, zakatAmount = 0.0)
+    constructor() : this(
+        id = "",
+        date = 0L,
+        money = 0.0,
+        gold = 0.0,
+        silver = 0.0,
+        tradeAmount = 0.0,
+        monthCost = 0.0,
+        debt = 0.0,
+        totalAsset = 0.0,
+        zakatAmount = 0.0
+    )
 }

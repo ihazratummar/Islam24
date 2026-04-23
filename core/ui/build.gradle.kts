@@ -47,6 +47,7 @@ android {
 
 dependencies {
 
+    implementation(project(":core:utils"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -73,5 +74,9 @@ dependencies {
 
     //Lottie Animation
     implementation(libs.lottie.compose)
+
+    //Coil
+    api(libs.coil.compose)
+    api(libs.coil.svg)
 
 }

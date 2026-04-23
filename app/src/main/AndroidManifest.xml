@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -51,20 +50,22 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="islam24.hazratdev.top"/>
+                    android:host="islam24.hazratdev.top"
+                    android:path="/prayertime"
+                    />
             </intent-filter>
         </activity>
 
         <receiver
-            android:name=".receiver.PrayerTimeReceiver"
+            android:name="com.hazrat.notification.PrayerTimeReceiver"
             android:exported="true"
             tools:ignore="ExportedReceiver">
         </receiver>
 
-        <receiver android:name=".receiver.MuteReceiver"/>
+        <receiver android:name="com.hazrat.notification.MuteReceiver"/>
 
         <receiver
-            android:name=".receiver.BootReceiver"
+            android:name="com.hazrat.notification.BootReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"

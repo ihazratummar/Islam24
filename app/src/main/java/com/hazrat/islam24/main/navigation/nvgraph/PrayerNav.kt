@@ -9,104 +9,218 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
-import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeScreen
-import com.hazrat.islam24.core.presentation.prayertime.PrayerTimeViewModel
-import com.hazrat.islam24.core.presentation.prayertime.notification.screen.AsrNotification
-import com.hazrat.islam24.core.presentation.prayertime.notification.screen.DhuhrNotification
-import com.hazrat.islam24.core.presentation.prayertime.notification.screen.FajrNotification
-import com.hazrat.islam24.core.presentation.prayertime.notification.screen.IshaNotification
-import com.hazrat.islam24.core.presentation.prayertime.notification.screen.MaghribNotification
+import com.hazrat.datastore.PrayerName
+import com.hazrat.home.ui.component.HomeRoutes
+import com.hazrat.islam24.main.navigation.MainRoute
+import com.hazrat.prayer.ui.PrayerNav
+import com.hazrat.prayer.ui.PrayerTimeScreen
+import com.hazrat.prayer.ui.PrayerTimeViewModel
+import com.hazrat.prayer.ui.component.listOfAzan
+import com.hazrat.prayer.ui.component.listOfFajrAzan
+import com.hazrat.prayer.ui.notification.NotificationEvent
+import com.hazrat.prayer.ui.notification.PrayerNotificationScreen
+import com.hazrat.ui.R
 import kotlinx.serialization.Serializable
 
-/**
- * @author Hazrat Ummar Shaikh
- */
-
+/** @author Hazrat Ummar Shaikh */
 @RequiresApi(Build.VERSION_CODES.S)
 fun NavGraphBuilder.prayerNav(
-    navController: NavController,
-    prayerTimeViewModel: PrayerTimeViewModel
-){
-    navigation<PrayerTime>(PrayerTimeScreenRoute){
+        navController: NavController,
+        prayerTimeViewModel: PrayerTimeViewModel
+) {
+    navigation<PrayerTime>(PrayerTimeScreenRoute) {
         composable<PrayerTimeScreenRoute>(
-            deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top/prayertime" })
+                deepLinks =
+                        listOf(
+                                navDeepLink {
+                                    uriPattern = "https://islam24.hazratdev.top/prayertime"
+                                }
+                        )
         ) {
             val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
             val isRefreshing by prayerTimeViewModel.isPrayerTimeRefreshing.collectAsState()
             PrayerTimeScreen(
-                navController = navController,
-                event = prayerTimeViewModel::onEvent,
-                prayerTimes = prayerTimes,
-                isRefreshing = isRefreshing
+                    event = prayerTimeViewModel::onEvent,
+                    prayerTimes = prayerTimes,
+                    isRefreshing = isRefreshing,
+                    onPrayerSettingClick = { navController.navigate(MainRoute.PrayerSetting) },
+                    navigateToNotification = { prayerNav ->
+                        when (prayerNav) {
+                            PrayerNav.FAJR -> navController.navigate(FajrSetting)
+                            PrayerNav.DHUHR -> navController.navigate(DhuhrSetting)
+                            PrayerNav.ASR -> navController.navigate(AsrSetting)
+                            PrayerNav.MAGHRIB -> navController.navigate(MaghribSetting)
+                            PrayerNav.ISHA -> navController.navigate(IshaSetting)
+                        }
+                    },
+                    navigateToCalendar = { navController.navigate(HomeRoutes.Calendar) }
             )
         }
         composable<FajrSetting> {
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
-            FajrNotification(
-                notificationEvent = prayerTimeViewModel::onNotificationEvent,
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                notificationState = notificationState,
-
+            PrayerNotificationScreen(
+                    prayerName = PrayerName.FAJR,
+                    titleRes = R.string.fajr_notification,
+                    isNotificationEnabled = notificationState.isFajrNotification,
+                    onToggleNotification = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.ToggleFajrNotification
+                        )
+                    },
+                    onAzanClick = { url, fileName ->
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.OnFajrAzanClick(
+                                        azanUrl = url,
+                                        fileName = fileName
+                                )
+                        )
+                    },
+                    selectedAzan = notificationState.selectedFajrAzan,
+                    onAzanOptionSelected = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.SelectFajrAzanOption(it)
+                        )
+                    },
+                    azanList = listOfFajrAzan,
+                    notificationEvent = prayerTimeViewModel::onNotificationEvent,
+                    onBackClick = { navController.popBackStack() },
+                    notificationState = notificationState
             )
         }
         composable<DhuhrSetting> {
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
-            DhuhrNotification(
-                notificationEvent = prayerTimeViewModel::onNotificationEvent,
-                onBackClick = { navController.popBackStack() },
-                notificationState = notificationState
+            PrayerNotificationScreen(
+                    prayerName = PrayerName.DHUHR,
+                    titleRes = R.string.dhuhr_notification,
+                    isNotificationEnabled = notificationState.isDhuhrNotification,
+                    onToggleNotification = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.ToggleDhuhrNotification
+                        )
+                    },
+                    onAzanClick = { url, fileName ->
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.OnDhuhrAzanClick(
+                                        azanUrl = url,
+                                        fileName = fileName
+                                )
+                        )
+                    },
+                    selectedAzan = notificationState.selectedDhuhrAzan,
+                    onAzanOptionSelected = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.SelectDhuhrAzanOption(it)
+                        )
+                    },
+                    azanList = listOfAzan,
+                    notificationEvent = prayerTimeViewModel::onNotificationEvent,
+                    onBackClick = { navController.popBackStack() },
+                    notificationState = notificationState
             )
         }
         composable<AsrSetting> {
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
-            AsrNotification(
-                notificationEvent = prayerTimeViewModel::onNotificationEvent,
-                onBackClick = { navController.popBackStack() },
-                notificationState = notificationState
+            PrayerNotificationScreen(
+                    prayerName = PrayerName.ASR,
+                    titleRes = R.string.asr_notification,
+                    isNotificationEnabled = notificationState.isAsrNotification,
+                    onToggleNotification = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.ToggleAsrNotification
+                        )
+                    },
+                    onAzanClick = { url, fileName ->
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.OnAsrAzanClick(azanUrl = url, fileName = fileName)
+                        )
+                    },
+                    selectedAzan = notificationState.selectedAsrAzan,
+                    onAzanOptionSelected = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.SelectAsrAzanOption(it)
+                        )
+                    },
+                    azanList = listOfAzan,
+                    notificationEvent = prayerTimeViewModel::onNotificationEvent,
+                    onBackClick = { navController.popBackStack() },
+                    notificationState = notificationState
             )
         }
         composable<MaghribSetting> {
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
-            MaghribNotification(
-                notificationEvent = prayerTimeViewModel::onNotificationEvent,
-                onBackClick = { navController.popBackStack() },
-                notificationState = notificationState
+            PrayerNotificationScreen(
+                    prayerName = PrayerName.MAGHRIB,
+                    titleRes = R.string.maghrib_notification,
+                    isNotificationEnabled = notificationState.isMaghribNotification,
+                    onToggleNotification = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.ToggleMaghribNotification
+                        )
+                    },
+                    onAzanClick = { url, fileName ->
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.OnMaghribAzanClick(
+                                        azanUrl = url,
+                                        fileName = fileName
+                                )
+                        )
+                    },
+                    selectedAzan = notificationState.selectedMaghribAzan,
+                    onAzanOptionSelected = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.SelectMaghribAzanOption(it)
+                        )
+                    },
+                    azanList = listOfAzan,
+                    notificationEvent = prayerTimeViewModel::onNotificationEvent,
+                    onBackClick = { navController.popBackStack() },
+                    notificationState = notificationState
             )
         }
         composable<IshaSetting> {
             val notificationState by prayerTimeViewModel.notificationState.collectAsState()
-            IshaNotification(
-                notificationEvent = prayerTimeViewModel::onNotificationEvent,
-                onBackClick = { navController.popBackStack() },
-                notificationState = notificationState
+            PrayerNotificationScreen(
+                    prayerName = PrayerName.ISHA,
+                    titleRes = R.string.isha_notification,
+                    isNotificationEnabled = notificationState.isIshaNotification,
+                    onToggleNotification = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.ToggleIshaNotification
+                        )
+                    },
+                    onAzanClick = { url, fileName ->
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.OnIshaAzanClick(
+                                        azanUrl = url,
+                                        fileName = fileName
+                                )
+                        )
+                    },
+                    selectedAzan = notificationState.selectedIshaAzan,
+                    onAzanOptionSelected = {
+                        prayerTimeViewModel.onNotificationEvent(
+                                NotificationEvent.SelectIshaAzanOption(it)
+                        )
+                    },
+                    azanList = listOfAzan,
+                    notificationEvent = prayerTimeViewModel::onNotificationEvent,
+                    onBackClick = { navController.popBackStack() },
+                    notificationState = notificationState
             )
         }
     }
 }
 
+@Serializable data object PrayerTime
 
+@Serializable data object PrayerTimeScreenRoute
 
+@Serializable data object FajrSetting
 
+@Serializable data object DhuhrSetting
 
-@Serializable
-data object PrayerTime
+@Serializable data object AsrSetting
 
-@Serializable
-data object PrayerTimeScreenRoute
+@Serializable data object MaghribSetting
 
-@Serializable
-data object FajrSetting
-
-@Serializable
-data object DhuhrSetting
-
-@Serializable
-data object AsrSetting
-
-@Serializable
-data object MaghribSetting
-
-@Serializable
-data object IshaSetting
+@Serializable data object IshaSetting

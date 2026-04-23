@@ -59,8 +59,6 @@ dependencies {
     //dataStorePreference
     implementation(libs.androidx.preference.ktx)
 
-    //Dagger Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    //koin
+    implementation(libs.koin.compose)
 }
