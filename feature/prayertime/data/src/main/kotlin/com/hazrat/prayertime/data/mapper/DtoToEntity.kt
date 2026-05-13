@@ -2,6 +2,7 @@ package com.hazrat.prayertime.data.mapper
 
 import com.hazrat.database.entity.PrayerTimeEntity
 import com.hazrat.remote.dto.DailyDataDto
+import com.hazrat.utils.DateUtil
 import com.hazrat.utils.DateUtil.timeStringToLong
 
 /**
@@ -24,7 +25,7 @@ fun DailyDataDto.toEntity(): PrayerTimeEntity {
         firstThirdTime = timeStringToLong("${this.date.gregorian.date} ${this.timings.Firstthird}"),
         lastThirdTime = timeStringToLong("${this.date.gregorian.date} ${this.timings.Lastthird}"),
         readableDate = this.date.readable,
-        gregorianDate = this.date.gregorian.date,
+        gregorianDate = DateUtil.convertToDbFormat(this.date.gregorian.date),
         gregorianDay = this.date.gregorian.day,
         gregorianWeekday = this.date.gregorian.weekday.en,
         gregorianMonthNum = this.date.gregorian.month.number,

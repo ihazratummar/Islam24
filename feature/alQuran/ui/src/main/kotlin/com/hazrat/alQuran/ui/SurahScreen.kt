@@ -57,9 +57,7 @@ import androidx.compose.ui.unit.dp
 import com.hazrat.model.al_quran_model.local_quran_ar.ArAyah
 import com.hazrat.model.al_quran_model.local_quran_transliteration.TransliterationVerse
 import com.hazrat.ui.R
-import com.hazrat.ui.theme.IndoPak
-import com.hazrat.ui.theme.Kitab
-import com.hazrat.ui.theme.Uthmani
+import com.hazrat.ui.theme.NotoNaskhFontFamily
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.getSystemLanguage
 import kotlinx.coroutines.flow.debounce
@@ -247,7 +245,7 @@ fun AyahRow(
                     modifier = Modifier.fillMaxWidth(),
                     text = bismillahText,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        fontFamily = Kitab,
+                        fontFamily = NotoNaskhFontFamily,
                         textAlign = TextAlign.Center
                     )
                 )
@@ -261,7 +259,7 @@ fun AyahRow(
                 text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
-                            fontFamily = Uthmani,
+                            fontFamily = NotoNaskhFontFamily,
                             fontWeight = FontWeight.Thin
                         )
                     ) {
@@ -270,7 +268,7 @@ fun AyahRow(
 
                     withStyle(
                         style = SpanStyle(
-                            fontFamily = Uthmani
+                            fontFamily = NotoNaskhFontFamily
                         )
                     ) {
                         append(" $number")

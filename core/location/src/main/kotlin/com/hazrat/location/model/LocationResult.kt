@@ -25,6 +25,7 @@ sealed class LocationError {
 data class LocationConfig(
     val priority: Int =  Priority.PRIORITY_HIGH_ACCURACY,
     val timeout: Long = 10_000L,
-    val maxWaitTimeMs: Long = 5_000L
+    val maxWaitTimeMs: Long = 5_000L,
+    val minUpdateDistanceMeters: Float = 2000f // 2km
 )
 

@@ -39,7 +39,7 @@ import com.hazrat.allahNames.model.namesofallah.NameOfAllahData
 import com.hazrat.ui.R
 import com.hazrat.ui.common.BasicTopBar
 import com.hazrat.ui.common.OfflineCard
-import com.hazrat.ui.theme.AlQalam
+import com.hazrat.ui.theme.NotoNaskhFontFamily
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.getSystemLanguage
 
@@ -168,7 +168,7 @@ fun NameCard(name: NameOfAllahData) {
                         text = name.name,
                         style = MaterialTheme.typography.displaySmall,
                         color = MaterialTheme.colorScheme.onBackground,
-                        fontFamily = AlQalam
+                        fontFamily = NotoNaskhFontFamily
                     )
                 }
             }

@@ -2,52 +2,43 @@ package com.hazrat.auth.ui.profileScreen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.hazrat.domain.repository.ProfileRepository
+import com.hazrat.auth.domain.usecase.ObserveAuthStateUseCase
+import com.hazrat.auth.domain.usecase.ObserveUserUseCase
 import com.hazrat.model.AuthState
-import com.hazrat.utils.result.Result
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
-
-class ProfileViewModel (
-    private val profileRepository: ProfileRepository
+class ProfileViewModel(
+    private val observeUserUseCase: ObserveUserUseCase,
+    private val observeAuthStateUseCase: ObserveAuthStateUseCase
 ) : ViewModel() {
+
+    val authState: LiveData<AuthState> = observeAuthStateUseCase().asLiveData()
 
     private val _profileState = MutableStateFlow(ProfileState())
     val profileState = _profileState.asStateFlow()
-    val authState: LiveData<AuthState> = profileRepository.authState
 
     init {
-        viewModelScope.launch {
-            profileRepository.checkAuthStatus()
-        }
-        loadProfile()
+        observeUserProfile()
     }
 
-    fun loadProfile() {
+    private fun observeUserProfile() {
         viewModelScope.launch {
-            when(val result = profileRepository.fetchUserData()){
-                is Result.Error -> {
-                    _profileState.value = _profileState.value.copy(
-                        userData = null
-                    )
-                }
-                is Result.Success -> {
-                    _profileState.value = _profileState.value.copy(
-                        userData = result.data
-                    )
-                }
+            observeUserUseCase().collect { user ->
+                _profileState.update { it.copy(userData = user) }
             }
         }
     }
-    fun onEvent(event: ProfileEvent) {
 
+    fun onEvent(event: ProfileEvent) {
+        // Handle events if any
     }
 }

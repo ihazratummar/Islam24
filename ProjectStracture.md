@@ -1,3 +1,6 @@
+# Project Structure
+
+```text
 /Islam24/
 │
 ├── build.gradle (root)
@@ -17,10 +20,8 @@
 │   ├── ui/                      # Base UI: buttons, spacing, loading indicators
 │   ├── utils/                   # Date, Logging, NetworkChecker
 │   ├── di/                      # Koin modules (Firebase, Retrofit, etc)
-
-├── feature/
-│   ├── Calendar
 │
-│   ├── common/
-│
-
+└── feature/
+    ├── Calendar
+    └── common/
+```

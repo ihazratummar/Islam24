@@ -19,10 +19,10 @@ fun getQiblaUiModule(): Module = module {
         QiblaViewModel(
             rotationSensor = get<MeasurableSensor>(qualifier = RotationSensorQualifier),
             compassSensor = get<MeasurableSensor>(qualifier = CompassSensorQualifier),
-            profileRepository = get(),
             userDataStore = get(),
             qiblaRepository = get(),
-            locationRepository = get()
+            locationRepository = get(),
+            observeAuthStateUseCase = get()
         )
     }
 }

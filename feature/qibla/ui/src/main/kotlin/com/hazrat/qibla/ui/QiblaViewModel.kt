@@ -4,14 +4,15 @@ package com.hazrat.qibla.ui
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.hazrat.model.AuthState
-import com.hazrat.domain.repository.ProfileRepository
+import com.hazrat.auth.domain.usecase.ObserveAuthStateUseCase
 import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.QiblaRepository
 import com.hazrat.location.model.LocationError
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
+import com.hazrat.model.AuthState
 import com.hazrat.sensor.MeasurableSensor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Timer
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -36,10 +36,10 @@ import kotlin.math.sin
 class QiblaViewModel (
     rotationSensor: MeasurableSensor,
     compassSensor: MeasurableSensor,
-    private val profileRepository: ProfileRepository,
     private val userDataStore: UserDataStore,
     private val qiblaRepository: QiblaRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    observeAuthStateUseCase: ObserveAuthStateUseCase
 ) : ViewModel() {
 
 
@@ -55,7 +55,7 @@ class QiblaViewModel (
         initialValue = _qiblaState.value,
     )
 
-    val authState: LiveData<AuthState> = profileRepository.authState
+    val authState: LiveData<AuthState> = observeAuthStateUseCase().asLiveData()
 
 
     private var previousDirection: Float = 0f
@@ -63,9 +63,6 @@ class QiblaViewModel (
     init {
         syncCompass()
         observerLocation()
-        viewModelScope.launch {
-            profileRepository.checkAuthStatus()
-        }
 
         compassSensor.startListening()
         compassSensor.setOnSensorValuesChangedLister { values ->

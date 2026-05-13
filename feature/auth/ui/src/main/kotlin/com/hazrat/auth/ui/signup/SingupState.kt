@@ -8,5 +8,6 @@ data class SingupState(
     val passwordVisible: Boolean = false,
     val confirmPasswordVisible: Boolean = false,
     val isFormValid: Boolean = false,
-    val isPasswordValid: Boolean = false
+    val isPasswordValid: Boolean = false,
+    val isLoading: Boolean = false
 )

@@ -2,107 +2,91 @@ package com.hazrat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// 🌞 Light Theme
-
-val primaryLight = Color(0xFF1E726D) // ✅ Main brand color – buttons, top app bars, toggles
-val onPrimaryLight = Color(0xFFFFFFFF) // ✅ Text/icons on primary buttons/app bars
-
-val primaryContainerLight = Color(0xFFA8E7E4) // ✅ Used for elevated button containers, cards
-val onPrimaryContainerLight = Color(0xFF00201F) // ✅ Text/icons inside primaryContainer
-
-val secondaryLight = Color(0xFF40798C) // ✅ For chips, FABs, tab indicators
-val onSecondaryLight = Color(0xFFFFFFFF) // ✅ Text/icons on secondary elements
-
-val secondaryContainerLight = Color(0xFFCBEAF5) // ✅ Background of secondary cards/chips
-val onSecondaryContainerLight = Color(0xFF062B39) // ✅ Text/icons on secondaryContainer
-
-val tertiaryLight = Color(0xFFEF6C57) // ✅ Accent color – sliders, checkboxes, icons
-val onTertiaryLight = Color(0xFFFFFFFF) // ✅ Text/icons on accent background
-
-val tertiaryContainerLight = Color(0xFFFFDAD3) // ✅ Background for tertiary cards/surfaces
-val onTertiaryContainerLight = Color(0xFF3E1914) // ✅ Text/icons for tertiaryContainer
-
-val errorLight = Color(0xFFD32F2F) // ❗ Used for error buttons, outlines, text
-val onErrorLight = Color.White // ✅ Text/icons on error background
-
-val errorContainerLight = Color(0xFFFFDAD4) // ❗ Error surfaces like forms, alerts
-val onErrorContainerLight = Color(0xFF410002) // ❗ Text/icons on errorContainer
-
-val backgroundLight = Color(0xFFF2FAF9) // ✅ Scaffold background
-val onBackgroundLight = Color(0xFF0A1B1B) // ✅ Default readable text on background
-
-val surfaceLight = Color(0xFFFFFFFF) // ✅ Main surface – cards, sheets, modals
-val onSurfaceLight = Color(0xFF1B3131) // ✅ Text/icons on top of surfaces
-
-val surfaceVariantLight = Color(0xFFDDEFEF) // ✅ Variant surface – list items, inputs
-val onSurfaceVariantLight = Color(0xFF3B4D4D) // ✅ Text/icons on surfaceVariant
-
-val outlineLight = Color(0xFFB3D4D1) // ✅ Border strokes, dividers
-val outlineVariantLight = Color(0xFF88AAA8) // ✅ Subtle outlines, separators
-
-val scrimLight = Color(0xFF0F302B) // ✅ Used behind dialogs, drawers
-
-val inverseSurfaceLight = Color(0xFF164E4A) // ✅ Used for inverted app bar or sheets
-val inverseOnSurfaceLight = Color(0xFFE8F6F3) // ✅ Text/icons on inverseSurface
-
-// Elevation color levels
-val surfaceDimLight = Color(0xFFF2FAF9) // ✅ Slightly elevated surfaces (low elevation)
-val surfaceBrightLight = Color(0xFFECF8F6) // ✅ Slight highlight (e.g., hover or pressed)
-val surfaceContainerLowestLight = Color(0xFFEFFAF8) // ✅ Used for flat backgrounds
-val surfaceContainerLowLight = Color(0xFFF4FBFA) // ✅ Slightly raised cards
-val surfaceContainerLight = Color(0xFFF6FDFC) // ✅ Common surface container background
-val surfaceContainerHighLight = Color(0xFFF3FAF9) // ✅ Cards, buttons with shadow
-val surfaceContainerHighestLight = Color(0xFFF1F8F7) // ✅ Most elevated elements (dialogs, modals)
-
-
-
-// 🌚 Dark Theme
-val primaryDark = Color(0xFF74D4CF)
-val onPrimaryDark = Color(0xFF003735)
-val primaryContainerDark = Color(0xFF004F4D)
-val onPrimaryContainerDark = Color(0xFFA8E7E4)
-
-val secondaryDark = Color(0xFFB1CAD3)
-val onSecondaryDark = Color(0xFF19333A)
-val secondaryContainerDark = Color(0xFF294D55)
-val onSecondaryContainerDark = Color(0xFFCBEAF5)
-
-val tertiaryDark = Color(0xFFFCA295)
-val onTertiaryDark = Color(0xFF4E1D17)
-val tertiaryContainerDark = Color(0xFF672922)
-val onTertiaryContainerDark = Color(0xFFFFDAD3)
-
-val errorDark = Color(0xFFF28B82)
-val onErrorDark = Color(0xFF601410)
-val errorContainerDark = Color(0xFF8C1D18)
-val onErrorContainerDark = Color(0xFFFFDAD4)
-
-val backgroundDark = Color(0xFF0A1B1B)
-val onBackgroundDark = Color(0xFFEAF8F6)
-
-val surfaceDark = Color(0xFF132828)
-val onSurfaceDark = Color(0xFFE0F2F1)
-
-val surfaceVariantDark = Color(0xFF214844)
-val onSurfaceVariantDark = Color(0xFFB2E8DE)
-
-val outlineDark = Color(0xFF567D7A)
-val outlineVariantDark = Color(0xFF3C5F5D)
-val scrimDark = Color(0xFF061C16)
-
-val inverseSurfaceDark = Color(0xFFE8F6F3)
-val inverseOnSurfaceDark = Color(0xFF164E4A)
-
-val surfaceDimDark = Color(0xFF0F302B)
-val surfaceBrightDark = Color(0xFF1A403C)
-val surfaceContainerLowestDark = Color(0xFF163531)
-val surfaceContainerLowDark = Color(0xFF204844)
-val surfaceContainerDark = Color(0xFF2A5854)
-val surfaceContainerHighDark = Color(0xFF335C58)
-val surfaceContainerHighestDark = Color(0xFF3E6C68)
-
-// Modern Spiritual Palette (Restored)
+// Modern Spiritual Palette (Premium)
 val DeepPineGreen = Color(0xFF0F3D3E)
-val AmberGold = Color(0xFFD4AF37)
-val MintGlass = Color(0xFFF0FFF4)
+val EmeraldGreen = Color(0xFF1E726D)
+val SpiritualGold = Color(0xFFD4AF37)
+val SoftCream = Color(0xFFFDFBF7)
 
+
+
+
+//// New Colors ///
+
+
+val Primary10 = Color(0xFF021416)
+val Primary20 = Color(0xFF04282C)
+val Primary30 = Color(0xFF074145)
+val Primary40 = Color(0xFF0A5A5E)
+val Primary50 = Color(0xFF0D7377)
+val Primary60 = Color(0xFF149285)
+val Primary70 = Color(0xFF26A490)
+val Primary80 = Color(0xFF4DB5A9)
+val Primary90 = Color(0xFFB3E0D9)
+val Primary95 = Color(0xFFE6F5F3)
+val Primary99 = Color(0xFFF5FBFA)
+// ========== SECONDARY (Gold) ==========
+val Secondary10 = Color(0xFF594317)
+val Secondary20 = Color(0xFF785E1F)
+val Secondary30 = Color(0xFF967927)
+val Secondary40 = Color(0xFFB5942F)
+val Secondary50 = Color(0xFFD4AF37)
+val Secondary60 = Color(0xFFEDC848)
+val Secondary70 = Color(0xFFF1D470)
+val Secondary80 = Color(0xFFF5E098)
+val Secondary90 = Color(0xFFF9ECC0)
+val Secondary95 = Color(0xFFFDF8E8)
+val Secondary99 = Color(0xFFFFFDF7)
+// ========== TERTIARY (Terracotta — warm accent) ==========
+val Tertiary10 = Color(0xFF410E0B)
+val Tertiary20 = Color(0xFF612C22)
+val Tertiary30 = Color(0xFF7D3B2E)
+val Tertiary40 = Color(0xFF9A4E3F)
+val Tertiary50 = Color(0xFFB85C3C)
+val Tertiary60 = Color(0xFFC4784A)
+val Tertiary70 = Color(0xFFD48F60)
+val Tertiary80 = Color(0xFFE2A87A)
+val Tertiary90 = Color(0xFFF5CFB0)
+val Tertiary95 = Color(0xFFFFF0E4)
+val Tertiary99 = Color(0xFFFFFBF8)
+// ========== NEUTRAL (Surface tones) ==========
+val Neutral0 = Color(0xFF000000)
+val Neutral4 = Color(0xFF0A1618)
+val Neutral6 = Color(0xFF0F1B1E)
+val Neutral10 = Color(0xFF151E20)
+val Neutral12 = Color(0xFF1A2E32)
+val Neutral17 = Color(0xFF223A3E)
+val Neutral20 = Color(0xFF2A4548)
+val Neutral22 = Color(0xFF2F4D50)
+val Neutral30 = Color(0xFF456467)
+val Neutral40 = Color(0xFF5D7D80)
+val Neutral50 = Color(0xFF789799)
+val Neutral60 = Color(0xFF93B1B3)
+val Neutral70 = Color(0xFFAEC9CB)
+val Neutral80 = Color(0xFFC9E1E3)
+val Neutral87 = Color(0xFFDFF0F1)
+val Neutral90 = Color(0xFFE8F5F6)
+val Neutral92 = Color(0xFFEEF5F5)
+val Neutral94 = Color(0xFFF2F8F8)
+val Neutral95 = Color(0xFFF5FAFA)
+val Neutral96 = Color(0xFFF8FAF9)
+val Neutral98 = Color(0xFFFAFDFC)
+val Neutral99 = Color(0xFFFFFFFF)
+// ========== NEUTRAL VARIANT (Muted surface tones) ==========
+val NeutralVariant30 = Color(0xFF3B4D4F)
+val NeutralVariant50 = Color(0xFF6B8284)
+val NeutralVariant60 = Color(0xFF849B9D)
+val NeutralVariant80 = Color(0xFFB3D0D3)
+val NeutralVariant90 = Color(0xFFD6EBED)
+// ========== ERROR ==========
+val Error10 = Color(0xFF410E0B)
+val Error20 = Color(0xFF601410)
+val Error30 = Color(0xFF8C1D18)
+val Error40 = Color(0xFFB3261E)
+val Error50 = Color(0xFFD9382E)
+val Error60 = Color(0xFFE46962)
+val Error70 = Color(0xFFEC928E)
+val Error80 = Color(0xFFF2B8B5)
+val Error90 = Color(0xFFF9DEDC)
+val Error95 = Color(0xFFFCECEB)
+val Error99 = Color(0xFFFFF9F9)

@@ -1,13 +1,10 @@
 package com.hazrat.home.ui.component
 
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,34 +20,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import com.hazrat.ui.R
+import com.hazrat.ui.theme.EmeraldGreen
 import com.hazrat.ui.theme.dimens
 import kotlinx.serialization.Serializable
-
 
 @Composable
 fun LazyHorizontalManyIcons(
     onClick: (HomePageNavIcons) -> Unit
 ) {
-
-
     val navIcons = listOf(
         HomePageNavIcons.AsmaUlHusna,
         HomePageNavIcons.Calendar,
@@ -60,12 +47,10 @@ fun LazyHorizontalManyIcons(
     )
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         LazyRow(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -87,7 +72,8 @@ private fun HomeWidgetsIcons(
     iconData: HomePageNavIcons,
     onClick: () -> Unit
 ) {
-    val containerColor = MaterialTheme.colorScheme.secondaryContainer
+    val isDark = isSystemInDarkTheme()
+    val containerColor = if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f) else Color.White
 
     Column(
         modifier = Modifier.padding(vertical = dimens.size10, horizontal = dimens.size10),
@@ -97,16 +83,22 @@ private fun HomeWidgetsIcons(
         Card(
             modifier = Modifier
                 .size(dimens.size80)
-                .padding(dimens.size1)
+                .padding(dimens.size2)
+                .border(
+                    width = dimens.size1,
+                    color = EmeraldGreen.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(dimens.size20)
+                )
                 .combinedClickable(
                     onClick = { onClick() },
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 )
-                .clip(RoundedCornerShape(30)), // Squircle-ish
+                .clip(RoundedCornerShape(dimens.size20)),
             colors = CardDefaults.cardColors(
                 containerColor = containerColor
-            )
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = dimens.size2)
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -117,7 +109,7 @@ private fun HomeWidgetsIcons(
                     contentDescription = iconData.name.toString(),
                     tint = Color.Unspecified,
                     modifier = Modifier
-                        .size(dimens.size40) // Slightly smaller icon for elegance
+                        .size(dimens.size35)
                         .padding(dimens.size1)
                 )
             }
@@ -127,13 +119,10 @@ private fun HomeWidgetsIcons(
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = dimens.size5)
+            modifier = Modifier.padding(top = dimens.size8)
         )
     }
 }
-
-
-
 
 sealed class HomePageNavIcons(
     val icons: Int,
@@ -145,7 +134,6 @@ sealed class HomePageNavIcons(
             icons = R.drawable.allah,
             name = R.string.names,
             route = HomeRoutes.NamesOfAllah
-            // Light blue shades
         )
 
     data object Calendar :
@@ -153,7 +141,6 @@ sealed class HomePageNavIcons(
             icons = R.drawable.calendar,
             name = R.string.calendar,
             route = HomeRoutes.Calendar
-            // Yellow shades
         )
 
     data object Athkar :
@@ -161,7 +148,6 @@ sealed class HomePageNavIcons(
             icons = R.drawable.zikir,
             name = R.string.athkar,
             route = HomeRoutes.Athkar
-            // Green shades
         )
 
     data object Qibla :
@@ -169,7 +155,6 @@ sealed class HomePageNavIcons(
             icons = R.drawable.kaba,
             name = R.string.qibla,
             route = HomeRoutes.Qibla
-            // Light blue shades
         )
 
     data object Zakat :
@@ -177,11 +162,8 @@ sealed class HomePageNavIcons(
             icons = R.drawable.zakat,
             name = R.string.zakat,
             route = HomeRoutes.Zakat
-            // Orange shades
         )
 }
-
-data class AppColor(val light: Color, val dark: Color)
 
 @Serializable
 sealed class HomeRoutes {
@@ -195,5 +177,4 @@ sealed class HomeRoutes {
     data object Qibla : HomeRoutes()
     @Serializable
     data object Zakat : HomeRoutes()
-
 }

@@ -18,14 +18,16 @@ import org.koin.dsl.module
  */
 
 fun getAuthUiModule(): Module = module {
-    viewModel { LoginViewModel(get(), androidContext()) }
-    viewModel { SignUpViewModel(context = androidContext(), profileRepository = get()) }
+    viewModel { LoginViewModel(get(), get(), get()) }
+    viewModel { SignUpViewModel(get(), get(), get()) }
     viewModel { ForgetPasswordViewModel(forgetPasswordRepository = get()) }
 
     viewModel {
         AppSettingViewModel(
             context = get(),
-            profileRepository = get(),
+            signOutUseCase = get(),
+            observeUserUseCase = get(),
+            observeAuthStateUseCase = get(),
             dataStorePreference = get(),
             quranRepository = get(),
             appDataStore = get(),
@@ -33,7 +35,7 @@ fun getAuthUiModule(): Module = module {
         )
     }
 
-    viewModel { ProfileDetailsViewModel(profileRepository = get()) }
-    viewModel { ProfileViewModel(profileRepository = get()) }
+    viewModel { ProfileDetailsViewModel(get(), get(), get()) }
+    viewModel { ProfileViewModel(get(), get()) }
 
 }

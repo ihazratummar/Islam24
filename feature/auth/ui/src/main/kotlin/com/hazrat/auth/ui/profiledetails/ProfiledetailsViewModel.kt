@@ -2,7 +2,9 @@ package com.hazrat.auth.ui.profiledetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.domain.repository.ProfileRepository
+import com.hazrat.auth.domain.usecase.UpdateBioUseCase
+import com.hazrat.auth.domain.usecase.UpdateNameUseCase
+import com.hazrat.auth.domain.usecase.UpdateProfilePictureUseCase
 import com.hazrat.auth.ui.profileScreen.ProfileState
 import com.hazrat.ui.UiText.UiText
 import com.hazrat.ui.UiText.asSuccessUiText
@@ -19,16 +21,11 @@ import kotlinx.coroutines.launch
  * @author Hazrat Ummar Shaikh
  */
 
-
-class ProfileDetailsViewModel (
-    private val profileRepository: ProfileRepository
+class ProfileDetailsViewModel(
+    private val updateNameUseCase: UpdateNameUseCase,
+    private val updateBioUseCase: UpdateBioUseCase,
+    private val updateProfilePictureUseCase: UpdateProfilePictureUseCase
 ) : ViewModel() {
-
-    init {
-        viewModelScope.launch {
-            profileRepository.checkAuthStatus()
-        }
-    }
 
     private val eventChannel = Channel<UserEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -36,85 +33,51 @@ class ProfileDetailsViewModel (
     private val _profileState = MutableStateFlow(ProfileState())
     val profileState = _profileState.asStateFlow()
 
-
-
-    fun onEvent(profileDetailsEvent: ProfileDetailsEvent) {
-        when (profileDetailsEvent) {
+    fun onEvent(event: ProfileDetailsEvent) {
+        when (event) {
             is ProfileDetailsEvent.UpdateName -> {
                 viewModelScope.launch {
-                    when(val result = profileRepository.updateName(profileDetailsEvent.name)){
-                        is Result.Error -> {
-                            val errorMessage = result.error.asUiText()
-                            eventChannel.send(UserEvent.Error(errorMessage))
-                        }
-                        is Result.Success -> {
-                            val successMessage = result.data.asSuccessUiText()
-                            eventChannel.send(UserEvent.Success(successMessage))
-                        }
+                    when (val result = updateNameUseCase(event.name.fullName ?: "")) {
+                        is Result.Error -> eventChannel.send(UserEvent.Error(result.error.asUiText()))
+                        is Result.Success -> eventChannel.send(UserEvent.Success(result.data.asSuccessUiText()))
                     }
                 }
             }
             is ProfileDetailsEvent.UpdateProfilePicture -> {
-                profileRepository.updateProfilePicture(profileDetailsEvent.uri)
+                viewModelScope.launch {
+                    updateProfilePictureUseCase(event.uri)
+                }
             }
             ProfileDetailsEvent.NameUpdateDialog -> {
-                _profileState.update {
-                    it.copy(
-                        isNameDialogOpen = !_profileState.value.isNameDialogOpen
-                    )
-                }
+                _profileState.update { it.copy(isNameDialogOpen = !it.isNameDialogOpen) }
             }
             is ProfileDetailsEvent.NameValue -> {
-                _profileState.update {
-                    it.copy(
-                        userData = it.userData?.copy(
-                            fullName = profileDetailsEvent.name
-                        )
-                    )
+                _profileState.update { state ->
+                    state.copy(userData = state.userData?.copy(fullName = event.name))
                 }
             }
-
             is ProfileDetailsEvent.NewBio -> {
-                _profileState.update {
-                    it.copy(
-                        userData = it.userData?.copy(
-                            bio = profileDetailsEvent.bio
-                        )
-                    )
+                _profileState.update { state ->
+                    state.copy(userData = state.userData?.copy(bio = event.bio))
                 }
             }
-
             ProfileDetailsEvent.BioUpdateDialog -> {
-                _profileState.update {
-                    it.copy(
-                        isBioDialogOpen = !_profileState.value.isBioDialogOpen
-                    )
-                }
+                _profileState.update { it.copy(isBioDialogOpen = !it.isBioDialogOpen) }
             }
             is ProfileDetailsEvent.UpdateBio -> {
                 viewModelScope.launch {
-                    when(val result =profileRepository.updateBio(profileDetailsEvent.bio)){
-                        is Result.Error -> {
-                            val errorMessage = result.error.asUiText()
-                            eventChannel.send(UserEvent.Error(errorMessage))
-                        }
-                        is Result.Success -> {
-                            val successMessage = result.data.asSuccessUiText()
-                            eventChannel.send(UserEvent.Success(successMessage))
-                        }
+                    when (val result = updateBioUseCase(event.bio.bio ?: "")) {
+                        is Result.Error -> eventChannel.send(UserEvent.Error(result.error.asUiText()))
+                        is Result.Success -> eventChannel.send(UserEvent.Success(result.data.asSuccessUiText()))
                     }
                 }
             }
-
-            ProfileDetailsEvent.Refresh -> {
-//                profileRepository.refreshProfile()
-            }
+            ProfileDetailsEvent.Refresh -> {}
         }
     }
-
 }
 
-sealed interface UserEvent{
-    data class Error(val error: UiText): UserEvent
-    data class Success(val success: UiText): UserEvent
+sealed interface UserEvent {
+    data class Error(val error: UiText) : UserEvent
+    data class Success(val success: UiText) : UserEvent
 }

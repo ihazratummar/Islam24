@@ -12,7 +12,6 @@ import androidx.navigation.compose.rememberNavController
 import com.hazrat.auth.ui.appSetting.AppSettingViewModel
 import com.hazrat.auth.ui.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.auth.ui.login.LoginViewModel
-import com.hazrat.auth.ui.profileScreen.ProfileViewModel
 import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.auth.ui.signup.SignUpViewModel
 import com.hazrat.alQuran.ui.QuranViewModel
@@ -29,7 +28,6 @@ fun NavGraph(
     quranViewModel: QuranViewModel,
     prayerTimeViewModel : PrayerTimeViewModel,
     appSettingViewModel : AppSettingViewModel,
-    profileViewModel: ProfileViewModel,
     loginViewModel: LoginViewModel,
     signUpViewModel: SignUpViewModel,
     profileDetailsViewModel: ProfileDetailsViewModel,
@@ -50,7 +48,6 @@ fun NavGraph(
                     prayerTimeViewModel = prayerTimeViewModel,
                     appSettingViewModel = appSettingViewModel,
                     isHapticFeedback = isHapticFeedback,
-                    profileViewModel = profileViewModel,
                     loginViewModel = loginViewModel,
                     signUpViewModel = signUpViewModel,
                     profileDetailsViewModel = profileDetailsViewModel,

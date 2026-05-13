@@ -31,10 +31,14 @@ kotlin {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":domain:repository"))
+    implementation(project(":domain:model"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    
+    implementation(libs.koin.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -54,7 +54,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var prayerTimeViewModel: PrayerTimeViewModel
     private lateinit var mainViewModel: MainViewModel
     private lateinit var zakatViewModel: ZakatViewModel
-    private lateinit var profileViewModel: ProfileViewModel
     private lateinit var singUpViewModel: SignUpViewModel
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var forgetPasswordViewModel: ForgetPasswordViewModel
@@ -78,7 +77,6 @@ class MainActivity : ComponentActivity() {
         prayerTimeViewModel = getViewModel()
         mainViewModel = getViewModel()
         zakatViewModel = getViewModel()
-        profileViewModel = getViewModel()
         singUpViewModel = getViewModel()
         loginViewModel = getViewModel()
         forgetPasswordViewModel = getViewModel()
@@ -105,7 +103,6 @@ class MainActivity : ComponentActivity() {
                     prayerTimeViewModel = prayerTimeViewModel,
                     appSettingViewModel = appSettingViewModel,
                     isHapticFeedback = isHapticFeedback,
-                    profileViewModel = profileViewModel,
                     loginViewModel = loginViewModel,
                     signUpViewModel = singUpViewModel,
                     profileDetailsViewModel = profileDetailsViewModel,

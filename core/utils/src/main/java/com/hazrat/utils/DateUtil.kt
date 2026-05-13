@@ -46,17 +46,31 @@ object DateUtil {
     }
 
     /**
-     * Retrieves the current date in the "dd-MM-yyyy" format.
+     * Retrieves the current date in the "yyyy-MM-dd" format for sortable database storage.
      *
      * @return The current date as a string.
      */
     fun getCurrentDate(): String {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
         return dateFormat.format(Date())
     }
 
     /**
-     * Retrieves the current date in the "dd-MM-yyyy" format.
+     * Converts a "dd-MM-yyyy" date string to "yyyy-MM-dd".
+     */
+    fun convertToDbFormat(dateString: String): String {
+        return try {
+            val inputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+            val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+            val date = inputFormat.parse(dateString)
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            dateString
+        }
+    }
+
+    /**
+     * Retrieves the current date in the "dd-MMMM-yyyy" format.
      *
      * @return The current date as a string.
      */
@@ -68,13 +82,11 @@ object DateUtil {
     /**
      * Checks if the provided date string represents today's date.
      *
-     * @param dateString The date string to be checked (in "dd-MM-yyyy" format).
+     * @param dateString The date string to be checked (in "yyyy-MM-dd" format).
      * @return true if the provided date string represents today's date, false otherwise.
      */
     fun isToday(dateString: String): Boolean {
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
-        val currentDate = dateFormat.format(Date())
-        return dateString == currentDate
+        return dateString == getCurrentDate()
     }
 
 

@@ -25,6 +25,7 @@ import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.auth.ui.signup.AuthSignupScreen
 import com.hazrat.auth.ui.signup.SignUpViewModel
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -34,7 +35,6 @@ import kotlinx.serialization.Serializable
 fun NavGraphBuilder.authNavGraph(
     navController: NavController,
     appSettingViewModel: AppSettingViewModel,
-    profileViewModel: ProfileViewModel,
     loginViewModel: LoginViewModel,
     signUpViewModel: SignUpViewModel,
     profileDetailsViewModel: ProfileDetailsViewModel,
@@ -96,6 +96,8 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<MainRoute.ProfileScreen> {
+            val profileViewModel = koinViewModel <ProfileViewModel>()
+
             val authState by profileViewModel.authState.observeAsState(AuthState.Loading)
             val profileState by profileViewModel.profileState.collectAsState()
             ProfileScreen(

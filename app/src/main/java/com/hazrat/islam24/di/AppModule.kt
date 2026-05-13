@@ -22,7 +22,7 @@ fun getAppModule(): Module = module {
 
     viewModel {
         MainViewModel(
-            profileRepository = get(),
+            observeUserUseCase = get(),
             locationRepository = get(),
             appDataStore = get()
         )

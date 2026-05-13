@@ -74,7 +74,7 @@ fun AppSettingScreen(
 ) {
 
     val context = LocalContext.current
-    val activity = LocalActivity.current as? Activity
+    val activity = LocalActivity.current
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()

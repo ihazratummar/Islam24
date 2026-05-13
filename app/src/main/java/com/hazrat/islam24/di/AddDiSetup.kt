@@ -8,6 +8,7 @@ import com.hazrat.allahNames.ui.di.getAllahNamesUiModule
 import com.hazrat.athkar.di.getAthkarDataModule
 import com.hazrat.athkar.ui.di.getAthkarUiModule
 import com.hazrat.auth.data.di.getAuthDataModule
+import com.hazrat.auth.domain.di.getAuthDomainModule
 import com.hazrat.auth.ui.di.getAuthUiModule
 import com.hazrat.database.getDatabaseModule
 import com.hazrat.datastore.di.getDatastoreModule
@@ -43,6 +44,7 @@ fun initKoin(app: Application) {
             getQiblaUiModule(),
             getAuthUiModule(),
             getAuthDataModule(),
+            getAuthDomainModule(),
             getNotificationModule(),
             getAllahNamesUiModule(),
             getAllahNamesDataModule(),

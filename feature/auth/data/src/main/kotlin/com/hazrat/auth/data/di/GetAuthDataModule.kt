@@ -62,7 +62,6 @@ fun getAuthDataModule(): Module = module {
             fireStore = get(),
             storage = get(),
             syncRepository = get(),
-            coroutineScope = get(),
             connectivityObserver = get()
         )
     }

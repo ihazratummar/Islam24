@@ -3,7 +3,7 @@
 # Kotlin & Core
 # ===========================
 kotlin = "2.3.0"
-agp = "9.2.0"
+agp = "9.2.1"
 ksp = "2.3.2"
 coreKtx = "1.17.0"
 
@@ -194,6 +194,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 # ===========================
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntime" }
 
 # ===========================
@@ -202,8 +203,10 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 # ===========================
-# Dependency Injection (Hilt)
+# Dependency Injection (Koin)
 # ===========================
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref= "koin" }
 

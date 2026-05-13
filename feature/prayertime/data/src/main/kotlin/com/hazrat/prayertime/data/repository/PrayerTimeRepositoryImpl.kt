@@ -3,7 +3,6 @@ package com.hazrat.prayertime.data.repository
 import android.content.Context
 import android.content.Intent
 import com.hazrat.database.dao.PrayerTimeDao
-import com.hazrat.database.entity.LocationEntity
 import com.hazrat.database.entity.PrayerTimeEntity
 import com.hazrat.domain.repository.PrayerSettingRepository
 import com.hazrat.domain.repository.PrayerTimeRepository
@@ -52,6 +51,25 @@ class PrayerTimeRepositoryImpl(
     override val prayerTimeByDate = _prayerTimeByDate.asStateFlow()
 
     override suspend fun newPrayerTimesRequest(): List<PrayerTimeEntity> {
+        val currentYear = DateUtil.getCurrentYear()
+        val currentMonth = DateUtil.getCurrentMonth()
+        
+        // Fetch current year
+        val entities = fetchAndSaveYearlyPrayerTimes(currentYear, currentMonth)
+        
+        // If we are in December, also pre-fetch next year
+        if (currentMonth == 12) {
+            try {
+                fetchAndSaveYearlyPrayerTimes(currentYear + 1, 1)
+            } catch (e: Exception) {
+                Timber.tag("NewPrayerTimeRepositoryImpl").e("Failed to pre-fetch next year: ${e.message}")
+            }
+        }
+        
+        return entities
+    }
+
+    private suspend fun fetchAndSaveYearlyPrayerTimes(year: Int, month: Int): List<PrayerTimeEntity> {
         return try {
             var latitude: Double
             var longitude : Double
@@ -65,22 +83,17 @@ class PrayerTimeRepositoryImpl(
                     longitude = result.location.longitude
                 }
             }
-            Timber.tag("NewPrayerTimeRepositoryImpl")
-                .d("Latitude: $latitude, Longitude: $longitude")
+            
             val methodList = prayerSettingRepository.getCalculationMethod().firstOrNull()
-            Timber.tag("NewPrayerTimeRepositoryImpl").d("Method: $methodList")
             val juristicList = prayerSettingRepository.getJuristicMethod().firstOrNull()
             val methodValue = methodList?.method ?: 1
             val schoolValue = juristicList?.school ?: 0
 
-            val year = DateUtil.getCurrentYear()
-            val month = DateUtil.getCurrentMonth()
-
             val networkStatus = connectivityObserver.observer().first()
-
             if (networkStatus != ConnectivityObserver.Status.Available) {
-                throw IOException("No network available to fetch prayer times.")
+                throw IOException("No network available to fetch prayer times for $year.")
             }
+
             val apiResponse = api.newPrayerTimesRequest(
                 year = year,
                 month = month,
@@ -90,19 +103,15 @@ class PrayerTimeRepositoryImpl(
                 school = schoolValue,
                 annual = true
             )
-            Timber.tag("NewPrayerTimeRepositoryImpl").d(
-                "Api called ${
-                    apiResponse.data.values.flatten()
-                        .find { it.date.gregorian.date == DateUtil.getCurrentDate() }
-                }"
-            )
-            prayerTimeDao.insertAllPrayerTimes(apiResponse.data.values.flatten().toEntityList())
-            apiResponse.data.values.flatten().toEntityList()
+            
+            val entities = apiResponse.data.values.flatten().toEntityList()
+            prayerTimeDao.insertAllPrayerTimes(entities)
+            entities
         } catch (e: HttpException) {
-            Timber.tag("NewPrayerTimeRepositoryImpl").e("HTTP Error: ${e.code()} - ${e.message()}")
+            Timber.tag("NewPrayerTimeRepositoryImpl").e("HTTP Error for $year: ${e.code()}")
             throw e
         } catch (e: Exception) {
-            Timber.tag("NewPrayerTimeRepositoryImpl").e("Unexpected Error: ${e.message}")
+            Timber.tag("NewPrayerTimeRepositoryImpl").e("Error fetching $year: ${e.message}")
             throw e
         }
     }
@@ -113,45 +122,29 @@ class PrayerTimeRepositoryImpl(
             .conflate().map { it.toPrayerModelList() }
 
     override fun getPrayerTimeByDate(): Flow<List<PrayerTimeModel>> {
-        val today =
-            DateUtil.getCurrentDate() // Utility function to get the current date as a String
-        return prayerTimeDao.getPrayerTimesFromDate(today) // Fetch the list of prayer times from DAO
-            .distinctUntilChanged() // Avoid unnecessary recomputations when data hasn't changed
+        val today = DateUtil.getCurrentDate() 
+        return prayerTimeDao.getPrayerTimesFromDate(today) 
+            .distinctUntilChanged()
             .map { prayerTimes ->
-                // Optionally update shared state with the list, if needed
-                _prayerTimeByDate.value = prayerTimes.toPrayerModelList()
-                Timber.tag("NewPrayerTimeRepositoryImpl").d("Prayer times for today: $prayerTimes")
-                prayerTimes.toPrayerModelList() // Emit the list of prayer times
+                val modelList = prayerTimes.toPrayerModelList()
+                _prayerTimeByDate.value = modelList
+                modelList
             }
     }
 
 
     override fun sharePrayerTimes(prayerTimes: List<PrayerTimeModel>) {
-        val today = DateUtil.getCurrentDay() - 1
-        val prayerTimeIndex = prayerTimes[today]
+        // Find today's prayer time in the list by matching Gregorian date
+        val today = DateUtil.getCurrentDate()
+        val prayerTimeIndex = prayerTimes.find { it.gregorianDate == today } ?: return
+        
         val text =
             "Today's prayer times\n ${prayerTimeIndex.gregorianDate}// ${prayerTimeIndex.hijriDate}\n\n" +
-                    "${context.getString(R.string.fajr)}: ${
-                        DateUtil.dateLongToString(
-                            prayerTimeIndex.fajrTime
-                        )
-                    }\n" +
-                    "${context.getString(R.string.dhuhr)}: ${
-                        DateUtil.dateLongToString(
-                            prayerTimeIndex.dhuhrTime
-                        )
-                    }\n" +
+                    "${context.getString(R.string.fajr)}: ${DateUtil.dateLongToString(prayerTimeIndex.fajrTime)}\n" +
+                    "${context.getString(R.string.dhuhr)}: ${DateUtil.dateLongToString(prayerTimeIndex.dhuhrTime)}\n" +
                     "${context.getString(R.string.asr)}: ${DateUtil.dateLongToString(prayerTimeIndex.asrTime)}\n" +
-                    "${context.getString(R.string.maghrib)}: ${
-                        DateUtil.dateLongToString(
-                            prayerTimeIndex.maghribTime
-                        )
-                    }\n" +
-                    "${context.getString(R.string.isha_a)}: ${
-                        DateUtil.dateLongToString(
-                            prayerTimeIndex.ishaTime
-                        )
-                    }\n\n" +
+                    "${context.getString(R.string.maghrib)}: ${DateUtil.dateLongToString(prayerTimeIndex.maghribTime)}\n" +
+                    "${context.getString(R.string.isha_a)}: ${DateUtil.dateLongToString(prayerTimeIndex.ishaTime)}\n\n" +
                     "For More Visit, https://play.google.com/store/apps/details?id=com.hazrat.islam24"
         val intent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
@@ -169,13 +162,37 @@ class PrayerTimeRepositoryImpl(
         getAllPrayer().distinctUntilChanged()
             .collectLatest { prayerList: List<PrayerTimeModel> ->
                 val currentYear = DateUtil.getCurrentYear()
-                if (prayerList.isEmpty() || currentYear != prayerList[0].gregorianYear.toInt()) {
+                
+                // Migration Check: If data exists but in old format (dd-MM-yyyy), re-fetch
+                val hasOldFormat = prayerList.any { it.gregorianDate.indexOf("-") == 2 }
+                val hasCurrentYearData = prayerList.any { it.gregorianYear.toInt() == currentYear }
+                
+                if (prayerList.isEmpty() || hasOldFormat || !hasCurrentYearData) {
                     val networkStatus = connectivityObserver.observer().first()
                     if (networkStatus == ConnectivityObserver.Status.Available) {
+                        if (hasOldFormat) {
+                            prayerTimeDao.deleteAllPrayer()
+                        }
                         newPrayerTimesRequest()
                     }
                 } else {
                     _prayerTimes.value = prayerList
+                    
+                    // If we are in late December and don't have next year's data, trigger fetch
+                    val currentMonth = DateUtil.getCurrentMonth()
+                    if (currentMonth == 12) {
+                        val hasNextYearData = prayerList.any { it.gregorianYear.toInt() == currentYear + 1 }
+                        if (!hasNextYearData) {
+                            val networkStatus = connectivityObserver.observer().first()
+                            if (networkStatus == ConnectivityObserver.Status.Available) {
+                                try {
+                                    fetchAndSaveYearlyPrayerTimes(currentYear + 1, 1)
+                                } catch (e: Exception) {
+                                    Timber.tag("NewPrayerTimeRepositoryImpl").e("Auto pre-fetch failed: ${e.message}")
+                                }
+                            }
+                        }
+                    }
                 }
             }
     }
@@ -186,6 +203,7 @@ class PrayerTimeRepositoryImpl(
         val hijriDateEntity = _prayerTimes.value.indexOfFirst {
             it.gregorianDate == currentGregorianDay
         }
+        if (hijriDateEntity == -1) return 1
         val hijriDate = _prayerTimes.value[hijriDateEntity].hijriDay
         return hijriDate
     }

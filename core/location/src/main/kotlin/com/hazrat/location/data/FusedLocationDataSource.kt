@@ -113,10 +113,11 @@ class FusedLocationDataSource(
 
         val locationRequest = LocationRequest.Builder(
             locationConfig.priority,
-            10_000L // 10 seconds interval
+            300_000L // 5 minutes interval for passive updates
         ).apply {
-            setMinUpdateIntervalMillis(5_000L)
+            setMinUpdateIntervalMillis(60_000L) // At least 1 minute between updates
             setMaxUpdateDelayMillis(locationConfig.maxWaitTimeMs)
+            setMinUpdateDistanceMeters(locationConfig.minUpdateDistanceMeters)
         }.build()
 
         try {

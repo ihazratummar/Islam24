@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import com.hazrat.athkar.domain.model.AthkarData
-import com.hazrat.ui.theme.Kitab
+import com.hazrat.ui.theme.NotoNaskhFontFamily
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.getSystemLanguage
 
@@ -77,7 +77,7 @@ fun AdhkarCard(adhkars: AthkarData) {
                         .padding(dimens.size10),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontFamily = Kitab,
+                    fontFamily = NotoNaskhFontFamily,
                     textAlign = TextAlign.Center,
                     letterSpacing = TextUnit.Unspecified
                 )
@@ -87,7 +87,7 @@ fun AdhkarCard(adhkars: AthkarData) {
                 modifier = Modifier.padding(dimens.size10).fillMaxWidth(),
                 style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontFamily = Kitab,
+                fontFamily = NotoNaskhFontFamily,
                 textAlign = TextAlign.Center,
                 letterSpacing = TextUnit.Unspecified
             )

@@ -24,10 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,8 +34,9 @@ import com.hazrat.model.PrayerTimeModel
 import com.hazrat.model.locationmodel.LocationName
 import com.hazrat.ui.R
 import com.hazrat.ui.common.LocationOnCard
-import com.hazrat.ui.theme.Hidaya
-import com.hazrat.ui.theme.Poppins
+import com.hazrat.ui.theme.DeepPineGreen
+import com.hazrat.ui.theme.EmeraldGreen
+import com.hazrat.ui.theme.InterFontFamily
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil.getCurrentDate
 import java.text.NumberFormat
@@ -80,6 +79,8 @@ fun isPrayerTime(
     return isFajrTime || isSunriseTime || isDhuhrTime || isAsrTime || isMaghribTime || isIshaTime
 }
 
+
+
 /// TIME LOCATION CARD
 @Composable
 fun TimeLocationCard(
@@ -94,15 +95,12 @@ fun TimeLocationCard(
     val prayerTimes = prayerTimeModel[prayerTimeIndex]
 
     val isDark = isSystemInDarkTheme()
-    val primaryColor = MaterialTheme.colorScheme.primary
-    val secondaryColor = MaterialTheme.colorScheme.secondary
 
     val gradientColors =
         if (isDark) {
-            listOf(primaryColor, Color.Black) // or secondary
+            listOf(DeepPineGreen, Color.Black)
         } else {
-            listOf(primaryColor, secondaryColor)
-
+            listOf(DeepPineGreen, EmeraldGreen)
         }
 
     Card(
@@ -215,19 +213,12 @@ fun RamadanCard() {
             .height(dimens.size100)
             .padding(horizontal = dimens.size15),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         )
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .paint(
-                    painter = painterResource(id = R.drawable.ramadan),
-                    alpha = 0.3f,
-                    alignment = Alignment.Center,
-                    sizeToIntrinsics = true,
-                    contentScale = ContentScale.FillHeight
-                )
                 .padding(horizontal = dimens.size30)
         ) {
             Text(
@@ -235,15 +226,14 @@ fun RamadanCard() {
                 text = stringResource(R.string.ramadan),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                fontFamily = Poppins,
+                fontFamily = InterFontFamily,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
                 modifier = Modifier.align(Alignment.CenterEnd),
                 text = stringResource(R.string.days, formattedDaysRemaining),
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                fontFamily = Hidaya
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
     }

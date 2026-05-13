@@ -54,7 +54,6 @@ import com.hazrat.home.ui.HomeViewModel
 import com.hazrat.home.ui.component.BenefitsOfRecitingScreen
 import com.hazrat.home.ui.component.HomeRoutes
 import com.hazrat.auth.ui.appSetting.AppSettingViewModel
-import com.hazrat.auth.ui.profileScreen.ProfileViewModel
 import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.main.navigation.MainRoute.BenifitsOfRecitingRoute
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
@@ -79,7 +78,6 @@ fun AppNavigator(
     quranViewModel: QuranViewModel,
     prayerTimeViewModel: PrayerTimeViewModel,
     appSettingViewModel: AppSettingViewModel,
-    profileViewModel: ProfileViewModel,
     loginViewModel: LoginViewModel,
     signUpViewModel: SignUpViewModel,
     profileDetailsViewModel: ProfileDetailsViewModel,
@@ -271,7 +269,6 @@ fun AppNavigator(
                 navController = navController,
                 appSettingViewModel = appSettingViewModel,
                 isHapticFeedback = isHapticFeedback,
-                profileViewModel =  profileViewModel,
                 loginViewModel = loginViewModel,
                 signUpViewModel = signUpViewModel,
                 profileDetailsViewModel = profileDetailsViewModel,
