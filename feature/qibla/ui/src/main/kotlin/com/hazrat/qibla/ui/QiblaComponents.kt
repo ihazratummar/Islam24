@@ -45,7 +45,7 @@ fun BottomCompassPreview(
             )
             Box(
                 modifier = Modifier
-                    .size(dimens.size100)
+                    .size(dimens.avatarXl)
                     .clickable(onClick = { onCompassClick(compass.id, compass.isLoggedInRequired) })
             ) {
                 Image(
@@ -53,7 +53,7 @@ fun BottomCompassPreview(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(dimens.size8)
+                        .padding(dimens.space8)
                 )
             }
         }

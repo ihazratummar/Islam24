@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -66,34 +67,34 @@ fun OfflineCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(dimens.size10)
+            .padding(dimens.space12)
     ) {
         Text(
             text = "",
             modifier = Modifier
-                .padding(dimens.size10)
-                .size(dimens.size20)
+                .padding(dimens.space12)
+                .size(dimens.space20)
                 .shimmerEffect()
         )
         Column(
             modifier = Modifier,
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(dimens.size1)
+            verticalArrangement = Arrangement.spacedBy(dimens.space2)
         ) {
             Text(
                 text = "",
                 modifier = Modifier
-                    .padding(dimens.size10)
-                    .width(dimens.size150)
-                    .size(dimens.size20)
+                    .padding(dimens.space12)
+                    .width(150.dp)
+                    .size(dimens.space20)
                     .shimmerEffect()
             )
             Text(
                 text = "",
                 modifier = Modifier
-                    .padding(dimens.size10)
-                    .width(dimens.size80)
-                    .size(dimens.size20)
+                    .padding(dimens.space12)
+                    .width(dimens.compCard)
+                    .size(dimens.space20)
                     .shimmerEffect()
             )
         }
@@ -101,9 +102,9 @@ fun OfflineCard(
         Text(
             text = "",
             modifier = Modifier
-                .padding(dimens.size10)
-                .width(dimens.size80)
-                .size(dimens.size20)
+                .padding(dimens.space12)
+                .width(dimens.compCard)
+                .size(dimens.space20)
                 .shimmerEffect()
         )
     }
@@ -200,7 +201,7 @@ fun BackIcon(
     Icon(
         painter = icon,
         contentDescription = null,
-        modifier = Modifier.padding(dimens.size5)
+        modifier = Modifier.padding(dimens.space4)
             .clickable(
                 onClick = {
                     onBackClick()

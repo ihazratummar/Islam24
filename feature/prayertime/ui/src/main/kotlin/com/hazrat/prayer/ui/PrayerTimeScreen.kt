@@ -87,7 +87,7 @@ fun PrayerTimeScreen(
             PrayerTimeScreenAnimation(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(dimens.size250),
+                    .height(dimens.layoutXl),
                 prayerTimeEntity = prayerTimes[initialPage]
 
             )
@@ -136,7 +136,7 @@ fun PrayerTimeScreen(
                         )
                     }
                 },
-                windowInsets = WindowInsets(top = dimens.size20),
+                windowInsets = WindowInsets(top = dimens.space20),
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
@@ -266,7 +266,7 @@ fun PrayerTimesDay(
     }
 
     LazyColumn(
-        modifier = Modifier.padding(top = dimens.size10)
+        modifier = Modifier.padding(top = dimens.space12)
     ) {
         item {
             PrayerDateCard(

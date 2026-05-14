@@ -37,7 +37,7 @@ fun BasicTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            modifier = Modifier.padding(dimens.size10),
+            modifier = Modifier.padding(dimens.space12),
             onClick = { onBackClick.invoke() },
         ) {
             Icon(

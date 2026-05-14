@@ -47,35 +47,35 @@ fun PrayerCalculationDialog(
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     ) {
         LazyColumn(
-            modifier = Modifier.padding(horizontal = dimens.size20)
+            modifier = Modifier.padding(horizontal = dimens.space20)
         ) {
             item {
                 Text(
                     text = stringResource(id = R.string.prayer_times),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(top = dimens.size30)
+                    modifier = Modifier.padding(top = dimens.space32)
                 )
             }
             item {
-                Spacer(modifier = Modifier.height(dimens.size10))
+                Spacer(modifier = Modifier.height(dimens.space12))
             }
             items(prayerMethods) { methods ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = dimens.size15)
+                        .padding(vertical = dimens.space16)
                         .clickable {
                             onMethodSelected(methods)
                             onDismiss()
                         },
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    shape = RoundedCornerShape(dimens.size50)
+                    shape = RoundedCornerShape(dimens.cornerFull)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(dimens.size10),
+                            .padding(dimens.space12),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
@@ -83,7 +83,7 @@ fun PrayerCalculationDialog(
                             text = methods.name,
                             color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(start = dimens.size10)
+                            modifier = Modifier.padding(start = dimens.space12)
                         )
                     }
                     HorizontalDivider(color = MaterialTheme.colorScheme.inverseOnSurface)

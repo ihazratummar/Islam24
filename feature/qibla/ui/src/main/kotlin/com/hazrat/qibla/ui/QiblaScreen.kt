@@ -148,7 +148,7 @@ fun QiblaScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(dimens.size40))
+            Spacer(Modifier.height(dimens.space48))
             BasicTopBar(
                 modifier = Modifier,
                 topBarTitle = stringResource(id = R.string.qibla),
@@ -158,16 +158,16 @@ fun QiblaScreen(
             )
             Box(
                 modifier = Modifier
-                    .padding(horizontal = dimens.size20)
+                    .padding(horizontal = dimens.space20)
                     .fillMaxWidth()
                     .fillMaxHeight(0.2f)
                     .clip(
-                        shape = RoundedCornerShape(dimens.size30)
+                        shape = RoundedCornerShape(dimens.cornerXl)
                     )
                     .border(
-                        dimens.size2,
+                        dimens.space2,
                         color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(dimens.size30)
+                        shape = RoundedCornerShape(dimens.cornerXl)
                     )
             ) {
                 QiblaMapView(
@@ -186,7 +186,7 @@ fun QiblaScreen(
                             0.3f
                         )
                     ),
-                    shape = RoundedCornerShape(dimens.size20)
+                    shape = RoundedCornerShape(dimens.cornerLg)
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -203,7 +203,7 @@ fun QiblaScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.7f)
-                    .padding(dimens.size10),
+                    .padding(dimens.space12),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -211,7 +211,7 @@ fun QiblaScreen(
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .size(dimens.size60)
+                        .size(dimens.iconXl)
                         .align(
                             Alignment.TopCenter
                         )
@@ -308,7 +308,7 @@ fun QiblaScreen(
                     Image(
                         painter = it,
                         contentDescription = null,
-                        modifier = Modifier.size(dimens.size30)
+                        modifier = Modifier.size(dimens.iconLg)
                     )
                 }
             }
@@ -350,15 +350,15 @@ fun QiblaScreen(
 
 @Composable
 fun OrientationIndicator(pitch: Float, roll: Float, modifier: Modifier = Modifier) {
-    val circleSize = dimens.size80 // Size of the circle box
+    val circleSize = dimens.compCard // Size of the circle box
     val radius = with(LocalDensity.current) { circleSize.toPx() / 2 }
-    val dotRadius = dimens.size8 // Size of the red dot
+    val dotRadius = dimens.space8 // Size of the red dot
 
     Canvas(
         modifier = modifier
             .size(circleSize)
             .background(Color.Transparent, shape = CircleShape)
-            .border(dimens.size3, Color.Gray, CircleShape)
+            .border(dimens.elevation2, Color.Gray, CircleShape)
     ) {
         // Normalize pitch and roll to keep the red dot within the circle
         val maxOffset = radius - dotRadius.toPx() * 2

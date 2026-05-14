@@ -42,7 +42,7 @@ fun PrayerSettingCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = dimens.size10, vertical = dimens.size4)
+            .padding(horizontal = dimens.space12, vertical = dimens.space4)
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
@@ -52,11 +52,11 @@ fun PrayerSettingCard(
         )
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = dimens.size20, vertical = dimens.size10),
+            modifier = Modifier.padding(horizontal = dimens.space20, vertical = dimens.space12),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
-            Spacer(modifier = Modifier.width(dimens.size8))
+            Spacer(modifier = Modifier.width(dimens.space8))
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
@@ -96,8 +96,8 @@ fun PrayerTimeCard(
                 onClick()
             }
             .padding(
-                horizontal = dimens.size10,
-                vertical = dimens.size4
+                horizontal = dimens.space12,
+                vertical = dimens.space4
             ),
         colors = if (isPrayerTime) {
             CardDefaults.cardColors(
@@ -114,23 +114,23 @@ fun PrayerTimeCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    horizontal = dimens.size10,
-                    vertical = dimens.size30
+                    horizontal = dimens.space12,
+                    vertical = dimens.space32
                 ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimens.size5)
+            horizontalArrangement = Arrangement.spacedBy(dimens.space4)
         ) {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = "Icon",
                 tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(dimens.size30)
+                modifier = Modifier.size(dimens.iconLg)
             )
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(start = dimens.size10)
+                modifier = Modifier.padding(start = dimens.space12)
             )
 
             Spacer(modifier = Modifier.weight(0.5f))
@@ -138,21 +138,21 @@ fun PrayerTimeCard(
                 text = countDownText,
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = dimens.size10)
+                modifier = Modifier.padding(start = dimens.space12)
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = time,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(start = dimens.size10)
+                modifier = Modifier.padding(start = dimens.space12)
             )
-            Spacer(modifier = Modifier.width(dimens.size10))
+            Spacer(modifier = Modifier.width(dimens.space12))
             Icon(
                 painter = if (isNotification) painterResource(R.drawable.notificationonn) else painterResource(R.drawable.notificationoff),
                 contentDescription = "Notification Icon",
                 tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(dimens.size20)
+                modifier = Modifier.size(dimens.iconMd)
             )
         }
     }
@@ -181,7 +181,7 @@ fun PrayerDateCard(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
-            Spacer(modifier = Modifier.height(dimens.size3))
+            Spacer(modifier = Modifier.height(dimens.space4))
             Text(
                 text = hrDate,
                 style = MaterialTheme.typography.bodyLarge,
@@ -215,7 +215,7 @@ fun ToggleNotification(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimens.size10),
+                    .padding(dimens.space12),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -272,14 +272,14 @@ fun AzanList(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = dimens.size30, horizontal = dimens.size10)
+                        .padding(vertical = dimens.space32, horizontal = dimens.space12)
                 ) {
                     Icon(
-                        modifier = Modifier.size(dimens.size30),
+                        modifier = Modifier.size(dimens.iconLg),
                         painter = painterResource(R.drawable.bell_off),
                         contentDescription = null
                     )
-                    Spacer(Modifier.width(dimens.size20))
+                    Spacer(Modifier.width(dimens.space20))
                     Text("Silent")
                 }
             }
@@ -300,14 +300,14 @@ fun AzanList(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = dimens.size30, horizontal = dimens.size10)
+                        .padding(vertical = dimens.space32, horizontal = dimens.space12)
                 ) {
                     Icon(
-                        modifier = Modifier.size(dimens.size30),
+                        modifier = Modifier.size(dimens.iconLg),
                         painter = painterResource(R.drawable.bell_ringing),
                         contentDescription = null
                     )
-                    Spacer(Modifier.width(dimens.size20))
+                    Spacer(Modifier.width(dimens.space20))
                     Text("Default Notification")
                 }
             }
@@ -328,20 +328,20 @@ fun AzanList(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = dimens.size30, horizontal = dimens.size10),
+                        .padding(vertical = dimens.space32, horizontal = dimens.space12),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        modifier = Modifier.size(dimens.size40),
+                        modifier = Modifier.size(dimens.iconXl),
                         painter = painterResource(R.drawable.volume),
                         contentDescription = null
                     )
-                    Spacer(modifier = Modifier.width(dimens.size20))
+                    Spacer(modifier = Modifier.width(dimens.space20))
                     Text(text = "Azan ${index + 1}")
                     Spacer(Modifier.weight(1f))
                     Icon(
                         modifier = Modifier
-                            .size(dimens.size30)
+                            .size(dimens.iconLg)
                             .clickable {
                                 if (index < isAzanPlaying.size) {
                                     onAzanPlayClick(index, item.name, item.url)
@@ -354,7 +354,7 @@ fun AzanList(
                         },
                         contentDescription = null
                     )
-                    Spacer(modifier = Modifier.height(dimens.size5))
+                    Spacer(modifier = Modifier.height(dimens.space4))
 
                 }
             }

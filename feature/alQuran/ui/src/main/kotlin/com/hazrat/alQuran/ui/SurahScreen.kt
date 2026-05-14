@@ -146,7 +146,7 @@ fun SurahScreen(
             modifier = Modifier
                 .padding(top = innerpadding.calculateTopPadding())
                 .fillMaxSize()
-                .padding(horizontal = dimens.size20)
+                .padding(horizontal = dimens.space20)
         ) {
             itemsIndexed(quranAr.ayahs) { index, ayah ->
                 val quran = quranAr.ayahs[index]
@@ -192,7 +192,7 @@ fun SurahScreen(
                             text = "${stringResource(R.string.ayah)} ${index + 1} - ${ayah.translation}",
                             maxLines = 1,
                             modifier = Modifier
-                                .padding(horizontal = dimens.size10, vertical = dimens.size5)
+                                .padding(horizontal = dimens.space12, vertical = dimens.space4)
                                 .clickable(
                                     onClick = {
                                         scope.launch {
@@ -255,7 +255,7 @@ fun AyahRow(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimens.size20),
+                    .padding(vertical = dimens.space20),
                 text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
@@ -279,27 +279,27 @@ fun AyahRow(
                 )
             )
 
-            Spacer(Modifier.height(dimens.size5))
+            Spacer(Modifier.height(dimens.space4))
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimens.size10),
+                    .padding(vertical = dimens.space12),
                 text = transliterationVerse.transliteration,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal,
                 )
             )
-            Spacer(Modifier.height(dimens.size5))
+            Spacer(Modifier.height(dimens.space4))
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimens.size10),
+                    .padding(vertical = dimens.space12),
                 text = translationText,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal,
                 )
             )
-            Spacer(Modifier.height(dimens.size5))
+            Spacer(Modifier.height(dimens.space4))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -307,18 +307,18 @@ fun AyahRow(
             ) {
 
                 Card(
-                    modifier = Modifier.width(dimens.size60),
+                    modifier = Modifier.width(dimens.space64),
                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                     border = BorderStroke(
-                        width = dimens.size1,
+                        width = dimens.divider,
                         color = MaterialTheme.colorScheme.secondary
                     ),
-                    shape = RoundedCornerShape(dimens.size5)
+                    shape = RoundedCornerShape(dimens.space4)
                 ) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(dimens.size5),
+                            .padding(dimens.space4),
                         text = "${verse.numberInSurah}",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.labelLarge
@@ -326,7 +326,7 @@ fun AyahRow(
                 }
 
                 IconButton(
-                    modifier = Modifier.padding(dimens.size10),
+                    modifier = Modifier.padding(dimens.space12),
                     onClick = { onFavoriteClick() },
                     colors = IconButtonDefaults.iconButtonColors(
                         contentColor = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
@@ -343,7 +343,7 @@ fun AyahRow(
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(0.4f)
             )
-            Spacer(Modifier.height(dimens.size5))
+            Spacer(Modifier.height(dimens.space4))
         }
     }
 }
@@ -359,7 +359,7 @@ fun AyaTopBar(
     onAyahClick: () -> Unit
 ) {
     TopAppBar(
-        modifier = modifier.padding(top = dimens.size30),
+        modifier = modifier.padding(top = dimens.space32),
         title = {
             Column(
                 modifier = Modifier.combinedClickable(
@@ -392,7 +392,7 @@ fun AyaTopBar(
         },
         navigationIcon = {
             IconButton(
-                modifier = Modifier.padding(dimens.size10),
+                modifier = Modifier.padding(dimens.space12),
                 onClick = { onBackClick() },
             ) {
                 Icon(
@@ -413,7 +413,7 @@ fun AyaTopBar(
 //            }
 //        },
         scrollBehavior = scrollBehavior,
-        windowInsets = WindowInsets(top = 20.dp),
+        windowInsets = WindowInsets(top = dimens.space20),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
             scrolledContainerColor = MaterialTheme.colorScheme.background,

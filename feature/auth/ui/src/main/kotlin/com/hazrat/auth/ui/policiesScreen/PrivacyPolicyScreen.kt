@@ -34,7 +34,7 @@ fun PrivacyPolicyScreen(
                         onBackClick = {onBackClick()}
                     )
                 },
-                windowInsets = WindowInsets(top = dimens.size20)
+                windowInsets = WindowInsets(top = dimens.space20)
             )
         }
     ){ paddingValues ->

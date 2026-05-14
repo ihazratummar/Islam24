@@ -1,187 +1,194 @@
 package com.hazrat.home.ui.component
 
-
-import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.model.PrayerTimeModel
+import com.hazrat.model.MinimalPrayerData
 import com.hazrat.ui.R
-import com.hazrat.utils.DateUtil.formatLocalTime
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.hazrat.ui.theme.AsrGradient
+import com.hazrat.ui.theme.DhuhrGradient
+import com.hazrat.ui.theme.FajrGradient
+import com.hazrat.ui.theme.IshaGradient
+import com.hazrat.ui.theme.MaghribGradient
+import com.hazrat.ui.theme.SunriseGradient
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
-@Composable
-fun DisplayCurrentPrayerName(
-    data: PrayerTimeModel,
-    textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
+/**
+ * Enum representing the types of prayers with their corresponding string resources.
+ */
+enum class PrayerType(
+    @StringRes val nameRes: Int,
+    @DrawableRes val icon: Int,
+    val gradient: List<Color>,
+    val color: Color,
 ) {
-    var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
-    val currentDate = LocalDate.now()
-    var previousPrayerName by remember { mutableStateOf<String?>(null) }
+    FAJR(
+        nameRes   = R.string.fajr,
+        icon      = R.drawable.fajr,
+        gradient  = FajrGradient,
+        color     = Color(0xFF6d63f2),
+    ),
+    SUNRISE(
+        nameRes   = R.string.sunrise,
+        icon      = R.drawable.sunrise,
+        gradient  = SunriseGradient,
+        color     = Color(0xFFFACA96),
+    ),
+    DHUHR(
+        nameRes   = R.string.dhuhr,
+        icon      = R.drawable.dhuhr,
+        gradient  = DhuhrGradient,
+        color     = Color(0xFFFFB752),
+    ),
+    ASR(
+        nameRes   = R.string.asr,
+        icon      = R.drawable.asr,
+        gradient  = AsrGradient,
+        color     = Color(0xFFFF8E00),
+    ),
+    MAGHRIB(
+        nameRes   = R.string.maghrib,
+        icon      = R.drawable.maghrib,
+        gradient  = MaghribGradient,
+        color     = Color(0xFFfa716a),
+    ),
+    ISHA(
+        nameRes   = R.string.isha_a,
+        icon      = R.drawable.isha,
+        gradient  = IshaGradient,
+        color     = Color(0xFF4d5985),
+    ),
+}
 
-    DisposableEffect(Unit) {
-        val coroutineScope = CoroutineScope(Dispatchers.Default)
-        val job = coroutineScope.launch {
-            while (true) {
-                delay(1000) // Update every second
-                currentTime = System.currentTimeMillis()
-            }
-        }
-        onDispose {
-            job.cancel()
+/**
+ * Data class representing the current state of prayer times.
+ */
+data class PrayerState(
+    val currentPrayer: PrayerType?,
+    val nextPrayer: PrayerType?,
+    val prayerIcon: Int,
+    val nextPrayerIcon: Int,
+    val nextPrayerGradient: List<Color>,
+    val nextPrayerTimeMillis: Long,
+    val countdownText: String,
+    val isNow: Boolean,
+    val nextPrayerColor: Color
+)
+
+/**
+ * Remembers and updates the prayer state every second.
+ */
+@Composable
+fun rememberPrayerState(prayerTimes: MinimalPrayerData): PrayerState {
+    var currentTimeMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
+
+    LaunchedEffect(key1 = prayerTimes) {
+        while (true) {
+            currentTimeMillis = System.currentTimeMillis()
+            delay(1000)
         }
     }
 
-    // Filter prayer times for the current day
-    val currentDayPrayer = data
-
-    val currentPrayerName: String? = currentDayPrayer.let {
-        val isFajrTime = currentTime in (it.fajrTime + 1)..it.sunriseTime
-        val isSunriseTime = currentTime in (it.sunriseTime - 300000)..(it.sunriseTime + 300000)
-        val isDhuhrTime = currentTime in (it.sunriseTime + 1)..(it.asrTime)
-        val isAsrTime = currentTime in (it.asrTime + 1)..(it.maghribTime)
-        val isMaghribTime = currentTime in (it.maghribTime + 1)..(it.ishaTime)
-        val isIshaTime = currentTime in (it.ishaTime + 1)..it.firstThirdTime
-
-        when {
-            isFajrTime -> stringResource(id = R.string.fajr)
-            isSunriseTime -> stringResource(id = R.string.sunrise)
-            isDhuhrTime -> stringResource(id = R.string.dhuhr)
-            isAsrTime -> stringResource(id = R.string.asr)
-            isMaghribTime -> stringResource(id = R.string.maghrib)
-            isIshaTime -> stringResource(id = R.string.isha_a)
-            else -> null
-        }
-    }
-
-    if (currentPrayerName != previousPrayerName) {
-        previousPrayerName = currentPrayerName
-        Log.d("PrayerTime", "Current Prayer: $currentPrayerName")
-    }
-
-    currentPrayerName?.let { prayerName ->
-        Text(
-            text = prayerName,
-            color = textColor,
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.SemiBold
-        )
+    return remember(prayerTimes, currentTimeMillis) {
+        calculatePrayerState(prayerTimes, currentTimeMillis)
     }
 }
 
 
-@Composable
-fun DisplayCurrentPrayerTime(
-    currentDayPrayer: PrayerTimeModel,
-    textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
-) {
-    var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
-
-    // Launch a coroutine to update the current time every second
-    DisposableEffect(Unit) {
-        val coroutineScope = CoroutineScope(Dispatchers.Default)
-        val job = coroutineScope.launch {
-            while (true) {
-                delay(1000)
-                currentTime = System.currentTimeMillis()
-            }
-        }
-
-        onDispose {
-            job.cancel()
-        }
-    }
-
-    Log.d("PrayerTimeInCalculation", "Current Prayer Day: $currentDayPrayer")
-
-    val currentPrayerName: String? = currentDayPrayer.let { prayerTimes ->
-        when (currentTime) {
-            in (prayerTimes.fajrTime + 1)..prayerTimes.sunriseTime - 300000 -> stringResource(id = R.string.now)
-            in (prayerTimes.dhuhrTime + 1)..prayerTimes.dhuhrTime + 3600000 -> stringResource(id = R.string.now)
-            in (prayerTimes.asrTime + 1)..prayerTimes.maghribTime - 600000 -> stringResource(id = R.string.now)
-            in (prayerTimes.maghribTime + 1)..prayerTimes.ishaTime - 600000 -> stringResource(id = R.string.now)
-            in (prayerTimes.ishaTime + 1)..prayerTimes.firstThirdTime -> stringResource(id = R.string.now)
-            else -> null
-        }
-    }
-
-    val prayerTimes = mapOf(
-        stringResource(id = R.string.fajr) to currentDayPrayer.fajrTime.let {
-            Instant.ofEpochMilli(
-                it
-            ).atZone(ZoneId.systemDefault()).toLocalTime()
-        },
-        stringResource(id = R.string.dhuhr) to currentDayPrayer.dhuhrTime.let {
-            Instant.ofEpochMilli(
-                it
-            ).atZone(ZoneId.systemDefault()).toLocalTime()
-        },
-        stringResource(id = R.string.asr) to currentDayPrayer.asrTime.let {
-            Instant.ofEpochMilli(
-                it
-            ).atZone(ZoneId.systemDefault()).toLocalTime()
-        },
-        stringResource(id = R.string.maghrib) to currentDayPrayer.maghribTime.let {
-            Instant.ofEpochMilli(
-                it
-            ).atZone(ZoneId.systemDefault()).toLocalTime()
-        },
-        stringResource(id = R.string.isha_a) to currentDayPrayer.ishaTime.let {
-            Instant.ofEpochMilli(
-                it
-            ).atZone(ZoneId.systemDefault()).toLocalTime()
-        },
+/**
+ * Logic to calculate the current and next prayer based on the current time.
+ */
+private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Long): PrayerState {
+    val prayers = listOf(
+        PrayerType.FAJR to prayerTimes.fajrTime,
+        PrayerType.SUNRISE to prayerTimes.sunriseTime,
+        PrayerType.DHUHR to prayerTimes.dhuhrTime,
+        PrayerType.ASR to prayerTimes.asrTime,
+        PrayerType.MAGHRIB to prayerTimes.maghribTime,
+        PrayerType.ISHA to prayerTimes.ishaTime
     )
 
-    val currentLocalTime = Instant.ofEpochMilli(currentTime)
-        .atZone(ZoneId.systemDefault())
-        .toLocalTime()
-    val nextPrayer = prayerTimes
-        .filterValues { it != null }
-        .filterValues { it!! > currentLocalTime }
-        .minByOrNull { it.value ?: LocalTime.MAX }
-
-
-    if (currentPrayerName != null) {
-        Text(
-            text = currentPrayerName,
-            color = textColor,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-    } else {
-        nextPrayer?.let { (prayerName, time) ->
-            Column {
-                Text(
-                    text = stringResource(R.string.next_prayer, prayerName),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = textColor
-                )
-                formatLocalTime(time)?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = textColor
-                    )
-                }
-            }
-        }
+    // Find current active prayer
+    val currentPrayer = when {
+        currentTime in prayerTimes.fajrTime until prayerTimes.sunriseTime -> PrayerType.FAJR
+        currentTime in prayerTimes.sunriseTime until (prayerTimes.sunriseTime + TimeUnit.MINUTES.toMillis(15)) -> PrayerType.SUNRISE
+        currentTime in (prayerTimes.sunriseTime + TimeUnit.MINUTES.toMillis(15))  until prayerTimes.asrTime -> PrayerType.DHUHR
+        currentTime in prayerTimes.asrTime until prayerTimes.maghribTime -> PrayerType.ASR
+        currentTime in prayerTimes.maghribTime until prayerTimes.ishaTime -> PrayerType.MAGHRIB
+        currentTime >= prayerTimes.ishaTime || currentTime < prayerTimes.lastThirdTime -> PrayerType.ISHA
+        else -> null
     }
+
+    // Find next prayer
+    val nextPrayerInfo = prayers.firstOrNull { it.second > currentTime }
+        ?: Pair(PrayerType.FAJR, prayerTimes.fajrTime + TimeUnit.DAYS.toMillis(1))
+
+    val (nextPrayer, nextPrayerTime) = nextPrayerInfo
+
+    // "NOW" logic: if within 15 minutes of prayer start (except Sunrise)
+    val isNow = when (currentPrayer) {
+        PrayerType.FAJR -> {
+            currentTime in prayerTimes.fajrTime..
+                    (prayerTimes.sunriseTime - TimeUnit.MINUTES.toMillis(10))
+        }
+        PrayerType.SUNRISE -> false
+
+        PrayerType.DHUHR -> {
+            currentTime in prayerTimes.dhuhrTime..
+                    (prayerTimes.asrTime - TimeUnit.MINUTES.toMillis(60))
+        }
+
+        PrayerType.ASR -> {
+            currentTime in prayerTimes.asrTime..
+                    (prayerTimes.maghribTime - TimeUnit.MINUTES.toMillis(30))
+        }
+
+        PrayerType.MAGHRIB -> {
+            currentTime in prayerTimes.maghribTime..
+                    (prayerTimes.ishaTime - TimeUnit.MINUTES.toMillis(30))
+        }
+
+        PrayerType.ISHA -> {
+            currentTime in prayerTimes.ishaTime..
+                    prayerTimes.lastThirdTime
+        }
+        else -> false
+    }
+
+
+    val countdownText = if (nextPrayerTime > currentTime) {
+        formatCountdown(nextPrayerTime - currentTime)
+    } else ""
+
+
+
+    return PrayerState(
+        currentPrayer = currentPrayer,
+        nextPrayer = nextPrayer,
+        nextPrayerTimeMillis = nextPrayerTime,
+        countdownText = countdownText,
+        isNow = isNow,
+        prayerIcon = currentPrayer!!.icon,
+        nextPrayerIcon = nextPrayer.icon,
+        nextPrayerGradient = nextPrayer.gradient,
+        nextPrayerColor = nextPrayer.color
+    )
+}
+
+/**
+ * Formats milliseconds into a HH:mm:ss countdown string.
+ */
+private fun formatCountdown(diffMillis: Long): String {
+    val hours = TimeUnit.MILLISECONDS.toHours(diffMillis)
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(diffMillis) % 60
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(diffMillis) % 60
+    return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
 }

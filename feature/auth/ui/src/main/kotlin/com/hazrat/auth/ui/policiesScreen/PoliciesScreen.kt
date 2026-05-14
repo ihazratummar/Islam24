@@ -43,7 +43,7 @@ fun PoliciesScreen(
                         onBackClick = {onBackClick()}
                     )
                 },
-                windowInsets = WindowInsets(top = dimens.size20)
+                windowInsets = WindowInsets(top = dimens.space20)
             )
         }
     ) { paddingValues ->
@@ -58,7 +58,7 @@ fun PoliciesScreen(
             )
         )
         Column (
-            modifier = modifier.fillMaxSize().padding(horizontal = dimens.size20)
+            modifier = modifier.fillMaxSize().padding(horizontal = dimens.space20)
                 .padding(paddingValues)
         ){
             Card (

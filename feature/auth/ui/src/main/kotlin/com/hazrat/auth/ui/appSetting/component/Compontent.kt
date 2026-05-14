@@ -47,7 +47,7 @@ fun Modifier.logOutCardShimmerEffect(): Modifier = composed {
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(dimens.size10)
+        shape = RoundedCornerShape(dimens.cornerMd)
     ).onGloballyPositioned {
         size = it.size
     }

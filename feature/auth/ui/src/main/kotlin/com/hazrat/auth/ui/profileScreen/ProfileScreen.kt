@@ -84,7 +84,7 @@ fun ProfileScreen(
                         }
                     )
                 },
-                windowInsets = WindowInsets(top = dimens.size20, bottom = 0.dp),
+                windowInsets = WindowInsets(top = dimens.space20, bottom = 0.dp),
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
@@ -93,7 +93,7 @@ fun ProfileScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(horizontal = dimens.size10),
+                .padding(horizontal = dimens.space12),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
@@ -193,7 +193,7 @@ fun MainTopProfileCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(dimens.size200)
+            .height(200.dp)
             .combinedClickable(
                 onClick = { onClick() },
                 indication = null,
@@ -215,8 +215,8 @@ fun MainTopProfileCard(
                 is AsyncImagePainter.State.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .padding(horizontal = dimens.size10)
-                            .size(dimens.size100)
+                            .padding(horizontal = dimens.space12)
+                            .size(dimens.avatarXl)
                             .clip(CircleShape)
                             .wrapContentSize()
                     )
@@ -225,13 +225,13 @@ fun MainTopProfileCard(
                 is AsyncImagePainter.State.Success -> {
                     Card(
                         modifier = Modifier
-                            .size(dimens.size100),
+                            .size(dimens.avatarXl),
                         colors = CardDefaults.cardColors(
                             containerColor = Color.Transparent,
                         ),
                         shape = CircleShape,
                         border = BorderStroke(
-                            dimens.size5,
+                            dimens.space4,
                             color = MaterialTheme.colorScheme.primary
                         )
                     ) {
@@ -255,7 +255,7 @@ fun MainTopProfileCard(
                             Row(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(dimens.size20),
+                                    .padding(dimens.space20),
                                 horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -264,31 +264,31 @@ fun MainTopProfileCard(
                                         painter = painterResource(R.drawable.profile),
                                         contentDescription = "error",
                                         modifier = Modifier
-                                            .padding(start = dimens.size10)
-                                            .size(dimens.size80)
+                                            .padding(start = dimens.space12)
+                                            .size(dimens.avatarXl)
                                     )
-                                    Spacer(Modifier.width(dimens.size20))
+                                    Spacer(Modifier.width(dimens.space20))
                                     text.invoke()
                                     Icon(
                                         painter = painterResource(R.drawable.chevron_right),
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(dimens.size20)
+                                        modifier = Modifier.size(dimens.iconMd)
                                     )
                                 } else {
                                     Box(
                                         Modifier
-                                            .padding(start = dimens.size10)
-                                            .size(dimens.size80)
+                                            .padding(start = dimens.space12)
+                                            .size(dimens.avatarXl)
                                             .clip(CircleShape)
                                             .shimmerEffect()
                                     )
-                                    Spacer(Modifier.width(dimens.size20))
+                                    Spacer(Modifier.width(dimens.space20))
                                     Box(
                                         modifier = Modifier
-                                            .padding(dimens.size10)
-                                            .width(dimens.size250)
-                                            .size(dimens.size20)
+                                            .padding(dimens.space12)
+                                            .width(250.dp)
+                                            .size(dimens.space20)
                                             .shimmerEffect()
                                     )
                                 }
@@ -299,8 +299,8 @@ fun MainTopProfileCard(
                             painter = painterResource(R.drawable.profile),
                             contentDescription = "error",
                             modifier = Modifier
-                                .padding(start = dimens.size10)
-                                .size(dimens.size80)
+                                .padding(start = dimens.space12)
+                                .size(dimens.avatarXl)
                         )
                     }
                 }

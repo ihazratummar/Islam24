@@ -31,7 +31,7 @@ fun AthkarScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size40))
+            Spacer(Modifier.height(dimens.space48))
             BasicTopBar(
                 topBarTitle = stringResource(R.string.athkar),
                 onBackClick = { onBackClick.invoke() }

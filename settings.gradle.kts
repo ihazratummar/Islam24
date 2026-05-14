@@ -31,6 +31,7 @@ include(":core:permission")
 include(":core:notification")
 
 include(":domain:model")
+include(":domain:usecase")
 include(":domain:repository")
 
 include(":feature:zakat")

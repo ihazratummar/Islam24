@@ -58,28 +58,28 @@ fun NisabScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size40))
+            Spacer(Modifier.height(dimens.space48))
             BasicTopBar(
                 onBackClick = { onBackClick.invoke() }
             )
             Column(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(10.dp),
+                    .padding(dimens.space12),
             ) {
                 Text(text = stringResource(R.string.nisab_is_a_threshold_referring_to_the_minimum_amount_of_wealth))
                 val nisabAmount = 11.66 * 52.50
                 val roundAmount = String.format(Locale.getDefault(), "%.2f", nisabAmount)
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(dimens.space12))
                 Text(
                     text = stringResource(
                         R.string.the_nisab_threshold_for_silver_is_gm_52_50_tola_vori_or_the_cash_equivalent,
                         roundAmount
                     )
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(dimens.space12))
                 Text(text = stringResource(R.string.to_calculate_nisab_enter_the_current_value_of_silver_gm))
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(dimens.space20))
 
                 OutlinedTextField(
                     modifier = Modifier
@@ -106,7 +106,7 @@ fun NisabScreen(
                         }
                     )
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(dimens.space12))
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
@@ -114,13 +114,11 @@ fun NisabScreen(
                         onSubmit()
                     },
                     enabled = zakatState.silverPrice != "" && zakatState.isSilverPriceValid,
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(dimens.cornerMd)
                 ) {
                     Text(text = "Submit")
                 }
             }
         }
-    }
-
-
-}
+        }
+        }

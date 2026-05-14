@@ -38,16 +38,16 @@ fun PrayerSetting(
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.space32))
             BasicTopBar(
                 topBarTitle = stringResource(R.string.prayer_setting),
                 onBackClick = { onBackClick.invoke() }
             )
             HorizontalDivider(
-                thickness = dimens.size1,
+                thickness = dimens.divider,
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(dimens.size20))
+            Spacer(modifier = Modifier.height(dimens.space20))
             PrayerSettingCard(
                 text = stringResource(R.string.calculation_method),
                 methodID = prayerTimeEntities?.methodName,

@@ -145,7 +145,7 @@ fun ProfileDetailsScreen(
         },
         topBar = {
             TopAppBar(
-                windowInsets = WindowInsets(top = dimens.size20),
+                windowInsets = WindowInsets(top = dimens.space20),
                 title = {
                     Text(
                         text = "Profile",
@@ -186,7 +186,7 @@ fun ProfileDetailsScreen(
                     onImageDragEnd = { showImagePreview = false },
                     context = context
                 )
-                Spacer(modifier = Modifier.height(dimens.size50))
+                Spacer(modifier = Modifier.height(dimens.compButton))
             }
             item {
                 ProfileDataCards(
@@ -194,16 +194,19 @@ fun ProfileDetailsScreen(
                         profileDetailsEvent(ProfileDetailsEvent.NameUpdateDialog)
                     },
                     label = stringResource(id = R.string.name),
-                    value = if (profileState.userData?.fullName == null) "Not Set" else profileState.userData.fullName?:""
+                    value = if (profileState.userData?.fullName == null) "Not Set" else profileState.userData.fullName
+                        ?: ""
                 )
                 ProfileDataCards(
                     label = stringResource(id = R.string.emal),
-                    value = if (profileState.userData?.email == null) "Not Set" else profileState.userData.email ?:""
+                    value = if (profileState.userData?.email == null) "Not Set" else profileState.userData.email
+                        ?: ""
                 )
                 ProfileDataCards(
                     onClick = { profileDetailsEvent(ProfileDetailsEvent.BioUpdateDialog) },
                     label = stringResource(id = R.string.bio),
-                    value = if (profileState.userData?.bio == null) "Not Set" else profileState.userData.bio?:""
+                    value = if (profileState.userData?.bio == null) "Not Set" else profileState.userData.bio
+                        ?: ""
                 )
 
             }
@@ -282,28 +285,28 @@ private fun UpdateDataDetails(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimens.size10)
+                    .padding(dimens.space12)
             ) {
                 Text(
                     text = label,
                     modifier = Modifier
-                        .padding(dimens.size15)
+                        .padding(dimens.space16)
                         .fillMaxWidth(),
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(dimens.size20))
+                Spacer(modifier = Modifier.height(dimens.space20))
                 CustomTextField(
                     value = value,
                     onValueChange = { newValue ->
                         onValueChange(newValue)
                     }
                 )
-                Spacer(modifier = Modifier.height(dimens.size30))
+                Spacer(modifier = Modifier.height(dimens.space32))
                 ButtonClick(
                     onClick = onClick
                 )
-                Spacer(modifier = Modifier.height(dimens.size30))
+                Spacer(modifier = Modifier.height(dimens.space32))
             }
         }
     }
@@ -317,7 +320,7 @@ private fun ButtonClick(
     Button(
         modifier = modifier
             .fillMaxWidth()
-            .height(dimens.size60),
+            .height(dimens.compButton),
         onClick = {
             onClick()
         },
@@ -325,7 +328,7 @@ private fun ButtonClick(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
         ),
-        shape = RoundedCornerShape(dimens.size10)
+        shape = RoundedCornerShape(dimens.cornerMd)
     ) {
         Text(text = "Save")
     }
@@ -340,7 +343,7 @@ private fun ProfileDataCards(
 ) {
     Card(
         modifier = Modifier
-            .padding(dimens.size6)
+            .padding(dimens.space8)
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { onClick() },
@@ -360,13 +363,13 @@ private fun ProfileDataCards(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = dimens.size20, vertical = dimens.size15)
+                    .padding(horizontal = dimens.space20, vertical = dimens.space16)
             ) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelMedium
                 )
-                Spacer(modifier = Modifier.height(dimens.size10))
+                Spacer(modifier = Modifier.height(dimens.space12))
                 Text(
                     text = value,
                     style = MaterialTheme.typography.bodyMedium
@@ -375,7 +378,7 @@ private fun ProfileDataCards(
             Icon(
                 modifier = Modifier
                     .weight(0.1f)
-                    .padding(end = dimens.size10),
+                    .padding(end = dimens.space12),
                 painter = painterResource(id = R.drawable.arrowright),
                 contentDescription = "ArrowRight"
             )
@@ -425,7 +428,7 @@ private fun ProfilePicture(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 )
-                .size(dimens.size150),
+                .size(dimens.layoutMd),
             contentAlignment = Alignment.Center
         ) {
             when (painter.state) {
@@ -436,7 +439,7 @@ private fun ProfilePicture(
                 is AsyncImagePainter.State.Success -> {
                     Card(
                         modifier = Modifier
-                            .size(dimens.size150)
+                            .size(dimens.layoutMd)
                             .pointerInput(Unit) {
                                 detectDragGesturesAfterLongPress(
                                     onDragStart = { onImageDragStart.invoke(imageUri.value) },
@@ -450,7 +453,7 @@ private fun ProfilePicture(
                         ),
                         shape = CircleShape,
                         border = BorderStroke(
-                            dimens.size5,
+                            dimens.space4,
                             color = MaterialTheme.colorScheme.primary
                         )
                     ) {
@@ -460,7 +463,7 @@ private fun ProfilePicture(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .wrapContentSize()
-                                .padding(dimens.size6)
+                                .padding(dimens.space8)
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop
                         )
@@ -473,7 +476,7 @@ private fun ProfilePicture(
                         contentDescription = "error",
                         modifier = Modifier
                             .size(
-                                dimens.size150
+                                dimens.layoutMd
                             )
                     )
                 }

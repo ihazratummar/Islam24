@@ -18,7 +18,7 @@ fun ContinueButton(
 ) {
     OutlinedButton(modifier = Modifier.fillMaxWidth(),
         onClick = onClick,
-        shape = RoundedCornerShape(size = dimens.size6)
+        shape = RoundedCornerShape(size = dimens.space8)
     ) {
         Text(text = buttonText,
             style = MaterialTheme.typography.labelMedium,
@@ -26,12 +26,3 @@ fun ContinueButton(
         )
     }
 }
-
-//@Preview
-//@Composable
-//fun ContinueButtonPreview(){
-//    Islam24Theme {
-//        ContinueButton(buttonText = "Continue", onClick = {}
-//        )
-//    }
-//}

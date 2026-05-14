@@ -61,7 +61,7 @@ fun CalendarScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size40))
+            Spacer(Modifier.height(dimens.space48))
             BasicTopBarWithAction(
                 topBarTitle = topBarTitle,
                 onBackClick = { onBackClick.invoke() },
@@ -72,7 +72,7 @@ fun CalendarScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimens.size15)
+                    .padding(dimens.space16)
             ) {
                 if (!toggleCalendar) {
                     HijriCalendarHomeScreen(
@@ -117,7 +117,7 @@ fun DateDetailContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .padding(dimens.space24),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -126,7 +126,7 @@ fun DateDetailContent(
             color = SpiritualGold
         )
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimens.space16))
 
         if (hijriDay != null) {
             Text(
@@ -150,7 +150,7 @@ fun DateDetailContent(
             )
         }
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(dimens.space32))
         
         // Example Placeholder for Sunnah Fasts or Events
         Text(
@@ -160,7 +160,7 @@ fun DateDetailContent(
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
         
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(dimens.space48))
     }
 }
 

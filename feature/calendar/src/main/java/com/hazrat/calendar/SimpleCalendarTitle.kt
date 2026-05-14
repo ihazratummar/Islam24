@@ -46,7 +46,7 @@ fun SimpleCalendarTitle(
     goToNext: () -> Unit,
 ) {
     Row(
-        modifier = modifier.height(dimens.size40),
+        modifier = modifier.height(dimens.compButton),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CalendarNavigationIcon(
@@ -92,7 +92,7 @@ private fun CalendarNavigationIcon(
     Icon(
         modifier = Modifier
             .fillMaxSize()
-            .padding(dimens.size4)
+            .padding(dimens.space4)
             .align(Alignment.Center)
             .rotate(rotation),
         imageVector = imageVector,

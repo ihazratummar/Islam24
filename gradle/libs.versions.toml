@@ -157,6 +157,7 @@ timber = "5.0.1"
 #
 # ===========================
 kotlinx-coroutines-play = "1.7.3"
+animationCore = "1.11.1"
 
 [libraries]
 # ===========================
@@ -332,6 +333,7 @@ timber = {module = "com.jakewharton.timber:timber", version.ref ="timber"}
 
 
 kotlinx-coroutines-play = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines-play"}
+androidx-compose-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

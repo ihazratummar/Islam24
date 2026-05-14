@@ -88,30 +88,30 @@ fun AuthLoginScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.space32))
             BasicTopBar(
                 onBackClick = {onBackClick.invoke()}
             )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = dimens.size20),
+                    .padding(horizontal = dimens.space20),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    Spacer(modifier = Modifier.height(dimens.size60))
+                    Spacer(modifier = Modifier.height(dimens.space64))
                     Text(
                         text = "Sign In",
                         style = MaterialTheme.typography.displayLarge
                     )
-                    Spacer(modifier = Modifier.height(dimens.size20))
+                    Spacer(modifier = Modifier.height(dimens.space20))
                     Text(
                         text = "Enter your email and password",
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color(0xFFA8A6A7)
                     )
-                    Spacer(modifier = Modifier.height(dimens.size60))
+                    Spacer(modifier = Modifier.height(dimens.space64))
                     CustomTextField(
                         label = { Text(text = "Email") },
                         placeholder = { Text(text = "Enter Your Email") },
@@ -126,7 +126,7 @@ fun AuthLoginScreen(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
                     )
-                    Spacer(modifier = Modifier.height(dimens.size5))
+                    Spacer(modifier = Modifier.height(dimens.space4))
                     CustomTextField(
                         label = { Text(text = "Password") },
                         placeholder = { Text(text = "Enter Your Password") },
@@ -153,7 +153,7 @@ fun AuthLoginScreen(
                         },
                         visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
                     )
-                    Spacer(modifier = Modifier.height(dimens.size35))
+                    Spacer(modifier = Modifier.height(dimens.space32))
                 }
                 item {
                     LoginButton(
@@ -162,7 +162,7 @@ fun AuthLoginScreen(
                         authState = authState,
                         text = "LOGIN"
                     )
-                    Spacer(modifier = Modifier.height(dimens.size15))
+                    Spacer(modifier = Modifier.height(dimens.space16))
                     Text(
                         text = "Forgotten Password?",
                         style = MaterialTheme.typography.bodyMedium,
@@ -172,13 +172,13 @@ fun AuthLoginScreen(
                             hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
                         }
                     )
-                    Spacer(modifier = Modifier.height(dimens.size30))
+                    Spacer(modifier = Modifier.height(dimens.space32))
                     Row {
                         Text(
                             text = "Don't have an account?",
                             style = MaterialTheme.typography.bodyMedium
                         )
-                        Spacer(modifier = Modifier.width(dimens.size4))
+                        Spacer(modifier = Modifier.width(dimens.space4))
                         Text(
                             text = "Sign Up",
                             style = MaterialTheme.typography.bodyMedium,
@@ -190,7 +190,7 @@ fun AuthLoginScreen(
                             }
                         )
                     }
-                    Spacer(modifier = Modifier.height(dimens.size30))
+                    Spacer(modifier = Modifier.height(dimens.space32))
                 }
             }
         }
@@ -219,7 +219,7 @@ fun LoginButton(
             disabledContentColor = MaterialTheme.colorScheme.onSurface,
         ),
         enabled = state.isFormValid && authState != AuthState.Loading,
-        shape = RoundedCornerShape(dimens.size10)
+        shape = RoundedCornerShape(dimens.cornerMd)
     ) {
         Text(
             text = text,

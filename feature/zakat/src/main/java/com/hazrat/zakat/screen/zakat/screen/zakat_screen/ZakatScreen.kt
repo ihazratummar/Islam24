@@ -59,7 +59,7 @@ fun ZakatScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size40))
+            Spacer(Modifier.height(dimens.space48))
             BasicTopBarWithAction(
                 onBackClick = {
                     onBackClick.invoke()
@@ -76,7 +76,7 @@ fun ZakatScreen(
                 item {
                     Card(
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(dimens.space12)
                             .fillMaxWidth()
                             .clickable {
                                 onNewAddClick()
@@ -89,8 +89,8 @@ fun ZakatScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(65.dp)
-                                .padding(15.dp),
+                                .height(dimens.compTopBar)
+                                .padding(dimens.space16),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -107,7 +107,7 @@ fun ZakatScreen(
                         zakatScreenState.zakatEntity.forEach {
                             Card(
                                 modifier = Modifier
-                                    .padding(10.dp)
+                                    .padding(dimens.space12)
                                     .fillMaxWidth()
                                     .clickable {
                                         getZakatDetails(it.id)
@@ -124,7 +124,7 @@ fun ZakatScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column(
-                                        modifier = Modifier.padding(10.dp)
+                                        modifier = Modifier.padding(dimens.space12)
                                     ) {
                                         Text(
                                             text = getDateFromLong(it.date),

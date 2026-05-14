@@ -67,7 +67,7 @@ fun PrayerNotificationScreen(
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Spacer(Modifier.height(dimens.size30))
+            Spacer(Modifier.height(dimens.space32))
             BasicTopBar(
                     topBarTitle = stringResource(titleRes),
                     onBackClick = {
@@ -91,7 +91,7 @@ fun PrayerNotificationScreen(
                     },
                     notificationName = titleRes
             )
-            Spacer(Modifier.height(dimens.size20))
+            Spacer(Modifier.height(dimens.space20))
             AnimatedVisibility(isNotificationEnabled) {
                 AzanList(
                         onAzanPlayClick = { index, azanName, azanUrl ->

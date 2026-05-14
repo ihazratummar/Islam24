@@ -42,21 +42,21 @@ fun BenefitsOfRecitingScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = dimens.size20)
+                .padding(horizontal = dimens.space20)
         ) {
-            Spacer(Modifier.height(dimens.size40))
+            Spacer(Modifier.height(dimens.space48))
             BasicTopBar(
                 topBarTitle = stringResource(R.string.benefits_of_reciting_the_quran),
                 onBackClick = {onBackClick()}
             )
-            Spacer(Modifier.height(dimens.size20))
+            Spacer(Modifier.height(dimens.space20))
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(benefitsOfRecitingDataList) {
                     Card(
                         modifier = Modifier.fillMaxWidth()
-                            .padding(vertical = dimens.size10),
+                            .padding(vertical = dimens.space12),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer
                         )
@@ -64,17 +64,17 @@ fun BenefitsOfRecitingScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = dimens.size10),
+                                .padding(horizontal = dimens.space12),
                             verticalAlignment = Alignment.Top
                         ) {
                             Text(
                                 text = "${it.number}",
-                                modifier = Modifier.padding(dimens.size20),
+                                modifier = Modifier.padding(dimens.space20),
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(Modifier.weight(1f))
                             Column(
-                                modifier = Modifier.padding(dimens.size10),
+                                modifier = Modifier.padding(dimens.space12),
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
@@ -84,7 +84,7 @@ fun BenefitsOfRecitingScreen(
                                     )
                                 )
 
-                                Spacer(Modifier.height(dimens.size5))
+                                Spacer(Modifier.height(dimens.space4))
 
                                 Text(
                                     text = stringResource(it.description),

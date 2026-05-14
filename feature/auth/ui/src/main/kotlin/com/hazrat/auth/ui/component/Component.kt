@@ -103,7 +103,7 @@ fun ZoomedProfileImage(
             exit = scaleOut() + fadeOut()
         ) {
             Card(
-                modifier = modifier.padding(dimens.size20)
+                modifier = modifier.padding(dimens.space20)
             ) {
                 AsyncImage(
                     modifier = Modifier.fillMaxWidth(),
@@ -124,7 +124,7 @@ fun ButtonLoading(modifier: Modifier = Modifier) {
         modifier = modifier
             .profileCardShimmerEffect(),
         onClick = {},
-        shape = RoundedCornerShape(dimens.size10),
+        shape = RoundedCornerShape(dimens.cornerMd),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.secondaryContainer
@@ -154,7 +154,7 @@ fun OtpInputField(
     ) {
         Row(
             modifier = Modifier,
-            horizontalArrangement = Arrangement.spacedBy(dimens.size10)
+            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
         ) {
             repeat(4) { index ->
                 val number = when {
@@ -162,14 +162,14 @@ fun OtpInputField(
                     else -> otp[index]
                 }
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(dimens.size6),
+                    verticalArrangement = Arrangement.spacedBy(dimens.space8),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = number.toString(), style = MaterialTheme.typography.titleLarge)
                     Box(
                         modifier = Modifier
-                            .width(dimens.size40)
-                            .height(dimens.size2)
+                            .width(dimens.compButton)
+                            .height(dimens.space2)
                             .background(MaterialTheme.colorScheme.onBackground)
                     )
                 }

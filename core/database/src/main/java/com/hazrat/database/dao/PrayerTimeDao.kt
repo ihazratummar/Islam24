@@ -40,6 +40,14 @@ interface PrayerTimeDao {
 
 
     /**
+     *
+     */
+
+    @Query("SELECT * FROM prayer_times WHERE GregorianDate == :currentDate LIMIT 1")
+    fun getPrayerTimeForToday(currentDate: String) : PrayerTimeEntity
+
+
+    /**
      * Deletes specific prayer times from the database.
      *
      * @param prayerTime The list of PrayerTimeEntity objects to be deleted.

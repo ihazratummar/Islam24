@@ -3,204 +3,177 @@ package com.hazrat.ui.theme
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * All values are multiples of 4dp — Google Material 3 base grid.
+ *
+ * Naming convention:
+ *   space*   → padding, margin, gap
+ *   icon*    → icon sizes
+ *   avatar*  → avatar / profile image sizes
+ *   comp*    → interactive component heights (button, input, bar)
+ *   fab*     → floating action button sizes
+ *   layout*  → large layout containers (cards, headers, images)
+ *
+ * Window class multipliers (applied in Theme.kt via WindowSizeClass):
+ *   CompactSmall  0.75×   phones < 360dp width
+ *   Compact       1.00×   standard phones
+ *   Medium        1.50×   foldables / small tablets
+ *   Expanded      2.00×   tablets ≥840dp / desktop
+ */
+data class Dimens(
 
-data class Dimens (
-    val size1:Dp = 0.dp,
-    val size2:Dp = 0.dp,
-    val size3:Dp = 0.dp,
-    val size4:Dp = 0.dp,
-    val size5:Dp = 0.dp,
-    val size6:Dp = 0.dp,
-    val size8:Dp = 0.dp,
-    val size9:Dp = 0.dp,
-    val size10:Dp = 0.dp,
-    val size12:Dp = 0.dp,
-    val size15:Dp = 0.dp,
-    val size20:Dp = 0.dp,
-    val size25:Dp = 0.dp,
-    val size30:Dp = 0.dp,
-    val size35:Dp = 0.dp,
-    val size40:Dp =0.dp,
-    val size42:Dp =0.dp,
-    val size43:Dp = 0.dp,
-    val size45:Dp =0.dp,
-    val size48:Dp =0.dp,
-    val size50:Dp = 0.dp,
-    val size52:Dp = 0.dp,
-    val size55:Dp = 0.dp,
-    val size60:Dp = 0.dp,
-    val size80:Dp = 0.dp,
-    val size100:Dp = 0.dp,
-    val size120:Dp = 0.dp,
-    val size150:Dp = 0.dp,
-    val size170: Dp = 0.dp,
-    val size200:Dp = 0.dp,
-    val size250:Dp = 0.dp,
-    val size300:Dp = 0.dp,
+    // ── Spacing (padding / margin / gap) ──────────────────────────────
+    val space2: Dp = 0.dp,   // hairline / divider inset
+    val space4: Dp = 0.dp,   // tight inset (chip padding)
+    val space8: Dp = 0.dp,   // small inset (icon padding)
+    val space12: Dp = 0.dp,  // list item vertical padding
+    val space16: Dp = 0.dp,  // standard content padding  ← most common
+    val space20: Dp = 0.dp,  // card internal padding
+    val space24: Dp = 0.dp,  // section / dialog padding
+    val space32: Dp = 0.dp,  // large gap between sections
+    val space48: Dp = 0.dp,  // screen horizontal edge padding
+    val space64: Dp = 0.dp,  // xl gap / hero section spacing
+
+    // ── Icon sizes ────────────────────────────────────────────────────
+    val iconSm: Dp = 0.dp,   // 16dp — dense / trailing icons
+    val iconMd: Dp = 0.dp,   // 24dp — standard (M3 default)
+    val iconLg: Dp = 0.dp,   // 32dp — large decorative icon
+    val iconXl: Dp = 0.dp,   // 48dp — xl / FAB inner icon
+
+    // ── Avatar / image sizes ──────────────────────────────────────────
+    val avatarSm: Dp = 0.dp, // 32dp — comment / chip avatar
+    val avatarMd: Dp = 0.dp, // 40dp — list item avatar
+    val avatarLg: Dp = 0.dp, // 56dp — profile header avatar
+    val avatarXl: Dp = 0.dp, // 96dp — profile page avatar
+
+    // ── Interactive component heights ─────────────────────────────────
+    val compButton: Dp = 0.dp,   // 40dp — button (M3 standard)
+    val compInput: Dp = 0.dp,    // 56dp — text field (M3 standard)
+    val compListItem: Dp = 0.dp, // 56dp — single-line list item
+    val compChip: Dp = 0.dp,     // 32dp — filter / assist chip
+    val compTopBar: Dp = 0.dp,   // 64dp — top app bar
+    val compNavBar: Dp = 0.dp,   // 80dp — bottom nav bar height
+    val compNavRail: Dp = 0.dp,  // 80dp — nav rail width
+    val compCard: Dp = 0.dp,     // 80dp — card minimum height
+
+    // ── FAB sizes ─────────────────────────────────────────────────────
+    val fabSm: Dp = 0.dp,    // 40dp — small FAB
+    val fabMd: Dp = 0.dp,    // 56dp — standard FAB (M3)
+    val fabLg: Dp = 0.dp,    // 96dp — large FAB
+
+    // ── Layout (Large containers / heights) ──────────────────────────
+    val layoutXs:  Dp = 0.dp,  // 96dp
+    val layoutSm:  Dp = 0.dp,  // 120dp
+    val layoutMd:  Dp = 0.dp,  // 160dp
+    val layoutLg:  Dp = 0.dp,  // 200dp
+    val layoutXl:  Dp = 0.dp,  // 240dp
+    val layoutXxl: Dp = 0.dp,  // 296dp
+
+    // ── Structural ────────────────────────────────────────────────────
+    val divider: Dp = 0.dp,      // 1dp — divider / border
+    val elevation1: Dp = 0.dp,   // 1dp — tonal elevation level 1
+    val elevation2: Dp = 0.dp,   // 3dp — tonal elevation level 2
+    val elevation3: Dp = 0.dp,   // 6dp — tonal elevation level 3
+    val cornerSm: Dp = 0.dp,     // 4dp — small corner radius
+    val cornerMd: Dp = 0.dp,     // 12dp — medium corner radius
+    val cornerLg: Dp = 0.dp,     // 16dp — large corner radius (card)
+    val cornerXl: Dp = 0.dp,     // 28dp — extra large / bottom sheet
+    val cornerFull: Dp = 0.dp,   // 50dp — fully rounded (FAB, chip)
+
 )
 
+// ── Compact Small  (phones < 360dp) — 0.75× ──────────────────────────
 val CompactSmallDimens = Dimens(
-    size1 = 0.78.dp,  // 78% of 1.dp
-    size2 = 1.56.dp,  // 78% of 2.dp
-    size3 = 2.34.dp,  // Corrected from 2.3.dp
-    size4 = 3.12.dp,  // 78% of 4.dp
-    size5 = 3.9.dp,   // Corrected from 4.dp
-    size6 = 4.68.dp,  // Corrected from 4.6.dp
-    size8 = 6.24.dp,  // Corrected from 6.2.dp
-    size9 = 7.02.dp,  // Corrected from 7.dp
-    size10 = 7.8.dp,  // 78% of 10.dp
-    size12 = 9.36.dp, // Corrected from 9.3.dp
-    size15 = 11.7.dp, // 78% of 15.dp
-    size20 = 15.6.dp, // 78% of 20.dp
-    size25 = 19.5.dp, // 78% of 25.dp
-    size30 = 23.4.dp, // 78% of 30.dp
-    size35 = 27.3.dp, // 78% of 35.dp
-    size40 = 31.2.dp, // 78% of 40.dp
-    size42 = 32.76.dp, // 78% of 42.dp
-    size45 = 35.1.dp,  // 78% of 45.dp
-    size48 = 37.44.dp, // 78% of 48.dp
-    size50 = 39.dp,    // 78% of 50.dp
-    size52 = 40.56.dp, // 78% of 52.dp
-    size55 = 42.9.dp,  // 78% of 55.dp
-    size60 = 46.8.dp,  // 78% of 60.dp
-    size80 = 62.4.dp,  // Corrected from 62.8.dp
-    size100 = 78.dp,   // 78% of 100.dp
-    size120 = 93.6.dp, // 78% of 120.dp
-    size150 = 117.dp,  // 78% of 150.dp
-    size170 = 136.dp,  // 78% of 170.dp
-    size200 = 156.dp,  // 78% of 200.dp
-    size250 = 195.dp,  // 78% of 250.dp
-    size300 = 234.dp   // 78% of 300.dp
+    space2 = 2.dp, space4 = 3.dp, space8 = 6.dp, space12 = 9.dp,
+    space16 = 12.dp, space20 = 15.dp, space24 = 18.dp,
+    space32 = 24.dp, space48 = 36.dp, space64 = 48.dp,
+
+    iconSm = 12.dp, iconMd = 18.dp, iconLg = 24.dp, iconXl = 36.dp,
+
+    avatarSm = 24.dp, avatarMd = 30.dp, avatarLg = 42.dp, avatarXl = 72.dp,
+
+    compButton = 30.dp, compInput = 42.dp, compListItem = 42.dp,
+    compChip = 24.dp, compTopBar = 48.dp, compNavBar = 60.dp,
+    compNavRail = 60.dp, compCard = 60.dp,
+
+    fabSm = 30.dp, fabMd = 42.dp, fabLg = 72.dp,
+
+    layoutXs = 72.dp, layoutSm = 90.dp, layoutMd = 120.dp,
+    layoutLg = 150.dp, layoutXl = 180.dp, layoutXxl = 222.dp,
+
+    divider = 1.dp, elevation1 = 1.dp, elevation2 = 3.dp, elevation3 = 6.dp,
+    cornerSm = 4.dp, cornerMd = 8.dp, cornerLg = 12.dp,
+    cornerXl = 20.dp, cornerFull = 50.dp,
 )
 
-val CompactMediumDimens = Dimens(
-    size1 = 0.8.dp,    // 80% of 1.dp
-    size2 = 1.6.dp,    // Corrected to match 80%
-    size3 = 2.4.dp,    // Corrected to match 80%
-    size4 = 3.2.dp,    // Corrected to match 80%
-    size5 = 4.dp,      // 80% of 5.dp
-    size6 = 4.8.dp,    // Corrected from 4.dp
-    size8 = 6.4.dp,    // Corrected to match 80%
-    size9 = 7.2.dp,    // Corrected to match 80%
-    size10 = 8.dp,     // 80% of 10.dp
-    size12 = 9.6.dp,   // Corrected to match 80%
-    size15 = 12.dp,    // Corrected to match 80%
-    size20 = 16.dp,    // Corrected to match 80%
-    size25 = 20.dp,    // Corrected to match 80%
-    size30 = 24.dp,    // Corrected to match 80%
-    size35 = 28.dp,    // Corrected to match 80%
-    size40 = 32.dp,    // Corrected to match 80%
-    size50 = 40.dp,    // 80% of 50.dp
-    size60 = 48.dp,    // 80% of 60.dp
-    size80 = 64.dp,    // Corrected to match 80%
-    size100 = 80.dp,   // 80% of 100.dp
-    size120 = 96.dp,   // 80% of 120.dp
-    size150 = 120.dp,  // 80% of 150.dp
-    size170 = 140.dp,  // 80% of 170.dp
-    size200 = 160.dp,  // 80% of 200.dp
-    size250 = 200.dp,  // 80% of 250.dp
-    size300 = 240.dp   // 80% of 300.dp
-)
-
+// ── Compact  (standard phones) — 1.0× ────────────────────────────────
 val CompactDimens = Dimens(
-    size1 = 1.dp,
-    size2 = 2.dp,
-    size3 = 3.dp,
-    size4 = 4.dp,
-    size5 = 5.dp,
-    size6 = 6.dp,
-    size8 = 8.dp,
-    size9 = 9.dp,
-    size10 = 10.dp,
-    size12 = 12.dp,
-    size15 = 15.dp,
-    size20 = 20.dp,
-    size25 = 25.dp,
-    size30 = 30.dp,
-    size35 = 35.dp,
-    size40 = 40.dp,
-    size42 = 42.dp,
-    size45 = 45.dp,
-    size48 = 48.dp,
-    size50 = 50.dp,
-    size52 = 52.dp,
-    size55 = 55.dp,
-    size60 = 60.dp,
-    size80 = 80.dp,
-    size100 = 100.dp,
-    size120 = 120.dp,
-    size150 = 150.dp,
-    size170 = 170.dp,
-    size200 = 200.dp,
-    size250 = 250.dp,
-    size300 = 300.dp,
+    space2 = 2.dp, space4 = 4.dp, space8 = 8.dp, space12 = 12.dp,
+    space16 = 16.dp, space20 = 20.dp, space24 = 24.dp,
+    space32 = 32.dp, space48 = 48.dp, space64 = 64.dp,
+
+    iconSm = 16.dp, iconMd = 24.dp, iconLg = 32.dp, iconXl = 48.dp,
+
+    avatarSm = 32.dp, avatarMd = 40.dp, avatarLg = 56.dp, avatarXl = 96.dp,
+
+    compButton = 40.dp, compInput = 56.dp, compListItem = 56.dp,
+    compChip = 32.dp, compTopBar = 64.dp, compNavBar = 80.dp,
+    compNavRail = 80.dp, compCard = 80.dp,
+
+    fabSm = 40.dp, fabMd = 56.dp, fabLg = 96.dp,
+
+    layoutXs = 96.dp, layoutSm = 120.dp, layoutMd = 160.dp,
+    layoutLg = 200.dp, layoutXl = 240.dp, layoutXxl = 296.dp,
+
+    divider = 1.dp, elevation1 = 1.dp, elevation2 = 3.dp, elevation3 = 6.dp,
+    cornerSm = 4.dp, cornerMd = 12.dp, cornerLg = 16.dp,
+    cornerXl = 28.dp, cornerFull = 50.dp,
 )
+
+// ── Medium  (foldables / small tablets) — 1.5× ───────────────────────
 val MediumDimens = Dimens(
-    size1 = 1.5.dp,
-    size2 = 3.dp,
-    size3 = 4.5.dp,
-    size4 = 6.dp,
-    size5 = 7.5.dp,
-    size6 = 9.dp,
-    size8 = 12.dp,
-    size9 = 13.5.dp,
-    size10 = 15.dp,
-    size12 = 18.dp,
-    size15 = 22.5.dp,
-    size20 = 30.dp,
-    size25 = 37.5.dp,
-    size30 = 45.dp,
-    size35 = 52.5.dp,
-    size40 = 60.dp,
-    size42 = 63.dp,
-    size45 = 67.5.dp,
-    size48 = 72.dp,
-    size50 = 75.dp,
-    size52 = 78.dp,
-    size55 = 82.5.dp,
-    size60 = 90.dp,
-    size80 = 120.dp,
-    size100 = 150.dp,
-    size120 = 180.dp,
-    size150 = 225.dp,
-    size170 = 250.dp,
-    size200 = 300.dp,
-    size250 = 375.dp,
-    size300 = 450.dp,
+    space2 = 2.dp, space4 = 6.dp, space8 = 12.dp, space12 = 18.dp,
+    space16 = 24.dp, space20 = 30.dp, space24 = 36.dp,
+    space32 = 48.dp, space48 = 72.dp, space64 = 96.dp,
+
+    iconSm = 24.dp, iconMd = 36.dp, iconLg = 48.dp, iconXl = 72.dp,
+
+    avatarSm = 48.dp, avatarMd = 60.dp, avatarLg = 84.dp, avatarXl = 144.dp,
+
+    compButton = 60.dp, compInput = 84.dp, compListItem = 84.dp,
+    compChip = 48.dp, compTopBar = 96.dp, compNavBar = 120.dp,
+    compNavRail = 120.dp, compCard = 120.dp,
+
+    fabSm = 60.dp, fabMd = 84.dp, fabLg = 144.dp,
+
+    layoutXs = 144.dp, layoutSm = 180.dp, layoutMd = 240.dp,
+    layoutLg = 300.dp, layoutXl = 360.dp, layoutXxl = 444.dp,
+
+    divider = 1.dp, elevation1 = 1.dp, elevation2 = 3.dp, elevation3 = 6.dp,
+    cornerSm = 4.dp, cornerMd = 12.dp, cornerLg = 16.dp,
+    cornerXl = 28.dp, cornerFull = 50.dp,
 )
 
+// ── Expanded  (tablets ≥840dp / desktop) — 2.0× ──────────────────────
 val ExpandedDimens = Dimens(
-    size1 = 2.dp,
-    size2 = 4.dp,
-    size3 = 6.dp,
-    size4 = 8.dp,
-    size5 = 10.dp,
-    size6 = 12.dp,
-    size8 = 16.dp,
-    size9 = 18.dp,
-    size10 = 20.dp,
-    size12 = 24.dp,
-    size15 = 30.dp,
-    size20 = 40.dp,
-    size25 = 50.dp,
-    size30 = 60.dp,
-    size35 = 70.dp,
-    size40 = 80.dp,
-    size42 = 84.dp,
-    size45 = 90.dp,
-    size48 = 96.dp,
-    size50 = 100.dp,
-    size52 = 104.dp,
-    size55 = 110.dp,
-    size60 = 120.dp,
-    size80 = 160.dp,
-    size100 = 200.dp,
-    size120 = 240.dp,
-    size150 = 300.dp,
-    size170 = 350.dp,
-    size200 = 400.dp,
-    size250 = 500.dp,
-    size300 = 600.dp,
+    space2 = 2.dp, space4 = 8.dp, space8 = 16.dp, space12 = 24.dp,
+    space16 = 32.dp, space20 = 40.dp, space24 = 48.dp,
+    space32 = 64.dp, space48 = 96.dp, space64 = 128.dp,
+
+    iconSm = 32.dp, iconMd = 48.dp, iconLg = 64.dp, iconXl = 96.dp,
+
+    avatarSm = 64.dp, avatarMd = 80.dp, avatarLg = 112.dp, avatarXl = 192.dp,
+
+    compButton = 80.dp, compInput = 112.dp, compListItem = 112.dp,
+    compChip = 64.dp, compTopBar = 128.dp, compNavBar = 160.dp,
+    compNavRail = 160.dp, compCard = 160.dp,
+
+    fabSm = 80.dp, fabMd = 112.dp, fabLg = 192.dp,
+
+    layoutXs = 192.dp, layoutSm = 240.dp, layoutMd = 320.dp,
+    layoutLg = 400.dp, layoutXl = 480.dp, layoutXxl = 592.dp,
+
+    divider = 1.dp, elevation1 = 1.dp, elevation2 = 3.dp, elevation3 = 6.dp,
+    cornerSm = 4.dp, cornerMd = 12.dp, cornerLg = 16.dp,
+    cornerXl = 28.dp, cornerFull = 50.dp,
 )
-
-

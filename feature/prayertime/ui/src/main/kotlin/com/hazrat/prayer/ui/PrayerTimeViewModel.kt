@@ -581,7 +581,6 @@ class PrayerTimeViewModel(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllPrayerTimes()
-            repository.getPrayerTimeByDate().first()
         }
     }
 

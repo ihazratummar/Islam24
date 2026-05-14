@@ -46,7 +46,7 @@ fun JuristicSelectionDialog(
     ) {
         Surface(
             modifier = Modifier
-                .padding(dimens.size20)
+                .padding(dimens.space20)
                 .nestedScroll(rememberNestedScrollInteropConnection()),
             color = Color.Transparent
         ) {
@@ -55,8 +55,8 @@ fun JuristicSelectionDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            horizontal = dimens.size10,
-                            vertical = dimens.size10
+                            horizontal = dimens.space12,
+                            vertical = dimens.space12
                         )
                 ) {
                     Text(
@@ -71,17 +71,17 @@ fun JuristicSelectionDialog(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = dimens.size15)
+                            .padding(vertical = dimens.space16)
                             .clickable {
                                 onJuristicSelected(school)
                                 onDismiss()
                             },
                         colors = CardDefaults.cardColors(Color.Transparent),
-                        shape = RoundedCornerShape(dimens.size50)
+                        shape = RoundedCornerShape(dimens.cornerFull)
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(dimens.size12),
+                                .padding(dimens.space12),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Start
                         ) {
@@ -89,7 +89,7 @@ fun JuristicSelectionDialog(
                                 text = school.name,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(start = dimens.size10)
+                                modifier = Modifier.padding(start = dimens.space12)
                             )
                         }
                         HorizontalDivider(color = MaterialTheme.colorScheme.surfaceDim)

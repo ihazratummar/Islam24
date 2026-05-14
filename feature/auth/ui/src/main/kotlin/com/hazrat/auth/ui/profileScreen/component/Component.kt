@@ -65,7 +65,7 @@ fun RatingBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimens.size10),
+                .padding(dimens.space12),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -89,27 +89,27 @@ fun RatingBottomSheet(
                         ),
                         contentDescription = "Star",
                         modifier = Modifier
-                            .size(dimens.size60)
+                            .size(dimens.space64)
                             .clickable {
                                 rating = index + 1
                             }
-                            .padding(dimens.size5),
+                            .padding(dimens.space4),
                         tint = if (index < rating) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(dimens.size10))
+            Spacer(modifier = Modifier.height(dimens.space12))
             if (rating in 1..3) {
                 Text(
                     text = stringResource(R.string.thank_you_for_your_feedback_we_appreciate_your_input),
-                    modifier = Modifier.padding(dimens.size5),
+                    modifier = Modifier.padding(dimens.space4),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else if (rating >= 4) {
                 Text(
                     text = stringResource(R.string.thank_you_for_your_positive_feedback_we_d_love_for_you_to_rate_us),
-                    modifier = Modifier.padding(dimens.size5),
+                    modifier = Modifier.padding(dimens.space4),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -119,10 +119,10 @@ fun RatingBottomSheet(
                         hapticFeedback()
                     },
                     modifier = Modifier
-                        .padding(dimens.size10)
+                        .padding(dimens.space12)
                         .fillMaxWidth()
-                        .height(dimens.size60),
-                    shape = RoundedCornerShape(dimens.size10),
+                        .height(dimens.space64),
+                    shape = RoundedCornerShape(dimens.cornerMd),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary

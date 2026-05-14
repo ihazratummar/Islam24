@@ -1,5 +1,6 @@
 package com.hazrat.ui.theme
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 // Modern Spiritual Palette (Premium)
@@ -90,3 +91,104 @@ val Error80 = Color(0xFFF2B8B5)
 val Error90 = Color(0xFFF9DEDC)
 val Error95 = Color(0xFFFCECEB)
 val Error99 = Color(0xFFFFF9F9)
+
+
+
+
+// ---------- Shared Prayer Gradients ----------
+
+val FajrGradient = listOf(
+    Color(0xFF5B4FD7),
+    Color(0xFF7B5CF1)
+)
+
+val SunriseGradient = listOf(
+    Color(0xFFF5A623),
+    Color(0xFFF8B13B)
+)
+
+val DhuhrGradient = listOf(
+    Color(0xFF2BB7E8),
+    Color(0xFF3CC8F5)
+)
+
+val AsrGradient = listOf(
+    Color(0xFFF39C12),
+    Color(0xFFF7A623)
+)
+
+val MaghribGradient = listOf(
+    Color(0xFFFF6B57),
+    Color(0xFFFF8A4D)
+)
+
+val IshaGradient = listOf(
+    Color(0xFF4B56B7),
+    Color(0xFF2F3E73)
+)
+
+
+// ---------- App Gradients ----------
+
+data class AppGradients(
+    val prayerCard: List<Color>,
+
+    val fajrGradient: List<Color>,
+    val sunriseGradient: List<Color>,
+    val dhuhrGradient: List<Color>,
+    val asrGradient: List<Color>,
+    val maghribGradient: List<Color>,
+    val ishaGradient: List<Color>,
+)
+
+val LocalAppGradients = compositionLocalOf {
+    AppGradients(
+        prayerCard = emptyList(),
+
+        fajrGradient = emptyList(),
+        sunriseGradient = emptyList(),
+        dhuhrGradient = emptyList(),
+        asrGradient = emptyList(),
+        maghribGradient = emptyList(),
+        ishaGradient = emptyList()
+    )
+}
+
+
+// ---------- Dark Theme ----------
+
+val DarkAppGradients = AppGradients(
+
+    prayerCard = listOf(
+        Color(0xFF0D5153),
+        Color(0xFF0F5A59),
+        Color(0xFF1B6058),
+        Color(0xFF27665B)
+    ),
+
+    fajrGradient = FajrGradient,
+    sunriseGradient = SunriseGradient,
+    dhuhrGradient = DhuhrGradient,
+    asrGradient = AsrGradient,
+    maghribGradient = MaghribGradient,
+    ishaGradient = IshaGradient
+)
+
+
+// ---------- Light Theme ----------
+
+val LightAppGradients = AppGradients(
+
+    prayerCard = listOf(
+        Primary50,
+        Primary40,
+        Primary30
+    ),
+
+    fajrGradient = FajrGradient,
+    sunriseGradient = SunriseGradient,
+    dhuhrGradient = DhuhrGradient,
+    asrGradient = AsrGradient,
+    maghribGradient = MaghribGradient,
+    ishaGradient = IshaGradient
+)

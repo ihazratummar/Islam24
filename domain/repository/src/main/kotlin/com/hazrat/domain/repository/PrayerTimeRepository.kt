@@ -1,6 +1,7 @@
 package com.hazrat.domain.repository
 
 import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.model.MinimalPrayerData
 import com.hazrat.model.PrayerTimeModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 interface PrayerTimeRepository {
 
     val prayerTimes: StateFlow<List<PrayerTimeModel>>
-    val prayerTimeByDate: StateFlow<List<PrayerTimeModel>>
     /**
      * Fetches and saves prayer times for the current month.
      * This function is responsible for retrieving prayer times from an external source and storing them in the database.
@@ -30,12 +30,11 @@ interface PrayerTimeRepository {
      */
     fun getAllPrayer(): Flow<List<PrayerTimeModel>>
 
-    fun getPrayerTimeByDate(): Flow<List<PrayerTimeModel>>
-
-
     fun sharePrayerTimes(prayerTimes: List<PrayerTimeModel>)
 
     suspend fun getAllPrayerTimes()
+
+    suspend fun getTodayPrayerTime() : MinimalPrayerData
 
     fun getHijriDay(): Int
 

@@ -1,18 +1,21 @@
 package com.hazrat.home.ui.component
 
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,423 +23,276 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.model.PrayerTimeModel
-import com.hazrat.model.locationmodel.LocationName
-import com.hazrat.ui.R
-import com.hazrat.ui.common.LocationOnCard
-import com.hazrat.ui.theme.DeepPineGreen
-import com.hazrat.ui.theme.EmeraldGreen
-import com.hazrat.ui.theme.InterFontFamily
+import com.hazrat.model.MinimalPrayerData
 import com.hazrat.ui.theme.dimens
-import com.hazrat.utils.DateUtil.getCurrentDate
-import java.text.NumberFormat
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
+import com.hazrat.utils.DateUtil
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
-fun isPrayerTime(
-    data: PrayerTimeModel
-): Boolean {
 
-    val currentDayPrayerTimes = data
-    val currentTime = System.currentTimeMillis()
-    val isFajrTime =
-        currentTime in currentDayPrayerTimes.fajrTime..currentDayPrayerTimes.sunriseTime.minus(
-            300000
-        )
-    val isSunriseTime =
-        currentTime in currentDayPrayerTimes.sunriseTime.minus(300000)..currentDayPrayerTimes.sunriseTime.plus(
-            300000
-        )
-    val isDhuhrTime =
-        currentTime in currentDayPrayerTimes.dhuhrTime..(currentDayPrayerTimes.dhuhrTime.plus(
-            3600000
-        ))
-    val isAsrTime =
-        currentTime in currentDayPrayerTimes.asrTime..(currentDayPrayerTimes.maghribTime.minus(
-            3600000
-        ))
-    val isMaghribTime =
-        currentTime in currentDayPrayerTimes.maghribTime..(currentDayPrayerTimes.ishaTime.minus(
-            1800000
-        ))
-    val isIshaTime =
-        currentTime in currentDayPrayerTimes.ishaTime..currentDayPrayerTimes.midnightTime
-
-    return isFajrTime || isSunriseTime || isDhuhrTime || isAsrTime || isMaghribTime || isIshaTime
-}
-
-
-
-/// TIME LOCATION CARD
 @Composable
-fun TimeLocationCard(
-    prayerTimeModel: List<PrayerTimeModel>,
-    navigateToPrayerTime: () -> Unit,
-    locationName: LocationName?,
+fun HomeTopCard(
+    prayerData: MinimalPrayerData
 ) {
-    val currentGregorianDay = getCurrentDate()
-    val prayerTimeIndex = prayerTimeModel.indexOfFirst {
-        it.gregorianDate == currentGregorianDay
+    val prayerState = rememberPrayerState(prayerTimes = prayerData)
+    val isNow = prayerState.isNow
+
+    val prayerName = if (isNow){
+        prayerState.currentPrayer?.let { stringResource(it.nameRes) }
+    }else{
+        prayerState.nextPrayer?.let { stringResource(it.nameRes) }
     }
-    val prayerTimes = prayerTimeModel[prayerTimeIndex]
-
-    val isDark = isSystemInDarkTheme()
-
-    val gradientColors =
-        if (isDark) {
-            listOf(DeepPineGreen, Color.Black)
-        } else {
-            listOf(DeepPineGreen, EmeraldGreen)
-        }
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(dimens.size5)
-            .height(dimens.size250)
-            .clickable(
-                onClick = { navigateToPrayerTime() },
-                onClickLabel = stringResource(id = R.string.prayertimesandlocation)
-            ),
-        shape = RoundedCornerShape(dimens.size30),
-        elevation = CardDefaults.cardElevation(defaultElevation = dimens.size5),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(dimens.cornerLg),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = gradientColors
-                    )
-                )
-        ) {
-            // Background Texture (Optional, reused from previous logic but transparent)
-            if (prayerTimeIndex in prayerTimeModel.indices) {
-                // Opacity reduced for texture
-                Box(modifier = Modifier.alpha(0.1f)) {
-                    HomePrayerTimeCardAnimation(
-                        modifier = Modifier.fillMaxSize(),
-                        prayerTimeEntity = prayerTimes
-                    )
-                }
-            }
-
-            Row(
+        CardGradient {
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(dimens.size15)
+                    .fillMaxWidth()
+                    .padding(dimens.space16),
+                verticalArrangement = Arrangement.SpaceAround,
             ) {
-                // LEFT: Next Prayer / Timeline
-                Column(
+                Row(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(0.6f)
-                        .padding(start = dimens.size10, bottom = dimens.size10),
-                    verticalArrangement = Arrangement.Center
+                        .fillMaxWidth()
+                        .padding(dimens.space8),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    DisplayCurrentPrayerName(
-                        data = prayerTimes,
-                        textColor = Color.White
-                    )
+                    Column {
 
-                    Spacer(modifier = Modifier.height(dimens.size5))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+                        ) {
+                            if (isNow) {
+                                PulsingLiveDot()
+                            }
+                            Text(
+                                text = if (isNow) "Praying Now" else "Next Prayer",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            )
+                        }
 
-                    Text(
-                        text = stringResource(R.string.view_salat_times),
-                        color = Color.White.copy(alpha = 0.8f),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                        Text(
+                            text = prayerName?:"",
+                            style = MaterialTheme.typography.displaySmall.copy(
+                                MaterialTheme.colorScheme.onSurface
+                            )
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+                    Box(
+                        modifier = Modifier.background(
+                            color = MaterialTheme.colorScheme.surfaceTint.copy(0.15f),
+                            shape = CircleShape
+                        )
+                    ) {
+
+                        val icon = if (isNow) prayerState.prayerIcon else prayerState.nextPrayerIcon
+
+                        Icon(
+                            painter = painterResource(icon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(dimens.space12)
+                                .size(dimens.iconMd),
+                            tint = prayerState.nextPrayerColor
+                        )
+                    }
                 }
 
-                // RIGHT: Location & Details
-                Column(
+                Row(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(0.4f)
-                        .padding(top = dimens.size15, end = dimens.size10, bottom = dimens.size15),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.End
+                        .fillMaxWidth()
+                        .padding(dimens.space8),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-
-                    LocationOnCard(
-                        locationName = locationName?.address?: "Mecca",
-                        textColor = Color.White
-                    )
-
-                    Spacer(modifier = Modifier.height(dimens.size8))
-
-                    if (isPrayerTime(prayerTimes)) {
+                    Column {
                         Text(
-                            text = stringResource(id = R.string.now),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.tertiary
+                            text = "Starts At",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            )
                         )
-                    } else {
-                        DisplayCurrentPrayerTime(
-                            prayerTimes,
-                            textColor = Color.White
+                        Text(
+                            text = DateUtil.dateLongToString(
+                                prayerState.nextPrayerTimeMillis,
+                                "hh:mm a"
+                            ),
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.W600
+                            )
                         )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(
+                            text = if (isNow) "Next Prayer ${stringResource(prayerState.nextPrayer!!.nameRes)}" else "TIME REMAINING",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        )
+
+                        prayerState.countdownText.split(":").let {
+                            Row(
+                                modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                it.forEachIndexed { index, string ->
+                                    Box(
+                                        modifier = Modifier
+                                            .size(dimens.space48)
+                                            .padding(start = dimens.space4, top = dimens.space4)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.surfaceTint.copy(
+                                                    0.15f
+                                                ),
+                                                shape = RoundedCornerShape(dimens.cornerMd)
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = string,
+                                            style = MaterialTheme.typography.titleLarge.copy(
+                                                MaterialTheme.colorScheme.onSurface,
+                                                fontWeight = FontWeight.W800
+                                            ),
+                                            modifier = Modifier.padding(dimens.space8)
+                                        )
+                                    }
+
+                                    if (index != it.size - 1) {
+                                        Text(
+                                            text = ":",
+                                            style = MaterialTheme.typography.titleMedium.copy(
+                                                color = MaterialTheme.colorScheme.onSurface
+                                            ),
+                                            modifier = Modifier.padding(start = dimens.space4)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
             }
         }
+
     }
 }
 
 
 @Composable
-fun RamadanCard() {
-    val currentDay = LocalDate.now()
-    val targetDate = LocalDate.of(2026, 2, 18)
-    val daysRemaining = ChronoUnit.DAYS.between(currentDay, targetDate)
-    val locale = LocalConfiguration.current.locales[0]
-    val formattedDaysRemaining = NumberFormat.getInstance(locale).format(daysRemaining)
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(dimens.size100)
-            .padding(horizontal = dimens.size15),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+fun PulsingLiveDot(
+    color: Color = Color(0xFF34D399), // emerald-400
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(dimens.space16)
     ) {
+        // outer ping ring
+        val infiniteTransition = rememberInfiniteTransition(label = "ping")
+        val scale by infiniteTransition.animateFloat(
+            initialValue = 0.5f,
+            targetValue = 1.5f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = EaseOut),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "scale"
+        )
+        val alpha by infiniteTransition.animateFloat(
+            initialValue = 0.6f,
+            targetValue = 0f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = EaseOut),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "alpha"
+        )
+
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimens.size30)
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.CenterStart),
-                text = stringResource(R.string.ramadan),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                fontFamily = InterFontFamily,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                modifier = Modifier.align(Alignment.CenterEnd),
-                text = stringResource(R.string.days, formattedDaysRemaining),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-        }
+                .size(dimens.space8)
+                .scale(scale)
+                .background(
+                    color = color.copy(alpha = alpha),
+                    shape = CircleShape
+                )
+        )
+
+        // inner solid dot
+        Box(
+            modifier = Modifier
+                .size(dimens.space4)
+                .background(
+                    color = color,
+                    shape = CircleShape
+                )
+        )
     }
 }
+
 
 @Composable
-fun BenefitsOfRecitingWidget(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
+fun CardGradient(
+    content: @Composable () -> Unit
 ) {
-    Card(
-        modifier = modifier
+    Box(
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = dimens.size20)
-            .clip(
-                shape = RoundedCornerShape(dimens.size10)
-            ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        ),
-        onClick = onClick
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimens.size20, vertical = dimens.size10)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(R.string.benefits_of_reciting_the_quran),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Thin,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                )
-                Icon(
-                    painter = painterResource(R.drawable.arrowright),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(horizontal = dimens.size20),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            Spacer(modifier = Modifier.height(dimens.size30))
-
-            benefitsOfRecitingDataList.take(5).forEach {
-                Text(
-                    text = "${it.number}. ${stringResource(it.title)}",
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+            .drawWithCache {
+                val linear = Brush.linearGradient(
+                    colorStops = arrayOf(
+                        0.0f to Color(0xFF0C4F52),
+                        0.45f to Color(0xFF0F5B5B),
+                        1.0f to Color(0xFF1F6359),
                     ),
-                    modifier = Modifier.padding(horizontal = dimens.size10, vertical = dimens.size5)
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, size.height)
                 )
-            }
-        }
+
+                val radial = Brush.radialGradient(
+                    colors = listOf(
+                        Color(0xFF7A8F63).copy(alpha = 0.30f), // yellowish teal glow
+                        Color.Transparent
+                    ),
+                    center = Offset(size.width * 0.88f, size.height * 0.20f),
+                    radius = size.width * 0.45f
+                )
+
+                onDrawBehind {
+                    drawRect(linear)
+                    drawRect(radial)
+                }
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        content()
     }
 }
-
-//@Composable
-//fun DailyQuranAyat(
-//    modifier: Modifier = Modifier,
-//    quranState: QuranState,
-//    homeState: HomeState,
-//    onClick: (Int, Int) -> Unit
-//) {
-//    val systemLanguage = getSystemLanguage()
-//    val arquran = quranState.arQuranData
-//    val enQuran = quranState.quranEnData
-//    val bnQuran = quranState.quranBnData
-//
-//    val allArAyah = arquran?.flatMap { it.ayahs } ?: emptyList()
-//    val arAyah = allArAyah.find { it.number == homeState.randomAyatNumber }
-//    val surah =
-//        arquran?.find { surah -> surah.ayahs.any { it.number == homeState.randomAyatNumber } }
-//
-//    val arNumber = arAyah?.numberInSurah?.let { number ->
-//        val numberStr = number.toString()
-//        val arabicDigits = numberStr.map { char ->
-//            when (char) {
-//                '0' -> '٠'
-//                '1' -> '١'
-//                '2' -> '٢'
-//                '3' -> '٣'
-//                '4' -> '٤'
-//                '5' -> '٥'
-//                '6' -> '٦'
-//                '7' -> '٧'
-//                '8' -> '٨'
-//                '9' -> '٩'
-//                else -> char
-//            }
-//        }.joinToString("")
-//        "\u06DD$arabicDigits"
-//    } ?: "N/A"
-//
-//    val enAllAyah = enQuran?.find { it.id == surah?.number }
-//    val enAyah = enAllAyah?.verses?.find { it.id == arAyah?.numberInSurah }
-//
-//    val bnAllAyah = bnQuran?.find { it.id == surah?.number }
-//    val bnAyah = bnAllAyah?.verses?.find { it.id == arAyah?.numberInSurah }
-//
-//
-//    if (!arquran.isNullOrEmpty() && !enQuran.isNullOrEmpty() && !bnQuran.isNullOrEmpty()) {
-//        val isDark = isSystemInDarkTheme()
-//        val borderColor = MaterialTheme.colorScheme.tertiary
-//        val containerColor = MaterialTheme.colorScheme.surface
-//        val titleColor = MaterialTheme.colorScheme.tertiary
-//
-//        Box(
-//            modifier = modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = dimens.size20)
-//                .clip(RoundedCornerShape(dimens.size15))
-//                .border(
-//                    width = dimens.size1,
-//                    color = borderColor,
-//                    shape = RoundedCornerShape(dimens.size15)
-//                )
-//                .clickable {
-//                    onClick.invoke(surah?.number ?: 1, arAyah?.numberInSurah ?: 1)
-//                }
-//                .background(containerColor.copy(alpha = if (isDark) 0.5f else 1f))
-//        ) {
-//            // Texture
-//            Box(
-//                modifier = Modifier
-//                    .matchParentSize()
-//                    .paint(
-//                        painter = painterResource(id = R.drawable.ramadan),
-//                        alpha = if (isDark) 0.1f else 0.05f,
-//                        contentScale = ContentScale.Crop
-//                    )
-//            )
-//
-//            // Content
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(dimens.size20),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                // Header
-//                Text(
-//                    text = "Daily Quran",
-//                    style = MaterialTheme.typography.titleMedium.copy(
-//                        fontWeight = FontWeight.Bold,
-//                        color = titleColor,
-//                        letterSpacing = 1.sp
-//                    ),
-//                    modifier = Modifier.padding(bottom = dimens.size15)
-//                )
-//
-//                // Quran Text
-//                Text(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    text = buildAnnotatedString {
-//                        withStyle(
-//                            style = SpanStyle(
-//                                fontFamily = Kitab
-//                            )
-//                        ) {
-//                            append(arAyah?.text)
-//                        }
-//                    },
-//                    style = MaterialTheme.typography.headlineMedium.copy(
-//                        textDirection = TextDirection.Rtl,
-//                        color = MaterialTheme.colorScheme.onSurface,
-//                        lineHeight = 40.sp
-//                    ),
-//                    textAlign = TextAlign.Center
-//                )
-//
-//                Spacer(Modifier.height(dimens.size20))
-//
-//                // Translation
-//                Text(
-//                    text = when (systemLanguage) {
-//                        "bn" -> "${bnAyah?.translation}"
-//                        else -> "${enAyah?.translation}"
-//                    },
-//                    style = MaterialTheme.typography.bodyMedium.copy(
-//                        fontStyle = FontStyle.Italic,
-//                        color = MaterialTheme.colorScheme.onSurfaceVariant
-//                    ),
-//                    textAlign = TextAlign.Center
-//                )
-//
-//                Spacer(Modifier.height(dimens.size15))
-//
-//                // Reference
-//                Text(
-//                    text = "${surah?.name} ${surah?.number}:${enAyah?.id}",
-//                    style = MaterialTheme.typography.labelMedium.copy(
-//                        color = titleColor
-//                    )
-//                )
-//            }
-//        }
-//    }
-//}
-//
-

@@ -41,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.imageLoader
@@ -83,7 +84,7 @@ fun TabRowComponent(
         ) {
             QuranScreenTab.entries.forEachIndexed { index, tabTitle ->
                 Tab(
-                    modifier = Modifier.padding(all = dimens.size15),
+                    modifier = Modifier.padding(all = dimens.space16),
                     selected = selectedTabIndex == index,
                     onClick = { onTabSelected(index) }
                 ) {
@@ -129,9 +130,9 @@ fun LastReadCard(
                         Color(0xFF72FDA0)
                     )
                 ),
-                shape = RoundedCornerShape(dimens.size10)
+                shape = RoundedCornerShape(dimens.cornerMd)
             )
-            .height(dimens.size150),
+            .height(150.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,
             contentColor = Color.Black
@@ -143,20 +144,20 @@ fun LastReadCard(
             Row(
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .padding(top = dimens.size10, start = dimens.size20),
+                    .padding(top = dimens.space12, start = dimens.space20),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(R.drawable.book),
                     contentDescription = null
                 )
-                Spacer(Modifier.width(dimens.size10))
+                Spacer(Modifier.width(dimens.space12))
                 Text(stringResource(R.string.last_read))
             }
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(bottom = dimens.size10, start = dimens.size20)
+                    .padding(bottom = dimens.space12, start = dimens.space20)
             ) {
                 Text(lastReadSurahName?: stringResource(R.string.start_reading))
                 if (lastReadSurahName != null){
@@ -190,8 +191,8 @@ fun SurahCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = dimens.size5),
-        shape = RoundedCornerShape(dimens.size10),
+            .padding(vertical = dimens.space4),
+        shape = RoundedCornerShape(dimens.cornerMd),
         onClick = {
             onSurahClick.invoke()
         },
@@ -204,7 +205,7 @@ fun SurahCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimens.size5),
+                .padding(horizontal = dimens.space4),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
@@ -214,8 +215,8 @@ fun SurahCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(dimens.size60)
-                        .padding(vertical = dimens.size10, horizontal = dimens.size5),
+                        .size(dimens.space64)
+                        .padding(vertical = dimens.space12, horizontal = dimens.space4),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -242,10 +243,10 @@ fun SurahCard(
                 )
 
             }
-            Spacer(Modifier.width(dimens.size5))
+            Spacer(Modifier.width(dimens.space4))
             Column(
                 modifier = Modifier
-                    .padding(dimens.size10),
+                    .padding(dimens.space12),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
@@ -287,7 +288,7 @@ fun SurahCard(
                     Log.e("SVG Load", "Failed to load SVG: ${error.result.throwable}")
                 },
                 contentDescription = "Surah Calligraphy",
-                modifier = Modifier.size(dimens.size80),
+                modifier = Modifier.size(dimens.compNavBar),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
             )
         }
@@ -303,7 +304,7 @@ fun JuzCard(
     ayat: String
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(vertical = dimens.size10),
+        modifier = modifier.fillMaxWidth().padding(vertical = dimens.space12),
         onClick = {
             onClick()
         },
@@ -311,21 +312,21 @@ fun JuzCard(
     ) {
         Column (
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(dimens.size4)
+            verticalArrangement = Arrangement.spacedBy(dimens.space4)
         ){
             Text(
                 text = "${stringResource(R.string.juz)} ${ index + 1}",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Normal
                 ),
-                modifier = Modifier.padding(dimens.size5)
+                modifier = Modifier.padding(dimens.space4)
             )
             Text(
                 text = "${stringResource(R.string.ayah)} $ayat",
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Normal
                 ),
-                modifier = Modifier.padding(dimens.size5)
+                modifier = Modifier.padding(dimens.space4)
             )
         }
     }
@@ -342,7 +343,7 @@ fun FavoriteAyahCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = dimens.size10),
+            .padding(vertical = dimens.space12),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         onClick = {
             onClick()
@@ -360,17 +361,17 @@ fun FavoriteAyahCard(
                 maxLines = 1, // Limit the text to one line
                 overflow = TextOverflow.Ellipsis // Add ellipsis if the text overflows
             )
-            Spacer(Modifier.height(dimens.size5))
+            Spacer(Modifier.height(dimens.space4))
             Text(
                 text = surahAyahText,
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontWeight = FontWeight.Normal
                 )
             )
-            Spacer(Modifier.height(dimens.size5))
+            Spacer(Modifier.height(dimens.space4))
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.outline.copy(0.4f),
-                thickness = dimens.size1
+                thickness = dimens.divider
             )
         }
     }

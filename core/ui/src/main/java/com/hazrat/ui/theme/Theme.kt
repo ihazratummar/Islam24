@@ -99,7 +99,7 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun Islam24Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    activity: Activity = LocalActivity.current as Activity,
+    activity: Activity? = LocalActivity.current as? Activity,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -107,25 +107,30 @@ fun Islam24Theme(
         else -> LightColorScheme
     }
 
-    val window = calculateWindowSizeClass(activity = activity)
+    val view = LocalView.current
+
+    val window = if (activity != null){
+        calculateWindowSizeClass(activity = activity)
+    }else{
+        null
+    }
     val config = LocalConfiguration.current
 
     val typography: Typography
     val appDimens: Dimens
-    val view = LocalView.current
-    SideEffect {
-        activity.window?.colorMode = Color.Transparent.toArgb()
-        WindowCompat.getInsetsController(activity.window!!, view).isAppearanceLightStatusBars =
-            !darkTheme
+
+    if (!view.isInEditMode){
+        SideEffect {
+            activity?.window?.colorMode = Color.Transparent.toArgb()
+            WindowCompat.getInsetsController(activity?.window!!, view).isAppearanceLightStatusBars =
+                !darkTheme
+        }
     }
-    when (window.widthSizeClass) {
+    when (window?.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
             if (config.screenWidthDp <= 360) {
                 appDimens = CompactSmallDimens
                 typography = CompactSmallTypography
-            } else if (config.screenWidthDp < 599) {
-                appDimens = CompactMediumDimens
-                typography = CompactMediumTypography
             } else {
                 appDimens = CompactDimens
                 typography = CompactTypography

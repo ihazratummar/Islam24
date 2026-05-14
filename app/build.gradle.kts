@@ -92,6 +92,7 @@ dependencies {
     implementation(project(":core:notification"))
 
     implementation(project(":domain:model"))
+    implementation(project(":domain:usecase"))
     implementation(project(":domain:repository"))
 
     implementation(project(":feature:zakat"))

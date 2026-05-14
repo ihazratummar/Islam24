@@ -44,7 +44,7 @@ fun SelectLanguageDialog(
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     ) {
         Card(
-            modifier = Modifier.padding(dimens.size10),
+            modifier = Modifier.padding(dimens.space12),
             colors = CardDefaults.cardColors(containerColor = Color.Transparent)
         ) {
             Column(
@@ -55,7 +55,7 @@ fun SelectLanguageDialog(
                 Text(
                     text = stringResource(R.string.select_language),
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = dimens.size30, vertical = dimens.size10)
+                    modifier = Modifier.padding(horizontal = dimens.space32, vertical = dimens.space12)
                 )
                 LanguageCard(
                     appSettingEvent = appSettingEvent,
@@ -81,18 +81,18 @@ private fun LanguageCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = dimens.size15)
+            .padding(horizontal = dimens.space16)
             .clickable {
                 appSettingEvent(AppSettingEvent.SelectLanguage(languageCode))
                 appSettingEvent(AppSettingEvent.ClickLanguageDialog)
             }
-            .padding(dimens.size10),
+            .padding(dimens.space12),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
     ) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimens.size15, vertical = dimens.size15),
+                .padding(horizontal = dimens.space16, vertical = dimens.space16),
             text = languageName
         )
     }

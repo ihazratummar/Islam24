@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.hazrat.domain.repository"
+    namespace = "com.hazrat.domain.usecase"
     compileSdk {
         version = release(36)
     }
@@ -41,10 +41,9 @@ kotlin {
 
 
 dependencies {
-
-    implementation(project(":core:utils"))
     implementation(project(":core:database"))
     api(project(":domain:model"))
+    api(project(":domain:repository"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -52,5 +51,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.koin.core)
+    implementation(libs.koin.android
+    )
 
 }

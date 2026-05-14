@@ -86,7 +86,7 @@ fun CalculationScreen(
                     .fillMaxHeight(0.3f)
                     .background(
                         color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(topEnd = dimens.size25, topStart = dimens.size25)
+                        shape = RoundedCornerShape(topEnd = dimens.cornerXl, topStart = dimens.cornerXl)
                     ),
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -140,7 +140,7 @@ fun CalculationScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(10.dp)
+                    .padding(dimens.space12)
             ) {
                 item {
                     CalculateItems(
@@ -380,7 +380,7 @@ private fun CalculationItemDialogs(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimens.size15),
+                .padding(dimens.space16),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -389,7 +389,7 @@ private fun CalculationItemDialogs(
                     fontWeight = FontWeight.Medium,
                 )
             )
-            Spacer(modifier = Modifier.height(dimens.size15))
+            Spacer(modifier = Modifier.height(dimens.space16))
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -407,9 +407,9 @@ private fun CalculationItemDialogs(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimens.size10),
+                    .padding(vertical = dimens.space12),
                 onClick = onClick,
-                shape = RoundedCornerShape(dimens.size15),
+                shape = RoundedCornerShape(dimens.cornerLg),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
@@ -437,7 +437,7 @@ fun CalculateItems(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 5.dp)
+            .padding(vertical = dimens.space4)
             .clickable {
                 onClick()
             },
@@ -448,7 +448,7 @@ fun CalculateItems(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 10.dp),
+                .padding(horizontal = dimens.space12, vertical = dimens.space12),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = text, fontWeight = FontWeight.SemiBold)
@@ -467,16 +467,16 @@ private fun BottomBarItem(
     amount: String = "0.0"
 ) {
     Card(
-        modifier = Modifier.padding(vertical = dimens.size1),
+        modifier = Modifier.padding(vertical = dimens.space2),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
-        shape = RoundedCornerShape(dimens.size3)
+        shape = RoundedCornerShape(dimens.elevation2)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimens.size10),
+                .padding(dimens.space12),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = text)

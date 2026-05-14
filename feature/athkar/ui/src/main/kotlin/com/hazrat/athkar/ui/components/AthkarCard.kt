@@ -43,7 +43,7 @@ fun AdhkarCard(adhkars: AthkarData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimens.size10)
+            .padding(dimens.space12)
             .clickable {
                 expanded = !expanded
             },
@@ -51,8 +51,8 @@ fun AdhkarCard(adhkars: AthkarData) {
             containerColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.onBackground
         ),
-        elevation = CardDefaults.outlinedCardElevation(dimens.size2),
-        border = BorderStroke(dimens.size1, color = MaterialTheme.colorScheme.primary)
+        elevation = CardDefaults.outlinedCardElevation(dimens.elevation1),
+        border = BorderStroke(dimens.divider, color = MaterialTheme.colorScheme.primary)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -64,7 +64,7 @@ fun AdhkarCard(adhkars: AthkarData) {
             ) {
                 Text(
                     text = "${adhkars.number}",
-                    modifier = Modifier.padding(top = dimens.size20),
+                    modifier = Modifier.padding(top = dimens.space20),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -74,7 +74,7 @@ fun AdhkarCard(adhkars: AthkarData) {
                     text = adhkars.bismillah,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(dimens.size10),
+                        .padding(dimens.space12),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = NotoNaskhFontFamily,
@@ -84,7 +84,7 @@ fun AdhkarCard(adhkars: AthkarData) {
             }
             Text(
                 text = adhkars.arabicText,
-                modifier = Modifier.padding(dimens.size10).fillMaxWidth(),
+                modifier = Modifier.padding(dimens.space12).fillMaxWidth(),
                 style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = NotoNaskhFontFamily,
@@ -96,7 +96,7 @@ fun AdhkarCard(adhkars: AthkarData) {
                     "bn" -> adhkars.bnTransliteration
                     else -> adhkars.enTransliteration
                 } ,
-                modifier = Modifier.padding(dimens.size10),
+                modifier = Modifier.padding(dimens.space12),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -104,7 +104,7 @@ fun AdhkarCard(adhkars: AthkarData) {
             AnimatedVisibility(visible = expanded) {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
-                    thickness = dimens.size1,
+                    thickness = dimens.divider,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
@@ -112,7 +112,7 @@ fun AdhkarCard(adhkars: AthkarData) {
                         "bn" -> adhkars.bnTranslation
                         else -> adhkars.enTranslation
                     },
-                    modifier = Modifier.padding(dimens.size10),
+                    modifier = Modifier.padding(dimens.space12),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -125,10 +125,10 @@ fun AdhkarCard(adhkars: AthkarData) {
                 Card(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(Color.Transparent),
-                    border = BorderStroke(dimens.size1, MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(dimens.divider, MaterialTheme.colorScheme.primary),
                     modifier = Modifier
-                        .size(dimens.size80)
-                        .padding(bottom = dimens.size10),
+                        .size(dimens.avatarXl)
+                        .padding(bottom = dimens.space12),
                 ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),

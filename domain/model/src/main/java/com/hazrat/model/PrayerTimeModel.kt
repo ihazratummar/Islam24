@@ -1,5 +1,7 @@
 package com.hazrat.model
 
+import androidx.compose.runtime.Immutable
+
 
 /**
  * @author hazratummar
@@ -46,4 +48,20 @@ data class PrayerTimeModel(
     val latitudeAdjustmentMethod: String,
     val midnightMode: String,
     val school: String
+)
+
+@Immutable
+data class MinimalPrayerData(
+    val day: Int = 0,
+    val fajrTime: Long= 0L,
+    val sunriseTime: Long= 0L,
+    val dhuhrTime: Long= 0L,
+    val asrTime: Long= 0L,
+    val sunsetTime: Long= 0L,
+    val maghribTime: Long= 0L,
+    val ishaTime: Long= 0L,
+    val imsakTime: Long= 0L,
+    val midnightTime: Long= 0L,
+    val firstThirdTime: Long= 0L,
+    val lastThirdTime: Long= 0L,
 )

@@ -153,7 +153,7 @@ fun ForgetPassword(
                         )
                     }
                 },
-                windowInsets = WindowInsets(top = dimens.size20),
+                windowInsets = WindowInsets(top = dimens.space20),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 )
@@ -165,7 +165,7 @@ fun ForgetPassword(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(dimens.size20),
+                .padding(dimens.space20),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -205,12 +205,12 @@ fun ForgetPassword(
                                 keyboardType = KeyboardType.Email,
                                 imeAction = ImeAction.Next
                             )
-                            Spacer(Modifier.height(dimens.size10))
+                            Spacer(Modifier.height(dimens.space12))
                             Text(
                                 text = "You may receive Email from us for security purpose",
                                 style = MaterialTheme.typography.labelLarge
                             )
-                            Spacer(Modifier.height(dimens.size10))
+                            Spacer(Modifier.height(dimens.space12))
                             if (forgetPasswordState.isLoading) {
                                 ButtonLoading(
                                     modifier = Modifier.fillMaxWidth()
@@ -233,7 +233,7 @@ fun ForgetPassword(
                                     enabled = forgetPasswordState.email.isNotBlank() && forgetPasswordState.email.contains(
                                         "@"
                                     ),
-                                    shape = RoundedCornerShape(dimens.size10)
+                                    shape = RoundedCornerShape(dimens.cornerMd)
                                 ) {
                                     Text("Submit")
                                 }
@@ -261,7 +261,7 @@ fun ForgetPassword(
                             otp = forgetPasswordState.otp,
                             onOtpChanged = { forgetPasswordEvent(ForgetPasswordEvent.EnterOtp(it)) }
                         )
-                        Spacer(Modifier.height(dimens.size10))
+                        Spacer(Modifier.height(dimens.space12))
                         if (forgetPasswordState.isLoading) {
                             ButtonLoading()
                         } else {
@@ -279,13 +279,13 @@ fun ForgetPassword(
                                         hapticFeedback = hapticFeedback
                                     )
                                 },
-                                shape = RoundedCornerShape(dimens.size10),
+                                shape = RoundedCornerShape(dimens.cornerMd),
                                 enabled = forgetPasswordState.otp.isNotBlank() && forgetPasswordState.otp.length == 4
                             ) {
                                 Text("Submit")
                             }
                         }
-                        Spacer(Modifier.height(dimens.size4))
+                        Spacer(Modifier.height(dimens.space4))
                         IconButton(
                             onClick = {
                                 forgetPasswordEvent(ForgetPasswordEvent.StepBack)
@@ -351,7 +351,7 @@ fun ForgetPassword(
                                 }
                             }
                         )
-                        Spacer(Modifier.height(dimens.size30))
+                        Spacer(Modifier.height(dimens.space32))
                         CustomTextField(
                             label = { Text(text = "Confirm Password") },
                             placeholder = { Text(text = "Enter New Confirm Password") },
@@ -387,7 +387,7 @@ fun ForgetPassword(
                                 }
                             }
                         )
-                        Spacer(Modifier.height(dimens.size5))
+                        Spacer(Modifier.height(dimens.space4))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Start,
@@ -400,7 +400,7 @@ fun ForgetPassword(
                                         contentDescription = "Alert",
                                         tint = MaterialTheme.colorScheme.error
                                     )
-                                    Spacer(modifier = Modifier.width(dimens.size5))
+                                    Spacer(modifier = Modifier.width(dimens.space4))
                                     Text(
                                         text = "Password do not match",
                                         style = MaterialTheme.typography.labelSmall,
@@ -409,7 +409,7 @@ fun ForgetPassword(
                                 }
                             }
                         }
-                        Spacer(Modifier.height(dimens.size30))
+                        Spacer(Modifier.height(dimens.space32))
                         if (forgetPasswordState.isLoading) {
                             ButtonLoading(
                                 modifier = Modifier.fillMaxWidth()
@@ -428,7 +428,7 @@ fun ForgetPassword(
                                     hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
                                 },
                                 enabled = forgetPasswordState.isPasswordValid,
-                                shape = RoundedCornerShape(dimens.size10),
+                                shape = RoundedCornerShape(dimens.cornerMd),
                             ) {
                                 Text("Submit")
                             }
@@ -445,7 +445,7 @@ fun ForgetPassword(
                 confirmButton = {},
                 dismissButton = {},
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                shape = RoundedCornerShape(dimens.size10)
+                shape = RoundedCornerShape(dimens.cornerMd)
             )
         }
     }

@@ -129,7 +129,8 @@ fun AppNavigator(
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }, prayerTimes = prayerTimes,
+                    },
+                    prayerTimes = prayerTimes,
                     locationName = locationName,
                     onWidgetClick = { homeWidgetNav ->
                         navController.navigate(homeWidgetNav.route) {
@@ -142,17 +143,7 @@ fun AppNavigator(
                     onBenefitsWidgetClick = {
                         navController.navigate(BenifitsOfRecitingRoute)
                     },
-//                    quranState = quranState,
-//                    homeState = homeState,
-//                    onDailyQuranClick = { surah, ayah ->
-//                        navController.navigate(
-//                            MainRoute.SurahScreenRoute(
-//                                surahNumber = surah,
-//                                ayahNumber = ayah - 2,
-//                                isTracking = false
-//                            )
-//                        )
-//                    }
+                    homeState = homeState
                 )
             }
 
@@ -301,7 +292,7 @@ private fun BottomBar(navController: NavHostController) {
     if (isBottomBarVisible) {
         NavigationBar(
             containerColor = Color.Transparent,
-            tonalElevation = dimens.size5
+            tonalElevation = dimens.space4
         ) {
             bottomNavigationItem.forEach { screen ->
                 val isSelected =
@@ -321,7 +312,7 @@ private fun BottomBar(navController: NavHostController) {
                         Icon(
                             painter = painterResource(id = screen.icon),
                             contentDescription = screen.name,
-                            modifier = Modifier.size(dimens.size35)
+                            modifier = Modifier.size(dimens.space32)
                         )
                     },
                     label = { Text(text = screen.name) },

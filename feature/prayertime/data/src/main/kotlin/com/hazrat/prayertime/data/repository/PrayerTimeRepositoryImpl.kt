@@ -8,8 +8,10 @@ import com.hazrat.domain.repository.PrayerSettingRepository
 import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
+import com.hazrat.model.MinimalPrayerData
 import com.hazrat.model.PrayerTimeModel
 import com.hazrat.prayertime.data.mapper.toEntityList
+import com.hazrat.prayertime.data.mapper.toMinimalPrayerData
 import com.hazrat.prayertime.data.mapper.toPrayerModelList
 import com.hazrat.remote.api.PrayerTimeApi
 import com.hazrat.ui.R
@@ -47,9 +49,6 @@ class PrayerTimeRepositoryImpl(
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeModel>>(emptyList())
     override val prayerTimes = _prayerTimes.asStateFlow()
 
-    private val _prayerTimeByDate = MutableStateFlow<List<PrayerTimeModel>>(emptyList())
-    override val prayerTimeByDate = _prayerTimeByDate.asStateFlow()
-
     override suspend fun newPrayerTimesRequest(): List<PrayerTimeEntity> {
         val currentYear = DateUtil.getCurrentYear()
         val currentMonth = DateUtil.getCurrentMonth()
@@ -67,6 +66,12 @@ class PrayerTimeRepositoryImpl(
         }
         
         return entities
+    }
+
+    override suspend fun getTodayPrayerTime(): MinimalPrayerData {
+        val today = DateUtil.getCurrentDate()
+        val prayerTime = prayerTimeDao.getPrayerTimeForToday(currentDate = today)
+        return prayerTime.toMinimalPrayerData()
     }
 
     private suspend fun fetchAndSaveYearlyPrayerTimes(year: Int, month: Int): List<PrayerTimeEntity> {
@@ -120,18 +125,6 @@ class PrayerTimeRepositoryImpl(
     override fun getAllPrayer(): Flow<List<PrayerTimeModel>> =
         prayerTimeDao.getAllPrayer().flowOn(Dispatchers.IO)
             .conflate().map { it.toPrayerModelList() }
-
-    override fun getPrayerTimeByDate(): Flow<List<PrayerTimeModel>> {
-        val today = DateUtil.getCurrentDate() 
-        return prayerTimeDao.getPrayerTimesFromDate(today) 
-            .distinctUntilChanged()
-            .map { prayerTimes ->
-                val modelList = prayerTimes.toPrayerModelList()
-                _prayerTimeByDate.value = modelList
-                modelList
-            }
-    }
-
 
     override fun sharePrayerTimes(prayerTimes: List<PrayerTimeModel>) {
         // Find today's prayer time in the list by matching Gregorian date

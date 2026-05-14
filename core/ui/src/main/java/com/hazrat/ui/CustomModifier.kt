@@ -50,7 +50,7 @@ fun Modifier.profileCardShimmerEffect(): Modifier = composed {
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(dimens.size10)
+        shape = RoundedCornerShape(dimens.space12)
     ).onGloballyPositioned {
         size = it.size
     }
@@ -84,7 +84,7 @@ fun Modifier.shimmerEffect(
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(dimens.size10)
+        shape = RoundedCornerShape(dimens.space12)
     ).onGloballyPositioned {
         size = it.size
     }
@@ -113,7 +113,7 @@ fun Modifier.generalShimmerEffect(): Modifier = composed {
                 startOffsetX + size.width.toFloat(), size.height.toFloat()
             )
         ),
-        shape = RoundedCornerShape(dimens.size30)
+        shape = RoundedCornerShape(dimens.space24)
     ).onGloballyPositioned {
         size = it.size
     }

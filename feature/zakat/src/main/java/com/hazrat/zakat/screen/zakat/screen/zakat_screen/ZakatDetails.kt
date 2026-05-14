@@ -78,7 +78,7 @@ fun ZakatDetails(
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(horizontal = dimens.size15)
+                    .padding(horizontal = dimens.space16)
             ) {
                 items(listDetailsItem) {
                     CalculateItems(
@@ -90,17 +90,17 @@ fun ZakatDetails(
 
                 item {
 
-                    Spacer(Modifier.height(dimens.size15))
+                    Spacer(Modifier.height(dimens.space16))
                     HorizontalDivider()
-                    Spacer(Modifier.height(dimens.size15))
+                    Spacer(Modifier.height(dimens.space16))
                 }
 
                 item {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(dimens.size15))
-                            .padding(dimens.size20)
+                            .background(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(dimens.cornerLg))
+                            .padding(dimens.space20)
                             ,
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween

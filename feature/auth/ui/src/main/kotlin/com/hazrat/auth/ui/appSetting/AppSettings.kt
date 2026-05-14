@@ -126,7 +126,7 @@ fun AppSettingScreen(
                         onBackClick = { onBackClick() }
                     )
                 },
-                windowInsets = WindowInsets(top = dimens.size20)
+                windowInsets = WindowInsets(top = dimens.space20)
             )
         }
     ) { paddingValues ->
@@ -155,7 +155,7 @@ fun AppSettingScreen(
 
         LazyColumn(
             modifier = Modifier
-                .padding(horizontal = dimens.size10)
+                .padding(horizontal = dimens.space12)
                 .padding(paddingValues)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -172,8 +172,8 @@ fun AppSettingScreen(
                             text = stringResource(R.string.app_setting),
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(
-                                horizontal = dimens.size15,
-                                vertical = dimens.size10
+                                horizontal = dimens.space16,
+                                vertical = dimens.space12
                             )
                         )
                         SettingItemCard(
@@ -232,7 +232,7 @@ fun AppSettingScreen(
             }
 
             item {
-                Spacer(modifier = Modifier.height(dimens.size20))
+                Spacer(modifier = Modifier.height(dimens.space20))
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -244,8 +244,8 @@ fun AppSettingScreen(
                             text = stringResource(R.string.legal),
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(
-                                horizontal = dimens.size15,
-                                vertical = dimens.size10
+                                horizontal = dimens.space16,
+                                vertical = dimens.space12
                             )
                         )
                         SettingItemCard(
@@ -261,7 +261,7 @@ fun AppSettingScreen(
             }
 
             item{
-                Spacer(modifier = Modifier.height(dimens.size20))
+                Spacer(modifier = Modifier.height(dimens.space20))
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -282,7 +282,7 @@ fun AppSettingScreen(
             }
 
             item {
-                Spacer(modifier = Modifier.height(dimens.size40))
+                Spacer(modifier = Modifier.height(dimens.space48))
                 when (authState) {
                     is AuthState.Authenticated, is AuthState.Error -> {
                         SettingItemCard(
@@ -368,7 +368,7 @@ fun SettingItemCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(vertical = dimens.size5),
+            .padding(vertical = dimens.space4),
         colors = CardDefaults.cardColors(
             containerColor = cardContainerColor,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -377,24 +377,24 @@ fun SettingItemCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimens.size10)
+                .padding(dimens.space12)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimens.size10),
+                    .padding(vertical = dimens.space12),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     modifier = Modifier
-                        .padding(horizontal = dimens.size10)
-                        .size(dimens.size40),
+                        .padding(horizontal = dimens.space12)
+                        .size(dimens.iconXl),
                     painter = leadingIcon,
                     contentDescription = text,
                     tint = iconColor
                 )
-                Spacer(modifier = Modifier.width(dimens.size30))
+                Spacer(modifier = Modifier.width(dimens.space32))
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodyMedium,
@@ -404,8 +404,8 @@ fun SettingItemCard(
                 if (isSwitch) {
                     Switch(
                         modifier = Modifier
-                            .padding(end = dimens.size20)
-                            .size(dimens.size40)
+                            .padding(end = dimens.space20)
+                            .size(dimens.fabSm)
                             .scale(0.6f),
                         checked = isSwitchChecked,
                         onCheckedChange = {
@@ -420,7 +420,7 @@ fun SettingItemCard(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Icon(
-                        modifier = Modifier.padding(horizontal = dimens.size10),
+                        modifier = Modifier.padding(horizontal = dimens.space12),
                         painter = painterResource(id = R.drawable.arrowright),
                         contentDescription = text,
                         tint = iconColor

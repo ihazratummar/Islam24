@@ -45,28 +45,28 @@ class WuzuWidget : GlanceAppWidget() {
             val wuzuState = currentState(key = wuzuKey) == true
             Column(
                 modifier = GlanceModifier
-                    .padding(dimens.size5),
+                    .padding(dimens.space4),
                 verticalAlignment = Alignment.Vertical.CenterVertically,
                 horizontalAlignment = Alignment.Horizontal.CenterHorizontally
             ) {
                 Box (
-                    modifier = GlanceModifier.size(dimens.size80)
+                    modifier = GlanceModifier.size(dimens.space64)
                         .clickable(
                             onClick = actionRunCallback(WuzuActionCallBack::class.java)
                         )
-                        .cornerRadius(dimens.size80),
+                        .cornerRadius(dimens.space64),
                     contentAlignment = Alignment.Center
                 ){
                     val imageProvider = if (wuzuState) R.drawable.prayers else R.drawable.ablution
                     Image(
                         provider = ImageProvider(imageProvider),
                         contentDescription = null,
-                        modifier = GlanceModifier.size(dimens.size40),
+                        modifier = GlanceModifier.size(dimens.space48),
                     )
                 }
                 Text(
                     modifier = GlanceModifier.padding(
-                        bottom = dimens.size5
+                        bottom = dimens.space4
                     ),
                     text = if (wuzuState) "Wuzu" else "No Wuzu",
                     style = TextStyle(

@@ -1,18 +1,25 @@
 package com.hazrat.home.ui.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,7 +42,7 @@ import com.hazrat.ui.theme.dimens
 import kotlinx.serialization.Serializable
 
 @Composable
-fun LazyHorizontalManyIcons(
+fun QuickAccessMenu(
     onClick: (HomePageNavIcons) -> Unit
 ) {
     val navIcons = listOf(
@@ -43,25 +50,22 @@ fun LazyHorizontalManyIcons(
         HomePageNavIcons.Calendar,
         HomePageNavIcons.Athkar,
         HomePageNavIcons.Qibla,
-        HomePageNavIcons.Zakat
+        HomePageNavIcons.Tasbih,
+        HomePageNavIcons.Zakat,
     )
 
-    Box(
-        modifier = Modifier.fillMaxWidth()
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.spacedBy(dimens.space8),
+        maxItemsInEachRow = 3
     ) {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            navIcons.forEach {
-                item {
-                    HomeWidgetsIcons(
-                        iconData = it,
-                        onClick = { onClick(it) }
-                    )
-                }
-            }
+
+        navIcons.forEach {
+            HomeWidgetsIcons(
+                iconData = it,
+                onClick = { onClick(it) }
+            )
         }
     }
 }
@@ -72,54 +76,39 @@ private fun HomeWidgetsIcons(
     iconData: HomePageNavIcons,
     onClick: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
-    val containerColor = if (isDark) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f) else Color.White
-
     Column(
-        modifier = Modifier.padding(vertical = dimens.size10, horizontal = dimens.size10),
+        modifier = Modifier.padding(vertical = dimens.space12, horizontal = dimens.space12),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Card(
+        Box(
             modifier = Modifier
-                .size(dimens.size80)
-                .padding(dimens.size2)
-                .border(
-                    width = dimens.size1,
-                    color = EmeraldGreen.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(dimens.size20)
+                .size(dimens.space64)
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(dimens.cornerMd)
                 )
-                .combinedClickable(
-                    onClick = { onClick() },
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
+                .clickable(
+                    onClick = onClick
                 )
-                .clip(RoundedCornerShape(dimens.size20)),
-            colors = CardDefaults.cardColors(
-                containerColor = containerColor
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = dimens.size2)
+            ,
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(iconData.icons),
-                    contentDescription = iconData.name.toString(),
-                    tint = Color.Unspecified,
-                    modifier = Modifier
-                        .size(dimens.size35)
-                        .padding(dimens.size1)
-                )
-            }
+            Icon(
+                painter = painterResource(iconData.icons),
+                contentDescription = iconData.name.toString(),
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .size(dimens.iconLg)
+                    .padding(dimens.space2)
+            )
         }
         Text(
             text = stringResource(iconData.name),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = dimens.size8)
+            modifier = Modifier.padding(top = dimens.space8)
         )
     }
 }
@@ -127,7 +116,7 @@ private fun HomeWidgetsIcons(
 sealed class HomePageNavIcons(
     val icons: Int,
     val name: Int,
-    val route:HomeRoutes
+    val route: HomeRoutes
 ) {
     data object AsmaUlHusna :
         HomePageNavIcons(
@@ -163,18 +152,28 @@ sealed class HomePageNavIcons(
             name = R.string.zakat,
             route = HomeRoutes.Zakat
         )
+
+    data object Tasbih : HomePageNavIcons(
+        icons = R.drawable.zikir,
+        name = R.string.athkar,
+        route = HomeRoutes.Athkar
+    )
 }
 
 @Serializable
 sealed class HomeRoutes {
     @Serializable
     data object NamesOfAllah : HomeRoutes()
+
     @Serializable
     data object Calendar : HomeRoutes()
+
     @Serializable
     data object Athkar : HomeRoutes()
+
     @Serializable
     data object Qibla : HomeRoutes()
+
     @Serializable
     data object Zakat : HomeRoutes()
 }

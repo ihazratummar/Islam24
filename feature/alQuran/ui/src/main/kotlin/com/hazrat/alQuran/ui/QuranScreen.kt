@@ -52,15 +52,14 @@ fun QuranScreen(
     LaunchedEffect(quranState) {
         refresh()
     }
-
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                windowInsets = WindowInsets(top = dimens.size20),
+                windowInsets = WindowInsets(top = dimens.space20),
                 title = {
                     Row(
-                        modifier = Modifier.padding(vertical = dimens.size10),
+                        modifier = Modifier.padding(vertical = dimens.space12),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -78,12 +77,14 @@ fun QuranScreen(
         },
         contentWindowInsets = WindowInsets(bottom = 0.dp),
     ) { paddingValues ->
+
 //        if (quranState.arQuranData != null && quranState.quranEnData != null) {
-//            LazyColumn (
-//                modifier = Modifier.fillMaxSize().padding(paddingValues)
-//            ){
-//                items(quranState.arQuranData) { surah ->
-//                    SurahCard(
+//            Column(
+//                modifier = Modifier
+//                    .padding(paddingValues)
+//                    .fillMaxSize()
+//                    .padding(horizontal = dimens.space20)
+//            ) {
 //                        isLastReadSurah = quranState.lastReadSurah == surah.number,
 //                        surahNumber = surah.number,
 //                        surahName = when (systemLanguage) {
@@ -121,11 +122,11 @@ fun QuranScreen(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
-                    .padding(horizontal = dimens.size20)
+                    .padding(horizontal = dimens.space20)
             ) {
                 LastReadCard(
                     onLastReadClick = {
-                        if (quranState.lastReadSurah != null){
+                        if (quranState.lastReadSurah != null) {
                             onSurahClick(
                                 quranState.lastReadSurah,
                                 quranState.lastReadAyah,
@@ -133,8 +134,8 @@ fun QuranScreen(
                             )
                         }
                     },
-                    lastReadSurahName = quranState.lastReadSurahName ,
-                    lastReadAyah = quranState.lastReadAyah?: 0
+                    lastReadSurahName = quranState.lastReadSurahName,
+                    lastReadAyah = quranState.lastReadAyah ?: 0
                 )
 
                 LazyColumn {
@@ -171,9 +172,11 @@ fun QuranScreen(
                     }
                 }
             }
+        }
+    }
 
-                // Static card content
-                val quranMetaDataJuz = quranState.juzData ?: return@Scaffold
+    // Static card content
+//        val quranMetaDataJuz = quranState.juzData ?: return@Scaffold
 
 //                TabRowComponent(
 //                    modifier = Modifier.weight(1f),
@@ -239,6 +242,6 @@ fun QuranScreen(
 //                    onTabSelected = { selectedTabIndex = it }
 //                )
 //            }
-        }
-    }
+//        }
+
 }

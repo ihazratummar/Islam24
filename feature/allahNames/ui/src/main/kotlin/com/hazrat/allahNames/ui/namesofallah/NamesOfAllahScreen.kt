@@ -58,7 +58,7 @@ fun NamesOfAllahScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size40))
+            Spacer(Modifier.height(dimens.space32))
             BasicTopBar(
                 modifier = Modifier,
                 topBarTitle = stringResource(R.string.names),
@@ -91,19 +91,19 @@ fun NameCard(name: NameOfAllahData) {
     Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = dimens.size8)
+            .padding(vertical = dimens.space8)
             .background(MaterialTheme.colorScheme.background)
             .clickable {
                 expanded = !expanded
             }
             .padding(
-                horizontal = dimens.size15,
-                vertical = dimens.size1
+                horizontal = dimens.space16,
+                vertical = dimens.space2
             ),
-        shape = RoundedCornerShape(dimens.size10),
+        shape = RoundedCornerShape(dimens.cornerMd),
         colors = CardDefaults.cardColors(Color.Transparent),
         border = BorderStroke(
-            dimens.size1, color = MaterialTheme.colorScheme.primaryContainer
+            dimens.divider, color = MaterialTheme.colorScheme.primaryContainer
         )
     ) {
         Column {
@@ -117,8 +117,8 @@ fun NameCard(name: NameOfAllahData) {
                         .fillMaxHeight()
                         .weight(0.2f)
                         .padding(
-                            start = dimens.size5,
-                            top = dimens.size20
+                            start = dimens.space4,
+                            top = dimens.space20
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
@@ -133,7 +133,7 @@ fun NameCard(name: NameOfAllahData) {
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
-                        .padding(dimens.size5)
+                        .padding(dimens.space4)
                 ) {
                     Text(
                         text = when (systemLanguage) {
@@ -149,7 +149,7 @@ fun NameCard(name: NameOfAllahData) {
                         }, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-                    Spacer(modifier = Modifier.height(dimens.size3))
+                    Spacer(modifier = Modifier.height(dimens.space4))
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Arrow",
@@ -160,7 +160,7 @@ fun NameCard(name: NameOfAllahData) {
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(0.8f)
-                        .padding(dimens.size5),
+                        .padding(dimens.space4),
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -174,15 +174,15 @@ fun NameCard(name: NameOfAllahData) {
             }
             AnimatedVisibility(visible = expanded) {
                 HorizontalDivider(
-                    thickness = dimens.size2,
+                    thickness = dimens.divider,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Column(
                     modifier = Modifier
                         .padding(
-                            start = dimens.size35,
-                            top = dimens.size20, end = dimens.size10,
-                            bottom = dimens.size10
+                            start = dimens.space32,
+                            top = dimens.space20, end = dimens.space12,
+                            bottom = dimens.space12
                         )
                 ) {
                     Text(
@@ -190,7 +190,7 @@ fun NameCard(name: NameOfAllahData) {
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodySmall
                     )
-                    Spacer(modifier = Modifier.height(dimens.size5))
+                    Spacer(modifier = Modifier.height(dimens.space4))
                     Text(
                         text = when (systemLanguage) {
                             "bn" -> name.bnDec ?: ""

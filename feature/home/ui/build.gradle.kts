@@ -44,9 +44,11 @@ dependencies {
     api(project(":core:ui"))
 
     implementation(project(":domain:model"))
+    implementation(project(":domain:usecase"))
     implementation(project(":domain:repository"))
 
     implementation(project(":feature:common"))
+    implementation(libs.androidx.compose.animation.core)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

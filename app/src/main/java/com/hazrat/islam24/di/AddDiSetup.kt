@@ -22,6 +22,7 @@ import com.hazrat.qibla.data.di.getQiblaDataModule
 import com.hazrat.qibla.ui.di.getQiblaUiModule
 import com.hazrat.remote.di.getRemoteModule
 import com.hazrat.sensor.geSensorModule
+import com.hazrat.usecase.di.getUserCaseModule
 import com.hazrat.utils.di.getUtilsModule
 import com.hazrat.zakat.di.getZakatModule
 import org.koin.android.ext.koin.androidContext
@@ -55,7 +56,8 @@ fun initKoin(app: Application) {
             getQiblaDataModule(),
             getPrayerUiModule(),
             getPrayerDataModule(),
-            getHomeUiModule()
+            getHomeUiModule(),
+            getUserCaseModule()
         )
     }
 }
