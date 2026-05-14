@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -21,8 +22,7 @@ import kotlinx.coroutines.launch
  */
 
 
-
-class HomeViewModel (
+class HomeViewModel(
     private val prayerTimeRepository: PrayerTimeRepository,
     private val locationNameRepository: LocationNameRepository,
     private val getTodayPrayerTimeUseCase: GetTodayPrayerTimeUseCase
@@ -45,7 +45,7 @@ class HomeViewModel (
         getTodayPrayer()
     }
 
-    fun refreshLocation(){
+    fun refreshLocation() {
         viewModelScope.launch {
             locationNameRepository.locationName().collectLatest { locationName ->
                 _locationName.value = LocationName(address = locationName)
@@ -56,12 +56,15 @@ class HomeViewModel (
 
     private fun getTodayPrayer() {
         viewModelScope.launch(Dispatchers.IO) {
-            val prayers = getTodayPrayerTimeUseCase.invoke()
-            _homeState.update {
-                it.copy(
-                    prayerData = prayers
-                )
+            getTodayPrayerTimeUseCase.invoke().distinctUntilChanged().collectLatest {prayerTimes ->
+                _homeState.update {
+                    it.copy(
+                        prayerData = prayerTimes
+                    )
+                }
+                Log.d("HomeViewModel", "Minimal Prayer Data $prayerTimes")
             }
+
         }
     }
 }

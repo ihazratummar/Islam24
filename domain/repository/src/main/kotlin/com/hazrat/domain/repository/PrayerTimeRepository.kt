@@ -34,7 +34,7 @@ interface PrayerTimeRepository {
 
     suspend fun getAllPrayerTimes()
 
-    suspend fun getTodayPrayerTime() : MinimalPrayerData
+    suspend fun getTodayPrayerTime() : Flow<MinimalPrayerData>
 
     fun getHijriDay(): Int
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.home.ui.component.HomePageNavIcons
 import com.hazrat.home.ui.component.HomeTopCard
 import com.hazrat.home.ui.component.QuickAccessMenu
@@ -39,13 +40,13 @@ fun HomeScreen(
     homeState: HomeState
 ) {
 
-    Scaffold {paddingValues ->
+    Scaffold { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = dimens.space20),
-            verticalArrangement = Arrangement.spacedBy(dimens.space12)
+            verticalArrangement = Arrangement.spacedBy(dimens.space16)
         ) {
             item {
                 Row(
@@ -72,7 +73,8 @@ fun HomeScreen(
                         Text(
                             text = "Islam 24",
                             style = MaterialTheme.typography.headlineMedium.copy(
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontWeight = FontWeight.W700
                             )
                         )
                         Text(
@@ -92,20 +94,26 @@ fun HomeScreen(
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 shape = RoundedCornerShape(dimens.cornerMd)
                             )
-                    ){
+                    ) {
                         Text(
                             text = locationName.address,
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = MaterialTheme.colorScheme.surfaceTint
                             ),
-                            modifier = Modifier.padding(horizontal = dimens.space8, vertical = dimens.space4)
+                            modifier = Modifier.padding(
+                                horizontal = dimens.space8,
+                                vertical = dimens.space4
+                            )
                         )
                     }
                 }
             }
 
             item {
-                HomeTopCard(prayerData = homeState.prayerData)
+                HomeTopCard(
+                    prayerData = homeState.prayerData,
+                    onLogPrayerClick = navigateToPrayerTime
+                )
             }
 
 

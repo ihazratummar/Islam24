@@ -16,11 +16,11 @@ fun AppUtils(
         appDimens
     }
 
-    val gradients = if (isSystemInDarkTheme()) DarkAppGradients else LightAppGradients
+    val gradients = if (isSystemInDarkTheme()) DarkCustomColors else LightCustomColors
 
     CompositionLocalProvider(
         LocalAppDimens provides dimens,
-        LocalAppGradients provides gradients
+        LocalCustomColors provides gradients
     ) {
         content()
     }
@@ -28,9 +28,9 @@ fun AppUtils(
 }
 
 
-val aapGradient
+val customColors
     @Composable
-    get() = LocalAppGradients.current
+    get() = LocalCustomColors.current
 
 val LocalWrappedContext = compositionLocalOf<ContextWrapper> {
     error("No wrapped context provided")

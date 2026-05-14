@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -35,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.model.MinimalPrayerData
+import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
 
@@ -45,14 +51,15 @@ import com.hazrat.utils.DateUtil
 
 @Composable
 fun HomeTopCard(
-    prayerData: MinimalPrayerData
+    prayerData: MinimalPrayerData,
+    onLogPrayerClick: () -> Unit
 ) {
     val prayerState = rememberPrayerState(prayerTimes = prayerData)
     val isNow = prayerState.isNow
 
-    val prayerName = if (isNow){
+    val prayerName = if (isNow) {
         prayerState.currentPrayer?.let { stringResource(it.nameRes) }
-    }else{
+    } else {
         prayerState.nextPrayer?.let { stringResource(it.nameRes) }
     }
 
@@ -72,51 +79,66 @@ fun HomeTopCard(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(dimens.space8),
+                        .padding(dimens.space12),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column {
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(dimens.space4)
-                        ) {
-                            if (isNow) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(dimens.space12),
+                    ) {
+                        if (isNow) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(dimens.space8),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 PulsingLiveDot()
+                                Text(
+                                    text = "TIME FOR",
+                                    color = customColors.emerald,
+                                    fontWeight = FontWeight.W600,
+                                    style = MaterialTheme.typography.bodySmall,
+
+                                    )
                             }
+                        } else {
                             Text(
-                                text = if (isNow) "Praying Now" else "Next Prayer",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                text = "Next Prayer",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             )
                         }
 
                         Text(
-                            text = prayerName?:"",
-                            style = MaterialTheme.typography.displaySmall.copy(
-                                MaterialTheme.colorScheme.onSurface
+                            text = prayerName ?: "",
+                            style = MaterialTheme.typography.displayMedium.copy(
+                                MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.W700
                             )
                         )
                     }
 
                     Spacer(Modifier.weight(1f))
                     Box(
-                        modifier = Modifier.background(
-                            color = MaterialTheme.colorScheme.surfaceTint.copy(0.15f),
-                            shape = CircleShape
-                        )
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceTint.copy(0.50f),
+                                shape = CircleShape
+                            )
+                            .border(
+                                width = dimens.elevation2,
+                                color = MaterialTheme.colorScheme.primary.copy(0.4f),
+                                shape = CircleShape
+                            )
                     ) {
-
                         val icon = if (isNow) prayerState.prayerIcon else prayerState.nextPrayerIcon
-
                         Icon(
                             painter = painterResource(icon),
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(dimens.space12)
-                                .size(dimens.iconMd),
-                            tint = prayerState.nextPrayerColor
+                                .size(dimens.iconLg),
+                            tint = if (isNow) prayerState.currentPrayerIconColor else prayerState.nextPrayerIconColor
                         )
                     }
                 }
@@ -124,35 +146,73 @@ fun HomeTopCard(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(dimens.space8),
+                        .padding(dimens.space12),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(dimens.space8)
+                    ) {
+
+                        val time = if (isNow) {
+                            DateUtil.dateLongToString(
+                                prayerState.currentPrayerTime,
+                                "hh:mm a"
+                            )
+                        } else {
+                            DateUtil.dateLongToString(
+                                prayerState.nextPrayerTimeMillis,
+                                "hh:mm a"
+                            )
+                        }
+
                         Text(
-                            text = "Starts At",
-                            style = MaterialTheme.typography.labelSmall.copy(
+                            text = if (isNow) "Started at $time" else "Starts At",
+                            style = MaterialTheme.typography.bodySmall.copy(
                                 MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         )
-                        Text(
-                            text = DateUtil.dateLongToString(
-                                prayerState.nextPrayerTimeMillis,
-                                "hh:mm a"
-                            ),
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.W600
+                        if (isNow) {
+                            Button(
+                                onClick = onLogPrayerClick,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = customColors.buttonColor,
+                                    contentColor = MaterialTheme.colorScheme.onSurface
+                                ),
+                                shape = RoundedCornerShape(dimens.cornerLg)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = null
+                                    )
+                                    Text(
+                                        text = "Log Prayer",
+                                        fontWeight = FontWeight.W600
+                                    )
+                                }
+                            }
+                        } else {
+                            Text(
+                                text = time,
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = FontWeight.W600
+                                )
                             )
-                        )
+                        }
                     }
 
                     Column(
-                        horizontalAlignment = Alignment.End
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.spacedBy(dimens.space8)
                     ) {
                         Text(
                             text = if (isNow) "Next Prayer ${stringResource(prayerState.nextPrayer!!.nameRes)}" else "TIME REMAINING",
-                            style = MaterialTheme.typography.labelSmall.copy(
+                            style = MaterialTheme.typography.bodySmall.copy(
                                 MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         )
@@ -177,9 +237,9 @@ fun HomeTopCard(
                                     ) {
                                         Text(
                                             text = string,
-                                            style = MaterialTheme.typography.titleLarge.copy(
+                                            style = MaterialTheme.typography.headlineMedium.copy(
                                                 MaterialTheme.colorScheme.onSurface,
-                                                fontWeight = FontWeight.W800
+                                                fontWeight = FontWeight.W700
                                             ),
                                             modifier = Modifier.padding(dimens.space8)
                                         )
@@ -218,8 +278,8 @@ fun PulsingLiveDot(
         // outer ping ring
         val infiniteTransition = rememberInfiniteTransition(label = "ping")
         val scale by infiniteTransition.animateFloat(
-            initialValue = 0.5f,
-            targetValue = 1.5f,
+            initialValue = 1f,
+            targetValue = 2.5f,
             animationSpec = infiniteRepeatable(
                 animation = tween(1000, easing = EaseOut),
                 repeatMode = RepeatMode.Restart
@@ -238,7 +298,7 @@ fun PulsingLiveDot(
 
         Box(
             modifier = Modifier
-                .size(dimens.space8)
+                .size(dimens.space16)
                 .scale(scale)
                 .background(
                     color = color.copy(alpha = alpha),
@@ -249,7 +309,7 @@ fun PulsingLiveDot(
         // inner solid dot
         Box(
             modifier = Modifier
-                .size(dimens.space4)
+                .size(dimens.space12)
                 .background(
                     color = color,
                     shape = CircleShape

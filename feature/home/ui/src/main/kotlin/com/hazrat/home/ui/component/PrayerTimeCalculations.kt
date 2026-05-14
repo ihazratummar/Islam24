@@ -64,7 +64,7 @@ enum class PrayerType(
         nameRes   = R.string.isha_a,
         icon      = R.drawable.isha,
         gradient  = IshaGradient,
-        color     = Color(0xFF4d5985),
+        color     = Color(0xFF42D6FF),
     ),
 }
 
@@ -73,6 +73,7 @@ enum class PrayerType(
  */
 data class PrayerState(
     val currentPrayer: PrayerType?,
+    val currentPrayerTime: Long,
     val nextPrayer: PrayerType?,
     val prayerIcon: Int,
     val nextPrayerIcon: Int,
@@ -80,7 +81,8 @@ data class PrayerState(
     val nextPrayerTimeMillis: Long,
     val countdownText: String,
     val isNow: Boolean,
-    val nextPrayerColor: Color
+    val nextPrayerIconColor: Color,
+    val currentPrayerIconColor: Color
 )
 
 /**
@@ -133,6 +135,13 @@ private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Lo
 
     val (nextPrayer, nextPrayerTime) = nextPrayerInfo
 
+    val currentPrayerInfo = prayers.find {
+        it.first.name == currentPrayer?.name
+    } ?: Pair(PrayerType.FAJR, prayerTimes.fajrTime + TimeUnit.DAYS.toMillis(1))
+
+    val (_, currentPrayerTime) = currentPrayerInfo
+
+
     // "NOW" logic: if within 15 minutes of prayer start (except Sunrise)
     val isNow = when (currentPrayer) {
         PrayerType.FAJR -> {
@@ -157,8 +166,8 @@ private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Lo
         }
 
         PrayerType.ISHA -> {
-            currentTime in prayerTimes.ishaTime..
-                    prayerTimes.lastThirdTime
+            currentTime in prayerTimes.ishaTime until prayerTimes.midnightTime
+
         }
         else -> false
     }
@@ -172,6 +181,7 @@ private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Lo
 
     return PrayerState(
         currentPrayer = currentPrayer,
+        currentPrayerTime = currentPrayerTime,
         nextPrayer = nextPrayer,
         nextPrayerTimeMillis = nextPrayerTime,
         countdownText = countdownText,
@@ -179,7 +189,8 @@ private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Lo
         prayerIcon = currentPrayer!!.icon,
         nextPrayerIcon = nextPrayer.icon,
         nextPrayerGradient = nextPrayer.gradient,
-        nextPrayerColor = nextPrayer.color
+        nextPrayerIconColor = nextPrayer.color,
+        currentPrayerIconColor = currentPrayer.color
     )
 }
 

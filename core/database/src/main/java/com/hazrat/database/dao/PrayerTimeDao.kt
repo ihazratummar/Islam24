@@ -44,7 +44,7 @@ interface PrayerTimeDao {
      */
 
     @Query("SELECT * FROM prayer_times WHERE GregorianDate == :currentDate LIMIT 1")
-    fun getPrayerTimeForToday(currentDate: String) : PrayerTimeEntity
+    fun getPrayerTimeForToday(currentDate: String) : Flow<PrayerTimeEntity>
 
 
     /**

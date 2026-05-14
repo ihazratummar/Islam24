@@ -10,8 +10,6 @@ val SpiritualGold = Color(0xFFD4AF37)
 val SoftCream = Color(0xFFFDFBF7)
 
 
-
-
 //// New Colors ///
 
 
@@ -26,6 +24,7 @@ val Primary80 = Color(0xFF4DB5A9)
 val Primary90 = Color(0xFFB3E0D9)
 val Primary95 = Color(0xFFE6F5F3)
 val Primary99 = Color(0xFFF5FBFA)
+
 // ========== SECONDARY (Gold) ==========
 val Secondary10 = Color(0xFF594317)
 val Secondary20 = Color(0xFF785E1F)
@@ -38,6 +37,7 @@ val Secondary80 = Color(0xFFF5E098)
 val Secondary90 = Color(0xFFF9ECC0)
 val Secondary95 = Color(0xFFFDF8E8)
 val Secondary99 = Color(0xFFFFFDF7)
+
 // ========== TERTIARY (Terracotta — warm accent) ==========
 val Tertiary10 = Color(0xFF410E0B)
 val Tertiary20 = Color(0xFF612C22)
@@ -50,6 +50,7 @@ val Tertiary80 = Color(0xFFE2A87A)
 val Tertiary90 = Color(0xFFF5CFB0)
 val Tertiary95 = Color(0xFFFFF0E4)
 val Tertiary99 = Color(0xFFFFFBF8)
+
 // ========== NEUTRAL (Surface tones) ==========
 val Neutral0 = Color(0xFF000000)
 val Neutral4 = Color(0xFF0A1618)
@@ -73,12 +74,14 @@ val Neutral95 = Color(0xFFF5FAFA)
 val Neutral96 = Color(0xFFF8FAF9)
 val Neutral98 = Color(0xFFFAFDFC)
 val Neutral99 = Color(0xFFFFFFFF)
+
 // ========== NEUTRAL VARIANT (Muted surface tones) ==========
 val NeutralVariant30 = Color(0xFF3B4D4F)
 val NeutralVariant50 = Color(0xFF6B8284)
 val NeutralVariant60 = Color(0xFF849B9D)
 val NeutralVariant80 = Color(0xFFB3D0D3)
 val NeutralVariant90 = Color(0xFFD6EBED)
+
 // ========== ERROR ==========
 val Error10 = Color(0xFF410E0B)
 val Error20 = Color(0xFF601410)
@@ -91,8 +94,6 @@ val Error80 = Color(0xFFF2B8B5)
 val Error90 = Color(0xFFF9DEDC)
 val Error95 = Color(0xFFFCECEB)
 val Error99 = Color(0xFFFFF9F9)
-
-
 
 
 // ---------- Shared Prayer Gradients ----------
@@ -127,10 +128,12 @@ val IshaGradient = listOf(
     Color(0xFF2F3E73)
 )
 
+// ---------- Buttons  ----------
+val ButtonColorDark = Color(0xFF10b981)
 
 // ---------- App Gradients ----------
 
-data class AppGradients(
+data class CustomColors(
     val prayerCard: List<Color>,
 
     val fajrGradient: List<Color>,
@@ -139,10 +142,14 @@ data class AppGradients(
     val asrGradient: List<Color>,
     val maghribGradient: List<Color>,
     val ishaGradient: List<Color>,
+
+    val emerald: Color,
+    val buttonColor : Color
+
 )
 
-val LocalAppGradients = compositionLocalOf {
-    AppGradients(
+val LocalCustomColors = compositionLocalOf {
+    CustomColors(
         prayerCard = emptyList(),
 
         fajrGradient = emptyList(),
@@ -150,14 +157,16 @@ val LocalAppGradients = compositionLocalOf {
         dhuhrGradient = emptyList(),
         asrGradient = emptyList(),
         maghribGradient = emptyList(),
-        ishaGradient = emptyList()
+        ishaGradient = emptyList(),
+        emerald = Color(0xFF95f0c6),
+        buttonColor = ButtonColorDark
     )
 }
 
 
 // ---------- Dark Theme ----------
 
-val DarkAppGradients = AppGradients(
+val DarkCustomColors = CustomColors(
 
     prayerCard = listOf(
         Color(0xFF0D5153),
@@ -171,13 +180,15 @@ val DarkAppGradients = AppGradients(
     dhuhrGradient = DhuhrGradient,
     asrGradient = AsrGradient,
     maghribGradient = MaghribGradient,
-    ishaGradient = IshaGradient
+    ishaGradient = IshaGradient,
+    emerald = Color(0xFF95f0c6),
+    buttonColor = ButtonColorDark
 )
 
 
 // ---------- Light Theme ----------
 
-val LightAppGradients = AppGradients(
+val LightCustomColors = CustomColors(
 
     prayerCard = listOf(
         Primary50,
@@ -190,5 +201,7 @@ val LightAppGradients = AppGradients(
     dhuhrGradient = DhuhrGradient,
     asrGradient = AsrGradient,
     maghribGradient = MaghribGradient,
-    ishaGradient = IshaGradient
+    ishaGradient = IshaGradient,
+    emerald = Color(0xFFA7F5D0),
+    buttonColor = ButtonColorDark
 )
