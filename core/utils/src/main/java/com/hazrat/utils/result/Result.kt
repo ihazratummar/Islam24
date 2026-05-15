@@ -1,5 +1,6 @@
 package com.hazrat.utils.result
 
+import com.hazrat.utils.result.error.PrayerTimeError
 import com.hazrat.utils.result.error.RootError
 
 /**

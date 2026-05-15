@@ -1,5 +1,7 @@
 package com.hazrat.home.ui.component
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -13,12 +15,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,7 +45,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import com.hazrat.model.MinimalPrayerData
+import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
@@ -173,25 +181,33 @@ fun HomeTopCard(
                             )
                         )
                         if (isNow) {
-                            Button(
+
+                            Card(
                                 onClick = onLogPrayerClick,
-                                colors = ButtonDefaults.buttonColors(
+                                colors = CardDefaults.cardColors(
                                     containerColor = customColors.buttonColor,
                                     contentColor = MaterialTheme.colorScheme.onSurface
                                 ),
-                                shape = RoundedCornerShape(dimens.cornerLg)
+                                shape = RoundedCornerShape(dimens.cornerLg),
+                                modifier = Modifier.height(dimens.space56)
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                                    horizontalArrangement = Arrangement.spacedBy(dimens.space12),
+                                    modifier = Modifier
+                                        .padding(horizontal = dimens.space20)
+                                        .fillMaxHeight()
+                                        .align(Alignment.CenterHorizontally)
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Check,
-                                        contentDescription = null
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(dimens.iconSm)
                                     )
                                     Text(
                                         text = "Log Prayer",
-                                        fontWeight = FontWeight.W600
+                                        style = MaterialTheme.typography.bodySmall,
                                     )
                                 }
                             }
@@ -219,14 +235,12 @@ fun HomeTopCard(
 
                         prayerState.countdownText.split(":").let {
                             Row(
-                                modifier = Modifier,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 it.forEachIndexed { index, string ->
                                     Box(
                                         modifier = Modifier
-                                            .size(dimens.space48)
-                                            .padding(start = dimens.space4, top = dimens.space4)
+                                            .size(dimens.space56)
                                             .background(
                                                 color = MaterialTheme.colorScheme.surfaceTint.copy(
                                                     0.15f
@@ -253,6 +267,7 @@ fun HomeTopCard(
                                             ),
                                             modifier = Modifier.padding(start = dimens.space4)
                                         )
+                                        Spacer(Modifier.width(dimens.space4))
                                     }
                                 }
                             }
@@ -266,6 +281,63 @@ fun HomeTopCard(
     }
 }
 
+
+@Composable
+fun Status(
+    modifier: Modifier = Modifier,
+    @DrawableRes icon: Int = R.drawable.calendar1,
+    label: String = "HIJRI DATE",
+    mainText: String = "15 Rabi' al-Awwal",
+    bottomLabel: String = "1447 AH"
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(dimens.space16),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(dimens.space4)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+            ) {
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.surfaceTint,
+                    modifier = Modifier
+                        .size(dimens.iconSm)
+                )
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+            }
+
+            Spacer(Modifier.height(dimens.space4))
+
+            Text(
+                text = mainText,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.W700
+                )
+            )
+            Text(
+                text = bottomLabel,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
 
 @Composable
 fun PulsingLiveDot(

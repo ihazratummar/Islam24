@@ -32,6 +32,7 @@ data class Dimens(
     val space24: Dp = 0.dp,  // section / dialog padding
     val space32: Dp = 0.dp,  // large gap between sections
     val space48: Dp = 0.dp,  // screen horizontal edge padding
+    val space56: Dp = 0.dp,  // screen horizontal edge padding
     val space64: Dp = 0.dp,  // xl gap / hero section spacing
 
     // ── Icon sizes ────────────────────────────────────────────────────
@@ -86,7 +87,7 @@ data class Dimens(
 val CompactSmallDimens = Dimens(
     space2 = 2.dp, space4 = 3.dp, space8 = 6.dp, space12 = 9.dp,
     space16 = 12.dp, space20 = 15.dp, space24 = 18.dp,
-    space32 = 24.dp, space48 = 36.dp, space64 = 48.dp,
+    space32 = 24.dp, space48 = 36.dp, space56 = 42.dp, space64 = 48.dp,
 
     iconSm = 12.dp, iconMd = 18.dp, iconLg = 24.dp, iconXl = 36.dp,
 
@@ -110,7 +111,7 @@ val CompactSmallDimens = Dimens(
 val CompactDimens = Dimens(
     space2 = 2.dp, space4 = 4.dp, space8 = 8.dp, space12 = 12.dp,
     space16 = 16.dp, space20 = 20.dp, space24 = 24.dp,
-    space32 = 32.dp, space48 = 48.dp, space64 = 64.dp,
+    space32 = 32.dp, space48 = 48.dp, space56 = 56.dp, space64 = 64.dp,
 
     iconSm = 16.dp, iconMd = 24.dp, iconLg = 32.dp, iconXl = 48.dp,
 
@@ -132,9 +133,17 @@ val CompactDimens = Dimens(
 
 // ── Medium  (foldables / small tablets) — 1.5× ───────────────────────
 val MediumDimens = Dimens(
-    space2 = 2.dp, space4 = 6.dp, space8 = 12.dp, space12 = 18.dp,
-    space16 = 24.dp, space20 = 30.dp, space24 = 36.dp,
-    space32 = 48.dp, space48 = 72.dp, space64 = 96.dp,
+    space2 = 2.dp,
+    space4 = 6.dp,
+    space8 = 12.dp,
+    space12 = 18.dp,
+    space16 = 24.dp,
+    space20 = 30.dp,
+    space24 = 36.dp,
+    space32 = 48.dp,
+    space48 = 60.dp,
+    space56 = 70.dp,
+    space64 = 96.dp,
 
     iconSm = 24.dp, iconMd = 36.dp, iconLg = 48.dp, iconXl = 72.dp,
 
@@ -158,7 +167,7 @@ val MediumDimens = Dimens(
 val ExpandedDimens = Dimens(
     space2 = 2.dp, space4 = 8.dp, space8 = 16.dp, space12 = 24.dp,
     space16 = 32.dp, space20 = 40.dp, space24 = 48.dp,
-    space32 = 64.dp, space48 = 96.dp, space64 = 128.dp,
+    space32 = 64.dp, space48 = 96.dp, space56 = 112.dp, space64 = 128.dp,
 
     iconSm = 32.dp, iconMd = 48.dp, iconLg = 64.dp, iconXl = 96.dp,
 

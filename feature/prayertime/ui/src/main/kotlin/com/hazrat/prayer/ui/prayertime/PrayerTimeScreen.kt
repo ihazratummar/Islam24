@@ -1,22 +1,14 @@
-package com.hazrat.prayer.ui
+package com.hazrat.prayer.ui.prayertime
 
 
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
@@ -50,7 +42,6 @@ import com.hazrat.permission.isPermissionGranted
 import com.hazrat.permission.rememberPermissionRequester
 import com.hazrat.prayer.ui.component.PrayerDateCard
 import com.hazrat.prayer.ui.component.PrayerTimeCard
-import com.hazrat.prayer.ui.component.PrayerTimeScreenAnimation
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil.dateLongToString
@@ -65,34 +56,13 @@ import kotlinx.coroutines.delay
 @Composable
 fun PrayerTimeScreen(
     event: (PrayerEvent) -> Unit,
-    prayerTimes: List<PrayerTimeModel>,
-    isRefreshing: Boolean,
+    prayerTimeUiState: PrayerTimeUiState,
     onPrayerSettingClick : () -> Unit,
     navigateToNotification: (PrayerNav) -> Unit,
     navigateToCalendar: () -> Unit
 ) {
-    val methods = prayerTimes.firstOrNull()
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val today = getCurrentDate()
-        Log.d("Today", today)
-        val todayPrayerIndex = prayerTimes.indexOfFirst { it.gregorianDate == today }
-        val initialPage = if (todayPrayerIndex != -1) {
-            todayPrayerIndex
-        } else {
-            0
-        }
-        if (prayerTimes.any { it.gregorianDate == today }) {
-            PrayerTimeScreenAnimation(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(dimens.layoutXl),
-                prayerTimeEntity = prayerTimes[initialPage]
+    val methods = prayerTimeUiState.prayerTimes.firstOrNull()
 
-            )
-        }
-    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -167,11 +137,11 @@ fun PrayerTimeScreen(
                     requestLocationPermission()
                 }
             },
-            isRefreshing = isRefreshing
+            isRefreshing = prayerTimeUiState.isRefreshing
         ){
             ShowData(
                 modifier = Modifier.padding(paddingValue),
-                prayerTimes = prayerTimes,
+                prayerTimes = prayerTimeUiState.prayerTimes,
                 navigateToNotification = navigateToNotification,
                 navigateToCalendar = navigateToCalendar,
             )

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -25,18 +26,16 @@ import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.home.ui.component.HomePageNavIcons
 import com.hazrat.home.ui.component.HomeTopCard
 import com.hazrat.home.ui.component.QuickAccessMenu
-import com.hazrat.model.PrayerTimeModel
+import com.hazrat.home.ui.component.Status
 import com.hazrat.model.locationmodel.LocationName
-import com.hazrat.ui.theme.dimens
 import com.hazrat.ui.R
+import com.hazrat.ui.theme.dimens
 
 @Composable
 fun HomeScreen(
     navigateToPrayerTime: () -> Unit,
-    prayerTimes: List<PrayerTimeModel>,
     locationName: LocationName,
     onWidgetClick: (HomePageNavIcons) -> Unit,
-    onBenefitsWidgetClick: () -> Unit,
     homeState: HomeState
 ) {
 
@@ -114,6 +113,29 @@ fun HomeScreen(
                     prayerData = homeState.prayerData,
                     onLogPrayerClick = navigateToPrayerTime
                 )
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    val prayerData = homeState.prayerData
+                    Status(
+                        modifier = Modifier.weight(1f),
+                        label = "HIJRI DATE",
+                        mainText = "${prayerData.hijriDay} ${prayerData.hijriMonthEn}",
+                        bottomLabel = "${prayerData.hijriYear} ${prayerData.hijriAbbreviated}"
+                    )
+                    Spacer(Modifier.width(dimens.space12))
+                    Status(
+                        modifier = Modifier.weight(1f),
+                        label = "RAMADAN",
+                        mainText = "287 Days",
+                        bottomLabel = "Until Ramadan 1448 AH"
+                    )
+                }
             }
 
 

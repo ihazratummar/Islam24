@@ -43,8 +43,16 @@ interface PrayerTimeDao {
      *
      */
 
-    @Query("SELECT * FROM prayer_times WHERE GregorianDate == :currentDate LIMIT 1")
-    fun getPrayerTimeForToday(currentDate: String) : Flow<PrayerTimeEntity>
+    @Query(
+        """
+        
+        SELECT
+          day,
+      *
+    FROM prayer_times WHERE GregorianDate == :currentDate LIMIT 1
+    """
+    )
+    fun getPrayerTimeForToday(currentDate: String): Flow<PrayerTimeEntity?>
 
 
     /**
@@ -72,17 +80,17 @@ interface PrayerTimeDao {
 
 
     @Query("SELECT `Fajr Time` FROM prayer_times WHERE GregorianDate == :currentDate")
-    fun getFajrTimeForTheDay(currentDate: String) : Long
+    fun getFajrTimeForTheDay(currentDate: String): Long
 
     @Query("SELECT `Dhuhr Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
-    fun getDhuhrTimeForTheDay(currentDate: String) : Long
+    fun getDhuhrTimeForTheDay(currentDate: String): Long
 
     @Query("SELECT AsrTime FROM prayer_times WHERE GregorianDate == :currentDate")
-    fun getAsrTimeForTheDay(currentDate: String) : Long
+    fun getAsrTimeForTheDay(currentDate: String): Long
 
     @Query("SELECT `Maghrib Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
-    fun getMaghribTimeForTheDay(currentDate: String) : Long
+    fun getMaghribTimeForTheDay(currentDate: String): Long
 
     @Query("SELECT `Isha Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
-    fun getIshaTimeForTheDay(currentDate: String) : Long
+    fun getIshaTimeForTheDay(currentDate: String): Long
 }

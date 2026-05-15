@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.map
  * Created on 24-12-2024
  */
 
-class UserDataStore (
+class UserDataStore(
     private val userDataStore: DataStore<Preferences>,
 ) {
     companion object {
@@ -39,6 +40,9 @@ class UserDataStore (
 
         const val SELECTED_QIBLA_COMPASS = "SELECTED_QIBLA_COMPASS"
 
+        const val PRAYER_CALCULATION_METHOD = "PRAYER_CALCULATION_METHOD"
+        const val PRAYER_JURISTIC_METHOD = "PRAYER_JURISTIC_METHOD"
+
         /*
         ******************--------------------------*************************
          */
@@ -53,7 +57,8 @@ class UserDataStore (
         private val SELECTED_FAJR_NOTIFICATION_KEY = intPreferencesKey(SELECTED_FAJR_NOTIFICATION)
         private val SELECTED_DHUHR_NOTIFICATION_KEY = intPreferencesKey(SELECTED_DHUHR_NOTIFICATION)
         private val SELECTED_ASR_NOTIFICATION_KEY = intPreferencesKey(SELECTED_ASR_NOTIFICATION)
-        private val SELECTED_MAGHRIB_NOTIFICATION_KEY = intPreferencesKey(SELECTED_MAGHRIB_NOTIFICATION)
+        private val SELECTED_MAGHRIB_NOTIFICATION_KEY =
+            intPreferencesKey(SELECTED_MAGHRIB_NOTIFICATION)
         private val SELECTED_ISHA_NOTIFICATION_KEY = intPreferencesKey(SELECTED_ISHA_NOTIFICATION)
         // ---------------//
 
@@ -62,18 +67,21 @@ class UserDataStore (
 
         private val SELECTED_QIBLA_COMPASS_KEY = intPreferencesKey(SELECTED_QIBLA_COMPASS)
 
+        private val PrayerCalculationMethodKey = intPreferencesKey(PRAYER_CALCULATION_METHOD)
+        private val PrayerJuristicMethodKey = intPreferencesKey(PRAYER_JURISTIC_METHOD)
+
     }
 
-    suspend fun clearSelectedCompassId(){
+    suspend fun clearSelectedCompassId() {
         val key = SELECTED_QIBLA_COMPASS_KEY
-        userDataStore.edit { pref->
+        userDataStore.edit { pref ->
             pref.remove(key)
         }
     }
 
-    suspend fun saveSelectedCompassId(id: Int){
+    suspend fun saveSelectedCompassId(id: Int) {
         val key = SELECTED_QIBLA_COMPASS_KEY
-        userDataStore.edit { pref->
+        userDataStore.edit { pref ->
             pref[key] = id
         }
     }
@@ -82,22 +90,24 @@ class UserDataStore (
         pref[SELECTED_QIBLA_COMPASS_KEY] ?: 1
     }
 
-    suspend fun saveDailyQuranDate(date: String){
+    suspend fun saveDailyQuranDate(date: String) {
         val key = DAILY_QURAN_DATE_KEY
-        userDataStore.edit { pref->
+        userDataStore.edit { pref ->
             pref[key] = date
         }
     }
+
     val getDailyQuranDate: Flow<String> = userDataStore.data.map { pref ->
         pref[DAILY_QURAN_DATE_KEY] ?: ""
     }
 
-    suspend fun saveRandomAyatNumber(number: Int){
+    suspend fun saveRandomAyatNumber(number: Int) {
         val key = RANDOM_AYAT_NUMBER_KEY
-        userDataStore.edit { pref->
+        userDataStore.edit { pref ->
             pref[key] = number
         }
     }
+
     val getRandomAyatNumber: Flow<Int> = userDataStore.data.map { pref ->
         pref[RANDOM_AYAT_NUMBER_KEY] ?: 0
     }
@@ -169,6 +179,7 @@ class UserDataStore (
             pref[SELECTED_MAGHRIB_NOTIFICATION_KEY] = selectedMaghribNotification
         }
     }
+
     val selectedMaghribNotification: Flow<Int> = userDataStore.data.map { pref ->
         pref[SELECTED_MAGHRIB_NOTIFICATION_KEY] ?: 0
     }
@@ -182,6 +193,46 @@ class UserDataStore (
     val selectedIshaNotification: Flow<Int> = userDataStore.data.map { pref ->
         pref[SELECTED_ISHA_NOTIFICATION_KEY] ?: 0
     }
+
+    suspend fun saveSetPrayerCalculationMethod(calculationMethod: Int): Boolean {
+        return try {
+            userDataStore.edit { preferences ->
+                preferences[PrayerCalculationMethodKey] = calculationMethod
+            }
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    val getPrayerCalculationMethod: Flow<Int> =
+        userDataStore.data.map { preferences ->
+            preferences[PrayerCalculationMethodKey] ?: 0
+        }
+
+    suspend fun getPrayerCalculationMethod(): Int {
+        return userDataStore.data.first()[PrayerCalculationMethodKey] ?: 0
+    }
+
+
+    suspend fun savePrayerJuristicMethod(method: Int): Boolean {
+        return try {
+            userDataStore.edit { preferences ->
+                preferences[PrayerJuristicMethodKey] = method
+            }
+            true
+        }catch (_: Exception){
+            false
+        }
+    }
+
+    suspend fun getPrayerJuristicMethod(): Int {
+        return userDataStore.data.first()[PrayerJuristicMethodKey] ?: 0
+    }
+    val getPrayerJuristicMethod: Flow<Int> =
+        userDataStore.data.map { preferences ->
+            preferences[PrayerJuristicMethodKey] ?: 0
+        }
 
 }
 

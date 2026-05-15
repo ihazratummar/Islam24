@@ -47,7 +47,9 @@ data class PrayerTimeModel(
     val methodIshaParam: Double,
     val latitudeAdjustmentMethod: String,
     val midnightMode: String,
-    val school: String
+    val school: String,
+
+
 )
 
 @Immutable
@@ -64,4 +66,9 @@ data class MinimalPrayerData(
     val midnightTime: Long= 0L,
     val firstThirdTime: Long= 0L,
     val lastThirdTime: Long= 0L,
+
+    val hijriDay: Int = 0,
+    val hijriMonthEn: String = "",
+    val hijriYear: Int = 0,
+    val hijriAbbreviated: String = "",
 )

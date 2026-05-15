@@ -1,6 +1,6 @@
 //PrayerTimeViewmodl.kt
 
-package com.hazrat.prayer.ui
+package com.hazrat.prayer.ui.prayertime
 
 
 import android.Manifest
@@ -13,6 +13,7 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.State
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,7 @@ import com.hazrat.datastore.NotificationType
 import com.hazrat.datastore.PrayerName
 import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.PrayerTimeRepository
+import com.hazrat.domain.repository.PrayerTimeRepositoryNew
 import com.hazrat.downloader.Downloader
 import com.hazrat.downloader.MyFileUtils.saveMp3File
 import com.hazrat.model.PrayerTimeModel
@@ -35,13 +37,19 @@ import com.hazrat.utils.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
 import com.hazrat.utils.DateUtil.getCurrentDate
 import com.hazrat.utils.MyFileUtils.isFilePresent
 import com.hazrat.utils.network.ConnectivityObserver
+import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -52,7 +60,7 @@ import kotlin.system.measureTimeMillis
 
 class PrayerTimeViewModel(
     private val context: Context,
-    private val repository: PrayerTimeRepository,
+    private val repository: PrayerTimeRepositoryNew,
     private val prayerAlarmManager: PrayerAlarmManager,
     private val dataStorePreference: DataStorePreference,
     private val mediaPlayerHelper: MediaPlayerHelper,
@@ -62,10 +70,14 @@ class PrayerTimeViewModel(
 ) : ViewModel() {
 
 
-    var isPrayerTimeRefreshing = MutableStateFlow(false)
-        private set
+    private val _uiState = MutableStateFlow(PrayerTimeUiState())
+    val uiState: StateFlow<PrayerTimeUiState> = _uiState.asStateFlow()
 
-    val prayerTimes: StateFlow<List<PrayerTimeModel>> = repository.prayerTimes
+
+    private val _events = Channel<PrayerTimeUiEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
+
+//    val prayerTimes: StateFlow<List<PrayerTimeModel>> = repository.prayerTimes
 
     private val _notificationState = MutableStateFlow(
         NotificationState(
@@ -122,39 +134,70 @@ class PrayerTimeViewModel(
     )
 
 
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            observeAndSync()
+        }
+    }
+
+    private fun observeAndSync() {
+
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                isRefreshing = true,
+            )
+        }
+
+        repository.observeAndSyncPrayerTimes()
+            .onEach { result ->
+                when (result) {
+                    is Result.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isRefreshing = false,
+                            )
+                        }
+                        _events.send(PrayerTimeUiEvent.ShowError(result.error.toString()))
+                    }
+                    is Result.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isRefreshing = false,
+                                prayerTimes = result.data
+                            )
+                        }
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
     fun onEvent(prayerEvent: PrayerEvent) {
         when (prayerEvent) {
             PrayerEvent.SharePrayer -> {
-                repository.sharePrayerTimes(prayerTimes.value)
+//                repository.sharePrayerTimes(prayerTimes.value)
             }
 
             PrayerEvent.RefreshPrayer -> refreshPrayer()
         }
     }
 
-    private fun refreshPrayer(){
+    private fun refreshPrayer() {
         Log.d("PrayerTimeViewModel", "Refreshing prayer times")
         viewModelScope.launch {
-            isPrayerTimeRefreshing.value = true
-            val networkStatus = connectivityObserver.observer().first()
-            if (networkStatus == ConnectivityObserver.Status.Available) {
-                Log.d(
-                    "PrayerTimeViewModel",
-                    "Network is available, fetching new prayer times"
-                )
-                val apiTime = measureTimeMillis { repository.newPrayerTimesRequest() }
-                Log.d("PrayerTimeViewModel", "API call took $apiTime ms")
-                val minExecutionTime = 2000L
-                if (apiTime < minExecutionTime) {
-                    delay(minExecutionTime - apiTime)
+            _uiState.update { it.copy(isRefreshing = true) }
+
+            when(val result = repository.refreshPrayerTimes()){
+                is Result.Error -> {
+                    _events.send(PrayerTimeUiEvent.ShowError(result.error.toString()))
+                    _uiState.update { it.copy(isRefreshing = false) }
                 }
-            } else {
-                withContext(Dispatchers.IO) {
-                    Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT)
-                        .show()
+                is Result.Success -> {
+                    _uiState.update { it.copy(isRefreshing = false) }
                 }
             }
-            isPrayerTimeRefreshing.value = false  // ✅ This will always execute
         }
     }
 
@@ -178,7 +221,7 @@ class PrayerTimeViewModel(
                     if (_notificationState.value.isFajrNotification) {
 
                         val date = getCurrentDate()
-                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val findDate = _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
                         val fajr = findDate.fajrTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
@@ -211,7 +254,7 @@ class PrayerTimeViewModel(
                     }
                     if (_notificationState.value.isDhuhrNotification) {
                         val date = getCurrentDate()
-                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val findDate = _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
                         val dhuhrTime = findDate.dhuhrTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
@@ -245,7 +288,7 @@ class PrayerTimeViewModel(
                     }
                     if (_notificationState.value.isAsrNotification) {
                         val date = getCurrentDate()
-                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val findDate = _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
                         val asrTime = findDate.asrTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
@@ -279,7 +322,7 @@ class PrayerTimeViewModel(
                     }
                     if (_notificationState.value.isMaghribNotification) {
                         val date = getCurrentDate()
-                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val findDate = _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
                         val maghribTime = findDate.maghribTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
@@ -313,7 +356,7 @@ class PrayerTimeViewModel(
                     }
                     if (_notificationState.value.isIshaNotification) {
                         val date = getCurrentDate()
-                        val findDate = prayerTimes.value.find { it.gregorianDate == date }!!
+                        val findDate = _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
                         val ishaTime = findDate.ishaTime
                         if (ActivityCompat.checkSelfPermission(
                                 context,
@@ -334,11 +377,21 @@ class PrayerTimeViewModel(
                 viewModelScope.launch {
                     _notificationState.update {
                         it.copy(
-                            isFajrNotification = dataStorePreference.getPrayerNotification(DataStorePreference.KEY_FAJR_NOTIFICATION),
-                            isDhuhrNotification = dataStorePreference.getPrayerNotification(DataStorePreference.KEY_DHUHR_NOTIFICATION),
-                            isAsrNotification = dataStorePreference.getPrayerNotification(DataStorePreference.KEY_ASR_NOTIFICATION),
-                            isMaghribNotification = dataStorePreference.getPrayerNotification(DataStorePreference.KEY_MAGHRIB_NOTIFICATION),
-                            isIshaNotification = dataStorePreference.getPrayerNotification(DataStorePreference.KEY_ISHA_NOTIFICATION)
+                            isFajrNotification = dataStorePreference.getPrayerNotification(
+                                DataStorePreference.KEY_FAJR_NOTIFICATION
+                            ),
+                            isDhuhrNotification = dataStorePreference.getPrayerNotification(
+                                DataStorePreference.KEY_DHUHR_NOTIFICATION
+                            ),
+                            isAsrNotification = dataStorePreference.getPrayerNotification(
+                                DataStorePreference.KEY_ASR_NOTIFICATION
+                            ),
+                            isMaghribNotification = dataStorePreference.getPrayerNotification(
+                                DataStorePreference.KEY_MAGHRIB_NOTIFICATION
+                            ),
+                            isIshaNotification = dataStorePreference.getPrayerNotification(
+                                DataStorePreference.KEY_ISHA_NOTIFICATION
+                            )
                         )
                     }
                 }
@@ -577,12 +630,6 @@ class PrayerTimeViewModel(
         return true
     }
 
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getAllPrayerTimes()
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun openAppSettings() {

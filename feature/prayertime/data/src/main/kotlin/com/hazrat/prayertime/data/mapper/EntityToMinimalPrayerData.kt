@@ -23,6 +23,10 @@ fun PrayerTimeEntity.toMinimalPrayerData(): MinimalPrayerData {
         imsakTime = this.imsakTime,
         midnightTime = this.midnightTime,
         firstThirdTime = this.firstThirdTime,
-        lastThirdTime = this.lastThirdTime
+        lastThirdTime = this.lastThirdTime,
+        hijriDay = this.hijriDay,
+        hijriMonthEn = this.hijriMonthEn,
+        hijriYear = this.hijriYear,
+        hijriAbbreviated = this.hijriab,
     )
 }

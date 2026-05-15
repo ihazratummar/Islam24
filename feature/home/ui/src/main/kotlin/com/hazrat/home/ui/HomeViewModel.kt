@@ -4,16 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.domain.repository.LocationNameRepository
-import com.hazrat.domain.repository.PrayerTimeRepository
-import com.hazrat.model.PrayerTimeModel
 import com.hazrat.model.locationmodel.LocationName
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -23,12 +19,10 @@ import kotlinx.coroutines.launch
 
 
 class HomeViewModel(
-    private val prayerTimeRepository: PrayerTimeRepository,
     private val locationNameRepository: LocationNameRepository,
     private val getTodayPrayerTimeUseCase: GetTodayPrayerTimeUseCase
 ) : ViewModel() {
 
-    val prayerTimes: StateFlow<List<PrayerTimeModel>> = prayerTimeRepository.prayerTimes
 
     private val _locationName = MutableStateFlow(LocationName())
     val locationName = _locationName.asStateFlow()
@@ -38,9 +32,6 @@ class HomeViewModel(
 
 
     init {
-        viewModelScope.launch {
-            prayerTimeRepository.getAllPrayerTimes()
-        }
         refreshLocation()
         getTodayPrayer()
     }
@@ -56,7 +47,7 @@ class HomeViewModel(
 
     private fun getTodayPrayer() {
         viewModelScope.launch(Dispatchers.IO) {
-            getTodayPrayerTimeUseCase.invoke().distinctUntilChanged().collectLatest {prayerTimes ->
+            getTodayPrayerTimeUseCase.invoke().collectLatest {prayerTimes ->
                 _homeState.update {
                     it.copy(
                         prayerData = prayerTimes
@@ -64,7 +55,6 @@ class HomeViewModel(
                 }
                 Log.d("HomeViewModel", "Minimal Prayer Data $prayerTimes")
             }
-
         }
     }
 }

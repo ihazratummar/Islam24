@@ -15,7 +15,7 @@ import com.hazrat.auth.ui.login.LoginViewModel
 import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.auth.ui.signup.SignUpViewModel
 import com.hazrat.alQuran.ui.QuranViewModel
-import com.hazrat.prayer.ui.PrayerTimeViewModel
+import com.hazrat.prayer.ui.prayertime.PrayerTimeViewModel
 import com.hazrat.islam24.main.navigation.AppNavigator
 import com.hazrat.islam24.main.navigation.MainRoute
 import com.hazrat.zakat.screen.zakat.ZakatViewModel

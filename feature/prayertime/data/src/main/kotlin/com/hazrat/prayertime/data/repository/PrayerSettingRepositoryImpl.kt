@@ -3,6 +3,7 @@ package com.hazrat.prayertime.data.repository
 import com.hazrat.database.dao.PrayerSettingDao
 import com.hazrat.database.entity.PrayerCalculationEntity
 import com.hazrat.database.entity.PrayerJuristicEntity
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.PrayerSettingRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
@@ -14,7 +15,8 @@ import timber.log.Timber
  */
 
 class PrayerSettingRepositoryImpl(
-    private val prayerSettingDao: PrayerSettingDao
+    private val prayerSettingDao: PrayerSettingDao,
+    private val userDataStore: UserDataStore
 ) : PrayerSettingRepository {
     override suspend fun getCalculationMethod(): Flow<PrayerCalculationEntity?> {
         Timber.tag("PrayerSettingRepositoryImpl")
@@ -24,7 +26,7 @@ class PrayerSettingRepositoryImpl(
             if (entity == null) {
                 Timber.tag("PrayerSettingRepositoryImpl")
                     .d("Calculation method is null, inserting default method")
-                insertCalculationMethod(PrayerCalculationEntity(method = 1))
+                insertCalculationMethod(method = 1)
                 emit(PrayerCalculationEntity(method = 1))
             }else{
                 Timber.tag("PrayerSettingRepositoryImpl")
@@ -42,7 +44,7 @@ class PrayerSettingRepositoryImpl(
             if (entity == null) {
                 Timber.tag("PrayerSettingRepositoryImpl")
                     .d("Juristic method is null, inserting default method")
-                insertJuristicMethod(PrayerJuristicEntity(school = 1))
+                insertJuristicMethod(method = 1)
                 emit(PrayerJuristicEntity(school = 1))
             } else {
                 Timber.tag("PrayerSettingRepositoryImpl")
@@ -53,11 +55,11 @@ class PrayerSettingRepositoryImpl(
     }
 
 
-    override suspend fun insertCalculationMethod(prayerSettingEntity: PrayerCalculationEntity) {
-        prayerSettingDao.insertCalculationMethod(prayerSettingEntity)
+    override suspend fun insertCalculationMethod(method: Int) {
+        userDataStore.saveSetPrayerCalculationMethod(calculationMethod = method)
     }
 
-    override suspend fun insertJuristicMethod(prayerSettingEntity: PrayerJuristicEntity) {
-        prayerSettingDao.insertJuristicMethod(prayerSettingEntity)
+    override suspend fun insertJuristicMethod(method: Int) {
+        userDataStore.savePrayerJuristicMethod(method= method)
     }
 }

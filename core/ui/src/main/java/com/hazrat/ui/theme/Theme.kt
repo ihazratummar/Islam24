@@ -19,80 +19,132 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val LightColorScheme = lightColorScheme(
+
+    // Brand
     primary = Primary60,
     onPrimary = Neutral99,
-    primaryContainer = Primary90,
-    onPrimaryContainer = Primary10,
+
+    primaryContainer = Primary95,
+    onPrimaryContainer = Primary20,
+
     inversePrimary = Primary80,
+
+    // Gold Accent
     secondary = Secondary50,
     onSecondary = Secondary10,
-    secondaryContainer = Secondary90,
-    onSecondaryContainer = Secondary10,
+
+    secondaryContainer = Secondary95,
+    onSecondaryContainer = Secondary30,
+
+    // Warm Accent
     tertiary = Tertiary50,
-    onTertiary = Tertiary99,
-    tertiaryContainer = Tertiary90,
-    onTertiaryContainer = Tertiary10,
+    onTertiary = Neutral99,
+
+    tertiaryContainer = Tertiary95,
+    onTertiaryContainer = Tertiary30,
+
+    // Error
     error = Error40,
     onError = Neutral99,
-    errorContainer = Error90,
-    onErrorContainer = Error10,
-    background = Neutral99,
+
+    errorContainer = Error95,
+    onErrorContainer = Error20,
+
+    // Main Background
+    background = Neutral98,
     onBackground = Neutral10,
+
+    // Surfaces
     surface = Neutral99,
     onSurface = Neutral10,
-    surfaceVariant = Neutral96,
-    onSurfaceVariant = NeutralVariant30,
+
+    surfaceVariant = Neutral95,
+    onSurfaceVariant = NeutralVariant50,
+
+    // Elevated Surfaces
+    surfaceBright = Neutral99,
+    surfaceDim = Neutral94,
+
+    surfaceContainer = Neutral96,
+    surfaceContainerHigh = Neutral95,
+    surfaceContainerHighest = Neutral92,
+    surfaceContainerLow = Neutral98,
+    surfaceContainerLowest = Neutral99,
+
+    // Misc
     surfaceTint = Primary60,
+
     inverseSurface = Neutral20,
     inverseOnSurface = Neutral95,
+
     outline = NeutralVariant80,
     outlineVariant = Neutral90,
-    scrim = Neutral0,
-    surfaceBright = Neutral98,
-    surfaceDim = Neutral94,
-    surfaceContainer = Neutral96,
-    surfaceContainerHigh = Neutral92,
-    surfaceContainerHighest = Neutral90,
-    surfaceContainerLow = Neutral95,
-    surfaceContainerLowest = Neutral99
+
+    scrim = Neutral0
 )
 private val DarkColorScheme = darkColorScheme(
+
+    // Brand
     primary = Primary80,
     onPrimary = Primary20,
+
     primaryContainer = Primary30,
-    onPrimaryContainer = Primary90,
+    onPrimaryContainer = Primary95,
+
     inversePrimary = Primary40,
-    secondary = Secondary80,
+
+    // Gold Accent
+    secondary = Secondary70,
     onSecondary = Secondary20,
+
     secondaryContainer = Secondary30,
     onSecondaryContainer = Secondary90,
-    tertiary = Tertiary80,
+
+    // Warm Accent
+    tertiary = Tertiary70,
     onTertiary = Tertiary20,
+
     tertiaryContainer = Tertiary30,
-    onTertiaryContainer = Tertiary90,
+    onTertiaryContainer = Tertiary95,
+
+    // Error
     error = Error80,
     onError = Error20,
+
     errorContainer = Error30,
-    onErrorContainer = Error90,
-    background = Neutral6,
+    onErrorContainer = Error95,
+
+    // Main Background
+    background = Neutral4,
     onBackground = Neutral90,
+
+    // Surfaces
     surface = Neutral6,
     onSurface = Neutral90,
+
     surfaceVariant = Neutral12,
     onSurfaceVariant = NeutralVariant80,
+
+    // Elevated surfaces
+    surfaceBright = Neutral17,
+    surfaceDim = Neutral4,
+
+    surfaceContainer = Neutral10,
+    surfaceContainerHigh = Neutral12,
+    surfaceContainerHighest = Neutral17,
+    surfaceContainerLow = Neutral6,
+    surfaceContainerLowest = Neutral4,
+
+    // Misc
     surfaceTint = Primary80,
+
     inverseSurface = Neutral90,
     inverseOnSurface = Neutral10,
+
     outline = NeutralVariant50,
     outlineVariant = Neutral30,
-    scrim = Neutral0,
-    surfaceBright = Neutral12,
-    surfaceDim = Neutral6,
-    surfaceContainer = Neutral12,
-    surfaceContainerHigh = Neutral17,
-    surfaceContainerHighest = Neutral20,
-    surfaceContainerLow = Neutral10,
-    surfaceContainerLowest = Neutral4
+
+    scrim = Neutral0
 )
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)

@@ -16,12 +16,11 @@ import com.hazrat.auth.ui.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.auth.ui.login.LoginViewModel
 import com.hazrat.auth.ui.signup.SignUpViewModel
 import com.hazrat.auth.ui.appSetting.AppSettingViewModel
-import com.hazrat.auth.ui.profileScreen.ProfileViewModel
 import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.notification.NotificationChannels
-import com.hazrat.prayer.ui.PrayerTimeViewModel
+import com.hazrat.prayer.ui.prayertime.PrayerTimeViewModel
 import com.hazrat.ui.common.rememberImageLoader
 import com.hazrat.ui.theme.Islam24Theme
 import com.hazrat.utils.LocaleHelper

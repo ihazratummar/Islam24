@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.hazrat.database.dao.PrayerTimeDao
 import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.PrayerSettingRepository
 import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.location.model.LocationResult
@@ -25,10 +26,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
@@ -36,7 +36,18 @@ import java.io.IOException
 /**
  * @author Hazrat Ummar Shaikh
  * Created on 17-12-2024
+ *
+ * Implementation of [PrayerTimeRepository].
+ *
+ * Responsibilities:
+ *  - Fetch yearly prayer times from the remote API and persist them in the local database.
+ *  - Serve prayer times to the rest of the app exclusively via observable [Flow]s.
+ *  - Surface all failures as [PrayerTimeResult] instead of throwing raw exceptions.
+ *
+ * Threading: all DB / network work runs on [DispatcherProvider.io].
+ * The repository itself holds NO mutable UI state — that belongs in the ViewModel.
  */
+
 
 class PrayerTimeRepositoryImpl(
     private val api: PrayerTimeApi,
@@ -44,7 +55,8 @@ class PrayerTimeRepositoryImpl(
     private val prayerSettingRepository: PrayerSettingRepository,
     private val prayerTimeDao: PrayerTimeDao,
     private val context: Context,
-    private val connectivityObserver: ConnectivityObserver
+    private val connectivityObserver: ConnectivityObserver,
+    private val userDataStore: UserDataStore
 ) : PrayerTimeRepository {
 
     private val _prayerTimes = MutableStateFlow<List<PrayerTimeModel>>(emptyList())
@@ -70,11 +82,20 @@ class PrayerTimeRepositoryImpl(
         return entities
     }
 
-    override suspend fun getTodayPrayerTime(): Flow<MinimalPrayerData>{
+    override suspend fun getTodayPrayerTime(): Flow<MinimalPrayerData> {
         val today = DateUtil.getCurrentDate()
-        return prayerTimeDao.getPrayerTimeForToday(currentDate = today).flowOn(Dispatchers.IO)
-            .conflate()
-            .map { it.toMinimalPrayerData() }
+        return prayerTimeDao.getPrayerTimeForToday(currentDate = today)
+            .mapLatest {prayerTimesMinimal ->
+                if (prayerTimesMinimal == null){
+                    val prayerList = newPrayerTimesRequest()
+                    val todayPrayer = prayerList.find { it.gregorianDate == today }
+                    todayPrayer?.toMinimalPrayerData()?: MinimalPrayerData()
+                }else{
+                    prayerTimesMinimal.toMinimalPrayerData()
+                }
+
+            }
+
     }
 
     private suspend fun fetchAndSaveYearlyPrayerTimes(
@@ -96,10 +117,8 @@ class PrayerTimeRepositoryImpl(
                 }
             }
 
-            val methodList = prayerSettingRepository.getCalculationMethod().firstOrNull()
-            val juristicList = prayerSettingRepository.getJuristicMethod().firstOrNull()
-            val methodValue = methodList?.method ?: 1
-            val schoolValue = juristicList?.school ?: 0
+            val calculationMethod = userDataStore.getPrayerCalculationMethod()
+            val juristicMethod = userDataStore.getPrayerJuristicMethod()
 
             val networkStatus = connectivityObserver.observer().first()
             if (networkStatus != ConnectivityObserver.Status.Available) {
@@ -111,8 +130,8 @@ class PrayerTimeRepositoryImpl(
                 month = month,
                 latitude = "$latitude",
                 longitude = "$longitude",
-                method = methodValue,
-                school = schoolValue,
+                method = calculationMethod,
+                school = juristicMethod,
                 annual = true
             )
 

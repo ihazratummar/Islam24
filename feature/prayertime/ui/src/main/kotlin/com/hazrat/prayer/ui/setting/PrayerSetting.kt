@@ -14,7 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.hazrat.model.PrayerTimeModel
+import com.hazrat.model.prayersettingmodel.JuristicMethod
+import com.hazrat.model.prayersettingmodel.prayerMethods
 import com.hazrat.prayer.ui.component.JuristicSelectionDialog
 import com.hazrat.prayer.ui.component.PrayerCalculationDialog
 import com.hazrat.prayer.ui.component.PrayerSettingCard
@@ -25,15 +26,10 @@ import com.hazrat.ui.theme.dimens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrayerSetting(
-    prayerTimeEntity: List<PrayerTimeModel>,
     onBackClick: () -> Unit,
     state: PrayerSettingState,
     event: (PrayerSettingEvent) -> Unit
 ) {
-
-    val prayerTimeEntities = prayerTimeEntity.getOrNull(0)
-    val school = prayerTimeEntities?.school
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -48,17 +44,18 @@ fun PrayerSetting(
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(dimens.space20))
+            val calculationMethod = prayerMethods[state.calculationMethod]
             PrayerSettingCard(
                 text = stringResource(R.string.calculation_method),
-                methodID = prayerTimeEntities?.methodName,
-                method = "${prayerTimeEntities?.methodFajrParam}° / ${prayerTimeEntities?.methodIshaParam}°",
+                methodID = calculationMethod.name,
+                method = "${calculationMethod.farjAngle}°/${calculationMethod.ishaAngle}° ● ${calculationMethod.region}",
                 onClick = {
                     event(PrayerSettingEvent.OpenCalculationDialog)
                 }
             )
             PrayerSettingCard(
                 text = stringResource(R.string.juristic_method),
-                methodID = school,
+                methodID = JuristicMethod.entries[state.juristic].name,
                 method = null,
                 onClick = {
                     event(PrayerSettingEvent.OpenJuristicDialog)

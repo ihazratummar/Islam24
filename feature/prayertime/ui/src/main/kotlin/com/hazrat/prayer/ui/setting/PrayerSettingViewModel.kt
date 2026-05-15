@@ -7,75 +7,54 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.database.entity.PrayerCalculationEntity
-import com.hazrat.database.entity.PrayerJuristicEntity
-import com.hazrat.database.entity.PrayerTimeEntity
 import com.hazrat.datastore.DataStorePreference
-import com.hazrat.domain.repository.PrayerSettingRepository
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.model.PrayerTimeModel
 import com.hazrat.notification.PrayerAlarmManager
 import com.hazrat.utils.DateUtil.getCurrentDate
 import com.hazrat.utils.network.ConnectivityObserver
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.system.measureTimeMillis
 
 
 class PrayerSettingViewModel (
     private val context: Context,
-    private val repository: PrayerSettingRepository,
     private val prayerTimeRepository: PrayerTimeRepository,
     private val prayerAlarmManager: PrayerAlarmManager,
     private val dataStorePreference: DataStorePreference,
-    private val connectivityObserver: ConnectivityObserver
+    private val connectivityObserver: ConnectivityObserver,
+    private val userDataStore: UserDataStore
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PrayerSettingState())
-    val state = _state.asStateFlow()
-
-    private val _calculationMethod = MutableStateFlow<PrayerCalculationEntity?>(null)
-    val calculationMethod = _calculationMethod.asStateFlow()
-
-    private val _juristicMethod = MutableStateFlow<PrayerJuristicEntity?>(null)
-    val juristicMethod = _juristicMethod.asStateFlow()
+    val state = combine(
+        _state,
+        userDataStore.getPrayerCalculationMethod,
+        userDataStore.getPrayerJuristicMethod
+    ){state, calculationMethod, juristicMethod ->
+        state.copy(
+            juristic = juristicMethod,
+            calculationMethod = calculationMethod
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = PrayerSettingState()
+    )
 
     val prayerTime: StateFlow<List<PrayerTimeModel>> = prayerTimeRepository.prayerTimes
 
-
-    init {
-        getJuristicMethod()
-        getCalculationMethod()
-        viewModelScope.launch(Dispatchers.IO) {
-            prayerTimeRepository.getAllPrayerTimes()
-        }
-    }
-
-    private fun getCalculationMethod() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getCalculationMethod().distinctUntilChanged()
-                .collect {
-                    _calculationMethod.value = it
-                }
-        }
-    }
-
-    private fun getJuristicMethod() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getJuristicMethod().distinctUntilChanged()
-                .collect {
-                    _juristicMethod.value = it
-                }
-        }
-    }
 
     fun onEvent(event: PrayerSettingEvent) {
         when (event) {
@@ -84,12 +63,11 @@ class PrayerSettingViewModel (
                     _state.update { it.copy(isRefresh = true) }
                     val networkStatus = connectivityObserver.observer().first()
                     if (networkStatus == ConnectivityObserver.Status.Available) {
-                        repository.insertCalculationMethod(
-                            PrayerCalculationEntity(method = event.value)
-                        )
-                        val apiTime = measureTimeMillis { prayerTimeRepository.newPrayerTimesRequest() }
+                        val result = userDataStore.saveSetPrayerCalculationMethod(calculationMethod = event.value)
+                        if (result){
+                            prayerTimeRepository.newPrayerTimesRequest()
+                        }
                         reScheduleAlarm()
-                        delay(apiTime)
                     } else {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
@@ -105,12 +83,12 @@ class PrayerSettingViewModel (
                     _state.update { it.copy(isRefresh = true) }
                     val networkStatus = connectivityObserver.observer().first()
                     if (networkStatus == ConnectivityObserver.Status.Available) {
-                        repository.insertJuristicMethod(
-                            PrayerJuristicEntity(school = event.value)
-                        )
-                        val apiTime = measureTimeMillis { prayerTimeRepository.newPrayerTimesRequest() }
+
+                        val result = userDataStore.savePrayerJuristicMethod(method = event.value)
+                        if (result){
+                            prayerTimeRepository.newPrayerTimesRequest()
+                        }
                         reScheduleAlarm()
-                        delay(apiTime)
                     } else {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
