@@ -23,29 +23,12 @@
 
 # Keep annotation classes
 -keep @interface javax.inject.** { *; }
--keep @interface dagger.** { *; }
 -keep @interface androidx.room.** { *; }
 
 # Jetpack DataStore (safe default)
 -dontwarn androidx.datastore.**
--keep class androidx.datastore.** { *; }
+#-keep class androidx.datastore.** { *; }
 
 # Preference KTX
 -dontwarn androidx.preference.**
 -keep class androidx.preference.** { *; }
-
-# Dagger Hilt
--keep class dagger.hilt.** { *; }
--keep interface dagger.hilt.** { *; }
-
-# Keep Hilt generated components
--keep class * extends dagger.hilt.android.internal.lifecycle.HiltViewModelFactory { *; }
-
-# Keep annotated Hilt modules and components
--keep @dagger.Module class * { *; }
--keep @dagger.hilt.InstallIn class * { *; }
-
-# Prevent R8 from removing Hilt-injected classes
--keep class * {
-    @dagger.hilt.android.lifecycle.HiltViewModel <fields>;
-}

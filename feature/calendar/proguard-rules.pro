@@ -33,7 +33,7 @@
 -keep class kotlin.Metadata { *; }
 
 # Preserve Compose functionality
--keep class androidx.compose.** { *; }
+#-keep class androidx.compose.** { *; }
 -keepclassmembers class androidx.compose.** { *; }
 -dontwarn androidx.compose.**
 

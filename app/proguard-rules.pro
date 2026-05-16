@@ -111,9 +111,6 @@
 
 # Keep Hilt view models
 -keep class * extends androidx.lifecycle.ViewModel
--keep class * implements androidx.lifecycle.ViewModelProvider.Factory
-
-
 -keep class com.hazrat.islam24.core.data.entity.** { *; }
 -keep class com.hazrat.islam24.core.domain.model.** { *; }
 -keep class com.hazrat.islam24.auth.model.** { *; }
