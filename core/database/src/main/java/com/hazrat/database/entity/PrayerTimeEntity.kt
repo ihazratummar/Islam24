@@ -8,56 +8,58 @@ import androidx.room.PrimaryKey
     tableName = "prayer_times")
 data class PrayerTimeEntity(
     val day: Int,
-    @ColumnInfo("Fajr Time")
+    @ColumnInfo("fajrTime")
     val fajrTime: Long,
-    @ColumnInfo("Sunrise Time")
+    @ColumnInfo("sunriseTime")
     val sunriseTime: Long,
-    @ColumnInfo("Dhuhr Time")
+    @ColumnInfo("dhuhrTime")
     val dhuhrTime: Long,
-    @ColumnInfo("AsrTime")
+    @ColumnInfo("asrTime")
     val asrTime: Long,
-    @ColumnInfo("Sunset Time")
+    @ColumnInfo("sunsetTime")
     val sunsetTime: Long,
-    @ColumnInfo("Maghrib Time")
+    @ColumnInfo("maghribTime")
     val maghribTime: Long,
-    @ColumnInfo("Isha Time")
+    @ColumnInfo("ishaTime")
     val ishaTime: Long,
-    @ColumnInfo("ImsakTime")
+    @ColumnInfo("imsakTime")
     val imsakTime: Long,
-    @ColumnInfo("MidNight Time")
+    @ColumnInfo("midnightTime")
     val midnightTime: Long,
-    @ColumnInfo("FirstThird Time")
+    @ColumnInfo("firstThirdTime")
     val firstThirdTime: Long,
-    @ColumnInfo("LastThird Time")
+    @ColumnInfo("lastThirdTime")
     val lastThirdTime: Long,
-    @ColumnInfo("Readable Date")
+    @ColumnInfo("readableDate")
     val readableDate: String,
-    @ColumnInfo("GregorianDate")
+    @ColumnInfo("gregorianDate")
     @PrimaryKey val gregorianDate: String,
-    @ColumnInfo("GregorianDay")
+    @ColumnInfo("timestamp")
+    val timestamp: Long,
+    @ColumnInfo("gregorianDay")
     val gregorianDay: String,
-    @ColumnInfo("GregorianWeekDay")
+    @ColumnInfo("gregorianWeekday")
     val gregorianWeekday: String,
     val gregorianMonthNum: Int,
     val gregorianMonthName: String,
     val gregorianYear: String,
-    @ColumnInfo("HijriDate")
+    @ColumnInfo("hijriDate")
     val hijriDate: String,
-    @ColumnInfo("HijriDay")
+    @ColumnInfo("hijriDay")
     val hijriDay: Int,
-    @ColumnInfo("HijriWeekDayEn")
+    @ColumnInfo("hijriWeekdayEn")
     val hijriWeekdayEn: String,
-    @ColumnInfo("HijriWeekDayAr")
+    @ColumnInfo("hijriWeekdayEr")
     val hijriWeekdayEr: String,
-    @ColumnInfo("HijriMonthAr")
+    @ColumnInfo("hijriMonthAr")
     val hijriMonthAr: String,
-    @ColumnInfo("HijriMonthEn")
+    @ColumnInfo("hijriMonthEn")
     val hijriMonthEn: String,
-    @ColumnInfo("HijriMonthNumber")
+    @ColumnInfo("hijriMonthNumber")
     val hijriMonthNumber: Int,
-    @ColumnInfo("HijriYear")
+    @ColumnInfo("hijriYear")
     val hijriYear: Int,
-    @ColumnInfo("HijriAbbreviated")
+    @ColumnInfo("hijriab")
     val hijriab: String,
     val timezone: String,
     val methodId: Int,

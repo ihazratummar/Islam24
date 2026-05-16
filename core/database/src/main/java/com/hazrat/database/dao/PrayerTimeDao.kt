@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.database.entity.HolidayInfoEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -35,7 +36,7 @@ interface PrayerTimeDao {
      * @param day The day for which prayer time is requested.
      * @return The prayer time for the specified day as a PrayerTimeEntity object, or null if not found.
      */
-    @Query("SELECT * FROM prayer_times WHERE GregorianDate >= :currentDate ORDER BY GregorianDate ASC")
+    @Query("SELECT * FROM prayer_times WHERE gregorianDate >= :currentDate ORDER BY gregorianDate ASC")
     fun getPrayerTimesFromDate(currentDate: String): Flow<List<PrayerTimeEntity>>
 
 
@@ -49,7 +50,7 @@ interface PrayerTimeDao {
         SELECT
           day,
       *
-    FROM prayer_times WHERE GregorianDate == :currentDate LIMIT 1
+    FROM prayer_times WHERE gregorianDate == :currentDate LIMIT 1
     """
     )
     fun getPrayerTimeForToday(currentDate: String): Flow<PrayerTimeEntity?>
@@ -79,18 +80,22 @@ interface PrayerTimeDao {
     suspend fun updatePrayerTime(prayerTime: PrayerTimeEntity)
 
 
-    @Query("SELECT `Fajr Time` FROM prayer_times WHERE GregorianDate == :currentDate")
+    @Query("SELECT holidays, gregorianDate, hijriDate FROM prayer_times WHERE timestamp > :currentDateTimestamp AND holidays != '[]'")
+    suspend fun getAllHolidaysFromToday(currentDateTimestamp: Long ): List<HolidayInfoEntity>
+
+
+    @Query("SELECT fajrTime FROM prayer_times WHERE gregorianDate == :currentDate")
     fun getFajrTimeForTheDay(currentDate: String): Long
 
-    @Query("SELECT `Dhuhr Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
+    @Query("SELECT dhuhrTime FROM prayer_times WHERE gregorianDate == :currentDate ")
     fun getDhuhrTimeForTheDay(currentDate: String): Long
 
-    @Query("SELECT AsrTime FROM prayer_times WHERE GregorianDate == :currentDate")
+    @Query("SELECT asrTime FROM prayer_times WHERE gregorianDate == :currentDate")
     fun getAsrTimeForTheDay(currentDate: String): Long
 
-    @Query("SELECT `Maghrib Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
+    @Query("SELECT maghribTime FROM prayer_times WHERE gregorianDate == :currentDate ")
     fun getMaghribTimeForTheDay(currentDate: String): Long
 
-    @Query("SELECT `Isha Time` FROM prayer_times WHERE GregorianDate == :currentDate ")
+    @Query("SELECT ishaTime FROM prayer_times WHERE gregorianDate == :currentDate ")
     fun getIshaTimeForTheDay(currentDate: String): Long
 }

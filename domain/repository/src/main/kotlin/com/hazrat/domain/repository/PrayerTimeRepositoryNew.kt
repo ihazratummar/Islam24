@@ -1,5 +1,7 @@
 package com.hazrat.domain.repository
 
+import com.hazrat.database.entity.HolidayInfoEntity
+import com.hazrat.model.IslamicEventsInfoModel
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.model.PrayerTimeModel
 import com.hazrat.utils.result.Result
@@ -59,4 +61,7 @@ interface PrayerTimeRepositoryNew {
      * The caller (ViewModel) owns launching the share Intent.
      */
     fun buildShareText(prayerTimes: List<PrayerTimeModel>): String?
+
+
+    suspend fun getAllHolidayFromToday() : List<IslamicEventsInfoModel>
 }

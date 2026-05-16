@@ -26,6 +26,7 @@ fun DailyDataDto.toEntity(): PrayerTimeEntity {
         lastThirdTime = timeStringToLong("${this.date.gregorian.date} ${this.timings.Lastthird}"),
         readableDate = this.date.readable,
         gregorianDate = DateUtil.convertToDbFormat(this.date.gregorian.date),
+        timestamp = this.date.timestamp.toLong(),
         gregorianDay = this.date.gregorian.day,
         gregorianWeekday = this.date.gregorian.weekday.en,
         gregorianMonthNum = this.date.gregorian.month.number,

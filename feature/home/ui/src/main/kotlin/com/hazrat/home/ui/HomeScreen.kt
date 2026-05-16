@@ -157,7 +157,22 @@ fun HomeScreen(
                     )
                 }
             }
+
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = "Upcoming Events",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    )
+
+                }
+            }
         }
     }
-
 }

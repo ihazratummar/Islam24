@@ -139,6 +139,7 @@ timber = "5.0.1"
 # ===========================
 kotlinx-coroutines-play = "1.11.0"
 animationCore = "1.11.1"
+coreKtxVersion = "1.7.0"
 
 [libraries]
 # ===========================
@@ -197,6 +198,7 @@ koin-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navig
 androidx-room-common = { module = "androidx.room:room-common", version.ref = "roomCompiler" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomCompiler" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "roomCompiler" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomCompiler" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 
@@ -290,7 +292,9 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 timber = {module = "com.jakewharton.timber:timber", version.ref ="timber"}
 
 kotlinx-coroutines-play = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines-play"}
+kotlinx-coroutines-test = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version = "1.11.0"}
 androidx-compose-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }
+core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -13,7 +13,7 @@ import com.hazrat.database.entity.PrayerTimeEntity
 @Database(
     entities = [PrayerTimeEntity::class,
         PrayerCalculationEntity::class, PrayerJuristicEntity::class],
-    version = 24,
+    version = 26,
     exportSchema = false
 )
 @TypeConverters(Converter::class)

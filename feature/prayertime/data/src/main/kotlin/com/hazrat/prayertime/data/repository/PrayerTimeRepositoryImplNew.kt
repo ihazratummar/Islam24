@@ -1,6 +1,7 @@
 package com.hazrat.prayertime.data.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.WorkerThread
 import com.hazrat.database.dao.PrayerTimeDao
 import com.hazrat.database.entity.PrayerTimeEntity
@@ -9,9 +10,11 @@ import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.domain.repository.PrayerTimeRepositoryNew
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
+import com.hazrat.model.IslamicEventsInfoModel
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.model.PrayerTimeModel
 import com.hazrat.prayertime.data.mapper.toEntityList
+import com.hazrat.prayertime.data.mapper.toEventType
 import com.hazrat.prayertime.data.mapper.toMinimalPrayerData
 import com.hazrat.prayertime.data.mapper.toPrayerModelList
 import com.hazrat.remote.api.PrayerTimeApi
@@ -281,6 +284,37 @@ class PrayerTimeRepositoryImplNew(
             append("For More Visit, $SHARE_URL")
         }
     }
+
+    override suspend fun getAllHolidayFromToday(): List<IslamicEventsInfoModel> {
+        val today = System.currentTimeMillis() / 1000
+
+        val excludeWords = listOf(
+            "Ramadan",
+            "Eid"
+        )
+        return prayerTimeDao
+            .getAllHolidaysFromToday(currentDateTimestamp = today)
+            .flatMap { holidayInfoEntity ->
+                holidayInfoEntity.holidays
+                    .filterNot { holiday->
+                        excludeWords.any {
+                            holiday.contains(it, ignoreCase = true)
+                        }
+                    }
+                    .map { holiday->
+                        IslamicEventsInfoModel(
+                            holidays = holiday,
+                            type = holiday.toEventType(),
+                            gregorianDate = holidayInfoEntity.gregorianDate,
+                            hijriDate = holidayInfoEntity.hijriDate
+                        )
+
+                    }
+            }
+
+    }
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // Private helpers
     // ─────────────────────────────────────────────────────────────────────────

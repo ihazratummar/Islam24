@@ -16,7 +16,8 @@ fun getHomeUiModule(): Module = module {
         HomeViewModel(
             getTodayPrayerTimeUseCase = get(),
             getLocationNameUseCase = get(),
-            getUpcomingIslamicEventUseCase = get()
+            getUpcomingIslamicEventUseCase = get(),
+            islamicEventsUseCase = get()
         )
     }
 }
