@@ -1,5 +1,8 @@
 package com.hazrat.model.al_quran_model.local_quran_transliteration
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class LocalQuranTransliterationItem(
     val id: Int,
     val name: String,

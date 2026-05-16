@@ -15,7 +15,6 @@ activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
 preferenceKtx = "1.2.1"
 secretsGradlePlugin = "2.0.1"
-viewpager2 = "1.1.0"
 
 # ===========================
 # Compose & UI
@@ -59,7 +58,6 @@ datastorePreferences = "1.2.1"
 # Networking
 # ===========================
 retrofit = "3.0.0"
-converterGson = "3.0.0"
 kotlinxSerializationJson = "1.11.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
 loggingInterceptor = "5.3.2"
@@ -95,11 +93,6 @@ coilCompose = "2.7.0"
 androidsvg = "1.4"
 
 # ===========================
-# Accompanist
-# ===========================
-accompanistSystemuicontroller = "0.36.0"
-
-# ===========================
 # Paging
 # ===========================
 pagingRuntimeKtx = "3.5.0"
@@ -109,12 +102,6 @@ pagingRuntimeKtx = "3.5.0"
 # ===========================
 appUpdateKtx = "2.1.0"
 review = "2.0.2"
-
-# ===========================
-# Push Notifications (OneSignal)
-# ===========================
-onesignal = "5.9.0"
-onesignalGradlePlugin = "0.14.0"
 
 # ===========================
 # Widgets (Glance)
@@ -130,12 +117,6 @@ kizitn_calendar = "2.10.1"
 # Animation & Effects
 # ===========================
 lottieCompose = "6.7.1"
-cloudy = "0.5.0"
-
-# ===========================
-# Media Player
-# ===========================
-chromecastSender = "0.32"
 
 # ===========================
 # Material Design
@@ -158,7 +139,6 @@ timber = "5.0.1"
 # ===========================
 kotlinx-coroutines-play = "1.11.0"
 animationCore = "1.11.1"
-google-gson = "2.14.0"
 
 [libraries]
 # ===========================
@@ -168,7 +148,6 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
-androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 
 # ===========================
 # Compose BOM & Core UI
@@ -230,12 +209,9 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 # Networking
 # ===========================
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
-
-google-gson = {module = "com.google.code.gson:gson", version.ref = "google-gson"}
 
 # ===========================
 # Firebase
@@ -269,11 +245,6 @@ coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coilCompose" }
 androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
 
 # ===========================
-# Accompanist
-# ===========================
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
-
-# ===========================
 # Paging
 # ===========================
 androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
@@ -286,12 +257,6 @@ app-update = { module = "com.google.android.play:app-update", version.ref = "app
 app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdateKtx" }
 review = { module = "com.google.android.play:review", version.ref = "review" }
 review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "review" }
-
-# ===========================
-# Push Notifications
-# ===========================
-onesignal = { module = "com.onesignal:OneSignal", version.ref = "onesignal" }
-onesignal-gradle-plugin = { module = "gradle.plugin.com.onesignal:onesignal-gradle-plugin", version.ref = "onesignalGradlePlugin" }
 
 # ===========================
 # Widgets (Glance)
@@ -311,17 +276,6 @@ ummalqura = { group = "com.github.msarhan", name = "ummalqura-calendar", version
 # Animation & Effects
 # ===========================
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
-
-# ===========================
-# Media Player
-# ===========================
-chromecast-sender = { module = "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender", version.ref = "chromecastSender" }
-
-# ===========================
-# Kotlin
-# ===========================
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 
 # ===========================
 # Testing
@@ -329,11 +283,11 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+
 # ==========================
-# Loggin
+# Logging
 # ===========================
 timber = {module = "com.jakewharton.timber:timber", version.ref ="timber"}
-
 
 kotlinx-coroutines-play = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines-play"}
 androidx-compose-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }

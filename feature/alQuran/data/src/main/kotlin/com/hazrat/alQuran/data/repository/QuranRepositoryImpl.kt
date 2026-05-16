@@ -3,8 +3,8 @@ package com.hazrat.alQuran.data.repository
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromString
 import com.hazrat.alQuran.data.mapper.toModel
 import com.hazrat.database.dao.QuranDao
 import com.hazrat.database.entity.quran.FavoriteAyahEntity
@@ -41,6 +41,8 @@ class QuranRepositoryImpl(
     private val firebaseFirestore: FirebaseFirestore,
     private val quranDao: QuranDao
 ) : QuranRepository {
+
+    private val json = Json { ignoreUnknownKeys = true }
 
     override suspend fun downloadQuranFile() {
         if (!MyFileUtils.isFilePresent(
@@ -123,10 +125,7 @@ class QuranRepositoryImpl(
             fileName = QURAN_AR_FILE_NAME
         )
         if (jsonString != null) {
-            val data: List<LocalQuranModelArItem> = Gson().fromJson(
-                jsonString,
-                object : TypeToken<List<LocalQuranModelArItem>>() {}.type
-            )
+            val data: List<LocalQuranModelArItem> = json.decodeFromString(jsonString)
             return data
         } else {
             Timber.tag(TAG).e("JSON file not found.")
@@ -141,10 +140,7 @@ class QuranRepositoryImpl(
             fileName = QURAN_TRANSLITERATION_FILE_NAME
         )
         if (jsonString != null) {
-            val data: List<LocalQuranTransliterationItem> = Gson().fromJson(
-                jsonString,
-                object : TypeToken<List<LocalQuranTransliterationItem>>() {}.type
-            )
+            val data: List<LocalQuranTransliterationItem> = json.decodeFromString(jsonString)
             return data
         } else {
             Timber.tag(TAG).e("JSON file not found.")
@@ -159,10 +155,7 @@ class QuranRepositoryImpl(
             fileName = QURAN_EN_FILE_NAME
         )
         if (jsonString != null) {
-            val data: List<LocalQuranDataEnItem> = Gson().fromJson(
-                jsonString,
-                object : TypeToken<List<LocalQuranDataEnItem>>() {}.type
-            )
+            val data: List<LocalQuranDataEnItem> = json.decodeFromString(jsonString)
             return data
         } else {
             Timber.tag(TAG).e("JSON file not found.")
@@ -177,10 +170,7 @@ class QuranRepositoryImpl(
             fileName = QURAN_BN_FILE_NAME
         )
         if (jsonString != null) {
-            val data: List<LocalQuranDataItemBn> = Gson().fromJson(
-                jsonString,
-                object : TypeToken<List<LocalQuranDataItemBn>>() {}.type
-            )
+            val data: List<LocalQuranDataItemBn> = json.decodeFromString(jsonString)
             return data
         } else {
             Timber.tag(TAG).e("JSON file not found.")
@@ -328,8 +318,8 @@ class QuranRepositoryImpl(
             val inputStream = context.assets.open("quran_data/juz.json")
             val reader = InputStreamReader(inputStream)
 
-            // Use Gson to parse the JSON into a Map where key is the Juz number (String), and value is the X1 object
-            val juzMap: Map<String, X1> = Gson().fromJson(reader, object : TypeToken<Map<String, X1>>() {}.type)
+            // Use json.decodeFromString to parse the JSON into a Map where key is the Juz number (String), and value is the X1 object
+            val juzMap: Map<String, X1> = json.decodeFromString(reader.readText())
 
             // Convert the Map values (X1) into a List
             QuranMetaDataJuz(juzData = juzMap.values.toList())

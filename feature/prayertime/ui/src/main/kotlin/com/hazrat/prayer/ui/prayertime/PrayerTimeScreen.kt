@@ -301,7 +301,7 @@ private fun PrayerTime(
     val isNextMaghribTime = currentTime in (data.asrTime + 1)..(data.maghribTime)
     val isNextIshaTime = currentTime in (data.maghribTime + 1)..(data.ishaTime)
     PrayerTimeCard(
-        icon = R.drawable.fajr,
+        icon = R.drawable.dawn,
         text = stringResource(R.string.fajr),
         time = dateLongToString(data.fajrTime),
         countDownText = if (prayerDay && isNextFajrTime) fajrCountDown else "",
@@ -320,7 +320,7 @@ private fun PrayerTime(
         isPrayerTime = isSunriseTime,
     )
     PrayerTimeCard(
-        icon = R.drawable.dhuhr,
+        icon = R.drawable.sun,
         text = stringResource(R.string.dhuhr),
         time = dateLongToString(data.dhuhrTime),
         countDownText = if (prayerDay && isNextDhurTime) dhuhrCountDown else "",
@@ -342,7 +342,7 @@ private fun PrayerTime(
         isNotification = dataStorePreference.getPrayerNotification(DataStorePreference.KEY_ASR_NOTIFICATION)
     )
     PrayerTimeCard(
-        icon = R.drawable.maghrib,
+        icon = R.drawable.evening,
         text = stringResource(R.string.maghrib),
         time = dateLongToString(data.maghribTime),
         countDownText = if (prayerDay && isNextMaghribTime) maghribCountDown else "",

@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -51,5 +52,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     //Kotlinx Serialization
-    implementation (libs.converter.gson)
+    implementation (libs.kotlinx.serialization.json)
 }

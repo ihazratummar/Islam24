@@ -1,5 +1,8 @@
 package com.hazrat.model.prayersettingmodel
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class CalculationMethodDetails(
     val method: Int,
     val name: String,

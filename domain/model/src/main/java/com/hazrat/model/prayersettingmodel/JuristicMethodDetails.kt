@@ -1,5 +1,8 @@
 package com.hazrat.model.prayersettingmodel
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class JuristicMethodDetails(
     val number: Int,
     val name: String

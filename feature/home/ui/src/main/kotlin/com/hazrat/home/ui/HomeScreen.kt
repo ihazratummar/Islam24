@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.home.ui.component.HomePageNavIcons
 import com.hazrat.home.ui.component.HomeTopCard
 import com.hazrat.home.ui.component.QuickAccessMenu
-import com.hazrat.home.ui.component.Status
+import com.hazrat.home.ui.component.DashboardTile
 import com.hazrat.model.locationmodel.LocationName
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
@@ -123,14 +123,14 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     val hijriDate = IslamicCalendarUtils.getCurrentHijriDateInfo()
-                    Status(
+                    DashboardTile(
                         modifier = Modifier.weight(1f),
                         label = "HIJRI DATE",
                         mainText = "${hijriDate.day} ${hijriDate.monthName}",
                         bottomLabel = "${hijriDate.year} AH"
                     )
                     Spacer(Modifier.width(dimens.space12))
-                    Status(
+                    DashboardTile(
                         modifier = Modifier.weight(1f),
                         label = "${homeState.upcomingIslamicEvent?.eventType?.name}",
                         mainText = "${homeState.upcomingIslamicEvent?.daysRemaining} Days",

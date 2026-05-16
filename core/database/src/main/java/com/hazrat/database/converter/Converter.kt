@@ -1,9 +1,8 @@
 package com.hazrat.database.converter
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 /**
  * @author hazratummar
@@ -12,15 +11,19 @@ import com.google.gson.reflect.TypeToken
 
 class Converter {
 
+    private val json = Json { ignoreUnknownKeys = true }
 
     @TypeConverter
     fun fromHolidayList(value: List<String>): String {
-        return Gson().toJson(value)
+        return json.encodeToString(value)
     }
 
     @TypeConverter
-    fun toHolidayList(value: String) : List<String> {
-        val type = object  : TypeToken<List<String>>() {}.type
-        return Gson().fromJson(value, type)
+    fun toHolidayList(value: String): List<String> {
+        return try {
+            json.decodeFromString(value)
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 }

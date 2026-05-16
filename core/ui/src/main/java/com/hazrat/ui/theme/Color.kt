@@ -53,7 +53,7 @@ val Tertiary99 = Color(0xFFFFFBF8)
 
 // ========== NEUTRAL (Surface tones) ==========
 val Neutral0 = Color(0xFF000000)
-val Neutral4 = Color(0xFF0A1618)
+val Neutral4 = Color(0xFF0f1c1e)
 val Neutral6 = Color(0xFF0F1B1E)
 val Neutral10 = Color(0xFF151E20)
 val Neutral12 = Color(0xFF1A2E32)
@@ -130,6 +130,7 @@ val IshaGradient = listOf(
 
 // ---------- Buttons  ----------
 val ButtonColorDark = Color(0xFF10b981)
+val IconColor = Color(0xFF6ee7b7)
 
 // ---------- App Gradients ----------
 
@@ -144,7 +145,8 @@ data class CustomColors(
     val ishaGradient: List<Color>,
 
     val emerald: Color,
-    val buttonColor : Color
+    val accentColor : Color,
+    val iconColor: Color
 
 )
 
@@ -159,7 +161,8 @@ val LocalCustomColors = compositionLocalOf {
         maghribGradient = emptyList(),
         ishaGradient = emptyList(),
         emerald = Color(0xFF95f0c6),
-        buttonColor = ButtonColorDark
+        accentColor = ButtonColorDark,
+        iconColor = IconColor
     )
 }
 
@@ -182,7 +185,8 @@ val DarkCustomColors = CustomColors(
     maghribGradient = MaghribGradient,
     ishaGradient = IshaGradient,
     emerald = Color(0xFF95f0c6),
-    buttonColor = ButtonColorDark
+    accentColor = ButtonColorDark,
+    iconColor = IconColor
 )
 
 
@@ -203,5 +207,6 @@ val LightCustomColors = CustomColors(
     maghribGradient = MaghribGradient,
     ishaGradient = IshaGradient,
     emerald = Color(0xFFA7F5D0),
-    buttonColor = ButtonColorDark
+    accentColor = ButtonColorDark,
+    iconColor = IconColor
 )

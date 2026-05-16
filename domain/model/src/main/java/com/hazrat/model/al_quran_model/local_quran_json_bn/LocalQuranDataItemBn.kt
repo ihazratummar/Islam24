@@ -1,5 +1,8 @@
 package com.hazrat.model.al_quran_model.local_quran_json_bn
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class LocalQuranDataItemBn(
     val id: Int,
     val name: String,

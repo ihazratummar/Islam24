@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -61,5 +62,5 @@ dependencies {
 
     //koin
     implementation(libs.koin.compose)
-    implementation(libs.google.gson)
+    implementation(libs.kotlinx.serialization.json)
 }

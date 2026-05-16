@@ -32,7 +32,7 @@ enum class PrayerType(
 ) {
     FAJR(
         nameRes   = R.string.fajr,
-        icon      = R.drawable.fajr,
+        icon      = R.drawable.dawn,
         gradient  = FajrGradient,
         color     = Color(0xFF6d63f2),
     ),
@@ -44,7 +44,7 @@ enum class PrayerType(
     ),
     DHUHR(
         nameRes   = R.string.dhuhr,
-        icon      = R.drawable.dhuhr,
+        icon      = R.drawable.sun,
         gradient  = DhuhrGradient,
         color     = Color(0xFFFFB752),
     ),
@@ -56,7 +56,7 @@ enum class PrayerType(
     ),
     MAGHRIB(
         nameRes   = R.string.maghrib,
-        icon      = R.drawable.maghrib,
+        icon      = R.drawable.evening,
         gradient  = MaghribGradient,
         color     = Color(0xFFfa716a),
     ),

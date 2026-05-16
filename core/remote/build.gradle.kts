@@ -56,7 +56,6 @@ dependencies {
 
     //Retrofit
     api (libs.retrofit)
-    api(libs.converter.gson)
 
     //Kotlinx Serialization
     implementation (libs.kotlinx.serialization.json)

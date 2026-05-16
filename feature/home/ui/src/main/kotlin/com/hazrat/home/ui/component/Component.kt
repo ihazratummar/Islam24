@@ -1,6 +1,5 @@
 package com.hazrat.home.ui.component
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.RepeatMode
@@ -23,11 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -45,7 +39,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
@@ -92,7 +85,7 @@ fun HomeTopCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(dimens.space12),
+                        verticalArrangement = Arrangement.spacedBy(dimens.space4),
                     ) {
                         if (isNow) {
                             Row(
@@ -146,7 +139,7 @@ fun HomeTopCard(
                             modifier = Modifier
                                 .padding(dimens.space12)
                                 .size(dimens.iconLg),
-                            tint = if (isNow) prayerState.currentPrayerIconColor else prayerState.nextPrayerIconColor
+                            tint = customColors.iconColor
                         )
                     }
                 }
@@ -185,7 +178,7 @@ fun HomeTopCard(
                             Card(
                                 onClick = onLogPrayerClick,
                                 colors = CardDefaults.cardColors(
-                                    containerColor = customColors.buttonColor,
+                                    containerColor = customColors.accentColor,
                                     contentColor = MaterialTheme.colorScheme.onSurface
                                 ),
                                 shape = RoundedCornerShape(dimens.cornerLg),
@@ -193,14 +186,14 @@ fun HomeTopCard(
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(dimens.space12),
+                                    horizontalArrangement = Arrangement.spacedBy(dimens.space8),
                                     modifier = Modifier
-                                        .padding(horizontal = dimens.space20)
+                                        .padding(horizontal = dimens.space12)
                                         .fillMaxHeight()
                                         .align(Alignment.CenterHorizontally)
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Check,
+                                        painter = painterResource(R.drawable.double_check),
                                         contentDescription = null,
                                         modifier = Modifier
                                             .size(dimens.iconSm)
@@ -283,7 +276,7 @@ fun HomeTopCard(
 
 
 @Composable
-fun Status(
+fun DashboardTile(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int = R.drawable.calendar1,
     label: String = "HIJRI DATE",
@@ -370,7 +363,7 @@ fun PulsingLiveDot(
 
         Box(
             modifier = Modifier
-                .size(dimens.space16)
+                .size(dimens.space12)
                 .scale(scale)
                 .background(
                     color = color.copy(alpha = alpha),
@@ -381,7 +374,7 @@ fun PulsingLiveDot(
         // inner solid dot
         Box(
             modifier = Modifier
-                .size(dimens.space12)
+                .size(dimens.space8)
                 .background(
                     color = color,
                     shape = CircleShape

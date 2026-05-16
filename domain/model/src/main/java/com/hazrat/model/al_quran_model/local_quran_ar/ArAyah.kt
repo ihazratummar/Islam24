@@ -1,5 +1,8 @@
 package com.hazrat.model.al_quran_model.local_quran_ar
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ArAyah(
     val hizbQuarter: Int,
     val juz: Int,

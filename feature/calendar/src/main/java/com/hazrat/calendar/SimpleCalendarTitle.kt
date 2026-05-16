@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,11 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 import java.time.YearMonth
 
@@ -50,7 +48,7 @@ fun SimpleCalendarTitle(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CalendarNavigationIcon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+            icon = R.drawable.arrow_left,
             contentDescription = "Previous",
             onClick = goToPrevious,
             isHorizontal = isHorizontal,
@@ -64,7 +62,7 @@ fun SimpleCalendarTitle(
             fontWeight = FontWeight.Medium,
         )
         CalendarNavigationIcon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            icon = R.drawable.arrow_left,
             contentDescription = "Next",
             onClick = goToNext,
             isHorizontal = isHorizontal,
@@ -74,7 +72,7 @@ fun SimpleCalendarTitle(
 
 @Composable
 private fun CalendarNavigationIcon(
-    imageVector: ImageVector,
+    icon: Int,
     contentDescription: String,
     isHorizontal: Boolean = true,
     onClick: () -> Unit,
@@ -95,7 +93,7 @@ private fun CalendarNavigationIcon(
             .padding(dimens.space4)
             .align(Alignment.Center)
             .rotate(rotation),
-        imageVector = imageVector,
+        painter = painterResource(icon),
         contentDescription = contentDescription,
     )
 }

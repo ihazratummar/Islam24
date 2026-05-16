@@ -13,18 +13,15 @@ import com.hazrat.ui.R
  * Industry Grade Typography based on DESIGN_SPEC.md
  */
 
-// ========== UI FONT (Inter) ==========
-//val InterFontFamily = FontFamily(
-//    Font(R.font.inter_regular, FontWeight.Normal),
-//    Font(R.font.inter_medium, FontWeight.Medium),
-//    Font(R.font.inter_semibold, FontWeight.SemiBold),
-//    Font(R.font.inter_bold, FontWeight.Bold)
-//)
 
-
-val AppleGothic = FontFamily(
-    Font(R.font.apple_gothic, FontWeight.Normal)
+val InterFontFamily = FontFamily(
+    Font(R.font.inter_regular, FontWeight.Normal),
+    Font(R.font.inter_medium, FontWeight.Medium),
+    Font(R.font.inter_semibold, FontWeight.SemiBold),
+    Font(R.font.inter_bold, FontWeight.Bold)
 )
+
+
 
 // ========== QURANIC FONTS ==========
 val AmiriFontFamily = FontFamily(
@@ -46,105 +43,105 @@ val NotoNaskhFontFamily = FontFamily(
 // Material 3 Typography Mapping from DESIGN_SPEC.md
 val CompactTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
         lineHeight = 44.sp,
         letterSpacing = 0.sp
     ),
     displayMedium = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         lineHeight = 40.sp,
         letterSpacing = 0.sp
     ),
     displaySmall = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
         lineHeight = 32.sp,
         letterSpacing = 0.sp
     ),
     headlineLarge = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
     headlineMedium = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.sp
     ),
     headlineSmall = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.15.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.15.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.1.sp
     ),
     titleSmall = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
     bodyLarge = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.25.sp
     ),
     bodySmall = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.4.sp
     ),
     labelLarge = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
     labelMedium = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = AppleGothic,
+        fontFamily = InterFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,
@@ -181,7 +178,7 @@ object IslamicTypography {
     val ArabicSm = TextStyle(fontFamily = AmiriFontFamily, fontSize = 18.sp, lineHeight = 28.sp)
     val ArabicXs = TextStyle(fontFamily = AmiriFontFamily, fontSize = 16.sp, lineHeight = 24.sp)
     
-    val CounterXl = TextStyle(fontFamily = AppleGothic, fontWeight = FontWeight.Bold, fontSize = 48.sp, lineHeight = 56.sp, letterSpacing = (-0.5).sp)
-    val CounterLg = TextStyle(fontFamily = AppleGothic, fontWeight = FontWeight.Bold, fontSize = 36.sp, lineHeight = 44.sp, letterSpacing = (-0.5).sp)
-    val CounterMd = TextStyle(fontFamily = AppleGothic, fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 32.sp)
+    val CounterXl = TextStyle(fontFamily = InterFontFamily, fontWeight = FontWeight.Bold, fontSize = 48.sp, lineHeight = 56.sp, letterSpacing = (-0.5).sp)
+    val CounterLg = TextStyle(fontFamily = InterFontFamily, fontWeight = FontWeight.Bold, fontSize = 36.sp, lineHeight = 44.sp, letterSpacing = (-0.5).sp)
+    val CounterMd = TextStyle(fontFamily = InterFontFamily, fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 32.sp)
 }

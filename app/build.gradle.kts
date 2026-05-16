@@ -132,9 +132,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
@@ -161,9 +158,6 @@ dependencies {
     //Compose Foundation
     implementation (libs.androidx.foundation)
 
-    //Accompanist
-    implementation (libs.accompanist.systemuicontroller)
-
     //paging3
     implementation (libs.androidx.paging.runtime.ktx)
     implementation (libs.androidx.paging.compose)
@@ -172,25 +166,18 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.runtime.livedata)
 
-    implementation(libs.androidx.viewpager2)
-
     //Google Play Store Update
     implementation(libs.app.update)
     implementation(libs.app.update.ktx)
     implementation(libs.review)
     implementation(libs.review.ktx)
 
-    //Cloudy for blurring effect
-    implementation(libs.cloudy)
-
-    implementation (libs.kotlin.reflect)
+//    implementation (libs.kotlin.reflect)
 
     //Glance App Widget
 
     implementation (libs.androidx.glance)
     implementation (libs.androidx.glance.appwidget)
-
-    implementation (libs.androidsvg)
 
     implementation(libs.timber)
 }

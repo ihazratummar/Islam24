@@ -1,5 +1,8 @@
 package com.hazrat.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ImportantIslamicEventModel(
     val gregorianTimestamp: Long = 0L,
     val title: String = "",
@@ -12,6 +15,7 @@ data class ImportantIslamicEventModel(
 )
 
 
+@Serializable
 enum class IslamicEventType {
     RAMADAN,
     EID_UL_FITR,
