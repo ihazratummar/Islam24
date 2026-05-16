@@ -61,4 +61,5 @@ dependencies {
 
     //koin
     implementation(libs.koin.compose)
+    implementation(libs.google.gson)
 }

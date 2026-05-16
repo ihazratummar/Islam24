@@ -26,3 +26,37 @@
 *   **Offline First:** Ensure all calendar events and basic Islamic data are cached locally for a seamless experience without internet.
 *   **Micro-interactions:** Use subtle `HapticFeedback` for calendar selections and Lottie animations for "Empty States".
 
+## 5. Performance & Architectural Audit (Diagnosis)
+
+### 🚨 Why the App Feels "Heavy" & "Sluggish"
+
+1.  **Eager ViewModel Initialization (The "Startup Lag"):**
+    *   **Issue:** `MainActivity` initializes **9+ ViewModels** (Quran, Zakat, PrayerTime, Auth, etc.) immediately in `onCreate`.
+    *   **Impact:** This consumes significant memory and CPU cycles during startup. Many of these features (like Zakat or Profile) are not needed until the user specifically navigates to them.
+    *   **Solution:** Use **Lazy Initialization**. ViewModels should be scoped to their respective Composable screens using `koinViewModel()` or `hiltViewModel()`.
+
+2.  **Anti-Pattern: Passing ViewModels as Parameters:**
+    *   **Issue:** `NavGraph` and `AppNavigator` pass a large list of ViewModels down the hierarchy as parameters.
+    *   **Impact:** This breaks the principle of "Separation of Concerns." It makes the `NavGraph` extremely heavy, leads to unnecessary recompositions, and prevents Compose from efficiently managing the lifecycle of each screen.
+    *   **Solution:** Each screen should "fetch" its own ViewModel from the DI container (Koin). This ensures the ViewModel is only created when the screen is active and destroyed when it leaves the backstack.
+
+3.  **Disabled Navigation Transitions:**
+    *   **Issue:** `EnterTransition.None` and `ExitTransition.None` are used globally in `NavHost`.
+    *   **Impact:** While this might have been an attempt to hide lag, it actually makes the app feel "stiff" and "unpolished." Smooth transitions (Fade, Slide) provide visual continuity and mask the underlying data loading.
+    *   **Solution:** Implement standard Material Design transitions. If the screen stutters during transition, optimize the screen's UI complexity or data loading rather than disabling the animation.
+
+4.  **Dependency Bloat (`material-icons-extended`):**
+    *   **Issue:** The app includes `androidx.compose.material:material-icons-extended-android`.
+    *   **Impact:** This library contains thousands of icons, significantly increasing the APK size and class-loading time. 
+    *   **Solution:** Import only the specific icons used in the project or use SVG/Painter resources.
+
+5.  **Redundant Data Refreshing:**
+    *   **Issue:** Some screens (like `QuranScreen`) call `refresh()` in a `LaunchedEffect(Unit)` every time they are visited.
+    *   **Impact:** If the ViewModel is already persistent or the data is cached, this causes redundant network/database hits and UI flickering.
+    *   **Solution:** Implement a smarter "State Management" where the ViewModel checks if the data is already loaded or "stale" before refreshing.
+
+6.  **"Fat" App Module:**
+    *   **Issue:** The `:app` module depends on every single `:feature` and `:core` module.
+    *   **Impact:** This results in long build times and a monolithic runtime behavior despite having multiple modules.
+    *   **Solution:** Move navigation logic into a dedicated `:navigation` module or use "Feature-by-Contract" to reduce direct dependencies between the app and features.
+

@@ -47,7 +47,8 @@ fun DailyDataDto.toEntity(): PrayerTimeEntity {
         methodIshaParam = this.meta.method.params.Isha,
         latitudeAdjustmentMethod = this.meta.latitudeAdjustmentMethod,
         midnightMode = this.meta.midnightMode,
-        school = this.meta.school
+        school = this.meta.school,
+        holidays = this.date.hijri.holidays
 
     )
 }

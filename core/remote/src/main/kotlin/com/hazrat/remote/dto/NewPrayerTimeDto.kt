@@ -150,7 +150,7 @@ data class HijriDto(
     @Serializable
     val format: String,
     @Serializable
-    val holidays: List<String?>,
+    val holidays: List<String>,
     @Serializable
     val month: MonthHijriDto,
     @Serializable

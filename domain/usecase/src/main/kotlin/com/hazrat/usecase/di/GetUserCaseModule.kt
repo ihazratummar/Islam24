@@ -1,6 +1,8 @@
 package com.hazrat.usecase.di
 
+import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
+import com.hazrat.usecase.GetUpcomingIslamicEventUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -12,4 +14,6 @@ import org.koin.dsl.module
 
 fun getUserCaseModule(): Module = module {
     single { GetTodayPrayerTimeUseCase(prayerTimeRepository = get()) }
+    single { GetLocationNameUseCase(locationNameRepository = get()) }
+    single { GetUpcomingIslamicEventUseCase() }
 }

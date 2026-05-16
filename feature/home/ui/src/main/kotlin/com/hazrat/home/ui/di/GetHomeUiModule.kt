@@ -11,6 +11,12 @@ import org.koin.dsl.module
  * Created on 27/01/26
  */
 
-fun getHomeUiModule() : Module = module {
-    viewModel { HomeViewModel(locationNameRepository = get(), getTodayPrayerTimeUseCase = get()) }
+fun getHomeUiModule(): Module = module {
+    viewModel {
+        HomeViewModel(
+            getTodayPrayerTimeUseCase = get(),
+            getLocationNameUseCase = get(),
+            getUpcomingIslamicEventUseCase = get()
+        )
+    }
 }

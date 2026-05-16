@@ -2,6 +2,8 @@ package com.hazrat.database.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.hazrat.database.converter.Converter
 import com.hazrat.database.dao.PrayerSettingDao
 import com.hazrat.database.dao.PrayerTimeDao
 import com.hazrat.database.entity.PrayerCalculationEntity
@@ -11,9 +13,10 @@ import com.hazrat.database.entity.PrayerTimeEntity
 @Database(
     entities = [PrayerTimeEntity::class,
         PrayerCalculationEntity::class, PrayerJuristicEntity::class],
-    version = 23,
+    version = 24,
     exportSchema = false
 )
+@TypeConverters(Converter::class)
 abstract class PrayerDatabase : RoomDatabase() {
 
     /**

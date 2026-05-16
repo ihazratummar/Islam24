@@ -41,7 +41,9 @@ kotlin {
 
 
 dependencies {
+    implementation(project(":core:utils"))
     implementation(project(":core:database"))
+
     api(project(":domain:model"))
     api(project(":domain:repository"))
 
@@ -53,7 +55,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.koin.core)
-    implementation(libs.koin.android
-    )
+    implementation(libs.koin.android)
+
+    implementation(libs.ummalqura)
 
 }

@@ -59,5 +59,4 @@ interface PrayerTimeRepositoryNew {
      * The caller (ViewModel) owns launching the share Intent.
      */
     fun buildShareText(prayerTimes: List<PrayerTimeModel>): String?
-
 }

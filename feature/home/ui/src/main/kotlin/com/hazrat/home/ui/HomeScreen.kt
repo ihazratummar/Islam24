@@ -30,6 +30,7 @@ import com.hazrat.home.ui.component.Status
 import com.hazrat.model.locationmodel.LocationName
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.IslamicCalendarUtils
 
 @Composable
 fun HomeScreen(
@@ -121,19 +122,19 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    val prayerData = homeState.prayerData
+                    val hijriDate = IslamicCalendarUtils.getCurrentHijriDateInfo()
                     Status(
                         modifier = Modifier.weight(1f),
                         label = "HIJRI DATE",
-                        mainText = "${prayerData.hijriDay} ${prayerData.hijriMonthEn}",
-                        bottomLabel = "${prayerData.hijriYear} ${prayerData.hijriAbbreviated}"
+                        mainText = "${hijriDate.day} ${hijriDate.monthName}",
+                        bottomLabel = "${hijriDate.year} AH"
                     )
                     Spacer(Modifier.width(dimens.space12))
                     Status(
                         modifier = Modifier.weight(1f),
-                        label = "RAMADAN",
-                        mainText = "287 Days",
-                        bottomLabel = "Until Ramadan 1448 AH"
+                        label = "${homeState.upcomingIslamicEvent?.eventType?.name}",
+                        mainText = "${homeState.upcomingIslamicEvent?.daysRemaining} Days",
+                        bottomLabel = "Until ${homeState.upcomingIslamicEvent?.hijriMonth} ${homeState.upcomingIslamicEvent?.hijriYear} AH"
                     )
                 }
             }

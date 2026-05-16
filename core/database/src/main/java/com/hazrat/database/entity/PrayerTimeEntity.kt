@@ -66,6 +66,6 @@ data class PrayerTimeEntity(
     val methodIshaParam: Double,
     val latitudeAdjustmentMethod: String,
     val midnightMode: String,
-    val school: String
-    // Add other fields as needed
+    val school: String,
+    val holidays: List<String> = emptyList()
 )

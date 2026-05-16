@@ -281,14 +281,13 @@ class PrayerTimeRepositoryImplNew(
             append("For More Visit, $SHARE_URL")
         }
     }
-
     // ─────────────────────────────────────────────────────────────────────────
     // Private helpers
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
      * Fetches prayer times for [year]/[month] (annual=true) from the API,
-     * persists all returned entities, and returns a [PrayerTimeResult].
+     * persists all returned entities, and returns a [Result].
      *
      * Never throws — all exceptions are caught and wrapped.
      */

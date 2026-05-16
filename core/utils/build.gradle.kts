@@ -73,4 +73,6 @@ dependencies {
     implementation(libs.koin.compose)
 
     implementation(libs.logging.interceptor)
+
+    implementation(libs.ummalqura)
 }

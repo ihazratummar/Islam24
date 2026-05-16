@@ -69,6 +69,7 @@ data class MinimalPrayerData(
 
     val hijriDay: Int = 0,
     val hijriMonthEn: String = "",
+    val hijriMonthNumber: Int=0,
     val hijriYear: Int = 0,
     val hijriAbbreviated: String = "",
 )

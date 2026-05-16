@@ -3,9 +3,10 @@ package com.hazrat.home.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.domain.repository.LocationNameRepository
 import com.hazrat.model.locationmodel.LocationName
+import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
+import com.hazrat.usecase.GetUpcomingIslamicEventUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,8 +20,9 @@ import kotlinx.coroutines.launch
 
 
 class HomeViewModel(
-    private val locationNameRepository: LocationNameRepository,
-    private val getTodayPrayerTimeUseCase: GetTodayPrayerTimeUseCase
+    private val getTodayPrayerTimeUseCase: GetTodayPrayerTimeUseCase,
+    private val getLocationNameUseCase: GetLocationNameUseCase,
+    private val getUpcomingIslamicEventUseCase: GetUpcomingIslamicEventUseCase
 ) : ViewModel() {
 
 
@@ -34,16 +36,28 @@ class HomeViewModel(
     init {
         refreshLocation()
         getTodayPrayer()
+        loadRamadanEvent()
+    }
+
+    private fun loadRamadanEvent() {
+        val event = getUpcomingIslamicEventUseCase.invoke()
+        _homeState.update {
+            it.copy(
+                upcomingIslamicEvent = event
+            )
+        }
     }
 
     fun refreshLocation() {
         viewModelScope.launch {
-            locationNameRepository.locationName().collectLatest { locationName ->
+            getLocationNameUseCase.invoke().collectLatest { locationName ->
                 _locationName.value = LocationName(address = locationName)
                 Log.d("HomeViewModel", "Location name: $locationName")
             }
         }
     }
+
+
 
     private fun getTodayPrayer() {
         viewModelScope.launch(Dispatchers.IO) {
