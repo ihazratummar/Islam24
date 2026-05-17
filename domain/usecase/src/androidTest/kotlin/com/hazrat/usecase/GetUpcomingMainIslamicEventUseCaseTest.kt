@@ -8,11 +8,11 @@ import org.junit.Test
  * Created on 16/05/26
  */
 
-class GetUpcomingIslamicEventUseCaseTest {
+class GetUpcomingMainIslamicEventUseCaseTest {
 
     @Test
     fun getRamadanData() {
-        val data = GetUpcomingIslamicEventUseCase().invoke()
+        val data = GetUpcomingMainIslamicEventUseCase().invoke()
 
         println("This is my test ${data.hijriMonth}")
         assert(data.hijriMonth == "Ramadhan")

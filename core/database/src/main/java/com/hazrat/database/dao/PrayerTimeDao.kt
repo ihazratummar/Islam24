@@ -80,9 +80,11 @@ interface PrayerTimeDao {
     suspend fun updatePrayerTime(prayerTime: PrayerTimeEntity)
 
 
-    @Query("SELECT holidays, gregorianDate, hijriDate FROM prayer_times WHERE timestamp > :currentDateTimestamp AND holidays != '[]'")
-    suspend fun getAllHolidaysFromToday(currentDateTimestamp: Long ): List<HolidayInfoEntity>
+    @Query("SELECT holidays, gregorianDate, hijriDate, timestamp FROM prayer_times WHERE timestamp > :currentDateTimestamp AND holidays != '[]'")
+    fun getAllHolidaysFromToday(currentDateTimestamp: Long ): Flow<List<HolidayInfoEntity>>
 
+    @Query("SELECT dhuhrTime FROM prayer_times WHERE gregorianWeekday == \"Friday\" and dhuhrTime > :dhuhrTime LIMIT 1")
+    fun getNextFridayTime(dhuhrTime: Long): Flow<Long>
 
     @Query("SELECT fajrTime FROM prayer_times WHERE gregorianDate == :currentDate")
     fun getFajrTimeForTheDay(currentDate: String): Long

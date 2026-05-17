@@ -2,6 +2,7 @@ package com.hazrat.usecase
 
 import com.hazrat.domain.repository.PrayerTimeRepositoryNew
 import com.hazrat.model.IslamicEventsInfoModel
+import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -13,7 +14,7 @@ class GetIslamicEventsUseCase(
     private val prayerTimeRepositoryNew: PrayerTimeRepositoryNew
 ) {
 
-    suspend operator fun invoke() : List<IslamicEventsInfoModel> {
+    operator fun invoke() : Flow<List<IslamicEventsInfoModel?>> {
         return prayerTimeRepositoryNew.getAllHolidayFromToday()
     }
 

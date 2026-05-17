@@ -1,6 +1,7 @@
 package com.hazrat.usecase
 
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
+import com.hazrat.model.IslamicEventType
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -11,12 +12,6 @@ import java.util.concurrent.TimeUnit
  * Created on 16/05/26
  */
 
-
-enum class IslamicEventType {
-    RAMADAN,
-    EID_UL_FITR,
-    EID_UL_ADHA
-}
 
 data class UpcomingIslamicEvent(
     val eventType: IslamicEventType,
@@ -30,7 +25,7 @@ data class EventCandidate(
     val calendar: UmmalquraCalendar
 )
 
-class GetUpcomingIslamicEventUseCase {
+class GetUpcomingMainIslamicEventUseCase {
 
     operator fun invoke() : UpcomingIslamicEvent {
 
@@ -83,10 +78,9 @@ class GetUpcomingIslamicEventUseCase {
                 UmmalquraCalendar.MONTH,
                 Calendar.LONG,
                 Locale.ENGLISH
-            )!!,
+            ) !!,
             hijriYear = nearestEvent.calendar.get(UmmalquraCalendar.YEAR)
         )
-
     }
 
     private fun createEvent(
@@ -96,6 +90,7 @@ class GetUpcomingIslamicEventUseCase {
         day: Int
     ) :EventCandidate {
         val calendar  = UmmalquraCalendar().apply {
+            clear()
             set(year, month, day)
         }
         return EventCandidate(

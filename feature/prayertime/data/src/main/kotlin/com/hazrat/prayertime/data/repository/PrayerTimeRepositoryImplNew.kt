@@ -1,8 +1,8 @@
 package com.hazrat.prayertime.data.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.WorkerThread
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.hazrat.database.dao.PrayerTimeDao
 import com.hazrat.database.entity.PrayerTimeEntity
 import com.hazrat.domain.repository.PrayerSettingRepository
@@ -10,6 +10,7 @@ import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.domain.repository.PrayerTimeRepositoryNew
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
+import com.hazrat.model.EventType
 import com.hazrat.model.IslamicEventsInfoModel
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.model.PrayerTimeModel
@@ -100,8 +101,7 @@ class PrayerTimeRepositoryImplNew(
                 } else {
                     flow<Result<MinimalPrayerData, PrayerTimeError>> {
                         val result = fetchAndSaveYearlyPrayerTimes(
-                            year = DateUtil.getCurrentYear(),
-                            month = DateUtil.getCurrentMonth(),
+                            year = UmmalquraCalendar().get(UmmalquraCalendar.YEAR),
                         )
                         when (result) {
                             is Result.Success -> {
@@ -116,6 +116,7 @@ class PrayerTimeRepositoryImplNew(
                                     )
                                 }
                             }
+
                             is Result.Error -> {
                                 emit(Result.Error(result.error))
                             }
@@ -160,22 +161,23 @@ class PrayerTimeRepositoryImplNew(
      *   or [Result.Error] with a user-facing message.
      */
     override suspend fun refreshPrayerTimes(): Result<Int, PrayerTimeError> {
-        val currentYear = DateUtil.getCurrentYear()
-        val currentMonth = DateUtil.getCurrentMonth()
+        val currentYear = UmmalquraCalendar().get(UmmalquraCalendar.YEAR)
+        val currentMonth = UmmalquraCalendar().get(UmmalquraCalendar.MONTH) + 1
 
         // Guard : no point trying to without network
-        val isNetworkAvailable = connectivityObserver.observer().first() == ConnectivityObserver.Status.Available
-        if (!isNetworkAvailable){
+        val isNetworkAvailable =
+            connectivityObserver.observer().first() == ConnectivityObserver.Status.Available
+        if (!isNetworkAvailable) {
             return Result.Error(PrayerTimeError.Network.NO_CONNECTION)
         }
 
         // Wipe current Prayer times
         prayerTimeDao.deleteAllPrayer()
-        val result = fetchAndSaveYearlyPrayerTimes(year = currentYear, month = currentMonth)
+        val result = fetchAndSaveYearlyPrayerTimes(year = currentYear)
 
         // Opportunistic: pre-fetch next year while we're already online in December
 
-        if (currentMonth == 12 && result is Result.Success ){
+        if (currentMonth == 12 && result is Result.Success) {
             prefetchNextYearIfNeeded(
                 prayerList = emptyList(),
                 currentYear = currentYear,
@@ -183,9 +185,9 @@ class PrayerTimeRepositoryImplNew(
             )
         }
 
-        return when(result){
-            is Result.Error  -> Result.Error(PrayerTimeError.ErrorMessage("Something Went Wrong"))
-            is Result.Success  -> Result.Success(result.data.size)
+        return when (result) {
+            is Result.Error -> Result.Error(PrayerTimeError.ErrorMessage("Something Went Wrong"))
+            is Result.Success -> Result.Success(result.data.size)
         }
     }
 
@@ -202,7 +204,7 @@ class PrayerTimeRepositoryImplNew(
     override fun observeAndSyncPrayerTimes(): Flow<Result<List<PrayerTimeModel>, PrayerTimeError>> =
         getAllPrayer()
             .onEach { prayerList ->
-                val currentYear = DateUtil.getCurrentYear()
+                val currentYear = UmmalquraCalendar().get(UmmalquraCalendar.YEAR)
                 val hasOldFormat = prayerList.any { it.gregorianDate.indexOf("-") == 2 }
                 val hasCurrentYearData = prayerList.any { it.gregorianYear.toInt() == currentYear }
                 val isNetworkAvailable =
@@ -220,7 +222,7 @@ class PrayerTimeRepositoryImplNew(
                                 .i("Old date format detected — clearing DB before re-fetch.")
                             prayerTimeDao.deleteAllPrayer()
                         }
-                        fetchAndSaveYearlyPrayerTimes(currentYear, DateUtil.getCurrentMonth())
+                        fetchAndSaveYearlyPrayerTimes(currentYear)
                     }
 
                     // ── Case 2: Data is current — maybe pre-fetch next year ───
@@ -230,7 +232,9 @@ class PrayerTimeRepositoryImplNew(
                 }
             }
             .map { prayerList ->
-                if (prayerList.isEmpty()) Result.Error<List<PrayerTimeModel>, PrayerTimeError>(PrayerTimeError.Local.EMPTY_RESPONSE)
+                if (prayerList.isEmpty()) Result.Error<List<PrayerTimeModel>, PrayerTimeError>(
+                    PrayerTimeError.Local.EMPTY_RESPONSE
+                )
                 else Result.Success<List<PrayerTimeModel>, PrayerTimeError>(prayerList)
             }
             .catch { e ->
@@ -285,50 +289,59 @@ class PrayerTimeRepositoryImplNew(
         }
     }
 
-    override suspend fun getAllHolidayFromToday(): List<IslamicEventsInfoModel> {
-        val today = System.currentTimeMillis() / 1000
 
+    override fun getAllHolidayFromToday(): Flow<List<IslamicEventsInfoModel>> {
+        val today = System.currentTimeMillis() / 1000
+//
         val excludeWords = listOf(
             "Ramadan",
             "Eid"
         )
-        return prayerTimeDao
-            .getAllHolidaysFromToday(currentDateTimestamp = today)
-            .flatMap { holidayInfoEntity ->
-                holidayInfoEntity.holidays
-                    .filterNot { holiday->
+
+        return prayerTimeDao.getAllHolidaysFromToday(currentDateTimestamp = today)
+            .map { holidayInfoEntitiesList ->
+                holidayInfoEntitiesList.flatMap { holidayInfoEntity ->
+                    holidayInfoEntity.holidays.filterNot { holiday ->
                         excludeWords.any {
-                            holiday.contains(it, ignoreCase = true)
+                            holiday.contains(
+                                it,
+                                ignoreCase = true
+                            )
                         }
                     }
-                    .map { holiday->
-                        IslamicEventsInfoModel(
-                            holidays = holiday,
-                            type = holiday.toEventType(),
-                            gregorianDate = holidayInfoEntity.gregorianDate,
-                            hijriDate = holidayInfoEntity.hijriDate
-                        )
+                        .map { holiday ->
+                            IslamicEventsInfoModel(
+                                holidays = holiday,
+                                type = holiday.toEventType(),
+                                gregorianDate = holidayInfoEntity.gregorianDate,
+                                hijriDate = holidayInfoEntity.hijriDate,
+                                timestamp = holidayInfoEntity.timestamp
+                            )
+                        }
 
-                    }
-            }
 
+                }.distinctBy { if (it.type == EventType.HAJJ) EventType.HAJJ else it }
+            }.flowOn(Dispatchers.IO)
     }
 
+    override fun getNextFridayTime(): Flow<Long?> {
+        val current = System.currentTimeMillis()
+        return prayerTimeDao.getNextFridayTime(dhuhrTime = current)
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // Private helpers
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Fetches prayer times for [year]/[month] (annual=true) from the API,
+     * Fetches prayer times for [year]] (annual=true) from the API,
      * persists all returned entities, and returns a [Result].
      *
      * Never throws — all exceptions are caught and wrapped.
      */
     @WorkerThread
     private suspend fun fetchAndSaveYearlyPrayerTimes(
-        year: Int,
-        month: Int,
+        year: Int
     ): Result<List<PrayerTimeEntity>, PrayerTimeError> {
         return try {
             // ── Network guard ────────────────────────────────────────────────
@@ -347,18 +360,14 @@ class PrayerTimeRepositoryImplNew(
             // ── API call ─────────────────────────────────────────────────────
             val apiResponse = api.newPrayerTimesRequest(
                 year = year,
-                month = month,
                 latitude = latitude.toString(),
                 longitude = longitude.toString(),
                 method = method,
                 school = school,
-                annual = true,
             )
 
             val entities = apiResponse.data.values.flatten().toEntityList()
             prayerTimeDao.insertAllPrayerTimes(entities)
-
-            Timber.tag(TAG).d("Fetched and saved %d entries for %d/%d", entities.size, year, month)
             Result.Success(entities)
 
         } catch (e: HttpException) {
@@ -382,12 +391,12 @@ class PrayerTimeRepositoryImplNew(
         currentYear: Int,
         isNetworkAvailable: Boolean,
     ) {
-        if (DateUtil.getCurrentMonth() != 12) return
-        val hasNextYearData = prayerList.any { it.gregorianYear.toInt() == currentYear + 1 }
+        if (UmmalquraCalendar().get(UmmalquraCalendar.MONTH) + 1 != 12) return
+        val hasNextYearData = prayerList.any { it.hijriYear == currentYear + 1 }
         if (hasNextYearData || !isNetworkAvailable) return
 
         Timber.tag(TAG).d("December detected — pre-fetching ${currentYear + 1} data.")
-        fetchAndSaveYearlyPrayerTimes(year = currentYear + 1, month = 1)
+        fetchAndSaveYearlyPrayerTimes(year = currentYear + 1)
     }
 
     /**

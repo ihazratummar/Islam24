@@ -12,7 +12,7 @@ object Constants {
     const val ATHKAR_BASE_URL_NAME = "https://raw.githubusercontent.com/ihazratummar/Muslim-Dua/refs/heads/main/"
 
     /** Base URL for the Aladhan API */
-    const val PRAYER_BASE_URL = "https://api.aladhan.com/v1/calendar/"
+    const val PRAYER_BASE_URL = "https://api.aladhan.com/v1/hijriCalendar/"
 
 
     /** LocationOnCard IQ Api Key */

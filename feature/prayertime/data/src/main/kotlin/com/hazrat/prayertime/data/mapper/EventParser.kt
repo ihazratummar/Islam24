@@ -30,6 +30,10 @@ fun String.toEventType(): EventType {
             EventType.NIGHT_PRAYER
         }
 
+        hajjKeywords.any{
+            contains(it, ignoreCase = true)
+        } -> {EventType.HAJJ}
+
         else -> {
             EventType.SPECIAL
         }
@@ -50,4 +54,8 @@ private val nightPrayerKeywords = listOf(
     "night",
     "laylat",
     "qadr"
+)
+
+private val hajjKeywords = listOf(
+    "hajj"
 )

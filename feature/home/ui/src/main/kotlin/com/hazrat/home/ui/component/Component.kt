@@ -39,6 +39,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
+import com.hazrat.model.EventType
+import com.hazrat.model.IslamicEventType
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
@@ -419,5 +423,92 @@ fun CardGradient(
         contentAlignment = Alignment.Center
     ) {
         content()
+    }
+}
+
+
+@Composable
+fun HomeScreenEventCard(
+    eventName: String,
+    eventDate: String,
+    eventType: EventType
+) {
+    Card(
+        modifier = Modifier
+            .padding(vertical = dimens.space8)
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
+        shape = RoundedCornerShape(dimens.cornerLg)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(dimens.space16)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(dimens.space56)
+                    .background(
+                        color = eventType.containerColor().copy(0.2f),
+                        shape = RoundedCornerShape(dimens.cornerLg)
+                    ),
+                contentAlignment = Alignment.Center,
+
+                ) {
+                Icon(
+                    painter = painterResource(eventType.icon()),
+                    contentDescription = null,
+                    modifier = Modifier.size(dimens.iconLg),
+                    tint = Color.Unspecified
+                )
+            }
+
+            Column (
+                verticalArrangement = Arrangement.spacedBy(dimens.space8),
+                modifier = Modifier.fillMaxWidth(0.65f)
+            ){
+                Text(
+                    text = eventName,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = eventDate,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Spacer(Modifier.weight(1f))
+            Box(
+                modifier = Modifier.background(
+                    color = eventType.color().copy(0.1f),
+                    shape = RoundedCornerShape(dimens.cornerLg)
+                ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = eventType.toString(),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = eventType.color()
+                    ),
+                    modifier = Modifier.padding(
+                        horizontal = dimens.space12,
+                        vertical = dimens.space8
+                    )
+                )
+            }
+        }
     }
 }

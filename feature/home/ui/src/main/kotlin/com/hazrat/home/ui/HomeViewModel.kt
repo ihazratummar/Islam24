@@ -6,15 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.model.locationmodel.LocationName
 import com.hazrat.usecase.GetIslamicEventsUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
+import com.hazrat.usecase.GetNextFridayTime
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
-import com.hazrat.usecase.GetUpcomingIslamicEventUseCase
+import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Timer
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -24,8 +24,9 @@ import java.util.Timer
 class HomeViewModel(
     private val getTodayPrayerTimeUseCase: GetTodayPrayerTimeUseCase,
     private val getLocationNameUseCase: GetLocationNameUseCase,
-    private val getUpcomingIslamicEventUseCase: GetUpcomingIslamicEventUseCase,
-    private val islamicEventsUseCase: GetIslamicEventsUseCase
+    private val getUpcomingMainIslamicEventUseCase: GetUpcomingMainIslamicEventUseCase,
+    private val islamicEventsUseCase: GetIslamicEventsUseCase,
+    private val getNextFridayTime: GetNextFridayTime
 ) : ViewModel() {
 
 
@@ -39,12 +40,22 @@ class HomeViewModel(
     init {
         refreshLocation()
         getTodayPrayer()
-        loadRamadanEvent()
+        loadMainIslamicEvent()
         loadIslamicEvents()
+
+        viewModelScope.launch {
+            getNextFridayTime.invoke().collectLatest {time ->
+                _homeState.update {
+                    it.copy(
+                        fridayTime = time
+                    )
+                }
+            }
+        }
     }
 
-    private fun loadRamadanEvent() {
-        val event = getUpcomingIslamicEventUseCase.invoke()
+    private fun loadMainIslamicEvent() {
+        val event = getUpcomingMainIslamicEventUseCase.invoke()
         _homeState.update {
             it.copy(
                 upcomingIslamicEvent = event
@@ -63,13 +74,14 @@ class HomeViewModel(
 
     private fun loadIslamicEvents() {
         viewModelScope.launch (Dispatchers.IO){
-            val events = islamicEventsUseCase.invoke()
-            _homeState.update {
-                it.copy(
-                    islamicEventsInfoModel = events
-                )
+            islamicEventsUseCase.invoke().collectLatest {events ->
+                _homeState.update {
+                    it.copy(
+                        islamicEventsInfoModel = events
+                    )
+                }
+                Log.d("HomeViewModel", "List $events")
             }
-            Log.d("HomeViewModel", "List $events")
         }
     }
 

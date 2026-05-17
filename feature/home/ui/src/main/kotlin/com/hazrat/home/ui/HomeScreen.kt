@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,9 +28,13 @@ import com.hazrat.home.ui.component.HomePageNavIcons
 import com.hazrat.home.ui.component.HomeTopCard
 import com.hazrat.home.ui.component.QuickAccessMenu
 import com.hazrat.home.ui.component.DashboardTile
+import com.hazrat.home.ui.component.HomeScreenEventCard
+import com.hazrat.model.EventType
+import com.hazrat.model.IslamicEventType
 import com.hazrat.model.locationmodel.LocationName
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.DateUtil
 import com.hazrat.utils.IslamicCalendarUtils
 
 @Composable
@@ -157,20 +162,46 @@ fun HomeScreen(
                     )
                 }
             }
-
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    Text(
-                        text = "Upcoming Events",
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            color = MaterialTheme.colorScheme.onSurface
+            homeState.islamicEventsInfoModel.let {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = "Upcoming Events",
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         )
-                    )
+                        Spacer(Modifier.height(dimens.space8))
 
+
+                        it.take(4).forEachIndexed { index, model ->
+                            if (index == 0) {
+                                homeState.fridayTime?.let {time ->
+                                    HomeScreenEventCard(
+                                        eventName = "Jummah Prayer",
+                                        eventDate = " ${
+                                            DateUtil.dateLongToString(
+                                                dateLong = time,
+                                                format = "EEEE, dd MMMM yyyy • hh:mm a"
+                                            )
+                                        }",
+                                        eventType = EventType.JUMMA
+                                    )
+                                }
+                            }
+                            HomeScreenEventCard(
+                                eventName = model?.holidays ?: "",
+                                eventDate = "${model?.hijriDate} AH • ${DateUtil.dateLongToString(dateLong = (model?.timestamp?.times(
+                                    1000
+                                )) ?:0L , format ="EEEE, dd MMMM yyyy" )}",
+                                eventType = model?.type ?: EventType.SPECIAL
+                            )
+                        }
+                    }
                 }
             }
         }

@@ -18,23 +18,19 @@ interface PrayerTimeApi {
      * Retrieves prayer times for a specific year and month from the API.
      *
      * @param year The year for which prayer times are requested.
-     * @param month The month for which prayer times are requested.
      * @param latitude The latitude coordinate of the location.
      * @param longitude The longitude coordinate of the location.
      * @param method The calculation method for prayer times.
      * @param school The calculation school for prayer times.
-     * @param annual The calculation Annual Boolean Value for prayer times full year or if false 1 month.
      * @return ApiResponse containing the prayer times data.
      */
 
-    @GET("{year}/{month}")
+    @GET("{year}")
     suspend fun newPrayerTimesRequest(
         @Path("year") year: Int,
-        @Path("month") month: Int,
         @Query("latitude") latitude: String,
         @Query("longitude") longitude: String,
         @Query("method") method: Int,
-        @Query("school") school: Int,
-        @Query("annual") annual: Boolean
+        @Query("school") school: Int
     ): NewPrayerTimeDto
 }

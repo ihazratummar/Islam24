@@ -2,6 +2,7 @@ package com.hazrat.prayertime.data.repository
 
 import android.content.Context
 import android.content.Intent
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.hazrat.database.dao.PrayerTimeDao
 import com.hazrat.database.entity.PrayerTimeEntity
 import com.hazrat.datastore.UserDataStore
@@ -63,16 +64,16 @@ class PrayerTimeRepositoryImpl(
     override val prayerTimes = _prayerTimes.asStateFlow()
 
     override suspend fun newPrayerTimesRequest(): List<PrayerTimeEntity> {
-        val currentYear = DateUtil.getCurrentYear()
+        val currentYear = UmmalquraCalendar().get(UmmalquraCalendar.YEAR)
         val currentMonth = DateUtil.getCurrentMonth()
 
         // Fetch current year
-        val entities = fetchAndSaveYearlyPrayerTimes(currentYear, currentMonth)
+        val entities = fetchAndSaveYearlyPrayerTimes(currentYear)
 
         // If we are in December, also pre-fetch next year
         if (currentMonth == 12) {
             try {
-                fetchAndSaveYearlyPrayerTimes(currentYear + 1, 1)
+                fetchAndSaveYearlyPrayerTimes(currentYear + 1)
             } catch (e: Exception) {
                 Timber.tag("NewPrayerTimeRepositoryImpl")
                     .e("Failed to pre-fetch next year: ${e.message}")
@@ -99,8 +100,7 @@ class PrayerTimeRepositoryImpl(
     }
 
     private suspend fun fetchAndSaveYearlyPrayerTimes(
-        year: Int,
-        month: Int
+        year: Int
     ): List<PrayerTimeEntity> {
         return try {
             var latitude: Double
@@ -127,12 +127,10 @@ class PrayerTimeRepositoryImpl(
 
             val apiResponse = api.newPrayerTimesRequest(
                 year = year,
-                month = month,
                 latitude = "$latitude",
                 longitude = "$longitude",
                 method = calculationMethod,
-                school = juristicMethod,
-                annual = true
+                school = juristicMethod
             )
 
             val entities = apiResponse.data.values.flatten().toEntityList()
@@ -196,7 +194,7 @@ class PrayerTimeRepositoryImpl(
     override suspend fun getAllPrayerTimes() {
         getAllPrayer().distinctUntilChanged()
             .collectLatest { prayerList: List<PrayerTimeModel> ->
-                val currentYear = DateUtil.getCurrentYear()
+                val currentYear = UmmalquraCalendar().get(UmmalquraCalendar.YEAR)
 
                 // Migration Check: If data exists but in old format (dd-MM-yyyy), re-fetch
                 val hasOldFormat = prayerList.any { it.gregorianDate.indexOf("-") == 2 }
@@ -214,15 +212,15 @@ class PrayerTimeRepositoryImpl(
                     _prayerTimes.value = prayerList
 
                     // If we are in late December and don't have next year's data, trigger fetch
-                    val currentMonth = DateUtil.getCurrentMonth()
+                    val currentMonth = UmmalquraCalendar().get(UmmalquraCalendar.MONTH) + 1
                     if (currentMonth == 12) {
                         val hasNextYearData =
-                            prayerList.any { it.gregorianYear.toInt() == currentYear + 1 }
+                            prayerList.any { it.hijriYear == currentYear + 1 }
                         if (!hasNextYearData) {
                             val networkStatus = connectivityObserver.observer().first()
                             if (networkStatus == ConnectivityObserver.Status.Available) {
                                 try {
-                                    fetchAndSaveYearlyPrayerTimes(currentYear + 1, 1)
+                                    fetchAndSaveYearlyPrayerTimes(currentYear + 1 )
                                 } catch (e: Exception) {
                                     Timber.tag("NewPrayerTimeRepositoryImpl")
                                         .e("Auto pre-fetch failed: ${e.message}")

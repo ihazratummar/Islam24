@@ -42,6 +42,8 @@ fun initKoin(app: Application) {
             getRemoteModule(),
             geSensorModule(),
             getLocationModule(),
+            getPrayerDataModule(),
+            getUserCaseModule(),
             getQiblaUiModule(),
             getAuthUiModule(),
             getAuthDataModule(),
@@ -55,9 +57,7 @@ fun initKoin(app: Application) {
             getAlQuranDataModule(),
             getQiblaDataModule(),
             getPrayerUiModule(),
-            getPrayerDataModule(),
-            getHomeUiModule(),
-            getUserCaseModule()
+            getHomeUiModule()
         )
     }
 }

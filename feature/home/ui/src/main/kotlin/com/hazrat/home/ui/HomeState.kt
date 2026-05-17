@@ -9,5 +9,6 @@ data class HomeState(
     val randomAyatNumber: Int = 0,
     val prayerData: MinimalPrayerData = MinimalPrayerData(),
     val upcomingIslamicEvent: UpcomingIslamicEvent? = null,
-    val islamicEventsInfoModel: List<IslamicEventsInfoModel> = emptyList()
+    val islamicEventsInfoModel: List<IslamicEventsInfoModel?> = emptyList(),
+    val fridayTime: Long? = null
 )

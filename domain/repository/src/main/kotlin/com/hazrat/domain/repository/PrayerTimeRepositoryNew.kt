@@ -63,5 +63,7 @@ interface PrayerTimeRepositoryNew {
     fun buildShareText(prayerTimes: List<PrayerTimeModel>): String?
 
 
-    suspend fun getAllHolidayFromToday() : List<IslamicEventsInfoModel>
+    fun getAllHolidayFromToday() : Flow<List<IslamicEventsInfoModel>>
+
+    fun getNextFridayTime() : Flow<Long?>
 }
