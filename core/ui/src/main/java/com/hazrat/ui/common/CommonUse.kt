@@ -7,6 +7,13 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +25,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +38,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -93,7 +104,7 @@ fun OfflineCard(
                 text = "",
                 modifier = Modifier
                     .padding(dimens.space12)
-                    .width(dimens.compCard)
+                    .width(dimens.compCardMin)
                     .size(dimens.space20)
                     .shimmerEffect()
             )
@@ -103,7 +114,7 @@ fun OfflineCard(
             text = "",
             modifier = Modifier
                 .padding(dimens.space12)
-                .width(dimens.compCard)
+                .width(dimens.compCardMin)
                 .size(dimens.space20)
                 .shimmerEffect()
         )
@@ -208,4 +219,81 @@ fun BackIcon(
                 }
             )
     )
+}
+
+
+@Composable
+fun PulsingLiveDot(
+    color: Color = Color(0xFF34D399), // emerald-400
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(dimens.space16)
+    ) {
+        // outer ping ring
+        val infiniteTransition = rememberInfiniteTransition(label = "ping")
+        val scale by infiniteTransition.animateFloat(
+            initialValue = 1f,
+            targetValue = 2.5f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = EaseOut),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "scale"
+        )
+        val alpha by infiniteTransition.animateFloat(
+            initialValue = 0.6f,
+            targetValue = 0f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = EaseOut),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "alpha"
+        )
+
+        Box(
+            modifier = Modifier
+                .size(dimens.space12)
+                .scale(scale)
+                .background(
+                    color = color.copy(alpha = alpha),
+                    shape = CircleShape
+                )
+        )
+
+        // inner solid dot
+        Box(
+            modifier = Modifier
+                .size(dimens.space8)
+                .background(
+                    color = color,
+                    shape = CircleShape
+                )
+        )
+    }
+}
+
+@Composable
+fun IconWithBackground(
+    icon: Int,
+    containerColor: Color = MaterialTheme.colorScheme.outline,
+    onClick: () -> Unit = {},
+    iconColor: Color = MaterialTheme.colorScheme.onBackground
+){
+    Box(
+        modifier = Modifier
+            .size(dimens.space48)
+            .padding(dimens.space4)
+            .clip(RoundedCornerShape(dimens.space12))
+            .background(color = containerColor)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            modifier = Modifier.padding(dimens.space12).size(dimens.iconSm),
+            tint = iconColor
+        )
+    }
 }

@@ -1,11 +1,13 @@
 package com.hazrat.prayer.ui.component
 
-import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -24,13 +27,149 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.R
+import com.hazrat.ui.common.IconWithBackground
+import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.DateUtil.toReadableDate
 
+
+@Composable
+fun PrayerProgressCard(
+    modifier: Modifier = Modifier,
+    todayTimeStamp: Long
+) {
+    Card(
+        shape = RoundedCornerShape(dimens.cornerLg),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.space16),
+            verticalArrangement = Arrangement.spacedBy(dimens.space12),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+            ) {
+                IconWithBackground(
+                    icon = R.drawable.circle_check,
+                    containerColor = customColors.accentColor.copy(0.1f),
+                    iconColor = customColors.accentColor
+                )
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(dimens.space4),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = "${todayTimeStamp.toReadableDate()}'s Progress",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                    Text(
+                        text = "0 of 5 prayer logged",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = customColors.secondaryText,
+                        )
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = "0%",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        color = customColors.accentColor,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimens.space12)
+                    .clip(shape = RoundedCornerShape(100))
+                    .background(color = customColors.progressbarMute)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.25f)
+                        .fillMaxHeight()
+                        .background(customColors.accentColor)
+
+                )
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun NotificationSettingCard(
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        shape = RoundedCornerShape(dimens.cornerLg),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
+        modifier = modifier
+    ) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(dimens.space16),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+        ) {
+            IconWithBackground(
+                icon = R.drawable.notificationonn,
+                containerColor = MaterialTheme.colorScheme.surfaceTint.copy(0.1f),
+                iconColor = MaterialTheme.colorScheme.surfaceTint
+            )
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(dimens.space4),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Notification Settings",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+                Text(
+                    text = "5 of 5 prayer notified",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = customColors.secondaryText,
+                    )
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            Icon(
+                painter = painterResource(R.drawable.arrowright),
+                contentDescription = null,
+                modifier = Modifier.size(dimens.iconSm),
+                tint = customColors.secondaryText
+            )
+        }
+    }
+}
 
 @Composable
 fun PrayerSettingCard(
@@ -80,119 +219,6 @@ fun PrayerSettingCard(
 
 
 @Composable
-fun PrayerTimeCard(
-    @DrawableRes icon: Int,
-    text: String,
-    time: String,
-    countDownText: String,
-    isPrayerTime: Boolean,
-    onClick: () -> Unit = {},
-    isNotification: Boolean = false
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onClick()
-            }
-            .padding(
-                horizontal = dimens.space12,
-                vertical = dimens.space4
-            ),
-        colors = if (isPrayerTime) {
-            CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                containerColor = MaterialTheme.colorScheme.primary.copy(0.8f),
-            )
-        } else {
-            CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            )
-        }
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = dimens.space12,
-                    vertical = dimens.space32
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimens.space4)
-        ) {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = "Icon",
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(dimens.iconLg)
-            )
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(start = dimens.space12)
-            )
-
-            Spacer(modifier = Modifier.weight(0.5f))
-            Text(
-                text = countDownText,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = dimens.space12)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = time,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(start = dimens.space12)
-            )
-            Spacer(modifier = Modifier.width(dimens.space12))
-            Icon(
-                painter = if (isNotification) painterResource(R.drawable.notificationonn) else painterResource(R.drawable.notificationoff),
-                contentDescription = "Notification Icon",
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(dimens.iconMd)
-            )
-        }
-    }
-}
-
-
-
-@Composable
-fun PrayerDateCard(
-    modifier: Modifier = Modifier,
-    enDate: String,
-    hrDate: String
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(Color.Transparent)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = enDate,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Spacer(modifier = Modifier.height(dimens.space4))
-            Text(
-                text = hrDate,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-        }
-    }
-}
-
-
-@Composable
 fun ToggleNotification(
     modifier: Modifier,
     isCheck: Boolean,
@@ -223,7 +249,7 @@ fun ToggleNotification(
 
                 Switch(
                     checked = isCheck,
-                    onCheckedChange = {notificationEvent.invoke()},
+                    onCheckedChange = { notificationEvent.invoke() },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = MaterialTheme.colorScheme.primary,
                         checkedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -237,8 +263,6 @@ fun ToggleNotification(
         }
     }
 }
-
-
 
 
 @Composable

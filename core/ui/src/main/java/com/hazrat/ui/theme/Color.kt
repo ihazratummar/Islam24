@@ -98,35 +98,9 @@ val Error99 = Color(0xFFFFF9F9)
 
 // ---------- Shared Prayer Gradients ----------
 
-val FajrGradient = listOf(
-    Color(0xFF5B4FD7),
-    Color(0xFF7B5CF1)
-)
 
-val SunriseGradient = listOf(
-    Color(0xFFF5A623),
-    Color(0xFFF8B13B)
-)
-
-val DhuhrGradient = listOf(
-    Color(0xFF2BB7E8),
-    Color(0xFF3CC8F5)
-)
-
-val AsrGradient = listOf(
-    Color(0xFFF39C12),
-    Color(0xFFF7A623)
-)
-
-val MaghribGradient = listOf(
-    Color(0xFFFF6B57),
-    Color(0xFFFF8A4D)
-)
-
-val IshaGradient = listOf(
-    Color(0xFF4B56B7),
-    Color(0xFF2F3E73)
-)
+val ProgressBarMuteDark = Color(0xFF37484b)
+val MutedTextColor = Color(0xCCFFFFFF)
 
 // ---------- Buttons  ----------
 val ButtonColorDark = Color(0xFF10b981)
@@ -146,7 +120,11 @@ data class CustomColors(
 
     val emerald: Color,
     val accentColor : Color,
-    val iconColor: Color
+    val iconColor: Color,
+    val logoBackground: Color,
+    val homeCardGradient: List<Color>,
+    val secondaryText : Color = SecondaryText,
+    val progressbarMute: Color = ProgressBarMuteDark
 
 )
 
@@ -162,7 +140,9 @@ val LocalCustomColors = compositionLocalOf {
         ishaGradient = emptyList(),
         emerald = Color(0xFF95f0c6),
         accentColor = ButtonColorDark,
-        iconColor = IconColor
+        iconColor = IconColor,
+        logoBackground = Color(0xFF113736),
+        homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359))
     )
 }
 
@@ -186,7 +166,9 @@ val DarkCustomColors = CustomColors(
     ishaGradient = IshaGradient,
     emerald = Color(0xFF95f0c6),
     accentColor = ButtonColorDark,
-    iconColor = IconColor
+    iconColor = IconColor,
+    logoBackground = Color(0xFF113736),
+    homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359))
 )
 
 
@@ -208,5 +190,7 @@ val LightCustomColors = CustomColors(
     ishaGradient = IshaGradient,
     emerald = Color(0xFFA7F5D0),
     accentColor = ButtonColorDark,
-    iconColor = IconColor
+    iconColor = IconColor,
+    logoBackground = Color(0xFF113736),
+    homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359))
 )

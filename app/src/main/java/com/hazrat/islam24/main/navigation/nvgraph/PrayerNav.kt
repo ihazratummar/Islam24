@@ -11,9 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.hazrat.datastore.PrayerName
-import com.hazrat.home.ui.component.HomeRoutes
 import com.hazrat.islam24.main.navigation.MainRoute
-import com.hazrat.prayer.ui.prayertime.PrayerNav
 import com.hazrat.prayer.ui.prayertime.PrayerTimeScreen
 import com.hazrat.prayer.ui.prayertime.PrayerTimeViewModel
 import com.hazrat.prayer.ui.component.listOfAzan
@@ -43,16 +41,6 @@ fun NavGraphBuilder.prayerNav(
             PrayerTimeScreen(
                 event = prayerTimeViewModel::onEvent,
                 onPrayerSettingClick = { navController.navigate(MainRoute.PrayerSetting) },
-                navigateToNotification = { prayerNav ->
-                    when (prayerNav) {
-                        PrayerNav.FAJR -> navController.navigate(FajrSetting)
-                        PrayerNav.DHUHR -> navController.navigate(DhuhrSetting)
-                        PrayerNav.ASR -> navController.navigate(AsrSetting)
-                        PrayerNav.MAGHRIB -> navController.navigate(MaghribSetting)
-                        PrayerNav.ISHA -> navController.navigate(IshaSetting)
-                    }
-                },
-                navigateToCalendar = { navController.navigate(HomeRoutes.Calendar) },
                 prayerTimeUiState = prayerTimesUiState
             )
         }

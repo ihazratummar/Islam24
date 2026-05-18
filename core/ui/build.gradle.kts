@@ -48,6 +48,7 @@ android {
 dependencies {
 
     implementation(project(":core:utils"))
+    implementation(project(":domain:model"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

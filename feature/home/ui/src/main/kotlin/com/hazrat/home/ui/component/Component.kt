@@ -1,12 +1,6 @@
 package com.hazrat.home.ui.component
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -28,11 +22,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -40,11 +32,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.TextUnit
 import com.hazrat.model.EventType
-import com.hazrat.model.IslamicEventType
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.ui.R
+import com.hazrat.ui.common.PulsingLiveDot
+import com.hazrat.ui.common.rememberPrayerState
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
@@ -200,7 +192,7 @@ fun HomeTopCard(
                                         painter = painterResource(R.drawable.double_check),
                                         contentDescription = null,
                                         modifier = Modifier
-                                            .size(dimens.iconSm)
+                                            .size(dimens.iconSx)
                                     )
                                     Text(
                                         text = "Log Prayer",
@@ -307,7 +299,7 @@ fun DashboardTile(
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.surfaceTint,
                     modifier = Modifier
-                        .size(dimens.iconSm)
+                        .size(dimens.iconSx)
                 )
                 Text(
                     text = label,
@@ -336,71 +328,23 @@ fun DashboardTile(
     }
 }
 
-@Composable
-fun PulsingLiveDot(
-    color: Color = Color(0xFF34D399), // emerald-400
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.size(dimens.space16)
-    ) {
-        // outer ping ring
-        val infiniteTransition = rememberInfiniteTransition(label = "ping")
-        val scale by infiniteTransition.animateFloat(
-            initialValue = 1f,
-            targetValue = 2.5f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = EaseOut),
-                repeatMode = RepeatMode.Restart
-            ),
-            label = "scale"
-        )
-        val alpha by infiniteTransition.animateFloat(
-            initialValue = 0.6f,
-            targetValue = 0f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = EaseOut),
-                repeatMode = RepeatMode.Restart
-            ),
-            label = "alpha"
-        )
 
-        Box(
-            modifier = Modifier
-                .size(dimens.space12)
-                .scale(scale)
-                .background(
-                    color = color.copy(alpha = alpha),
-                    shape = CircleShape
-                )
-        )
-
-        // inner solid dot
-        Box(
-            modifier = Modifier
-                .size(dimens.space8)
-                .background(
-                    color = color,
-                    shape = CircleShape
-                )
-        )
-    }
-}
 
 
 @Composable
 fun CardGradient(
     content: @Composable () -> Unit
 ) {
+    val gradientColors = customColors.homeCardGradient
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .drawWithCache {
                 val linear = Brush.linearGradient(
                     colorStops = arrayOf(
-                        0.0f to Color(0xFF0C4F52),
-                        0.45f to Color(0xFF0F5B5B),
-                        1.0f to Color(0xFF1F6359),
+                        0.0f to gradientColors[0],
+                        0.45f to gradientColors[1],
+                        1.0f to gradientColors[2],
                     ),
                     start = Offset(0f, 0f),
                     end = Offset(size.width, size.height)
@@ -431,11 +375,11 @@ fun CardGradient(
 fun HomeScreenEventCard(
     eventName: String,
     eventDate: String,
-    eventType: EventType
+    eventType: EventType,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
-            .padding(vertical = dimens.space8)
+        modifier = modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh

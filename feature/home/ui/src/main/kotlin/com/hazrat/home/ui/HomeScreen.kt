@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.home.ui.component.HomePageNavIcons
 import com.hazrat.home.ui.component.HomeTopCard
@@ -44,7 +46,6 @@ fun HomeScreen(
     onWidgetClick: (HomePageNavIcons) -> Unit,
     homeState: HomeState
 ) {
-
     Scaffold { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -55,7 +56,9 @@ fun HomeScreen(
         ) {
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = dimens.space16),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(dimens.space8)
                 ) {
@@ -65,7 +68,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .size(dimens.iconXl)
                             .background(
-                                color = Color(0xFF113736),
+                                color = com.hazrat.ui.theme.customColors.logoBackground,
                                 shape = RoundedCornerShape(dimens.cornerLg)
                             ),
                         tint = Color.Unspecified
@@ -76,14 +79,14 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = "Islam 24",
+                            text = stringResource(R.string.app_name),
                             style = MaterialTheme.typography.headlineMedium.copy(
                                 color = MaterialTheme.colorScheme.onBackground,
                                 fontWeight = FontWeight.W700
                             )
                         )
                         Text(
-                            text = "Your Daily Companion",
+                            text = stringResource(R.string.your_daily_companion),
                             style = MaterialTheme.typography.bodySmall.copy(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -125,34 +128,38 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.spacedBy(dimens.space12)
                 ) {
                     val hijriDate = IslamicCalendarUtils.getCurrentHijriDateInfo()
                     DashboardTile(
                         modifier = Modifier.weight(1f),
-                        label = "HIJRI DATE",
+                        label = stringResource(R.string.hijri_date_label),
                         mainText = "${hijriDate.day} ${hijriDate.monthName}",
                         bottomLabel = "${hijriDate.year} AH"
                     )
-                    Spacer(Modifier.width(dimens.space12))
-                    DashboardTile(
-                        modifier = Modifier.weight(1f),
-                        label = "${homeState.upcomingIslamicEvent?.eventType?.name}",
-                        mainText = "${homeState.upcomingIslamicEvent?.daysRemaining} Days",
-                        bottomLabel = "Until ${homeState.upcomingIslamicEvent?.hijriMonth} ${homeState.upcomingIslamicEvent?.hijriYear} AH"
-                    )
+                    homeState.upcomingIslamicEvent?.let { event ->
+                        DashboardTile(
+                            modifier = Modifier.weight(1f),
+                            label = event.eventType.name,
+                            mainText = event.daysRemaining.toString(),
+                            bottomLabel = stringResource(
+                                R.string.until_event,
+                                event.hijriMonth,
+                                event.hijriYear
+                            )
+                        )
+                    }
                 }
             }
 
-
             item {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.Start
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(dimens.space8)
                 ) {
                     Text(
-                        text = "Quick Access",
+                        text = stringResource(R.string.quick_access),
                         style = MaterialTheme.typography.headlineSmall.copy(
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -162,45 +169,44 @@ fun HomeScreen(
                     )
                 }
             }
-            homeState.islamicEventsInfoModel.let {
+
+            if (homeState.islamicEventsInfoModel.isNotEmpty()) {
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(
-                            text = "Upcoming Events",
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                    Text(
+                        text = stringResource(R.string.upcoming_events),
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        modifier = Modifier.padding(bottom = dimens.space8)
+                    )
+                }
+
+                // Show Friday Prayer as the first event if available
+                homeState.fridayTime?.let { time ->
+                    item {
+                        HomeScreenEventCard(
+                            eventName = stringResource(R.string.jummah_prayer),
+                            eventDate = DateUtil.dateLongToString(
+                                dateLong = time,
+                                format = "EEEE, dd MMMM yyyy • hh:mm a"
+                            ),
+                            eventType = EventType.JUMMA
                         )
-                        Spacer(Modifier.height(dimens.space8))
+                    }
+                }
 
-
-                        it.take(4).forEachIndexed { index, model ->
-                            if (index == 0) {
-                                homeState.fridayTime?.let {time ->
-                                    HomeScreenEventCard(
-                                        eventName = "Jummah Prayer",
-                                        eventDate = " ${
-                                            DateUtil.dateLongToString(
-                                                dateLong = time,
-                                                format = "EEEE, dd MMMM yyyy • hh:mm a"
-                                            )
-                                        }",
-                                        eventType = EventType.JUMMA
-                                    )
-                                }
-                            }
-                            HomeScreenEventCard(
-                                eventName = model?.holidays ?: "",
-                                eventDate = "${model?.hijriDate} AH • ${DateUtil.dateLongToString(dateLong = (model?.timestamp?.times(
-                                    1000
-                                )) ?:0L , format ="EEEE, dd MMMM yyyy" )}",
-                                eventType = model?.type ?: EventType.SPECIAL
-                            )
-                        }
+                itemsIndexed(homeState.islamicEventsInfoModel.take(4)) { _, model ->
+                    model?.let {
+                        HomeScreenEventCard(
+                            eventName = it.holidays,
+                            eventDate = "${it.hijriDate} AH • ${
+                                DateUtil.dateLongToString(
+                                    dateLong = (it.timestamp?.times(1000)) ?: 0L,
+                                    format = "EEEE, dd MMMM yyyy"
+                                )
+                            }",
+                            eventType = it.type
+                        )
                     }
                 }
             }

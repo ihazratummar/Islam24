@@ -2,6 +2,7 @@ package com.hazrat.utils
 
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -15,15 +16,6 @@ import java.util.Locale
  */
 object DateUtil {
 
-    /**
-     * Retrieves the current year.
-     *
-     * @return The current year as an integer.
-     */
-    fun getCurrentYear(): Int {
-        val calendar = Calendar.getInstance()
-        return calendar.get(Calendar.YEAR)
-    }
 
     /**
      * Retrieves the current month.
@@ -35,15 +27,6 @@ object DateUtil {
         return calendar.get(Calendar.MONTH) + 1 // Adding 1 because Calendar.MONTH starts from 0
     }
 
-    /**
-     * Retrieves the current day of the month.
-     *
-     * @return The current day of the month as an integer.
-     */
-    fun getCurrentDay(): Int {
-        val calendar = Calendar.getInstance()
-        return calendar.get(Calendar.DAY_OF_MONTH)
-    }
 
     /**
      * Retrieves the current date in the "yyyy-MM-dd" format for sortable database storage.
@@ -67,16 +50,6 @@ object DateUtil {
         } catch (e: Exception) {
             dateString
         }
-    }
-
-    /**
-     * Retrieves the current date in the "dd-MMMM-yyyy" format.
-     *
-     * @return The current date as a string.
-     */
-    fun getCurrentDateWithMonthName(): String {
-        val dateFormat = SimpleDateFormat("dd-MMMM-yyyy", Locale.ENGLISH)
-        return dateFormat.format(Date())
     }
 
     /**
@@ -108,46 +81,37 @@ object DateUtil {
         return formatter.format(date)
     }
 
+    /**
+     *  Create Readable date for Time millis
+     */
 
-    fun getCountdownText(targetTimeMillis: Long): String {
-        val currentTimeMillis = System.currentTimeMillis()
+    fun Long.toReadableDate() : String {
+        val zoneId = ZoneId.systemDefault()
+        val targetDate = Instant
+            .ofEpochMilli(this)
+            .atZone(zoneId)
+            .toLocalDate()
 
-        // Calculate the difference in milliseconds
-        val diffMillis = targetTimeMillis - currentTimeMillis
+        val today = LocalDate.now(zoneId)
 
-        if (diffMillis <= 0) {
-            return ""
+        return when {
+            targetDate.isEqual(today) ->{
+                "Today"
+            }
+            targetDate.isEqual(today.minusDays(1)) -> {
+                "Yesterday"
+            }
+            targetDate.isEqual(today.plusDays(1)) -> {
+                "Tomorrow"
+            }
+            targetDate.year == today.year -> {
+                targetDate.format(DateTimeFormatter.ofPattern("d MMM"))
+            }
+
+            else -> {
+                targetDate.format(DateTimeFormatter.ofPattern("d MMM yyyy"))
+            }
         }
-
-        // Convert milliseconds to hours, minutes, and seconds
-        val seconds = diffMillis / 1000
-        val minutes = seconds / 60
-        val hours = minutes / 60
-
-        // Format the remaining time into a countdown text
-        val hoursLeft = hours % 24
-        val minutesLeft = minutes % 60
-        val secondsLeft = seconds % 60
-
-        return String.format(Locale.getDefault(), "- %02d:%02d:%02d", hoursLeft, minutesLeft, secondsLeft)
     }
 
-
-    fun formatLocalTime(time: LocalTime?): String? {
-        return time?.let {
-            val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault())
-            it.format(formatter)
-        }
-    }
-
-    fun convertLongToLocalTime(timestamp: Long, zoneId: ZoneId = ZoneId.systemDefault()): LocalTime {
-        // Convert timestamp to Instant
-        val instant = Instant.ofEpochMilli(timestamp)
-
-        // Convert Instant to LocalDateTime using the specified time zone
-        val localDateTime = LocalDateTime.ofInstant(instant, zoneId)
-
-        // Extract and return the LocalTime from LocalDateTime
-        return localDateTime.toLocalTime()
-    }
 }

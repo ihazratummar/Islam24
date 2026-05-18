@@ -16,7 +16,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.hazrat.model.qiblaModels.compassList
+import com.hazrat.model.qiblaModels.CompassModels
+import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 
 /**
@@ -59,3 +60,23 @@ fun BottomCompassPreview(
         }
     }
 }
+
+
+val compassList = listOf(
+    CompassModels(
+        id = 1,
+        name = "Cyan Compass",
+        compassImage = "file:///android_asset/compass/blue_compass.svg",
+        compassNeedle = com.hazrat.ui.R.drawable.blue_needle,
+        isLoggedInRequired = false,
+        compassMiddle = com.hazrat.ui.R.drawable.blue_middle_compass
+    ),
+    CompassModels(
+        id = 2,
+        name = "Cyan Compass",
+        compassImage = "file:///android_asset/compass/gold_compass.svg",
+        compassNeedle = com.hazrat.ui.R.drawable.gold_niddle,
+        isLoggedInRequired = true,
+        compassMiddle = R.drawable.niddle_middle
+    )
+)

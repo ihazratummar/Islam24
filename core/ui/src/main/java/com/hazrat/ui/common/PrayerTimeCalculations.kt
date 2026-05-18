@@ -1,4 +1,4 @@
-package com.hazrat.home.ui.component
+package com.hazrat.ui.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

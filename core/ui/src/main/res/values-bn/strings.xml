@@ -140,4 +140,10 @@
     <string name="hajj_live">হজ লাইভ</string>
     <string name="legal">Legal</string>
     <string name="policies">Policies</string>
+    <string name="your_daily_companion">আপনার প্রতিদিনের সঙ্গী</string>
+    <string name="quick_access">দ্রুত অ্যাক্সেস</string>
+    <string name="upcoming_events">আসন্ন ঘটনা</string>
+    <string name="jummah_prayer">জুম্মার নামাজ</string>
+    <string name="hijri_date_label">হিজরি তারিখ</string>
+    <string name="until_event">%1$s %2$d হিজরি পর্যন্ত</string>
 </resources>

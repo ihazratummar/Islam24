@@ -144,4 +144,10 @@
     <string name="hajj_live">Hajj Live</string>
     <string name="legal">Legal</string>
     <string name="policies">Policies</string>
+    <string name="your_daily_companion">Your Daily Companion</string>
+    <string name="quick_access">Quick Access</string>
+    <string name="upcoming_events">Upcoming Events</string>
+    <string name="jummah_prayer">Jummah Prayer</string>
+    <string name="hijri_date_label">HIJRI DATE</string>
+    <string name="until_event">Until %1$s %2$d AH</string>
 </resources>

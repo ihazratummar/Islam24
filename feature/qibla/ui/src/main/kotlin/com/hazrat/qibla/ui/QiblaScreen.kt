@@ -58,9 +58,8 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import com.google.android.gms.maps.model.LatLng
 import com.hazrat.common.BasicTopBar
-import com.hazrat.ui.R
 import com.hazrat.model.AuthState
-import com.hazrat.model.qiblaModels.compassList
+import com.hazrat.ui.R
 import com.hazrat.ui.common.PopupDialog
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.drawableToBitmap
@@ -350,7 +349,7 @@ fun QiblaScreen(
 
 @Composable
 fun OrientationIndicator(pitch: Float, roll: Float, modifier: Modifier = Modifier) {
-    val circleSize = dimens.compCard // Size of the circle box
+    val circleSize = dimens.compCardMin // Size of the circle box
     val radius = with(LocalDensity.current) { circleSize.toPx() / 2 }
     val dotRadius = dimens.space8 // Size of the red dot
 

@@ -45,14 +45,16 @@ import kotlinx.serialization.Serializable
 fun QuickAccessMenu(
     onClick: (HomePageNavIcons) -> Unit
 ) {
-    val navIcons = listOf(
-        HomePageNavIcons.AsmaUlHusna,
-        HomePageNavIcons.Calendar,
-        HomePageNavIcons.Athkar,
-        HomePageNavIcons.Qibla,
-        HomePageNavIcons.Tasbih,
-        HomePageNavIcons.Zakat,
-    )
+    val navIcons = remember {
+        listOf(
+            HomePageNavIcons.AsmaUlHusna,
+            HomePageNavIcons.Calendar,
+            HomePageNavIcons.Athkar,
+            HomePageNavIcons.Qibla,
+            HomePageNavIcons.Tasbih,
+            HomePageNavIcons.Zakat,
+        )
+    }
 
     FlowRow(
         modifier = Modifier.fillMaxWidth(),

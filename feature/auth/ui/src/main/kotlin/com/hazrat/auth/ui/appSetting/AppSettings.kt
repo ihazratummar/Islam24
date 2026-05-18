@@ -51,7 +51,6 @@ import com.hazrat.auth.ui.appSetting.component.SelectLanguageDialog
 import com.hazrat.auth.ui.appSetting.component.logOutCardShimmerEffect
 import com.hazrat.auth.ui.profileScreen.component.RatingBottomSheet
 import com.hazrat.ui.common.BackIcon
-import android.app.Activity
 import com.hazrat.utils.hapticFeedbacks
 import com.hazrat.model.Languages
 import com.hazrat.ui.R
@@ -184,10 +183,10 @@ fun AppSettingScreen(
                             },
                             selectedText = when (appSettingState.currentLanguage) {
                                 Languages.ENGLISH -> {
-                                    stringResource(Languages.ENGLISH.getString())
+                                    stringResource(Languages.ENGLISH.toStringResource())
                                 }
 
-                                Languages.BENGALI -> stringResource(Languages.BENGALI.getString())
+                                Languages.BENGALI -> stringResource(Languages.BENGALI.toStringResource())
                                 null -> ""
                             }
                         )
@@ -344,6 +343,14 @@ fun AppSettingScreen(
     }
 }
 
+
+
+fun Languages.toStringResource() : Int {
+    return when(this){
+        Languages.ENGLISH ->  R.string.english
+        Languages.BENGALI ->  R.string.bengali
+    }
+}
 
 data class SettingItemData(
     val leadingIcon: Painter,

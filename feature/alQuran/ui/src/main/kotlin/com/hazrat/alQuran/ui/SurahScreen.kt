@@ -112,12 +112,12 @@ fun SurahScreen(
 
     LaunchedEffect(Unit) {
         if (quranState.lastReadSurah == surahNumber && quranState.lastReadAyah != null) {
-            listState.scrollToItem(quranState.lastReadAyah)
+            listState.scrollToItem(quranState.lastReadAyah.coerceAtLeast(0))
         } else {
             listState.scrollToItem(0)
         }
         if (ayatNumber != null) {
-            listState.scrollToItem(ayatNumber + 1)
+            listState.scrollToItem((ayatNumber + 1).coerceAtLeast(0))
         }
     }
     val totalAyahs = quranAr.ayahs.size

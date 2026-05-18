@@ -24,7 +24,9 @@ fun getPrayerUiModule(): Module = module {
             mediaPlayerHelper = get(),
             dataStore = get(),
             connectivityObserver = get(),
-            downloader = get()
+            downloader = get(),
+            getTodayPrayerTimeUseCase = get(),
+            getLocationNameUseCase = get()
         )
     }
 

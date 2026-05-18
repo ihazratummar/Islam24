@@ -67,6 +67,8 @@ data class MinimalPrayerData(
     val firstThirdTime: Long= 0L,
     val lastThirdTime: Long= 0L,
 
+    val timeStamp: Long= 0L,
+
     val hijriDay: Int = 0,
     val hijriMonthEn: String = "",
     val hijriMonthNumber: Int=0,

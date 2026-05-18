@@ -4,17 +4,16 @@ import android.app.Activity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -147,60 +146,51 @@ private val DarkColorScheme = darkColorScheme(
     scrim = Neutral0
 )
 
+/**
+ * CompositionLocal used to provide [Dimens] throughout the hierarchy.
+ */
+val LocalAppDimens = compositionLocalOf {
+    CompactDimens
+}
+
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun Islam24Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    activity: Activity? = LocalActivity.current as? Activity,
+    activity: Activity? = LocalActivity.current,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val view = LocalView.current
 
-    val window = if (activity != null){
-        calculateWindowSizeClass(activity = activity)
-    }else{
-        null
+    val windowSizeClass = activity?.let {
+        calculateWindowSizeClass(it)
     }
-    val config = LocalConfiguration.current
 
-    val typography: Typography
-    val appDimens: Dimens
+    // Industry-standard approach: Derive tokens from window size class
+    val (appDimens, typography) = when (windowSizeClass?.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> CompactDimens to CompactTypography
+        WindowWidthSizeClass.Medium -> MediumDimens to MediumTypography
+        WindowWidthSizeClass.Expanded -> ExpandedDimens to ExpandedTypography
+        else -> CompactDimens to CompactTypography
+    }
 
-    if (!view.isInEditMode){
+    // Custom design tokens (Gradients, specialized colors)
+    val customColors = remember(darkTheme) {
+        if (darkTheme) DarkCustomColors else LightCustomColors
+    }
+
+    // System bars management
+    if (!view.isInEditMode && activity != null) {
         SideEffect {
-            activity?.window?.colorMode = Color.Transparent.toArgb()
-            WindowCompat.getInsetsController(activity?.window!!, view).isAppearanceLightStatusBars =
-                !darkTheme
+            val window = activity.window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
-    when (window?.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> {
-            if (config.screenWidthDp <= 360) {
-                appDimens = CompactSmallDimens
-                typography = CompactSmallTypography
-            } else {
-                appDimens = CompactDimens
-                typography = CompactTypography
-            }
-        }
 
-        WindowWidthSizeClass.Medium -> {
-            appDimens = MediumDimens
-            typography = MediumTypography
-        }
-
-        else -> {
-            appDimens = ExpandedDimens
-            typography = ExpandedTypography
-        }
-    }
-    AppUtils(
-        appDimens = appDimens
+    CompositionLocalProvider(
+        LocalAppDimens provides appDimens,
+        LocalCustomColors provides customColors
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -209,7 +199,10 @@ fun Islam24Theme(
         )
     }
 }
-
 val dimens
     @Composable
     get() = LocalAppDimens.current
+
+val customColors: CustomColors
+    @Composable
+    get() = LocalCustomColors.current
