@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.hazrat.model.MinimalPrayerData
+import com.hazrat.model.Prayer
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.AsrGradient
 import com.hazrat.ui.theme.DhuhrGradient
@@ -29,42 +30,49 @@ enum class PrayerType(
     @DrawableRes val icon: Int,
     val gradient: List<Color>,
     val color: Color,
+    val prayer: Prayer
 ) {
     FAJR(
         nameRes   = R.string.fajr,
         icon      = R.drawable.dawn,
         gradient  = FajrGradient,
         color     = Color(0xFF6d63f2),
+        prayer = Prayer.FAJR
     ),
     SUNRISE(
         nameRes   = R.string.sunrise,
         icon      = R.drawable.sunrise,
         gradient  = SunriseGradient,
         color     = Color(0xFFFACA96),
+        prayer = Prayer.FAJR
     ),
     DHUHR(
         nameRes   = R.string.dhuhr,
         icon      = R.drawable.sun,
         gradient  = DhuhrGradient,
         color     = Color(0xFFFFB752),
+        prayer = Prayer.DHUHR
     ),
     ASR(
         nameRes   = R.string.asr,
         icon      = R.drawable.asr,
         gradient  = AsrGradient,
         color     = Color(0xFFFF8E00),
+        prayer = Prayer.ASR
     ),
     MAGHRIB(
         nameRes   = R.string.maghrib,
         icon      = R.drawable.evening,
         gradient  = MaghribGradient,
         color     = Color(0xFFfa716a),
+        prayer = Prayer.MAGHRIB
     ),
     ISHA(
         nameRes   = R.string.isha_a,
         icon      = R.drawable.isha,
         gradient  = IshaGradient,
         color     = Color(0xFF42D6FF),
+        prayer = Prayer.ISHA
     ),
 }
 

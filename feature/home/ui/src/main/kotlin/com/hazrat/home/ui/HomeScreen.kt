@@ -6,12 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,13 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.hazrat.home.ui.component.DashboardTile
 import com.hazrat.home.ui.component.HomePageNavIcons
+import com.hazrat.home.ui.component.HomeScreenEventCard
 import com.hazrat.home.ui.component.HomeTopCard
 import com.hazrat.home.ui.component.QuickAccessMenu
-import com.hazrat.home.ui.component.DashboardTile
-import com.hazrat.home.ui.component.HomeScreenEventCard
 import com.hazrat.model.EventType
-import com.hazrat.model.IslamicEventType
 import com.hazrat.model.locationmodel.LocationName
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
@@ -46,7 +44,9 @@ fun HomeScreen(
     onWidgetClick: (HomePageNavIcons) -> Unit,
     homeState: HomeState
 ) {
-    Scaffold { paddingValues ->
+    Scaffold (
+        contentWindowInsets = WindowInsets()
+    ){ paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -140,8 +140,8 @@ fun HomeScreen(
                     homeState.upcomingIslamicEvent?.let { event ->
                         DashboardTile(
                             modifier = Modifier.weight(1f),
-                            label = event.eventType.name,
-                            mainText = event.daysRemaining.toString(),
+                            label = event.eventType.toString(),
+                            mainText = "${event.daysRemaining} Days",
                             bottomLabel = stringResource(
                                 R.string.until_event,
                                 event.hijriMonth,
@@ -205,7 +205,7 @@ fun HomeScreen(
                                     format = "EEEE, dd MMMM yyyy"
                                 )
                             }",
-                            eventType = it.type
+                            eventType = it.type,
                         )
                     }
                 }

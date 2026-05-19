@@ -297,7 +297,7 @@ private fun BottomBar(navController: NavHostController) {
                         Icon(
                             painter = painterResource(id = screen.icon),
                             contentDescription = screen.name,
-                            modifier = Modifier.size(dimens.space32)
+                            modifier = Modifier.size(dimens.iconLg)
                         )
                     },
                     label = { Text(text = screen.name) },

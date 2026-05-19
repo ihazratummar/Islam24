@@ -3,15 +3,9 @@ package com.hazrat.ui.theme
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-// Modern Spiritual Palette (Premium)
-val DeepPineGreen = Color(0xFF0F3D3E)
-val EmeraldGreen = Color(0xFF1E726D)
-val SpiritualGold = Color(0xFFD4AF37)
-val SoftCream = Color(0xFFFDFBF7)
-
-
-//// New Colors ///
-
+// ======================================================
+// PRIMARY
+// ======================================================
 
 val Primary10 = Color(0xFF021416)
 val Primary20 = Color(0xFF04282C)
@@ -25,7 +19,11 @@ val Primary90 = Color(0xFFB3E0D9)
 val Primary95 = Color(0xFFE6F5F3)
 val Primary99 = Color(0xFFF5FBFA)
 
-// ========== SECONDARY (Gold) ==========
+
+// ======================================================
+// SECONDARY
+// ======================================================
+
 val Secondary10 = Color(0xFF594317)
 val Secondary20 = Color(0xFF785E1F)
 val Secondary30 = Color(0xFF967927)
@@ -38,7 +36,11 @@ val Secondary90 = Color(0xFFF9ECC0)
 val Secondary95 = Color(0xFFFDF8E8)
 val Secondary99 = Color(0xFFFFFDF7)
 
-// ========== TERTIARY (Terracotta — warm accent) ==========
+
+// ======================================================
+// TERTIARY
+// ======================================================
+
 val Tertiary10 = Color(0xFF410E0B)
 val Tertiary20 = Color(0xFF612C22)
 val Tertiary30 = Color(0xFF7D3B2E)
@@ -51,38 +53,61 @@ val Tertiary90 = Color(0xFFF5CFB0)
 val Tertiary95 = Color(0xFFFFF0E4)
 val Tertiary99 = Color(0xFFFFFBF8)
 
-// ========== NEUTRAL (Surface tones) ==========
+
+// ======================================================
+// NEUTRAL
+// ======================================================
+
 val Neutral0 = Color(0xFF000000)
-val Neutral4 = Color(0xFF0f1c1e)
+
+val Neutral4 = Color(0xFF0F1C1E)
 val Neutral6 = Color(0xFF0F1B1E)
+
 val Neutral10 = Color(0xFF151E20)
-val Neutral12 = Color(0xFF1a2e32)
+val Neutral12 = Color(0xFF1A2E32)
+
 val Neutral17 = Color(0xFF223A3E)
+
 val Neutral20 = Color(0xFF2A4548)
 val Neutral22 = Color(0xFF2F4D50)
+
 val Neutral30 = Color(0xFF456467)
 val Neutral40 = Color(0xFF5D7D80)
+
 val Neutral50 = Color(0xFF789799)
 val Neutral60 = Color(0xFF93B1B3)
+
 val Neutral70 = Color(0xFFAEC9CB)
 val Neutral80 = Color(0xFFC9E1E3)
+
 val Neutral87 = Color(0xFFDFF0F1)
 val Neutral90 = Color(0xFFE8F5F6)
+
 val Neutral92 = Color(0xFFEEF5F5)
 val Neutral94 = Color(0xFFF2F8F8)
+
 val Neutral95 = Color(0xFFF5FAFA)
 val Neutral96 = Color(0xFFF8FAF9)
+
 val Neutral98 = Color(0xFFFAFDFC)
 val Neutral99 = Color(0xFFFFFFFF)
 
-// ========== NEUTRAL VARIANT (Muted surface tones) ==========
+
+// ======================================================
+// NEUTRAL VARIANT
+// ======================================================
+
 val NeutralVariant30 = Color(0xFF3B4D4F)
 val NeutralVariant50 = Color(0xFF6B8284)
 val NeutralVariant60 = Color(0xFF849B9D)
 val NeutralVariant80 = Color(0xFFB3D0D3)
 val NeutralVariant90 = Color(0xFFD6EBED)
 
-// ========== ERROR ==========
+
+// ======================================================
+// ERROR
+// ======================================================
+
 val Error10 = Color(0xFF410E0B)
 val Error20 = Color(0xFF601410)
 val Error30 = Color(0xFF8C1D18)
@@ -94,7 +119,6 @@ val Error80 = Color(0xFFF2B8B5)
 val Error90 = Color(0xFFF9DEDC)
 val Error95 = Color(0xFFFCECEB)
 val Error99 = Color(0xFFFFF9F9)
-
 
 // ---------- Shared Prayer Gradients ----------
 

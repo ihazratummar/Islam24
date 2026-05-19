@@ -5,6 +5,7 @@ import androidx.annotation.WorkerThread
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.hazrat.database.dao.PrayerTimeDao
 import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.PrayerSettingRepository
 import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.domain.repository.PrayerTimeRepositoryNew
@@ -63,7 +64,8 @@ class PrayerTimeRepositoryImplNew(
     private val prayerTimeDao: PrayerTimeDao,
     private val context: Context,
     private val connectivityObserver: ConnectivityObserver,
-    private val dispatchers: DispatcherProvider,  // Injected — never hardcode Dispatchers.IO
+    private val dispatchers: DispatcherProvider,  // Injected — never hardcode Dispatchers.IO,
+    private val userDataStore: UserDataStore
 ) : PrayerTimeRepositoryNew {
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -354,8 +356,8 @@ class PrayerTimeRepositoryImplNew(
             val (latitude, longitude) = resolveCoordinates()
 
             // ── Settings snapshot ────────────────────────────────────────────
-            val method = prayerSettingRepository.getCalculationMethod().firstOrNull()?.method ?: 1
-            val school = prayerSettingRepository.getJuristicMethod().firstOrNull()?.school ?: 0
+            val method = userDataStore.getPrayerCalculationMethod()
+            val school = userDataStore.getPrayerJuristicMethod()
 
             // ── API call ─────────────────────────────────────────────────────
             val apiResponse = api.newPrayerTimesRequest(

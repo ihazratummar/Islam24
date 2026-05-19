@@ -67,7 +67,7 @@ class PrayerSettingViewModel (
                         if (result){
                             prayerTimeRepository.newPrayerTimesRequest()
                         }
-                        reScheduleAlarm()
+//                        reScheduleAlarm()
                     } else {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
@@ -88,7 +88,7 @@ class PrayerSettingViewModel (
                         if (result){
                             prayerTimeRepository.newPrayerTimesRequest()
                         }
-                        reScheduleAlarm()
+//                        reScheduleAlarm()
                     } else {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Check Internet Connection", Toast.LENGTH_SHORT)
@@ -117,6 +117,8 @@ class PrayerSettingViewModel (
         }
     }
 
+
+    // [PRAYERTIME][FIXME][HIGH] Most Important Fix Before Publishing
     private fun reScheduleAlarm() {
 
         if (!requestScheduleExactAlarmPermission(context = context)){

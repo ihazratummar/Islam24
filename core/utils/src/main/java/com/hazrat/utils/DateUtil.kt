@@ -76,7 +76,7 @@ object DateUtil {
     }
 
     fun dateLongToString(dateLong: Long, format: String = "hh:mm a"): String {
-        val formatter =SimpleDateFormat(format, Locale.getDefault())
+        val formatter =SimpleDateFormat(format, Locale.ENGLISH)
         val date = Date(dateLong)
         return formatter.format(date)
     }
@@ -112,6 +112,16 @@ object DateUtil {
                 targetDate.format(DateTimeFormatter.ofPattern("d MMM yyyy"))
             }
         }
+    }
+
+    fun toLocalDate(
+        timeMillis: Long,
+        zoneId: ZoneId = ZoneId.systemDefault()
+    ): LocalDate {
+        return Instant
+            .ofEpochMilli(timeMillis)
+            .atZone(zoneId)
+            .toLocalDate()
     }
 
 }

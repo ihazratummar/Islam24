@@ -1,10 +1,13 @@
 package com.hazrat.prayertime.data.di
 
+import com.hazrat.domain.repository.PrayerLogRepository
 import com.hazrat.domain.repository.PrayerSettingRepository
 import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.domain.repository.PrayerTimeRepositoryNew
+import com.hazrat.prayertime.data.mapper.PrayerLogMapper
 import com.hazrat.prayertime.data.repository.DefaultDispatcherProvider
 import com.hazrat.prayertime.data.repository.DispatcherProvider
+import com.hazrat.prayertime.data.repository.PrayerLogsRepositoryImpl
 import com.hazrat.prayertime.data.repository.PrayerSettingRepositoryImpl
 import com.hazrat.prayertime.data.repository.PrayerTimeRepositoryImpl
 import com.hazrat.prayertime.data.repository.PrayerTimeRepositoryImplNew
@@ -38,11 +41,21 @@ fun getPrayerDataModule(): Module = module {
             prayerTimeDao = get(),
             context = get(),
             dispatchers = get(),
-            connectivityObserver = get()
+            connectivityObserver = get(),
+            userDataStore = get()
         )
     }
 
-    single <DispatcherProvider>{ DefaultDispatcherProvider() }
+    single<DispatcherProvider> { DefaultDispatcherProvider() }
 
-    single <PrayerSettingRepository>{ PrayerSettingRepositoryImpl(prayerSettingDao = get(), userDataStore = get()) }
+    single<PrayerSettingRepository> { PrayerSettingRepositoryImpl(userDataStore = get()) }
+
+    single { PrayerLogMapper }
+
+    single <PrayerLogRepository>{
+        PrayerLogsRepositoryImpl(
+            prayerLogMapper = get(),
+            prayerLogDao = get()
+        )
+    }
 }

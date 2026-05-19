@@ -1,5 +1,12 @@
 package com.hazrat.prayer.ui.component
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Space
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,26 +33,64 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.hazrat.ui.R
 import com.hazrat.ui.common.IconWithBackground
+import com.hazrat.ui.common.PrayerType
+import com.hazrat.ui.theme.ActiveIcon
+import com.hazrat.ui.theme.FajrGradient
+import com.hazrat.ui.theme.InactiveIcon
+import com.hazrat.ui.theme.Info
+import com.hazrat.ui.theme.Islam24Theme
+import com.hazrat.ui.theme.Success
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.DateUtil
 import com.hazrat.utils.DateUtil.toReadableDate
 
 
 @Composable
 fun PrayerProgressCard(
     modifier: Modifier = Modifier,
-    todayTimeStamp: Long
+    todayTimeStamp: Long,
+    prayerCompletePercent: Int = 0,
+    completionRatio: Float = 0f,
+    completePrayerCount: Int = 0
+
 ) {
+
+    val animatedProgress by animateFloatAsState(
+        targetValue = completionRatio,
+        animationSpec = tween (
+            durationMillis = 700,
+            easing = FastOutSlowInEasing
+        ),
+        label = "progressAnimation"
+    )
+    val animatedPercentage by animateIntAsState(
+        targetValue = prayerCompletePercent,
+        animationSpec = tween (
+            durationMillis = 1000,
+            easing = FastOutSlowInEasing
+        ),
+        label = "completePercentage"
+    )
+
+
     Card(
         shape = RoundedCornerShape(dimens.cornerLg),
         colors = CardDefaults.cardColors(
@@ -82,7 +128,7 @@ fun PrayerProgressCard(
                         )
                     )
                     Text(
-                        text = "0 of 5 prayer logged",
+                        text = "$completePrayerCount of 5 prayer logged",
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = customColors.secondaryText,
                         )
@@ -90,7 +136,7 @@ fun PrayerProgressCard(
                 }
                 Spacer(Modifier.weight(1f))
                 Text(
-                    text = "0%",
+                    text = "${animatedPercentage}%",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = customColors.accentColor,
                         fontWeight = FontWeight.Bold
@@ -107,7 +153,7 @@ fun PrayerProgressCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.25f)
+                        .fillMaxWidth(animatedProgress)
                         .fillMaxHeight()
                         .background(customColors.accentColor)
 
@@ -117,6 +163,149 @@ fun PrayerProgressCard(
     }
 }
 
+
+@Composable
+fun PrayerTimeCard(
+    prayerType: PrayerType = PrayerType.ISHA,
+    onNotificationClick: (PrayerType) -> Unit = {},
+    onLogPrayerClick: (PrayerType) -> Unit = {},
+    prayerTime: Long = 0L,
+    isLogged: Boolean = false
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(dimens.cornerLg),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.space16),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+        ) {
+            PrayerIconWithBackground(
+                icon = prayerType.icon,
+                containerColor = prayerType.gradient
+            )
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(dimens.space4),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = stringResource(prayerType.nameRes),
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+
+                if (isLogged && prayerType != PrayerType.SUNRISE){
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(dimens.space4),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.check),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(dimens.space8),
+                            tint = Success
+                        )
+                        Text(
+                            text = "Logged",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = Success
+                            )
+                        )
+                    }
+                }
+
+            }
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = DateUtil.dateLongToString(prayerTime),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.SemiBold
+                )
+            )
+            if (prayerType != PrayerType.SUNRISE) {
+
+                IconWithBackground(
+                    modifier = Modifier.size(dimens.space48 / 1.1f),
+                    icon = R.drawable.notifications_fill,
+                    iconColor = Info,
+                    containerColor = Info.copy(0.1f),
+                    onClick = {
+                        onNotificationClick(prayerType)
+                    }
+                )
+                val color = if (isLogged) Color.White else InactiveIcon
+                val backgroundColor = if (isLogged) Success else InactiveIcon.copy(0.1f)
+
+                IconWithBackground(
+                    icon = R.drawable.check,
+                    iconColor = color,
+                    containerColor = backgroundColor,
+                    onClick = {
+                        onLogPrayerClick(prayerType)
+                    }
+                )
+            }
+
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimens.space4)
+                .clip(RoundedCornerShape(dimens.cornerLg))
+                .background(
+                    color = if (isLogged && prayerType != PrayerType.SUNRISE) Success else
+                        MaterialTheme.colorScheme.outline
+                )
+        )
+    }
+}
+
+data class PrayerTimeData(
+    val prayerType: PrayerType,
+    val prayerTime: Long,
+)
+
+
+@Composable
+fun PrayerIconWithBackground(
+    icon: Int,
+    containerColor: List<Color> = FajrGradient,
+    onClick: () -> Unit = {}
+) {
+    Box(
+        modifier = Modifier
+            .size(dimens.space48 * 1.05f)
+            .padding(dimens.space4)
+            .clip(RoundedCornerShape(dimens.space16))
+            .background(
+                brush = Brush.linearGradient(
+                    colors = containerColor
+                )
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(dimens.space12)
+                .size(dimens.iconSm),
+            tint = Color.White
+        )
+    }
+}
 
 
 @Composable
@@ -132,7 +321,9 @@ fun NotificationSettingCard(
     ) {
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(dimens.space16),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.space16),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(dimens.space8)
         ) {

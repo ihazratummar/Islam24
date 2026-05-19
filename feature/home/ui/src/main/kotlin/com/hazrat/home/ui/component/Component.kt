@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,15 +32,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import com.hazrat.model.EventType
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.ui.R
+import com.hazrat.ui.common.LongText
 import com.hazrat.ui.common.PulsingLiveDot
 import com.hazrat.ui.common.rememberPrayerState
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
+import kotlin.random.Random
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -70,13 +72,13 @@ fun HomeTopCard(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimens.space16),
+                    .padding(dimens.space12),
                 verticalArrangement = Arrangement.SpaceAround,
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(dimens.space12),
+                        .padding(dimens.space8),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -143,7 +145,7 @@ fun HomeTopCard(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(dimens.space12),
+                        .padding(dimens.space8),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -229,7 +231,7 @@ fun HomeTopCard(
                                 it.forEachIndexed { index, string ->
                                     Box(
                                         modifier = Modifier
-                                            .size(dimens.space56)
+                                            .size(dimens.space48)
                                             .background(
                                                 color = MaterialTheme.colorScheme.surfaceTint.copy(
                                                     0.15f
@@ -240,7 +242,7 @@ fun HomeTopCard(
                                     ) {
                                         Text(
                                             text = string,
-                                            style = MaterialTheme.typography.headlineMedium.copy(
+                                            style = MaterialTheme.typography.headlineSmall.copy(
                                                 MaterialTheme.colorScheme.onSurface,
                                                 fontWeight = FontWeight.W700
                                             ),
@@ -269,6 +271,7 @@ fun HomeTopCard(
 
     }
 }
+
 
 
 @Composable
@@ -318,11 +321,12 @@ fun DashboardTile(
                     fontWeight = FontWeight.W700
                 )
             )
-            Text(
+            LongText(
                 text = bottomLabel,
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontWeight = FontWeight.Medium
-                )
+                ),
+
             )
         }
     }
@@ -413,30 +417,32 @@ fun HomeScreenEventCard(
 
             Column (
                 verticalArrangement = Arrangement.spacedBy(dimens.space8),
-                modifier = Modifier.fillMaxWidth(0.65f)
+                modifier = Modifier.weight(1f)
             ){
-                Text(
+                val randomInt = Random.nextInt(5000, 10000)
+                LongText(
                     text = eventName,
                     style = MaterialTheme.typography.titleLarge.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Medium
                     ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    repeatDelay = randomInt,
+                    delay = randomInt
                 )
+
                 Text(
                     text = eventDate,
-                    style = MaterialTheme.typography.labelMedium.copy(
+                    style = MaterialTheme.typography.labelSmall.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
                 )
             }
 
-            Spacer(Modifier.weight(1f))
             Box(
-                modifier = Modifier.background(
+                modifier = Modifier
+                    .width(IntrinsicSize.Min)
+                    .background(
                     color = eventType.color().copy(0.1f),
                     shape = RoundedCornerShape(dimens.cornerLg)
                 ),

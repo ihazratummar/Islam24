@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.hazrat.datastore.NotificationType
 import com.hazrat.datastore.PrayerName
+import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.permission.PermissionTypes
 import com.hazrat.permission.isPermissionGranted
 import com.hazrat.permission.rememberPermissionRequester

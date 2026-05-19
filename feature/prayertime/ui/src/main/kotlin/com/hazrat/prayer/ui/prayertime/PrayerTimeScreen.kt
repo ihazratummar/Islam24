@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,22 +45,28 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.permission.PermissionTypes
 import com.hazrat.permission.isPermissionGranted
 import com.hazrat.permission.rememberPermissionRequester
 import com.hazrat.prayer.ui.component.NotificationSettingCard
 import com.hazrat.prayer.ui.component.PrayerProgressCard
+import com.hazrat.prayer.ui.component.PrayerTimeCard
+import com.hazrat.prayer.ui.component.PrayerTimeData
 import com.hazrat.ui.R
 import com.hazrat.ui.common.IconWithBackground
+import com.hazrat.ui.common.PrayerType
 import com.hazrat.ui.common.PulsingLiveDot
 import com.hazrat.ui.common.rememberPrayerState
 import com.hazrat.ui.theme.MutedTextColor
 import com.hazrat.ui.theme.PrayerLocationColor
 import com.hazrat.ui.theme.PrayerScreenGradient
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.DateUtil
 import com.hazrat.utils.DateUtil.dateLongToString
 import com.hazrat.utils.openAppSettings
+import kotlin.collections.listOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.S)
@@ -66,15 +74,13 @@ import com.hazrat.utils.openAppSettings
 fun PrayerTimeScreen(
     event: (PrayerEvent) -> Unit,
     prayerTimeUiState: PrayerTimeUiState,
-    onPrayerSettingClick: () -> Unit
+    onPrayerSettingClick: () -> Unit,
+    dailyPrayerStatus: DailyPrayerStatus?
 ) {
-
     val prayerTime = prayerTimeUiState.prayerTimes
     val prayerState = rememberPrayerState(prayerTimes = prayerTime ?: MinimalPrayerData())
     val isNow = prayerState.isNow
-
     var cardBottom by remember { mutableStateOf(0.dp) }
-
     val density = LocalDensity.current
 
     Scaffold(
@@ -101,7 +107,8 @@ fun PrayerTimeScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
-        }
+        },
+        contentWindowInsets = WindowInsets()
     ) { paddingValue ->
 
         val pullToRefreshState = rememberPullToRefreshState()
@@ -130,11 +137,6 @@ fun PrayerTimeScreen(
             },
             isRefreshing = prayerTimeUiState.isRefreshing
         ) {
-
-            if (prayerTimeUiState.prayerTimes != null) {
-                CircularProgressIndicator()
-            }
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -193,9 +195,9 @@ fun PrayerTimeScreen(
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
 
-                            if (isNow){
+                            if (isNow) {
                                 PulsingLiveDot()
-                            }else{
+                            } else {
                                 Text(
                                     text = "NEXT PRAYER",
                                     style = MaterialTheme.typography.bodySmall.copy(
@@ -205,12 +207,15 @@ fun PrayerTimeScreen(
                             }
 
                             Column(
-                                modifier = Modifier.padding(vertical = dimens.space8).fillMaxWidth(),
+                                modifier = Modifier
+                                    .padding(vertical = dimens.space8)
+                                    .fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(dimens.space4),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                val prayerName = if (isNow) prayerState.currentPrayer?.name.toString()
-                                else prayerState.nextPrayer?.name.toString()
+                                val prayerName =
+                                    if (isNow) prayerState.currentPrayer?.name.toString()
+                                    else prayerState.nextPrayer?.name.toString()
 
                                 Text(
                                     text = prayerName,
@@ -241,14 +246,17 @@ fun PrayerTimeScreen(
                     PrayerProgressCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .onGloballyPositioned {coordinates ->
-                            val bounds = coordinates.boundsInWindow()
-                            val centerYPx = bounds.top + (bounds.height / 3f)
-                            cardBottom = with(density){
-                                centerYPx.toDp()
-                            }
-                        },
-                        todayTimeStamp = prayerTime?.timeStamp?.times(1000)?:0L
+                            .onGloballyPositioned { coordinates ->
+                                val bounds = coordinates.boundsInWindow()
+                                val centerYPx = bounds.top + (bounds.height / 3f)
+                                cardBottom = with(density) {
+                                    centerYPx.toDp()
+                                }
+                            },
+                        todayTimeStamp = prayerTime?.timeStamp?.times(1000) ?: 0L,
+                        prayerCompletePercent = dailyPrayerStatus?.completionPercentage?: 0,
+                        completionRatio = dailyPrayerStatus?.completionRatio?: 0f,
+                        completePrayerCount = dailyPrayerStatus?.loggedPrayers?.size?:0
                     )
                 }
                 item {
@@ -256,6 +264,49 @@ fun PrayerTimeScreen(
                 }
                 item {
                     NotificationSettingCard()
+                }
+
+                val listOfPrayerTIme = listOf(
+                    PrayerTimeData(
+                        prayerType = PrayerType.FAJR,
+                        prayerTime = prayerTime?.fajrTime ?: 0L
+                    ),
+                    PrayerTimeData(
+                        prayerType = PrayerType.SUNRISE,
+                        prayerTime = prayerTime?.sunsetTime ?: 0L
+                    ),
+                    PrayerTimeData(
+                        prayerType = PrayerType.DHUHR,
+                        prayerTime = prayerTime?.dhuhrTime ?: 0L
+                    ),
+                    PrayerTimeData(
+                        prayerType = PrayerType.ASR,
+                        prayerTime = prayerTime?.asrTime ?: 0L
+                    ),
+                    PrayerTimeData(
+                        prayerType = PrayerType.MAGHRIB,
+                        prayerTime = prayerTime?.maghribTime ?: 0L
+                    ),
+                    PrayerTimeData(
+                        prayerType = PrayerType.ISHA,
+                        prayerTime = prayerTime?.ishaTime ?: 0L
+                    ),
+                )
+
+                itemsIndexed(listOfPrayerTIme) { index, data ->
+                    PrayerTimeCard(
+                        prayerType = data.prayerType,
+                        prayerTime = data.prayerTime,
+                        onLogPrayerClick = { prayerType ->
+                            event(
+                                PrayerEvent.LogPrayer(
+                                    date = data.prayerTime,
+                                    prayer = prayerType.prayer
+                                )
+                            )
+                        },
+                        isLogged = dailyPrayerStatus?.isLogged(prayer = data.prayerType.prayer) ?: false
+                    )
                 }
             }
         }

@@ -141,6 +141,7 @@ kotlinx-coroutines-play = "1.11.0"
 animationCore = "1.11.1"
 coreKtxVersion = "1.7.0"
 runtimeAnnotation = "1.11.1"
+foundationLayout = "1.11.1"
 
 [libraries]
 # ===========================
@@ -297,6 +298,7 @@ kotlinx-coroutines-test = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-te
 androidx-compose-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 androidx-compose-runtime-annotation = { group = "androidx.compose.runtime", name = "runtime-annotation", version.ref = "runtimeAnnotation" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

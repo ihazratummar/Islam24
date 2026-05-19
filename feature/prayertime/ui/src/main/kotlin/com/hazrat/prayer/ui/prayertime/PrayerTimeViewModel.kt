@@ -13,7 +13,6 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.State
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
@@ -22,27 +21,27 @@ import com.hazrat.datastore.DataStorePreference
 import com.hazrat.datastore.NotificationType
 import com.hazrat.datastore.PrayerName
 import com.hazrat.datastore.UserDataStore
-import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.domain.repository.PrayerTimeRepositoryNew
 import com.hazrat.downloader.Downloader
 import com.hazrat.downloader.MyFileUtils.saveMp3File
-import com.hazrat.model.PrayerTimeModel
+import com.hazrat.model.DailyPrayerStatus
+import com.hazrat.model.Prayer
 import com.hazrat.notification.MediaPlayerHelper
 import com.hazrat.notification.PrayerAlarmManager
 import com.hazrat.prayer.ui.notification.NotificationEvent
 import com.hazrat.prayer.ui.notification.NotificationState
+import com.hazrat.usecase.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
+import com.hazrat.usecase.TogglePrayerUseCase
 import com.hazrat.utils.Constants.DOWNLOADED_AZAN_FOLDER
 import com.hazrat.utils.Constants.PARENT_FOLDER_NAME_DOWNLOAD
 import com.hazrat.utils.Constants.SELECTED_ATHANS_SUB_FOLDER_NAME
-import com.hazrat.utils.DateUtil.getCurrentDate
 import com.hazrat.utils.MyFileUtils.isFilePresent
 import com.hazrat.utils.network.ConnectivityObserver
 import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -50,15 +49,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.system.measureTimeMillis
+import java.time.Clock
+import java.time.LocalDate
 
 
 class PrayerTimeViewModel(
@@ -71,8 +68,19 @@ class PrayerTimeViewModel(
     private val connectivityObserver: ConnectivityObserver,
     private val downloader: Downloader,
     private val getTodayPrayerTimeUseCase: GetTodayPrayerTimeUseCase,
-    private val getLocationNameUseCase: GetLocationNameUseCase
+    private val getLocationNameUseCase: GetLocationNameUseCase,
+    private val getDailyPrayerStatus: GetDailyPrayerStatusUseCase,
+    private val togglePrayerUseCase: TogglePrayerUseCase,
+    private val clock: Clock = Clock.systemDefaultZone()
 ) : ViewModel() {
+
+    private val today get() = LocalDate.now(clock)
+
+    val dailyStatus: StateFlow<DailyPrayerStatus?> =
+        getDailyPrayerStatus.invoke(date = today)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    private val _pendingToggles = MutableStateFlow<Set<Prayer>>(emptySet())
 
 
     private val _uiState = MutableStateFlow(PrayerTimeUiState())
@@ -175,6 +183,18 @@ class PrayerTimeViewModel(
             }
 
             PrayerEvent.RefreshPrayer -> refreshPrayer()
+            is PrayerEvent.LogPrayer -> {
+                if (prayerEvent.prayer in _pendingToggles.value) return
+                viewModelScope.launch {
+                    _pendingToggles.update { it + prayerEvent.prayer }
+                    try {
+                        val currentlyLogged = dailyStatus.value?.isLogged(prayer = prayerEvent.prayer)?:false
+                        togglePrayerUseCase(prayer = prayerEvent.prayer, currentlyLogged = currentlyLogged, date = prayerEvent.date)
+                    }finally {
+                        _pendingToggles.update { it - prayerEvent.prayer }
+                    }
+                }
+            }
         }
     }
 
@@ -200,174 +220,170 @@ class PrayerTimeViewModel(
     fun onNotificationEvent(notificationEvent: NotificationEvent) {
         when (notificationEvent) {
             NotificationEvent.ToggleFajrNotification -> {
-//                if (checkExactAlarmPermission()) {
-//                    _notificationState.update {
-//                        it.copy(
-//                            isFajrNotification = !it.isFajrNotification
-//                        )
-//                    }
-//                    mediaPlayerHelper.releaseAzan()
-//                    viewModelScope.launch {
-//                        dataStorePreference.setPrayerNotification(
-//                            isNotification = _notificationState.value.isFajrNotification,
-//                            prayerKey = DataStorePreference.KEY_FAJR_NOTIFICATION
-//                        )
-//                    }
-//                    if (_notificationState.value.isFajrNotification) {
-//
-//                        val fajr = _uiState.value.prayerTimes?.fajrTime!!
-//                        if (ActivityCompat.checkSelfPermission(
-//                                context,
-//                                Manifest.permission.POST_NOTIFICATIONS
-//                            ) == PackageManager.PERMISSION_GRANTED
-//                        ) {
-//                            prayerAlarmManager.setFajrPrayerAlarm(fajr)
-//                        }
-//                    } else {
-//                        prayerAlarmManager.cancelAlarm(1)
-//                    }
-//                } else {
-//                    openAppSettings()
-//                }
+                if (checkExactAlarmPermission()) {
+                    _notificationState.update {
+                        it.copy(
+                            isFajrNotification = !it.isFajrNotification
+                        )
+                    }
+                    mediaPlayerHelper.releaseAzan()
+                    viewModelScope.launch {
+                        dataStorePreference.setPrayerNotification(
+                            isNotification = _notificationState.value.isFajrNotification,
+                            prayerKey = DataStorePreference.KEY_FAJR_NOTIFICATION
+                        )
+                    }
+                    if (_notificationState.value.isFajrNotification) {
+
+                        val fajr = _uiState.value.prayerTimes?.fajrTime!!
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            prayerAlarmManager.setFajrPrayerAlarm(fajr)
+                        }
+                    } else {
+                        prayerAlarmManager.cancelAlarm(1)
+                    }
+                } else {
+                    openAppSettings()
+                }
             }
 
             NotificationEvent.ToggleDhuhrNotification -> {
-//                if (checkExactAlarmPermission()) {
-//                    _notificationState.update {
-//                        it.copy(
-//                            isDhuhrNotification = !it.isDhuhrNotification
-//                        )
-//                    }
-//                    mediaPlayerHelper.releaseAzan()
-//                    viewModelScope.launch {
-//                        dataStorePreference.setPrayerNotification(
-//                            isNotification = _notificationState.value.isDhuhrNotification,
-//                            prayerKey = DataStorePreference.KEY_DHUHR_NOTIFICATION
-//                        )
-//                    }
-//                    if (_notificationState.value.isDhuhrNotification) {
-//                        val date = getCurrentDate()
-//                        val findDate =
-//                            _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
-//                        val dhuhrTime = findDate.dhuhrTime
-//                        if (ActivityCompat.checkSelfPermission(
-//                                context,
-//                                Manifest.permission.POST_NOTIFICATIONS
-//                            ) == PackageManager.PERMISSION_GRANTED
-//                        ) {
-//                            prayerAlarmManager.setDhuhrPrayerAlarm(dhuhrTime)
-//                        }
-//                    } else {
-//                        prayerAlarmManager.cancelAlarm(2)
-//                    }
-//                } else {
-//                    openAppSettings()
-//                }
+                if (checkExactAlarmPermission()) {
+                    _notificationState.update {
+                        it.copy(
+                            isDhuhrNotification = !it.isDhuhrNotification
+                        )
+                    }
+                    mediaPlayerHelper.releaseAzan()
+                    viewModelScope.launch {
+                        dataStorePreference.setPrayerNotification(
+                            isNotification = _notificationState.value.isDhuhrNotification,
+                            prayerKey = DataStorePreference.KEY_DHUHR_NOTIFICATION
+                        )
+                    }
+                    if (_notificationState.value.isDhuhrNotification) {
+                        val dhuhrTime = _uiState.value.prayerTimes?.dhuhrTime
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            dhuhrTime?.let {
+                                prayerAlarmManager.setDhuhrPrayerAlarm(dhuhrTime)
+                            }
+                        }
+                    } else {
+                        prayerAlarmManager.cancelAlarm(2)
+                    }
+                } else {
+                    openAppSettings()
+                }
             }
 
             NotificationEvent.ToggleAsrNotification -> {
-//                if (checkExactAlarmPermission()) {
-//
-//                    _notificationState.update {
-//                        it.copy(
-//                            isAsrNotification = !it.isAsrNotification
-//                        )
-//                    }
-//                    mediaPlayerHelper.releaseAzan()
-//                    viewModelScope.launch {
-//                        dataStorePreference.setPrayerNotification(
-//                            isNotification = _notificationState.value.isAsrNotification,
-//                            prayerKey = DataStorePreference.KEY_ASR_NOTIFICATION
-//                        )
-//                    }
-//                    if (_notificationState.value.isAsrNotification) {
-//                        val date = getCurrentDate()
-//                        val findDate =
-//                            _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
-//                        val asrTime = findDate.asrTime
-//                        if (ActivityCompat.checkSelfPermission(
-//                                context,
-//                                Manifest.permission.POST_NOTIFICATIONS
-//                            ) == PackageManager.PERMISSION_GRANTED
-//                        ) {
-//                            prayerAlarmManager.setAsrPrayerAlarm(asrTime)
-//                        }
-//                    } else {
-//                        prayerAlarmManager.cancelAlarm(3)
-//                    }
-//                } else {
-//                    openAppSettings()
-//                }
+                if (checkExactAlarmPermission()) {
+
+                    _notificationState.update {
+                        it.copy(
+                            isAsrNotification = !it.isAsrNotification
+                        )
+                    }
+                    mediaPlayerHelper.releaseAzan()
+                    viewModelScope.launch {
+                        dataStorePreference.setPrayerNotification(
+                            isNotification = _notificationState.value.isAsrNotification,
+                            prayerKey = DataStorePreference.KEY_ASR_NOTIFICATION
+                        )
+                    }
+                    if (_notificationState.value.isAsrNotification) {
+                        val asrTime = _uiState.value.prayerTimes?.asrTime
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            asrTime?.let {
+                                prayerAlarmManager.setAsrPrayerAlarm(asrTime)
+                            }
+                        }
+                    } else {
+                        prayerAlarmManager.cancelAlarm(3)
+                    }
+                } else {
+                    openAppSettings()
+                }
             }
 
             NotificationEvent.ToggleMaghribNotification -> {
-//                if (checkExactAlarmPermission()) {
-//
-//                    _notificationState.update {
-//                        it.copy(
-//                            isMaghribNotification = !it.isMaghribNotification
-//                        )
-//                    }
-//                    mediaPlayerHelper.releaseAzan()
-//                    viewModelScope.launch {
-//                        dataStorePreference.setPrayerNotification(
-//                            isNotification = _notificationState.value.isMaghribNotification,
-//                            prayerKey = DataStorePreference.KEY_MAGHRIB_NOTIFICATION
-//                        )
-//                    }
-//                    if (_notificationState.value.isMaghribNotification) {
-//                        val date = getCurrentDate()
-//                        val findDate =
-//                            _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
-//                        val maghribTime = findDate.maghribTime
-//                        if (ActivityCompat.checkSelfPermission(
-//                                context,
-//                                Manifest.permission.POST_NOTIFICATIONS
-//                            ) == PackageManager.PERMISSION_GRANTED
-//                        ) {
-//                            prayerAlarmManager.setMaghribPrayerAlarm(maghribTime)
-//                        }
-//                    } else {
-//                        prayerAlarmManager.cancelAlarm(4)
-//                    }
-//                } else {
-//                    openAppSettings()
-//                }
+                if (checkExactAlarmPermission()) {
+
+                    _notificationState.update {
+                        it.copy(
+                            isMaghribNotification = !it.isMaghribNotification
+                        )
+                    }
+                    mediaPlayerHelper.releaseAzan()
+                    viewModelScope.launch {
+                        dataStorePreference.setPrayerNotification(
+                            isNotification = _notificationState.value.isMaghribNotification,
+                            prayerKey = DataStorePreference.KEY_MAGHRIB_NOTIFICATION
+                        )
+                    }
+                    if (_notificationState.value.isMaghribNotification) {
+                        val maghribTime =  _uiState.value.prayerTimes?.maghribTime
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            maghribTime?.let {
+                                prayerAlarmManager.setMaghribPrayerAlarm(maghribTime)
+                            }
+                        }
+                    } else {
+                        prayerAlarmManager.cancelAlarm(4)
+                    }
+                } else {
+                    openAppSettings()
+                }
             }
 
             NotificationEvent.ToggleIshaNotification -> {
-//                if (checkExactAlarmPermission()) {
-//
-//                    _notificationState.update {
-//                        it.copy(
-//                            isIshaNotification = !it.isIshaNotification
-//                        )
-//                    }
-//                    mediaPlayerHelper.releaseAzan()
-//                    viewModelScope.launch {
-//                        dataStorePreference.setPrayerNotification(
-//                            isNotification = _notificationState.value.isIshaNotification,
-//                            prayerKey = DataStorePreference.KEY_ISHA_NOTIFICATION
-//                        )
-//                    }
-//                    if (_notificationState.value.isIshaNotification) {
-//                        val date = getCurrentDate()
-//                        val findDate =
-//                            _uiState.value.prayerTimes.find { it.gregorianDate == date }!!
-//                        val ishaTime = findDate.ishaTime
-//                        if (ActivityCompat.checkSelfPermission(
-//                                context,
-//                                Manifest.permission.POST_NOTIFICATIONS
-//                            ) == PackageManager.PERMISSION_GRANTED
-//                        ) {
-//                            prayerAlarmManager.setIshaPrayerAlarm(ishaTime)
-//                        }
-//                    } else {
-//                        prayerAlarmManager.cancelAlarm(5)
-//                    }
-//                } else {
-//                    openAppSettings()
-//                }
+                if (checkExactAlarmPermission()) {
+
+                    _notificationState.update {
+                        it.copy(
+                            isIshaNotification = !it.isIshaNotification
+                        )
+                    }
+                    mediaPlayerHelper.releaseAzan()
+                    viewModelScope.launch {
+                        dataStorePreference.setPrayerNotification(
+                            isNotification = _notificationState.value.isIshaNotification,
+                            prayerKey = DataStorePreference.KEY_ISHA_NOTIFICATION
+                        )
+                    }
+                    if (_notificationState.value.isIshaNotification) {
+                        val ishaTime = _uiState.value.prayerTimes?.ishaTime
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            ishaTime?.let {
+                                prayerAlarmManager.setIshaPrayerAlarm(ishaTime)
+                            }
+                        }
+                    } else {
+                        prayerAlarmManager.cancelAlarm(5)
+                    }
+                } else {
+                    openAppSettings()
+                }
             }
 
             NotificationEvent.RefreshNotificationState -> {

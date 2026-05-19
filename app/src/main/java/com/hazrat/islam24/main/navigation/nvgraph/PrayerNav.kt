@@ -38,10 +38,12 @@ fun NavGraphBuilder.prayerNav(
         ) {
 //            val prayerTimes by prayerTimeViewModel.prayerTimes.collectAsState()
             val prayerTimesUiState by prayerTimeViewModel.uiState.collectAsStateWithLifecycle()
+            val dailyStatus by prayerTimeViewModel.dailyStatus.collectAsStateWithLifecycle()
             PrayerTimeScreen(
                 event = prayerTimeViewModel::onEvent,
                 onPrayerSettingClick = { navController.navigate(MainRoute.PrayerSetting) },
-                prayerTimeUiState = prayerTimesUiState
+                prayerTimeUiState = prayerTimesUiState,
+                dailyPrayerStatus = dailyStatus
             )
         }
         composable<FajrSetting> {
@@ -72,7 +74,8 @@ fun NavGraphBuilder.prayerNav(
                 azanList = listOfFajrAzan,
                 notificationEvent = prayerTimeViewModel::onNotificationEvent,
                 onBackClick = { navController.popBackStack() },
-                notificationState = notificationState
+                notificationState = notificationState,
+
             )
         }
         composable<DhuhrSetting> {

@@ -26,7 +26,10 @@ fun getPrayerUiModule(): Module = module {
             connectivityObserver = get(),
             downloader = get(),
             getTodayPrayerTimeUseCase = get(),
-            getLocationNameUseCase = get()
+            getLocationNameUseCase = get(),
+            getDailyPrayerStatus = get(),
+            togglePrayerUseCase = get(),
+            clock = get(),
         )
     }
 

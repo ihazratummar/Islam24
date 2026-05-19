@@ -1,13 +1,13 @@
 package com.hazrat.database
 
 import androidx.room.Room
+import com.hazrat.database.dao.AllahNameDao
 import com.hazrat.database.dao.AthkarDao
 import com.hazrat.database.dao.GregorianToHijriDao
 import com.hazrat.database.dao.HijriCalendarDao
 import com.hazrat.database.dao.LocationDao
 import com.hazrat.database.dao.LocationNameDao
-import com.hazrat.database.dao.AllahNameDao
-import com.hazrat.database.dao.PrayerSettingDao
+import com.hazrat.database.dao.PrayerLogDao
 import com.hazrat.database.dao.PrayerTimeDao
 import com.hazrat.database.dao.QuranDao
 import com.hazrat.database.dao.ZakatDao
@@ -91,7 +91,7 @@ fun getDatabaseModule(): Module = module {
             .build()
     }
     single<PrayerTimeDao> { get<PrayerDatabase>().prayerTimeDao() }
-    single<PrayerSettingDao> { get<PrayerDatabase>().prayerSetting() }
+    single <PrayerLogDao>{ get<PrayerDatabase>().prayerLogDao() }
 
     // Zakat Database
     single {

@@ -24,14 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.eltohamy.materialhijricalendarview.CalendarDay
 import com.hazrat.common.BasicTopBarWithAction
 import com.hazrat.ui.R
-import com.hazrat.ui.theme.DeepPineGreen
-import com.hazrat.ui.theme.SoftCream
-import com.hazrat.ui.theme.SpiritualGold
 import com.hazrat.ui.theme.dimens
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -56,7 +52,7 @@ fun CalendarScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(if (isDark) MaterialTheme.colorScheme.background else SoftCream)
+            .background(if (isDark) MaterialTheme.colorScheme.background else Color.Red)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -98,7 +94,7 @@ fun CalendarScreen(
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
-                containerColor = if (isDark) DeepPineGreen else Color.White
+                containerColor = if (isDark) MaterialTheme.colorScheme.primary else Color.White
             ) {
                 DateDetailContent(
                     hijriDay = selectedHijriDate,
@@ -123,7 +119,7 @@ fun DateDetailContent(
         Text(
             text = "Selected Date",
             style = MaterialTheme.typography.titleMedium,
-            color = SpiritualGold
+            color = Color.Red
         )
         
         Spacer(modifier = Modifier.height(dimens.space16))
@@ -135,7 +131,7 @@ fun DateDetailContent(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 ),
-                color = if (isSystemInDarkTheme()) Color.White else DeepPineGreen
+                color = if (isSystemInDarkTheme()) Color.White else Color.Red
             )
         }
 
@@ -146,7 +142,7 @@ fun DateDetailContent(
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
-                color = if (isSystemInDarkTheme()) Color.White else DeepPineGreen
+                color = if (isSystemInDarkTheme()) Color.White else Color.Red
             )
         }
         

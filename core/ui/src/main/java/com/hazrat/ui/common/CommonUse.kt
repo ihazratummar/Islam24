@@ -13,7 +13,9 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,12 +40,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -53,6 +61,7 @@ import coil.disk.DiskCache
 import coil.request.CachePolicy
 import com.hazrat.ui.R
 import com.hazrat.ui.shimmerEffect
+import com.hazrat.ui.theme.Success
 import com.hazrat.ui.theme.dimens
 
 @Composable
@@ -139,8 +148,6 @@ fun rememberImageLoader(context: Context): ImageLoader {
 }
 
 
-
-
 @Composable
 fun WebViewScreen(
     modifier: Modifier = Modifier,
@@ -206,13 +213,14 @@ fun WebViewScreen(
 
 @Composable
 fun BackIcon(
-    onBackClick:() -> Unit,
+    onBackClick: () -> Unit,
     icon: Painter = painterResource(R.drawable.backicon)
 ) {
     Icon(
         painter = icon,
         contentDescription = null,
-        modifier = Modifier.padding(dimens.space4)
+        modifier = Modifier
+            .padding(dimens.space4)
             .clickable(
                 onClick = {
                     onBackClick()
@@ -275,13 +283,15 @@ fun PulsingLiveDot(
 
 @Composable
 fun IconWithBackground(
+    modifier: Modifier = Modifier,
     icon: Int,
     containerColor: Color = MaterialTheme.colorScheme.outline,
     onClick: () -> Unit = {},
     iconColor: Color = MaterialTheme.colorScheme.onBackground
-){
+) {
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(dimens.space48)
             .padding(dimens.space4)
             .clip(RoundedCornerShape(dimens.space12))
@@ -292,8 +302,37 @@ fun IconWithBackground(
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
-            modifier = Modifier.padding(dimens.space12).size(dimens.iconSm),
+            modifier = Modifier
+                .padding(dimens.space12)
+                .size(dimens.iconSm),
             tint = iconColor
         )
     }
+}
+
+
+@Composable
+fun LongText(
+    text: String,
+    maxLine: Int = 1,
+    overflow: TextOverflow = TextOverflow.Visible,
+    style: TextStyle = MaterialTheme.typography.titleMedium,
+    delay: Int = 5000,
+    repeatDelay: Int = 5000
+){
+    Text(
+        text = text,
+        style = style,
+        maxLines = maxLine,
+        overflow = overflow,
+        modifier = Modifier
+            .fillMaxWidth()
+            .basicMarquee(
+                iterations = Int.MAX_VALUE,
+                animationMode = MarqueeAnimationMode.Immediately,
+                initialDelayMillis = delay,
+                repeatDelayMillis = repeatDelay,
+                velocity = dimens.space32
+            )
+    )
 }
