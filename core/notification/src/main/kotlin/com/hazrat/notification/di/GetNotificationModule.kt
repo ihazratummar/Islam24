@@ -3,7 +3,7 @@ package com.hazrat.notification.di
 import androidx.core.app.NotificationManagerCompat
 import com.hazrat.notification.MediaPlayerHelper
 import com.hazrat.notification.NotificationChannels
-import com.hazrat.notification.PrayerAlarmManager
+import com.hazrat.notification.PrayerAlarmScheduler
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -15,7 +15,7 @@ import org.koin.dsl.module
 
 fun getNotificationModule () : Module = module {
     single<NotificationManagerCompat> { NotificationManagerCompat.from(get()) }
-    single{ PrayerAlarmManager(context = get()) }
+    single{ PrayerAlarmScheduler(context = get()) }
     single{ NotificationChannels(context = get()) }
     single{ MediaPlayerHelper(context = get()) }
 }

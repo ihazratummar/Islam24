@@ -1,5 +1,9 @@
 package com.hazrat.domain.repository
 
+import com.hazrat.model.Prayer
+import com.hazrat.model.PrayerNotificationSettings
+import kotlinx.coroutines.flow.Flow
+
 interface PrayerSettingRepository {
 
     /**
@@ -17,4 +21,8 @@ interface PrayerSettingRepository {
      * @param method The PrayerJuristicEntity object to be inserted or updated.
      */
     suspend fun insertJuristicMethod(method: Int)
+
+    suspend fun prayerNotificationEnabled(prayer: Prayer, enabled: Boolean)
+
+    fun getNotificationEnable(): Flow<PrayerNotificationSettings>
 }

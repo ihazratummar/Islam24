@@ -14,12 +14,6 @@ class DataStorePreference (
     companion object{
         private const val PREF_NAME = "app_setting"
 
-        const val KEY_FAJR_NOTIFICATION = "fajr_notification"
-        const val KEY_DHUHR_NOTIFICATION = "dhuhr_notification"
-        const val KEY_ASR_NOTIFICATION = "asr_notification"
-        const val KEY_MAGHRIB_NOTIFICATION = "maghrib_notification"
-        const val KEY_ISHA_NOTIFICATION = "isha_notification"
-
         private const val LAST_READ_SURAH = "quran_last_surah"
         private const val LAST_READ_AYAH = "quran_last_ayah"
     }
@@ -65,16 +59,5 @@ class DataStorePreference (
         val sortType = pref.getString(KEY_SORT_BY, DateType.DATE_DESC.name)
         return DateType.valueOf(sortType!!)
 
-    }
-
-
-    fun setPrayerNotification(isNotification: Boolean, prayerKey: String){
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        pref.edit {putBoolean(prayerKey, isNotification) }
-    }
-
-    fun getPrayerNotification(prayerKey: String): Boolean {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        return pref.getBoolean(prayerKey, false)
     }
 }

@@ -179,8 +179,8 @@ fun HomeTopCard(
                                     containerColor = customColors.accentColor,
                                     contentColor = MaterialTheme.colorScheme.onSurface
                                 ),
-                                shape = RoundedCornerShape(dimens.cornerLg),
-                                modifier = Modifier.height(dimens.space56)
+                                shape = RoundedCornerShape(dimens.cornerMd),
+                                modifier = Modifier.height(dimens.space40)
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,

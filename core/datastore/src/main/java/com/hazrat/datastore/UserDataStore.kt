@@ -3,9 +3,12 @@ package com.hazrat.datastore
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.hazrat.model.Prayer
+import com.hazrat.model.PrayerNotificationSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -18,6 +21,20 @@ import kotlinx.coroutines.flow.map
 class UserDataStore(
     private val userDataStore: DataStore<Preferences>,
 ) {
+
+    /*
+    -----------------
+    DYNAMIC KEYS
+    ----------------
+     */
+
+    private fun notificationEnabledKey(prayerName: Prayer) =
+        booleanPreferencesKey("${prayerName.key}_notification_enabled")
+
+    private fun notificationTypeKey(prayerName: Prayer) =
+        stringPreferencesKey("${prayerName.key}_notification_type")
+
+
     companion object {
 
         //Constants
@@ -32,10 +49,6 @@ class UserDataStore(
         const val SELECTED_ASR_NOTIFICATION = "SELECTED_ASR_NOTIFICATION"
         const val SELECTED_MAGHRIB_NOTIFICATION = "SELECTED_MAGHRIB_NOTIFICATION"
         const val SELECTED_ISHA_NOTIFICATION = "SELECTED_ISHA_NOTIFICATION"
-
-
-        const val DAILY_QURAN_DATE = "DAILY_QURAN_DATE"
-        const val RANDOM_AYAT_NUMBER = "RANDOM_AYAT_NUMBER"
 
 
         const val SELECTED_QIBLA_COMPASS = "SELECTED_QIBLA_COMPASS"
@@ -60,17 +73,52 @@ class UserDataStore(
         private val SELECTED_MAGHRIB_NOTIFICATION_KEY =
             intPreferencesKey(SELECTED_MAGHRIB_NOTIFICATION)
         private val SELECTED_ISHA_NOTIFICATION_KEY = intPreferencesKey(SELECTED_ISHA_NOTIFICATION)
+
         // ---------------//
-
-        private val DAILY_QURAN_DATE_KEY = stringPreferencesKey(DAILY_QURAN_DATE)
-        private val RANDOM_AYAT_NUMBER_KEY = intPreferencesKey(RANDOM_AYAT_NUMBER)
-
         private val SELECTED_QIBLA_COMPASS_KEY = intPreferencesKey(SELECTED_QIBLA_COMPASS)
 
         private val PrayerCalculationMethodKey = intPreferencesKey(PRAYER_CALCULATION_METHOD)
         private val PrayerJuristicMethodKey = intPreferencesKey(PRAYER_JURISTIC_METHOD)
 
     }
+
+
+    /*
+    -------------------
+    NOTIFICATION ENABLE
+    -------------------
+     */
+
+    suspend fun setPrayerNotificationEnabled(prayerName: Prayer, enabled: Boolean) {
+        val key = notificationEnabledKey(prayerName = prayerName)
+        userDataStore.edit { pref ->
+            pref[key] = enabled
+            Log.d("DataStore", "${prayerName.key} $enabled")
+        }
+    }
+
+    suspend fun isPrayerNotificationEnabled(
+        prayerName: Prayer
+    ): Boolean {
+
+        val key = notificationEnabledKey(prayerName)
+
+        return userDataStore.data.first()[key] ?: true
+    }
+
+
+
+    val notificationSettingsFlow: Flow<PrayerNotificationSettings> =
+        userDataStore.data.map { pref ->
+            PrayerNotificationSettings(
+                fajr = pref[notificationEnabledKey(prayerName = Prayer.FAJR)] ?: true,
+                dhuhr = pref[notificationEnabledKey(prayerName = Prayer.DHUHR)] ?: true,
+                asr = pref[notificationEnabledKey(prayerName = Prayer.ASR)] ?: true,
+                maghrib = pref[notificationEnabledKey(prayerName = Prayer.MAGHRIB)] ?: true,
+                isha = pref[notificationEnabledKey(prayerName = Prayer.ISHA)] ?: true,
+            )
+        }
+
 
     suspend fun clearSelectedCompassId() {
         val key = SELECTED_QIBLA_COMPASS_KEY
@@ -90,109 +138,38 @@ class UserDataStore(
         pref[SELECTED_QIBLA_COMPASS_KEY] ?: 1
     }
 
-    suspend fun saveDailyQuranDate(date: String) {
-        val key = DAILY_QURAN_DATE_KEY
-        userDataStore.edit { pref ->
-            pref[key] = date
-        }
-    }
-
-    val getDailyQuranDate: Flow<String> = userDataStore.data.map { pref ->
-        pref[DAILY_QURAN_DATE_KEY] ?: ""
-    }
-
-    suspend fun saveRandomAyatNumber(number: Int) {
-        val key = RANDOM_AYAT_NUMBER_KEY
-        userDataStore.edit { pref ->
-            pref[key] = number
-        }
-    }
-
-    val getRandomAyatNumber: Flow<Int> = userDataStore.data.map { pref ->
-        pref[RANDOM_AYAT_NUMBER_KEY] ?: 0
-    }
 
     suspend fun savePrayerNotificationType(
-        prayerName: PrayerName,
+        prayerName: Prayer,
         notificationType: NotificationType
     ) {
         val key = when (prayerName) {
-            PrayerName.FAJR -> FAJR_KEY
-            PrayerName.DHUHR -> DHUHR_KEY
-            PrayerName.ASR -> ASR_KEY
-            PrayerName.MAGHRIB -> MAGHRIB_KEY
-            PrayerName.ISHA -> ISHA_KEY
+            Prayer.FAJR -> FAJR_KEY
+            Prayer.DHUHR -> DHUHR_KEY
+            Prayer.ASR -> ASR_KEY
+            Prayer.MAGHRIB -> MAGHRIB_KEY
+            Prayer.ISHA ->ISHA_KEY
         }
         userDataStore.edit { pref ->
             pref[key] = notificationType.name
         }
     }
 
-    fun getPrayerNotificationType(prayerName: PrayerName): Flow<NotificationType> {
+    fun getPrayerNotificationType(prayerName: Prayer): Flow<NotificationType> {
         val key = when (prayerName) {
-            PrayerName.FAJR -> FAJR_KEY
-            PrayerName.DHUHR -> DHUHR_KEY
-            PrayerName.ASR -> ASR_KEY
-            PrayerName.MAGHRIB -> MAGHRIB_KEY
-            PrayerName.ISHA -> ISHA_KEY
+            Prayer.FAJR -> FAJR_KEY
+            Prayer.DHUHR -> DHUHR_KEY
+            Prayer.ASR -> ASR_KEY
+            Prayer.MAGHRIB -> MAGHRIB_KEY
+            Prayer.ISHA ->ISHA_KEY
         }
-        Log.d("DataStore", "Retrieving notification type for $prayerName")
         return userDataStore.data.map { pref ->
             val notificationTypeName = pref[key] ?: NotificationType.DEFAULT.name
-            Log.d("DataStore", "Notification type for $prayerName: $notificationTypeName")
             NotificationType.valueOf(notificationTypeName)
         }
     }
 
-    suspend fun setSelectedFajrNotification(selectedFajrNotification: Int) {
-        userDataStore.edit { pref ->
-            pref[SELECTED_FAJR_NOTIFICATION_KEY] = selectedFajrNotification
-        }
-    }
 
-    val selectedFajrNotification: Flow<Int> = userDataStore.data.map { pref ->
-        pref[SELECTED_FAJR_NOTIFICATION_KEY] ?: 0
-    }
-
-    suspend fun setSelectedDhuhrNotification(selectedDhuhrNotification: Int) {
-        userDataStore.edit { pref ->
-            pref[SELECTED_DHUHR_NOTIFICATION_KEY] = selectedDhuhrNotification
-        }
-    }
-
-    val selectedDhuhrNotification: Flow<Int> = userDataStore.data.map { pref ->
-        pref[SELECTED_DHUHR_NOTIFICATION_KEY] ?: 0
-    }
-
-    suspend fun setSelectedAsrNotification(selectedAsrNotification: Int) {
-        userDataStore.edit { pref ->
-            pref[SELECTED_ASR_NOTIFICATION_KEY] = selectedAsrNotification
-        }
-    }
-
-    val selectedAsrNotification: Flow<Int> = userDataStore.data.map { pref ->
-        pref[SELECTED_ASR_NOTIFICATION_KEY] ?: 0
-    }
-
-    suspend fun setSelectedMaghribNotification(selectedMaghribNotification: Int) {
-        userDataStore.edit { pref ->
-            pref[SELECTED_MAGHRIB_NOTIFICATION_KEY] = selectedMaghribNotification
-        }
-    }
-
-    val selectedMaghribNotification: Flow<Int> = userDataStore.data.map { pref ->
-        pref[SELECTED_MAGHRIB_NOTIFICATION_KEY] ?: 0
-    }
-
-    suspend fun setSelectedIshaNotification(selectedIshaNotification: Int) {
-        userDataStore.edit { pref ->
-            pref[SELECTED_ISHA_NOTIFICATION_KEY] = selectedIshaNotification
-        }
-    }
-
-    val selectedIshaNotification: Flow<Int> = userDataStore.data.map { pref ->
-        pref[SELECTED_ISHA_NOTIFICATION_KEY] ?: 0
-    }
 
     suspend fun saveSetPrayerCalculationMethod(calculationMethod: Int): Boolean {
         return try {
@@ -221,7 +198,7 @@ class UserDataStore(
                 preferences[PrayerJuristicMethodKey] = method
             }
             true
-        }catch (_: Exception){
+        } catch (_: Exception) {
             false
         }
     }
@@ -229,6 +206,7 @@ class UserDataStore(
     suspend fun getPrayerJuristicMethod(): Int {
         return userDataStore.data.first()[PrayerJuristicMethodKey] ?: 0
     }
+
     val getPrayerJuristicMethod: Flow<Int> =
         userDataStore.data.map { preferences ->
             preferences[PrayerJuristicMethodKey] ?: 0
@@ -236,16 +214,10 @@ class UserDataStore(
 
 }
 
-enum class PrayerName {
-    FAJR,
-    DHUHR,
-    ASR,
-    MAGHRIB,
-    ISHA
-}
 
 enum class NotificationType {
     DEFAULT,
     AZAN,
     SILENT
 }
+

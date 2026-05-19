@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 
 @Composable
 fun rememberPermissionRequester(
-    permission: String,
+    permission: String?,
     onGranted: () -> Unit,
     onDenied: () -> Unit = {},
     onPermissionDenied: () -> Unit = {}
@@ -28,10 +28,12 @@ fun rememberPermissionRequester(
             if (granted) {
                 onGranted()
             } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-                    onDenied()            // ✅ temporarily denied
-                } else {
-                    onPermissionDenied()  // ✅ permanently denied ("Don't ask again")
+                permission?.let {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, it)) {
+                        onDenied()            // ✅ temporarily denied
+                    } else {
+                        onPermissionDenied()  // ✅ permanently denied ("Don't ask again")
+                    }
                 }
             }
 
@@ -39,15 +41,19 @@ fun rememberPermissionRequester(
 
     return {
         when {
-            ContextCompat.checkSelfPermission(
-                activity,
-                permission
-            ) == PackageManager.PERMISSION_GRANTED -> {
+            permission?.let {
+                ContextCompat.checkSelfPermission(
+                    activity,
+                    it
+                )
+            } == PackageManager.PERMISSION_GRANTED -> {
                 onGranted()
             }
 
             else -> {
-                launcher.launch(permission)
+                if (permission != null) {
+                    launcher.launch(permission)
+                }
             }
         }
     }

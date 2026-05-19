@@ -30,15 +30,14 @@ fun getPrayerUiModule(): Module = module {
             getDailyPrayerStatus = get(),
             togglePrayerUseCase = get(),
             clock = get(),
+            prayerNotificationEnabledUseCase = get(),
+            getPrayerNotificationStateUseCase = get(),
         )
     }
 
     viewModel {
         PrayerSettingViewModel(
-            context = androidContext(),
             prayerTimeRepository = get(),
-            prayerAlarmManager = get(),
-            dataStorePreference = get(),
             connectivityObserver = get(),
             userDataStore = get()
 

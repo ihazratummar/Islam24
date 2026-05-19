@@ -75,3 +75,11 @@ data class MinimalPrayerData(
     val hijriYear: Int = 0,
     val hijriAbbreviated: String = "",
 )
+
+data class PrayerNotificationSettings(
+    val fajr: Boolean = true,
+    val dhuhr: Boolean = true,
+    val asr: Boolean = true,
+    val maghrib: Boolean = true,
+    val isha: Boolean = true
+)

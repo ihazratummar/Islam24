@@ -148,7 +148,8 @@ data class CustomColors(
     val logoBackground: Color,
     val homeCardGradient: List<Color>,
     val secondaryText : Color = SecondaryText,
-    val progressbarMute: Color = ProgressBarMuteDark
+    val progressbarMute: Color = ProgressBarMuteDark,
+    val navBarColor: Color = Color(0xFF101a1d)
 
 )
 

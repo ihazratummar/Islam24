@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -45,11 +46,6 @@ import com.hazrat.allahNames.ui.namesofallah.NamesOfAllahScreen
 import com.hazrat.allahNames.ui.namesofallah.NamesViewmodel
 import com.hazrat.athkar.ui.AthkarScreen
 import com.hazrat.athkar.ui.AthkarViewModel
-import com.hazrat.auth.ui.appSetting.AppSettingViewModel
-import com.hazrat.auth.ui.forgetPassword.ForgetPasswordViewModel
-import com.hazrat.auth.ui.login.LoginViewModel
-import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
-import com.hazrat.auth.ui.signup.SignUpViewModel
 import com.hazrat.calendar.CalendarScreen
 import com.hazrat.home.ui.HomeScreen
 import com.hazrat.home.ui.HomeViewModel
@@ -58,28 +54,19 @@ import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
 import com.hazrat.model.AuthState
-import com.hazrat.prayer.ui.prayertime.PrayerTimeViewModel
 import com.hazrat.prayer.ui.setting.PrayerSetting
 import com.hazrat.prayer.ui.setting.PrayerSettingViewModel
 import com.hazrat.qibla.ui.QiblaScreen
 import com.hazrat.qibla.ui.QiblaViewModel
 import com.hazrat.ui.R
+import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
-import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AppNavigator(
-    zakatViewModel: ZakatViewModel,
-    quranViewModel: QuranViewModel,
-    prayerTimeViewModel: PrayerTimeViewModel,
-    appSettingViewModel: AppSettingViewModel,
-    loginViewModel: LoginViewModel,
-    signUpViewModel: SignUpViewModel,
-    profileDetailsViewModel: ProfileDetailsViewModel,
-    forgetPasswordViewModel: ForgetPasswordViewModel,
     isHapticFeedback: Boolean = false
 ) {
     val navController = rememberNavController()
@@ -99,7 +86,7 @@ fun AppNavigator(
         ) {
             composable<MainRoute.HomeScreen>(
                 deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top" })
-            ) {navBackStackEntry ->
+            ) { navBackStackEntry ->
 
                 val homeViewModel = koinViewModel<HomeViewModel>()
                 val locationName by homeViewModel.locationName.collectAsState()
@@ -108,7 +95,7 @@ fun AppNavigator(
                 val lifecycle = navBackStackEntry.lifecycle
                 DisposableEffect(lifecycle) {
                     val observer = LifecycleEventObserver { _, event ->
-                        if (event == Lifecycle.Event.ON_START){
+                        if (event == Lifecycle.Event.ON_START) {
                             homeViewModel.refreshLocation()
                         }
                     }
@@ -140,8 +127,12 @@ fun AppNavigator(
             }
 
             composable<MainRoute.QuranScreenRoute>(
-                deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top/quran-screen" })
+                deepLinks = listOf(navDeepLink {
+                    uriPattern = "https://islam24.hazratdev.top/quran-screen"
+                })
             ) {
+
+                val quranViewModel = koinViewModel<QuranViewModel>()
                 val quranState by quranViewModel.quranState.collectAsStateWithLifecycle()
 
                 LaunchedEffect(Unit) {
@@ -167,6 +158,7 @@ fun AppNavigator(
             }
 
             composable<MainRoute.SurahScreenRoute> { navBackStackEntry ->
+                val quranViewModel = koinViewModel<QuranViewModel>()
                 val quranState by quranViewModel.quranState.collectAsStateWithLifecycle()
                 val surahNumber =
                     navBackStackEntry.toRoute<MainRoute.SurahScreenRoute>().surahNumber
@@ -184,7 +176,7 @@ fun AppNavigator(
                 )
             }
 
-            prayerNav(navController, prayerTimeViewModel)
+            prayerNav(navController)
             composable<HomeRoutes.Qibla> {
                 val viewModel: QiblaViewModel = koinViewModel()
                 val state by viewModel.qiblaState.collectAsStateWithLifecycle()
@@ -199,7 +191,7 @@ fun AppNavigator(
                     authState = authState,
                     qiblaEvent = qiblaEvent,
                     navigateToLogin = {
-                        navController.navigate(Login){
+                        navController.navigate(Login) {
                             launchSingleTop = true
                         }
                     }
@@ -207,7 +199,7 @@ fun AppNavigator(
 
             }
             composable<HomeRoutes.NamesOfAllah> {
-                val viewModel: NamesViewmodel =koinViewModel()
+                val viewModel: NamesViewmodel = koinViewModel()
                 val names by viewModel.names.collectAsStateWithLifecycle()
                 NamesOfAllahScreen(
                     onBackClick = {
@@ -243,16 +235,10 @@ fun AppNavigator(
 
             authNavGraph(
                 navController = navController,
-                appSettingViewModel = appSettingViewModel,
-                isHapticFeedback = isHapticFeedback,
-                loginViewModel = loginViewModel,
-                signUpViewModel = signUpViewModel,
-                profileDetailsViewModel = profileDetailsViewModel,
-                forgetPasswordViewModel = forgetPasswordViewModel
+                isHapticFeedback = isHapticFeedback
             )
             zakatNavGraph(
                 navController = navController,
-                zakatViewModel = zakatViewModel,
             )
         }
     }
@@ -276,8 +262,8 @@ private fun BottomBar(navController: NavHostController) {
         bottomNavigationItem.any { it.route::class.qualifiedName == currentDestination?.route }
     if (isBottomBarVisible) {
         NavigationBar(
-            containerColor = Color.Transparent,
-            tonalElevation = dimens.space4
+            containerColor = customColors.navBarColor,
+            tonalElevation = dimens.space4,
         ) {
             bottomNavigationItem.forEach { screen ->
                 val isSelected =
@@ -297,7 +283,7 @@ private fun BottomBar(navController: NavHostController) {
                         Icon(
                             painter = painterResource(id = screen.icon),
                             contentDescription = screen.name,
-                            modifier = Modifier.size(dimens.iconLg)
+                            modifier = Modifier.size(dimens.iconMd)
                         )
                     },
                     label = { Text(text = screen.name) },
@@ -305,8 +291,8 @@ private fun BottomBar(navController: NavHostController) {
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         selectedTextColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onBackground,
-                        unselectedTextColor = MaterialTheme.colorScheme.onBackground,
+                        unselectedIconColor = MaterialTheme.colorScheme.outline,
+                        unselectedTextColor = MaterialTheme.colorScheme.outline,
                         indicatorColor = Color.Transparent
                     ),
                     interactionSource = remember { MutableInteractionSource() },
@@ -343,7 +329,11 @@ sealed class MainRoute {
 
 
 @Serializable
-sealed class ContentDestination<T>(val name: String, @param:DrawableRes val icon: Int, val route: T) {
+sealed class ContentDestination<T>(
+    val name: String,
+    @param:DrawableRes val icon: Int,
+    val route: T
+) {
 
     @Serializable
     data object Home :
@@ -355,7 +345,11 @@ sealed class ContentDestination<T>(val name: String, @param:DrawableRes val icon
 
     @Serializable
     data object PrayerTime :
-        ContentDestination<PrayerTimeScreenRoute>("PrayerTime", R.drawable.pray, PrayerTimeScreenRoute)
+        ContentDestination<PrayerTimeScreenRoute>(
+            "PrayerTime",
+            R.drawable.pray,
+            PrayerTimeScreenRoute
+        )
 
     @Serializable
     data object Profile :

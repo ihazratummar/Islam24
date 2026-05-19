@@ -1,6 +1,13 @@
 package com.hazrat.prayer.ui.notification
 
 import com.hazrat.prayer.ui.component.listOfAzan
+import com.hazrat.ui.common.PrayerType
+import com.hazrat.ui.common.PrayerType.ASR
+import com.hazrat.ui.common.PrayerType.DHUHR
+import com.hazrat.ui.common.PrayerType.FAJR
+import com.hazrat.ui.common.PrayerType.ISHA
+import com.hazrat.ui.common.PrayerType.MAGHRIB
+import com.hazrat.ui.common.PrayerType.SUNRISE
 
 data class NotificationState(
     val isFajrNotification: Boolean = false,
@@ -18,4 +25,25 @@ data class NotificationState(
     val selectedIshaAzan: Int = 0,
 
     val isAzanDownloading : Boolean = false
-)
+){
+    fun isEnable(prayer: PrayerType): Boolean {
+        return when(prayer){
+            FAJR -> isFajrNotification
+            DHUHR -> isDhuhrNotification
+            ASR -> isAsrNotification
+            MAGHRIB -> isMaghribNotification
+            ISHA -> isIshaNotification
+            SUNRISE -> false
+        }
+    }
+
+    fun notificationCount(): Int {
+        return listOf(
+            isFajrNotification,
+            isDhuhrNotification,
+            isAsrNotification,
+            isMaghribNotification,
+            isIshaNotification
+        ).count{it}
+    }
+}

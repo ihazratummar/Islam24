@@ -170,7 +170,8 @@ fun PrayerTimeCard(
     onNotificationClick: (PrayerType) -> Unit = {},
     onLogPrayerClick: (PrayerType) -> Unit = {},
     prayerTime: Long = 0L,
-    isLogged: Boolean = false
+    isLogged: Boolean = false,
+    isNotificationEnabled: Boolean= false
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -234,12 +235,12 @@ fun PrayerTimeCard(
                 )
             )
             if (prayerType != PrayerType.SUNRISE) {
-
+                val notificationColor = if (isNotificationEnabled) Info else InactiveIcon
                 IconWithBackground(
                     modifier = Modifier.size(dimens.space48 / 1.1f),
-                    icon = R.drawable.notifications_fill,
-                    iconColor = Info,
-                    containerColor = Info.copy(0.1f),
+                    icon = if (isNotificationEnabled) R.drawable.notifications_fill else R.drawable.notificationoff,
+                    iconColor = notificationColor,
+                    containerColor = notificationColor.copy(0.1f),
                     onClick = {
                         onNotificationClick(prayerType)
                     }
@@ -311,6 +312,7 @@ fun PrayerIconWithBackground(
 @Composable
 fun NotificationSettingCard(
     modifier: Modifier = Modifier,
+    totalNotificationOn: Int = 0
 ) {
     Card(
         shape = RoundedCornerShape(dimens.cornerLg),
@@ -345,7 +347,7 @@ fun NotificationSettingCard(
                     )
                 )
                 Text(
-                    text = "5 of 5 prayer notified",
+                    text = "$totalNotificationOn of 5 prayer notified",
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = customColors.secondaryText,
                     )

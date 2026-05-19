@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.hazrat.database.database.PrayerDatabase
-import com.hazrat.datastore.DataStorePreference
-import com.hazrat.datastore.PrayerName
+import com.hazrat.datastore.UserDataStore
+import com.hazrat.model.Prayer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -18,48 +21,37 @@ import org.koin.core.component.inject
 class BootReceiver : BroadcastReceiver(), KoinComponent {
 
 
-    private val prayerAlarmManager: PrayerAlarmManager by inject()
+    private val prayerAlarmManager: PrayerAlarmScheduler by inject()
     private val prayerTimeDatabase: PrayerDatabase by inject()
-    private val dataStorePreference: DataStorePreference by inject()
+
+    private val userDataStore: UserDataStore by inject()
 
     override fun onReceive(context: Context, intent: Intent?) {
+        val pendinResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                when (intent?.action) {
+                    Intent.ACTION_BOOT_COMPLETED -> {
+                        Log.d("BootReceiver", "BOOT_COMPLETED action received")
+                        Prayer.entries.forEach { prayer ->
+                            if (userDataStore.isPrayerNotificationEnabled(prayerName = prayer)) {
+                                fetchPrayerTimeForNotification(
+                                    prayerName = prayer,
+                                    prayerDatabase = prayerTimeDatabase
+                                ) { prayerTime ->
+                                    prayerAlarmManager.setPrayerAlarm(
+                                        prayerName = prayer,
+                                        prayerTime = prayerTime
+                                    )
+                                    Log.d("BootReceiver", "${prayer.name} Set")
+                                }
+                            }
 
-
-
-        when (intent?.action) {
-            Intent.ACTION_BOOT_COMPLETED -> {
-                Log.d("BootReceiver", "BOOT_COMPLETED action received")
-                if (dataStorePreference.getPrayerNotification(DataStorePreference.KEY_FAJR_NOTIFICATION)){
-                    fetchPrayerTimeForNotification(prayerName = PrayerName.FAJR, prayerDatabase = prayerTimeDatabase) { fajrTimeFromDatabase ->
-                        prayerAlarmManager.setFajrPrayerAlarm(fajrTimeFromDatabase)
-                        Log.d("PrayerAlarmStart", "Scheduled alarm for Fajr after boot $fajrTimeFromDatabase")
+                        }
                     }
                 }
-                if (dataStorePreference.getPrayerNotification(DataStorePreference.KEY_DHUHR_NOTIFICATION)){
-                    fetchPrayerTimeForNotification(prayerName = PrayerName.DHUHR, prayerDatabase = prayerTimeDatabase) { dhuhrTime ->
-                        prayerAlarmManager.setDhuhrPrayerAlarm(dhuhrTime)
-                        Log.d("PrayerAlarmStart", "Scheduled alarm for Dhuhr after boot $dhuhrTime")
-
-                    }
-                }
-                if (dataStorePreference.getPrayerNotification(DataStorePreference.KEY_ASR_NOTIFICATION)){
-                    fetchPrayerTimeForNotification(prayerName = PrayerName.ASR, prayerDatabase = prayerTimeDatabase) { asrTime ->
-                        prayerAlarmManager.setAsrPrayerAlarm(asrTime)
-                        Log.d("PrayerAlarmStart", "Scheduled alarm for asr after boot $asrTime")
-                    }
-                }
-                if (dataStorePreference.getPrayerNotification(DataStorePreference.KEY_MAGHRIB_NOTIFICATION)){
-                    fetchPrayerTimeForNotification(prayerName = PrayerName.MAGHRIB, prayerDatabase = prayerTimeDatabase) { maghribTime ->
-                        prayerAlarmManager.setMaghribPrayerAlarm(maghribTime)
-                        Log.d("PrayerAlarmStart", "Scheduled alarm for Maghrib after boot $maghribTime")
-                    }
-                }
-                if (dataStorePreference.getPrayerNotification(DataStorePreference.KEY_ISHA_NOTIFICATION)){
-                    fetchPrayerTimeForNotification(prayerName = PrayerName.ISHA, prayerDatabase = prayerTimeDatabase) { ishaTime ->
-                        prayerAlarmManager.setIshaPrayerAlarm(ishaTime)
-                        Log.d("PrayerAlarmStart", "Scheduled alarm for Isha after boot $ishaTime")
-                    }
-                }
+            } finally {
+                pendinResult.finish()
             }
         }
     }

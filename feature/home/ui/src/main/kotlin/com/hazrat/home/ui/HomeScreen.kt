@@ -44,9 +44,7 @@ fun HomeScreen(
     onWidgetClick: (HomePageNavIcons) -> Unit,
     homeState: HomeState
 ) {
-    Scaffold (
-        contentWindowInsets = WindowInsets()
-    ){ paddingValues ->
+    Scaffold { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

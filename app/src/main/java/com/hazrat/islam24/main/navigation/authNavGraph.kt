@@ -34,15 +34,11 @@ import org.koin.androidx.compose.koinViewModel
 @RequiresApi(Build.VERSION_CODES.S)
 fun NavGraphBuilder.authNavGraph(
     navController: NavController,
-    appSettingViewModel: AppSettingViewModel,
-    loginViewModel: LoginViewModel,
-    signUpViewModel: SignUpViewModel,
-    profileDetailsViewModel: ProfileDetailsViewModel,
-    forgetPasswordViewModel: ForgetPasswordViewModel,
     isHapticFeedback: Boolean = false
 ) {
     navigation<Auth>(startDestination = MainRoute.ProfileScreen) {
         composable<Login> {
+            val loginViewModel = koinViewModel <LoginViewModel>()
             val loginState by loginViewModel.loginState.collectAsState()
             val loginEvent = loginViewModel::onEvent
             val authState by loginViewModel.authState.observeAsState(initial = AuthState.Loading)
@@ -68,6 +64,7 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<SignUp> {
+            val signUpViewModel = koinViewModel <SignUpViewModel>()
             val signUpState by signUpViewModel.state.collectAsState()
             val signUpEvent = signUpViewModel::onEvent
             val authState by signUpViewModel.authState.observeAsState(initial = AuthState.Loading)
@@ -124,6 +121,7 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<ProfileSettingScreen> {
+            val appSettingViewModel = koinViewModel <AppSettingViewModel>()
             val authState by appSettingViewModel.authState.observeAsState(AuthState.Loading)
             val appSettingEvent = appSettingViewModel::onAppSettingEvent
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
@@ -139,6 +137,7 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<ProfileDetailsScreen> {
+            val profileDetailsViewModel = koinViewModel<ProfileDetailsViewModel>()
             val appSettingState1 by profileDetailsViewModel.profileState.collectAsState()
             val profileDetailsEvent = profileDetailsViewModel::onEvent
             val userEvent by profileDetailsViewModel.events.collectAsState(initial = null)
@@ -151,6 +150,7 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         composable<ForgettingPassword> {
+            val forgetPasswordViewModel = koinViewModel <ForgetPasswordViewModel>()
             val forgetPasswordState by forgetPasswordViewModel.forgetPasswordState.collectAsState()
             val channelEvent by forgetPasswordViewModel.events.collectAsState(initial = null)
             ForgetPassword(

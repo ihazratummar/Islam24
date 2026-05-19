@@ -2,7 +2,6 @@ package com.hazrat.prayer.ui.prayertime
 
 
 import android.os.Build
-import android.widget.Space
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -21,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -54,6 +52,7 @@ import com.hazrat.prayer.ui.component.NotificationSettingCard
 import com.hazrat.prayer.ui.component.PrayerProgressCard
 import com.hazrat.prayer.ui.component.PrayerTimeCard
 import com.hazrat.prayer.ui.component.PrayerTimeData
+import com.hazrat.prayer.ui.notification.NotificationState
 import com.hazrat.ui.R
 import com.hazrat.ui.common.IconWithBackground
 import com.hazrat.ui.common.PrayerType
@@ -63,7 +62,6 @@ import com.hazrat.ui.theme.MutedTextColor
 import com.hazrat.ui.theme.PrayerLocationColor
 import com.hazrat.ui.theme.PrayerScreenGradient
 import com.hazrat.ui.theme.dimens
-import com.hazrat.utils.DateUtil
 import com.hazrat.utils.DateUtil.dateLongToString
 import com.hazrat.utils.openAppSettings
 import kotlin.collections.listOf
@@ -75,7 +73,8 @@ fun PrayerTimeScreen(
     event: (PrayerEvent) -> Unit,
     prayerTimeUiState: PrayerTimeUiState,
     onPrayerSettingClick: () -> Unit,
-    dailyPrayerStatus: DailyPrayerStatus?
+    dailyPrayerStatus: DailyPrayerStatus?,
+    notificationState: NotificationState
 ) {
     val prayerTime = prayerTimeUiState.prayerTimes
     val prayerState = rememberPrayerState(prayerTimes = prayerTime ?: MinimalPrayerData())
@@ -233,8 +232,9 @@ fun PrayerTimeScreen(
                                     )
                                 )
                             }
+                            val text = if (isNow) "NOW" else prayerState.countdownText
                             Text(
-                                text = prayerState.countdownText,
+                                text =text,
                                 style = MaterialTheme.typography.displaySmall.copy(
                                     fontWeight = FontWeight.Bold
                                 )
@@ -254,16 +254,19 @@ fun PrayerTimeScreen(
                                 }
                             },
                         todayTimeStamp = prayerTime?.timeStamp?.times(1000) ?: 0L,
-                        prayerCompletePercent = dailyPrayerStatus?.completionPercentage?: 0,
-                        completionRatio = dailyPrayerStatus?.completionRatio?: 0f,
-                        completePrayerCount = dailyPrayerStatus?.loggedPrayers?.size?:0
+                        prayerCompletePercent = dailyPrayerStatus?.completionPercentage ?: 0,
+                        completionRatio = dailyPrayerStatus?.completionRatio ?: 0f,
+                        completePrayerCount = dailyPrayerStatus?.loggedPrayers?.size ?: 0
                     )
                 }
                 item {
                     Spacer(Modifier.height(dimens.space2))
                 }
                 item {
-                    NotificationSettingCard()
+                    // [PRAYERTIME][TODO][HIGH] Add Notification settings screen
+                    NotificationSettingCard(
+                        totalNotificationOn = notificationState.notificationCount()
+                    )
                 }
 
                 val listOfPrayerTIme = listOf(
@@ -294,6 +297,36 @@ fun PrayerTimeScreen(
                 )
 
                 itemsIndexed(listOfPrayerTIme) { index, data ->
+
+                    val requestNotificationPermission =
+                        rememberPermissionRequester(
+                            permission = PermissionTypes.NOTIFICATION,
+                            onGranted = {
+                                if (notificationState.isEnable(prayer = data.prayerType)) {
+                                    event(
+                                        PrayerEvent.PrayerNotificationToggle(
+                                            prayer = data.prayerType.prayer,
+                                            enabled = false
+                                        )
+                                    )
+                                } else {
+                                    event(
+                                        PrayerEvent.PrayerNotificationToggle(
+                                            prayer = data.prayerType.prayer,
+                                            enabled = true,
+                                            prayerTIme = data.prayerTime
+                                        )
+                                    )
+                                }
+                            },
+                            onDenied = {
+                                Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+                            },
+                            onPermissionDenied = {
+                                openAppSettings(context = context)
+                            }
+                        )
+
                     PrayerTimeCard(
                         prayerType = data.prayerType,
                         prayerTime = data.prayerTime,
@@ -305,7 +338,31 @@ fun PrayerTimeScreen(
                                 )
                             )
                         },
-                        isLogged = dailyPrayerStatus?.isLogged(prayer = data.prayerType.prayer) ?: false
+                        isLogged = dailyPrayerStatus?.isLogged(prayer = data.prayerType.prayer)
+                            ?: false,
+                        onNotificationClick = {
+                            if (isPermissionGranted(context = context, permission = PermissionTypes.NOTIFICATION )){
+                                if (notificationState.isEnable(prayer = data.prayerType)) {
+                                    event(
+                                        PrayerEvent.PrayerNotificationToggle(
+                                            prayer = data.prayerType.prayer,
+                                            enabled = false
+                                        )
+                                    )
+                                } else {
+                                    event(
+                                        PrayerEvent.PrayerNotificationToggle(
+                                            prayer = data.prayerType.prayer,
+                                            enabled = true,
+                                            prayerTIme = data.prayerTime
+                                        )
+                                    )
+                                }
+                            }else{
+                                requestNotificationPermission()
+                            }
+                        },
+                        isNotificationEnabled = notificationState.isEnable(prayer = data.prayerType)
                     )
                 }
             }

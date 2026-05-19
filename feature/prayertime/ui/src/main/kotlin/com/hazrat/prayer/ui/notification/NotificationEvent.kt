@@ -1,7 +1,7 @@
 package com.hazrat.prayer.ui.notification
 
 import com.hazrat.datastore.NotificationType
-import com.hazrat.datastore.PrayerName
+import com.hazrat.model.Prayer
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -27,8 +27,8 @@ sealed interface NotificationEvent {
     data class OnAzanPlayClick(val fileName: String, val aazanIndex: Int, val azanUrl: String) : NotificationEvent
     data object StopAzan : NotificationEvent
 
-    data class OnDefaultNotificationClick(val azanName: PrayerName, val notificationType: NotificationType) : NotificationEvent
-    data class OnSilentNotificationClick(val azanName: PrayerName, val notificationType: NotificationType) : NotificationEvent
+    data class OnDefaultNotificationClick(val azanName: Prayer, val notificationType: NotificationType) : NotificationEvent
+    data class OnSilentNotificationClick(val azanName: Prayer, val notificationType: NotificationType) : NotificationEvent
 
     data class SelectFajrAzanOption(val index: Int) : NotificationEvent
     data class SelectDhuhrAzanOption(val index: Int) : NotificationEvent
@@ -38,17 +38,3 @@ sealed interface NotificationEvent {
 
 
 }
-
-//enum class PrayerName {
-//    FAJR,
-//    DHUHR,
-//    ASR,
-//    MAGHRIB,
-//    ISHA
-//}
-//
-//enum class NotificationType {
-//    DEFAULT,
-//    AZAN,
-//    SILENT
-//}

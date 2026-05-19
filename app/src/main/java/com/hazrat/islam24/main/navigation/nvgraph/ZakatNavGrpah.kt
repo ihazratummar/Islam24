@@ -7,7 +7,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.hazrat.home.ui.component.HomeRoutes
-import com.hazrat.islam24.main.navigation.MainRoute
 import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import com.hazrat.zakat.screen.zakat.screen.CalculationScreen
 import com.hazrat.zakat.screen.zakat.screen.NisabScreen
@@ -21,8 +20,7 @@ import org.koin.androidx.compose.koinViewModel
  */
 
 fun NavGraphBuilder.zakatNavGraph(
-    navController: NavController,
-    zakatViewModel: ZakatViewModel
+    navController: NavController
 ) {
     navigation<Zakat>(HomeRoutes.Zakat) {
         composable<HomeRoutes.Zakat> {
@@ -44,6 +42,7 @@ fun NavGraphBuilder.zakatNavGraph(
         }
 
         composable<NisabScreen> {
+            val zakatViewModel: ZakatViewModel = koinViewModel()
             val zakatState by zakatViewModel.zakatState.collectAsState()
             NisabScreen(
                 zakatState = zakatState,
@@ -57,6 +56,7 @@ fun NavGraphBuilder.zakatNavGraph(
             )
         }
         composable<CalculationScreen> {
+            val zakatViewModel: ZakatViewModel = koinViewModel()
             val zakatState by zakatViewModel.zakatState.collectAsState()
             CalculationScreen(
                 zakatState = zakatState,

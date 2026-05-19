@@ -11,11 +11,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hazrat.alQuran.ui.QuranViewModel
-import com.hazrat.auth.ui.forgetPassword.ForgetPasswordViewModel
 import com.hazrat.auth.ui.login.LoginViewModel
 import com.hazrat.auth.ui.signup.SignUpViewModel
-import com.hazrat.auth.ui.appSetting.AppSettingViewModel
 import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.UpdateManager
@@ -41,22 +38,11 @@ import java.util.Locale
  */
 class MainActivity : ComponentActivity() {
 
-    // Dependency injected services
-
     private val updateManager: UpdateManager by inject()
 
     private val  notificationHelper: NotificationChannels by inject()
 
-    // Inject ViewModels properly
-    private lateinit var appSettingViewModel : AppSettingViewModel
-    private lateinit var quranViewModel: QuranViewModel
-    private lateinit var prayerTimeViewModel: PrayerTimeViewModel
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var zakatViewModel: ZakatViewModel
-    private lateinit var singUpViewModel: SignUpViewModel
-    private lateinit var loginViewModel: LoginViewModel
-    private lateinit var forgetPasswordViewModel: ForgetPasswordViewModel
-    private lateinit var profileDetailsViewModel: ProfileDetailsViewModel
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -71,22 +57,9 @@ class MainActivity : ComponentActivity() {
         // Hide the action bar
         actionBar?.hide()
 
-        appSettingViewModel = getViewModel()
-        quranViewModel = getViewModel()
-        prayerTimeViewModel = getViewModel()
         mainViewModel = getViewModel()
-        zakatViewModel = getViewModel()
-        singUpViewModel = getViewModel()
-        loginViewModel = getViewModel()
-        forgetPasswordViewModel = getViewModel()
-        profileDetailsViewModel = getViewModel()
-
-
         // Set window decor to fit system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-
-
         notificationHelper.createNotificationChannels()
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
@@ -97,15 +70,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 rememberImageLoader(this)
                 NavGraph(
-                    zakatViewModel = zakatViewModel,
-                    quranViewModel = quranViewModel,
-                    prayerTimeViewModel = prayerTimeViewModel,
-                    appSettingViewModel = appSettingViewModel,
                     isHapticFeedback = isHapticFeedback,
-                    loginViewModel = loginViewModel,
-                    signUpViewModel = singUpViewModel,
-                    profileDetailsViewModel = profileDetailsViewModel,
-                    forgetPasswordViewModel = forgetPasswordViewModel
                 )
             }
 
