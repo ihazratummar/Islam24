@@ -191,16 +191,19 @@ class PrayerTimeViewModel(
         Log.d("PrayerTimeViewModel", "Refreshing prayer times")
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
+            try {
+                when (val result = repository.refreshPrayerTimes()) {
+                    is Result.Error -> {
+                        _events.send(PrayerTimeUiEvent.ShowError(result.error.toString()))
+                        _uiState.update { it.copy(isRefreshing = false) }
+                    }
 
-            when (val result = repository.refreshPrayerTimes()) {
-                is Result.Error -> {
-                    _events.send(PrayerTimeUiEvent.ShowError(result.error.toString()))
-                    _uiState.update { it.copy(isRefreshing = false) }
+                    is Result.Success -> {
+                        _uiState.update { it.copy(isRefreshing = false) }
+                    }
                 }
-
-                is Result.Success -> {
-                    _uiState.update { it.copy(isRefreshing = false) }
-                }
+            }catch (e: Exception){
+                Log.e("PrayerTimeViewModel", "Crash Logs - ${e.message}")
             }
         }
     }
@@ -224,70 +227,6 @@ class PrayerTimeViewModel(
     }
 
 
-    fun isAzanExist(fileName: String): Boolean {
-        return isFilePresent(
-            context = context,
-            parentFolder = PARENT_FOLDER_NAME_DOWNLOAD,
-            subFolderName = DOWNLOADED_AZAN_FOLDER,
-            fileName = "${fileName}.mp3"
-        )
-    }
-
-    fun isSelectedAzanExist(azan: String): Boolean {
-        return isFilePresent(
-            context = context,
-            parentFolder = PARENT_FOLDER_NAME_DOWNLOAD,
-            subFolderName = SELECTED_ATHANS_SUB_FOLDER_NAME,
-            fileName = azan
-        )
-    }
 
 
-    private fun downloadAzan(azanUrl: String, fileName: String) {
-        viewModelScope.launch {
-            val networkStatus = connectivityObserver.observer().first()
-            if (networkStatus == ConnectivityObserver.Status.Available) {
-                _notificationState.update { it.copy(isAzanDownloading = true) }
-                val result = downloader.downloadFile(
-                    url = azanUrl,
-                    mimeType = "audio/mpeg",
-                    title = fileName
-                )
-                if (result >= 1L) {
-                    _notificationState.update { it.copy(isAzanDownloading = false) }
-                    Toast.makeText(context, "Downloaded Successfully", Toast.LENGTH_SHORT).show()
-                } else {
-                    _notificationState.update { it.copy(isAzanDownloading = false) }
-                }
-            } else {
-                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private suspend fun saveSelectedAzan(
-        sourceFileName: String,
-        fileName: String,
-        prayerName: Prayer
-    ) {
-        val success = saveMp3File(
-            context = context,
-            sourceFilePath = "${context.filesDir}/$PARENT_FOLDER_NAME_DOWNLOAD/$DOWNLOADED_AZAN_FOLDER/${sourceFileName}.mp3",
-            parentFolderName = PARENT_FOLDER_NAME_DOWNLOAD,
-            subFolderName = SELECTED_ATHANS_SUB_FOLDER_NAME,
-            fileName = fileName
-        )
-        if (success) {
-            dataStore.savePrayerNotificationType(
-                prayerName = prayerName,
-                NotificationType.AZAN
-            )
-            Log.d(
-                "PrayerTimeViewModel",
-                "Aazn $fileName: , NotificationType: ${NotificationType.AZAN}"
-            )
-        } else {
-            Log.e("PrayerTimeViewModel", "Failed to save MP3.")
-        }
-    }
 }

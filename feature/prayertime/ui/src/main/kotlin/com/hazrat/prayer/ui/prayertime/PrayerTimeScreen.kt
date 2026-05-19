@@ -122,7 +122,7 @@ fun PrayerTimeScreen(
                     Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
                 },
                 onPermissionDenied = {
-                    openAppSettings(context = context)
+//                    openAppSettings(context = context)
                 }
             )
         PullToRefreshBox(
