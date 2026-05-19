@@ -16,7 +16,19 @@ class NotificationChannels (
     fun createNotificationChannels() {
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        Prayer.entries.forEach {prayer ->
+        // Azan Playback Channel (Foreground Service)
+        val azanPlaybackChannel = NotificationChannel(
+            AzanPlaybackService.CHANNEL_ID,
+            "Azan Playback",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Notification for active Azan playback"
+            setSound(null, null)
+            enableVibration(false)
+        }
+        manager.createNotificationChannel(azanPlaybackChannel)
+
+        Prayer.entries.forEach { prayer ->
             val notificationChannel = NotificationChannel(
                 prayer.notificationChannelId,
                 prayer.toString(),

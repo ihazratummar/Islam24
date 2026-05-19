@@ -33,11 +33,10 @@ class PrayerAlarmScheduler(
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
             if (timeInMillis < System.currentTimeMillis()) {
-                cancelAlarm(requestCode)
                 add(Calendar.DAY_OF_MONTH, 1)
             }
         }
-        Log.d("PrayerAlarmStart", "Alarm set for: $titleContent  ${calendar.time}")
+        Log.d("PrayerAlarmScheduler", "Setting alarm for: $titleContent at ${calendar.time}")
 
         val intent = Intent(context, PrayerTimeReceiver::class.java).apply {
             putExtra("prayer_key", prayer.key)
@@ -49,29 +48,29 @@ class PrayerAlarmScheduler(
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        if (!canScheduleExactAlarms()) {
 
-            Log.e(
-                "PrayerAlarmScheduler",
-                "Cannot schedule exact alarms permission missing"
-            )
-
-            return
-        }
         try {
-
-            alarmManager.setExactAndAllowWhileIdle(
+            if (canScheduleExactAlarms()) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
+            } else {
+                Log.w("PrayerAlarmScheduler", "Exact alarms not allowed, falling back to inexact.")
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
+            }
+        } catch (e: SecurityException) {
+            Log.e("PrayerAlarmScheduler", "SecurityException while scheduling alarm", e)
+            // Final fallback
+            alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
                 pendingIntent
-            )
-
-        } catch (e: SecurityException) {
-
-            Log.e(
-                "PrayerAlarmScheduler",
-                "Failed to schedule exact alarm",
-                e
             )
         }
     }

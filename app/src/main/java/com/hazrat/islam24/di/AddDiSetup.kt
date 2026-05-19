@@ -26,12 +26,14 @@ import com.hazrat.usecase.di.getUserCaseModule
 import com.hazrat.utils.di.getUtilsModule
 import com.hazrat.zakat.di.getZakatModule
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 
 
 fun initKoin(app: Application) {
     startKoin {
         androidContext(app)
+        workManagerFactory()
         modules(
             getAppModule(),
             getUtilsModule(),

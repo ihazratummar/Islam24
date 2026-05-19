@@ -41,32 +41,57 @@ class PrayerTimeReceiver : BroadcastReceiver(), KoinComponent {
 
     override fun onReceive(context: Context, intent: Intent?) {
         val prayerNameKey = intent?.getStringExtra("prayer_key") ?: return
-
         val prayer = Prayer.fromKey(key = prayerNameKey) ?: return
 
+        val pendingResult = goAsync()
+        runBlocking(Dispatchers.IO) {
+            try {
+                fetchPrayerTimeForNotification(
+                    prayerName = prayer,
+                    prayerDatabase = prayerTimeDatabase
+                ) { prayerTime ->
+                    prayerAlarmManager.setPrayerAlarm(prayer, prayerTime)
+                    Log.d("PrayerTimeReceiver", "Scheduled next alarm for $prayer at $prayerTime")
+                }
 
-        fetchPrayerTimeForNotification(
-            prayerName = prayer,
-            prayerDatabase = prayerTimeDatabase
-        ) { prayerTime ->
-            prayerAlarmManager.setPrayerAlarm(prayer, prayerTime)
-            Log.d("PrayerTimeReceiver", "Scheduled alarm for $prayer at $prayerTime")
+                val notificationId = prayer.ordinal + 1000
+                createAndShowNotification(
+                    context,
+                    channelId = prayer.notificationChannelId,
+                    title = prayer.notificationTitle,
+                    message = prayer.notificationMessage,
+                    prayerName = prayer,
+                    notificationId = notificationId
+                )
+
+                handleAudioPlayback(context, prayer)
+            } finally {
+                pendingResult.finish()
+            }
         }
-
-        val notificationId = prayer.ordinal + 1000
-        createAndShowNotification(
-            context,
-            channelId = prayer.notificationChannelId,
-            title = prayer.notificationTitle,
-            message = prayer.notificationMessage,
-            prayerName = prayer,
-            notificationId = notificationId
-        )
-
-        val azanSound = getAzanSound(context, prayer)
-        playNotificationSound(prayer, azanSound)
     }
 
+    private fun handleAudioPlayback(context: Context, prayer: Prayer) {
+        val notificationType = runBlocking {
+            dataStore.getPrayerNotificationType(prayer).firstOrNull() ?: NotificationType.DEFAULT
+        }
+        Log.d("PrayerTimeReceiver", "Playback type for $prayer: $notificationType")
+
+        when (notificationType) {
+            NotificationType.DEFAULT -> {
+                mediaPlayerHelper.prepareDefault()
+                mediaPlayerHelper.start()
+            }
+
+            NotificationType.AZAN -> {
+                AzanPlaybackService.start(context, prayer)
+            }
+
+            NotificationType.SILENT -> {
+                Log.d("PrayerTimeReceiver", "$prayer is set to Silent")
+            }
+        }
+    }
     @SuppressLint("MissingPermission")
     private fun createAndShowNotification(
         context: Context,
@@ -147,36 +172,6 @@ class PrayerTimeReceiver : BroadcastReceiver(), KoinComponent {
             Log.d("NotificationTypeCheck", "Notification is SILENT for $prayerName")
         }
         return builder
-    }
-
-    private fun getAzanSound(context: Context, prayerName: Prayer): String {
-        return "${context.filesDir}/$PARENT_FOLDER_NAME_DOWNLOAD/$SELECTED_ATHANS_SUB_FOLDER_NAME/${prayerName.azanFileName}.mp3"
-    }
-
-    private fun playNotificationSound(prayerName: Prayer, azanSound: String) {
-        val notificationType = runBlocking {
-            dataStore.getPrayerNotificationType(prayerName).firstOrNull()
-
-
-                ?: NotificationType.DEFAULT
-        }
-        Log.d("NotificationTypeCheck", "Notification type for $prayerName: $notificationType")
-
-        when (notificationType) {
-            NotificationType.DEFAULT -> {
-                mediaPlayerHelper.prepareDefault()
-                mediaPlayerHelper.start()
-            }
-
-            NotificationType.AZAN -> {
-                mediaPlayerHelper.prepareAzanNotification(azanSound)
-                mediaPlayerHelper.startAzan()
-            }
-
-            NotificationType.SILENT -> {
-                Log.d("PrayerAlarmStart", "$prayerName is set to Silent - No sound played")
-            }
-        }
     }
 }
 

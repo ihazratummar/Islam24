@@ -19,5 +19,6 @@ class MuteReceiver : BroadcastReceiver(), KoinComponent {
 
     override fun onReceive(context: Context, intent: Intent) {
         mediaPlayerHelper.stopAzan()
+        context.stopService(Intent(context, AzanPlaybackService::class.java))
     }
 }

@@ -35,7 +35,7 @@ android {
             useSupportLibrary = true
         }
         configurations.all {
-            resolutionStrategy { force ("androidx.work:work-runtime:2.9.0") }
+            resolutionStrategy { force ("androidx.work:work-runtime:2.10.0") }
         }
     }
 
@@ -137,6 +137,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended.android)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.koin.workmanager)
 
     //window size
     implementation(libs.androidx.window)
