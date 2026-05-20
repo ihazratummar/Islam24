@@ -29,11 +29,10 @@ import com.google.android.gms.location.LocationResult as GmsLocationResult
 class FusedLocationDataSource(
     private val context: Context,
     private val fusedLocationClient: FusedLocationProviderClient,
-    private val permissionChecker: PermissionChecker,
-    private val locationConfig: LocationConfig
+    private val permissionChecker: PermissionChecker
 ) : LocationDataSource {
 
-    private var locationCallback: LocationCallback? = null
+//    private var locationCallback: LocationCallback? = null
 
     override suspend fun getLastKnownLocation(): LocationResult {
         return try {
@@ -61,7 +60,7 @@ class FusedLocationDataSource(
         }
     }
 
-    override suspend fun getCurrentLocation(): LocationResult {
+    override suspend fun getCurrentLocation(locationConfig: LocationConfig): LocationResult {
         return try {
             when {
                 !permissionChecker.hasLocationPermission() -> {
@@ -71,7 +70,7 @@ class FusedLocationDataSource(
                     LocationResult.Error(LocationError.LocationDisabled)
                 }
                 else -> {
-                    val location = getCurrentLocationInternal()
+                    val location = getCurrentLocationInternal(locationConfig = locationConfig)
                     if (location != null) {
                         Timber.d("Current location: ${location.latitude}, ${location.longitude}")
                         LocationResult.Success(location)
@@ -87,52 +86,114 @@ class FusedLocationDataSource(
         }
     }
 
-    override fun observeLocationUpdates(): Flow<LocationResult> = callbackFlow {
+    override fun observeLocationUpdates(
+        locationConfig: LocationConfig
+    ): Flow<LocationResult> = callbackFlow {
+
         if (!permissionChecker.hasLocationPermission()) {
-            send(LocationResult.Error(LocationError.PermissionDenied))
+
+            trySend(
+                LocationResult.Error(
+                    LocationError.PermissionDenied
+                )
+            )
+
             close()
+
             return@callbackFlow
         }
 
         if (!isLocationEnabled()) {
-            send(LocationResult.Error(LocationError.LocationDisabled))
+
+            trySend(
+                LocationResult.Error(
+                    LocationError.LocationDisabled
+                )
+            )
+
             close()
+
             return@callbackFlow
         }
 
+        // IMPORTANT:
+        // Local callback per collector
+        // Avoid shared mutable callback state
         val callback = object : LocationCallback() {
-            override fun onLocationResult(result: GmsLocationResult) {
+
+            override fun onLocationResult(
+                result: GmsLocationResult
+            ) {
+
                 result.lastLocation?.let { location ->
-                    Timber.d("Location update: ${location.latitude}, ${location.longitude}")
-                    trySend(LocationResult.Success(location))
+
+                    Timber.tag("FusedLocationDataSource")
+                        .d("Location update: ${location.latitude}, ${location.longitude} "
+                        )
+
+                    trySend(
+                        LocationResult.Success(location)
+                    )
                 }
             }
         }
 
-        locationCallback = callback
-
         val locationRequest = LocationRequest.Builder(
             locationConfig.priority,
-            300_000L // 5 minutes interval for passive updates
+            locationConfig.intervalMillis
         ).apply {
-            setMinUpdateIntervalMillis(60_000L) // At least 1 minute between updates
-            setMaxUpdateDelayMillis(locationConfig.maxWaitTimeMs)
-            setMinUpdateDistanceMeters(locationConfig.minUpdateDistanceMeters)
+
+            setMinUpdateIntervalMillis(
+                locationConfig.minUpdateIntervalMillis
+            )
+
+            setMaxUpdateDelayMillis(
+                locationConfig.maxWaitTimeMs
+            )
+
+            setMinUpdateDistanceMeters(
+                locationConfig.minUpdateDistanceMeters
+            )
+
         }.build()
 
         try {
-            requestLocationUpdatesInternal(locationRequest, callback)
+
+            requestLocationUpdatesInternal(
+                locationRequest = locationRequest,
+                callback = callback
+            )
+
         } catch (e: SecurityException) {
-            send(LocationResult.Error(LocationError.PermissionDenied))
+
+            trySend(
+                LocationResult.Error(
+                    LocationError.PermissionDenied
+                )
+            )
+
             close()
+
         } catch (e: Exception) {
-            Timber.e(e, "Error requesting location updates")
-            send(LocationResult.Error(LocationError.Unknown(e)))
+
+            Timber.tag("FusedLocationDataSource")
+                .e(e, "Error requesting location updates")
+
+            trySend(
+                LocationResult.Error(
+                    LocationError.Unknown(e)
+                )
+            )
+
             close()
         }
 
         awaitClose {
-            stopLocationUpdates()
+
+            fusedLocationClient.removeLocationUpdates(callback)
+
+            Timber.tag("FusedLocationDataSource")
+                .d("Location updates stopped")
         }
     }
 
@@ -148,13 +209,6 @@ class FusedLocationDataSource(
         ).await()
     }
 
-    override fun stopLocationUpdates() {
-        locationCallback?.let {
-            fusedLocationClient.removeLocationUpdates(it)
-            locationCallback = null
-            Timber.d("Location updates stopped")
-        }
-    }
 
     @SuppressLint("MissingPermission")
     private suspend fun getLastLocationInternal(): Location? {
@@ -162,7 +216,7 @@ class FusedLocationDataSource(
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun getCurrentLocationInternal(): Location? {
+    private suspend fun getCurrentLocationInternal(locationConfig: LocationConfig): Location? {
         return suspendCancellableCoroutine { continuation ->
             val cancellationToken = com.google.android.gms.tasks.CancellationTokenSource()
 

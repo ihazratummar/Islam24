@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.MinimalPrayerData
+import com.hazrat.permission.PermissionRationaleDialog
 import com.hazrat.permission.PermissionTypes
 import com.hazrat.permission.isPermissionGranted
 import com.hazrat.permission.rememberPermissionRequester
@@ -81,6 +82,56 @@ fun PrayerTimeScreen(
     val isNow = prayerState.isNow
     var cardBottom by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
+    val context = LocalContext.current
+
+    // Industry Standard: Permission requesters at the top level
+    var showLocationRationale by remember { mutableStateOf(false) }
+    var showNotificationRationale by remember { mutableStateOf(false) }
+    var pendingNotificationPrayer by remember { mutableStateOf<PrayerType?>(null) }
+
+    val requestLocationPermission = rememberPermissionRequester(
+        permission = PermissionTypes.LOCATION,
+        onGranted = { event(PrayerEvent.RefreshPrayer) },
+        onDenied = { Toast.makeText(context, "Location permission is needed for prayer times", Toast.LENGTH_SHORT).show() }
+    )
+
+    val requestNotificationPermission = rememberPermissionRequester(
+        permission = PermissionTypes.NOTIFICATION,
+        onGranted = {
+            pendingNotificationPrayer?.let { data ->
+                if (notificationState.isEnable(prayer = data)) {
+                    event(PrayerEvent.PrayerNotificationToggle(prayer = data.prayer, enabled = false))
+                } else {
+                    event(PrayerEvent.PrayerNotificationToggle(prayer = data.prayer, enabled = true))
+                }
+            }
+        },
+        onDenied = { Toast.makeText(context, "Notification permission is needed for Prayer Notification.", Toast.LENGTH_SHORT).show() }
+    )
+
+    if (showLocationRationale) {
+        PermissionRationaleDialog(
+            title = "Location Access Required",
+            message = "Islam24 needs your location to calculate accurate prayer times for your city.",
+            onConfirm = {
+                showLocationRationale = false
+                requestLocationPermission()
+            },
+            onDismiss = { showLocationRationale = false }
+        )
+    }
+
+    if (showNotificationRationale) {
+        PermissionRationaleDialog(
+            title = "Notification Access",
+            message = "Enable notifications to receive timely Azan alerts for each prayer.",
+            onConfirm = {
+                showNotificationRationale = false
+                requestNotificationPermission()
+            },
+            onDismiss = { showNotificationRationale = false }
+        )
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -111,27 +162,14 @@ fun PrayerTimeScreen(
     ) { paddingValue ->
 
         val pullToRefreshState = rememberPullToRefreshState()
-        val context = LocalContext.current
-        val requestLocationPermission =
-            rememberPermissionRequester(
-                permission = PermissionTypes.LOCATION,
-                onGranted = {
-                    event(PrayerEvent.RefreshPrayer)
-                },
-                onDenied = {
-                    Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
-                },
-                onPermissionDenied = {
-//                    openAppSettings(context = context)
-                }
-            )
+        
         PullToRefreshBox(
             state = pullToRefreshState,
             onRefresh = {
                 if (isPermissionGranted(context, PermissionTypes.LOCATION)) {
                     event(PrayerEvent.RefreshPrayer)
                 } else {
-                    requestLocationPermission()
+                    showLocationRationale = true
                 }
             },
             isRefreshing = prayerTimeUiState.isRefreshing
@@ -297,36 +335,6 @@ fun PrayerTimeScreen(
                 )
 
                 itemsIndexed(listOfPrayerTIme) { index, data ->
-
-                    val requestNotificationPermission =
-                        rememberPermissionRequester(
-                            permission = PermissionTypes.NOTIFICATION,
-                            onGranted = {
-                                if (notificationState.isEnable(prayer = data.prayerType)) {
-                                    event(
-                                        PrayerEvent.PrayerNotificationToggle(
-                                            prayer = data.prayerType.prayer,
-                                            enabled = false
-                                        )
-                                    )
-                                } else {
-                                    event(
-                                        PrayerEvent.PrayerNotificationToggle(
-                                            prayer = data.prayerType.prayer,
-                                            enabled = true,
-                                            prayerTIme = data.prayerTime
-                                        )
-                                    )
-                                }
-                            },
-                            onDenied = {
-                                Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
-                            },
-                            onPermissionDenied = {
-                                openAppSettings(context = context)
-                            }
-                        )
-
                     PrayerTimeCard(
                         prayerType = data.prayerType,
                         prayerTime = data.prayerTime,
@@ -359,7 +367,8 @@ fun PrayerTimeScreen(
                                     )
                                 }
                             }else{
-                                requestNotificationPermission()
+                                pendingNotificationPrayer = data.prayerType
+                                showNotificationRationale = true
                             }
                         },
                         isNotificationEnabled = notificationState.isEnable(prayer = data.prayerType)

@@ -49,7 +49,8 @@ fun PrayerTimeEntity.toModel(): PrayerTimeModel {
         methodIshaParam = methodIshaParam,
         latitudeAdjustmentMethod = latitudeAdjustmentMethod,
         midnightMode = midnightMode,
-        school = school
+        school = school,
+        isFallbackData = this.isFallBackData
     )
 }
 

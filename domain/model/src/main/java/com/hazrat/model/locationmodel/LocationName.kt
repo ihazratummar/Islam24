@@ -2,5 +2,5 @@ package com.hazrat.model.locationmodel
 
 
 data class LocationName(
-    val address: String = ""
+    val address: String? = "Location"
 )

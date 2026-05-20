@@ -36,13 +36,14 @@ kotlin {
 
 
 dependencies {
+    api(project(":core:ui"))
     implementation(project(":core:utils"))
-    implementation(project(":core:notification"))
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:permission"))
     implementation(project(":core:downloader"))
     implementation(project(":core:permission"))
-    api(project(":core:ui"))
+    implementation(project(":core:notification"))
 
     implementation(project(":domain:model"))
     implementation(project(":domain:usecase"))

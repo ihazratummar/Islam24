@@ -48,7 +48,7 @@ data class PrayerTimeModel(
     val latitudeAdjustmentMethod: String,
     val midnightMode: String,
     val school: String,
-
+    val isFallbackData: Boolean = false
 
 )
 

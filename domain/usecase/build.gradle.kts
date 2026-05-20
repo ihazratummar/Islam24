@@ -42,6 +42,7 @@ kotlin {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:location"))
     implementation(project(":core:database"))
 
     api(project(":domain:model"))

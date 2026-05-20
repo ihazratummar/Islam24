@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,7 +17,6 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,8 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -86,22 +82,11 @@ fun AppNavigator(
         ) {
             composable<MainRoute.HomeScreen>(
                 deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top" })
-            ) { navBackStackEntry ->
+            ) {
 
                 val homeViewModel = koinViewModel<HomeViewModel>()
                 val locationName by homeViewModel.locationName.collectAsState()
                 val homeState by homeViewModel.homeState.collectAsStateWithLifecycle()
-
-                val lifecycle = navBackStackEntry.lifecycle
-                DisposableEffect(lifecycle) {
-                    val observer = LifecycleEventObserver { _, event ->
-                        if (event == Lifecycle.Event.ON_START) {
-                            homeViewModel.refreshLocation()
-                        }
-                    }
-                    lifecycle.addObserver(observer)
-                    onDispose { lifecycle.removeObserver(observer) }
-                }
 
                 HomeScreen(
                     navigateToPrayerTime = {
@@ -122,7 +107,8 @@ fun AppNavigator(
                             launchSingleTop = true
                         }
                     },
-                    homeState = homeState
+                    homeState = homeState,
+                    refreshLocation = homeViewModel::refreshLocation
                 )
             }
 

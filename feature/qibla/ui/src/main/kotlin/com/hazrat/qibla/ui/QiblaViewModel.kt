@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.auth.domain.usecase.ObserveAuthStateUseCase
 import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.QiblaRepository
+import com.hazrat.location.model.LocationConfigs
 import com.hazrat.location.model.LocationError
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
@@ -19,6 +20,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -33,7 +35,7 @@ import kotlin.math.sin
  * @author Hazrat Ummar Shaikh
  */
 
-class QiblaViewModel (
+class QiblaViewModel(
     rotationSensor: MeasurableSensor,
     compassSensor: MeasurableSensor,
     private val userDataStore: UserDataStore,
@@ -100,27 +102,35 @@ class QiblaViewModel (
 
     fun observerLocation() {
         viewModelScope.launch {
-            locationRepository.observeLocationUpdates().collect {locationResult ->
-                when(locationResult){
-                    is LocationResult.Error -> {
-                        val errorMessage = when(locationResult.error){
-                            LocationError.LocationDisabled -> "Please enable location service"
-                            LocationError.LocationUnavailable -> "Unable to get your location. Please try again"
-                            LocationError.PermissionDenied -> "Please grant location permission to use this feature"
-                            LocationError.PermissionDeniedPermanently -> "Please enable location permission in settings."
-                            is LocationError.Unknown -> "An error occurred: ${(locationResult.error as LocationError.Unknown).throwable.message}"
+            locationRepository.observeLocationUpdates(locationConfig = LocationConfigs.Qibla)
+                .collectLatest { locationResult ->
+                    when (locationResult) {
+                        is LocationResult.Error -> {
+                            val errorMessage = when (locationResult.error) {
+                                LocationError.LocationDisabled -> "Please enable location service"
+                                LocationError.LocationUnavailable -> "Unable to get your location. Please try again"
+                                LocationError.PermissionDenied -> "Please grant location permission to use this feature"
+                                LocationError.PermissionDeniedPermanently -> "Please enable location permission in settings."
+                                is LocationError.Unknown -> "An error occurred: ${(locationResult.error as LocationError.Unknown).throwable.message}"
+                            }
+                            _qiblaState.update { it.copy(isLocationEnabled = false) }
                         }
-                        _qiblaState.update { it.copy(isLocationEnabled = false) }
-                    }
-                    is LocationResult.Success -> {
-                        _qiblaState.update { it.copy(isLocationEnabled = true) }
-                        updateCurrentLatLng(latitude = locationResult.location.latitude, longitude = locationResult.location.longitude)
-                        val qiblaDirection = calculateQiblaDirection(latitude = locationResult.location.latitude, longitude = locationResult.location.longitude)
-                        Log.d("QiblaViewModel", "observerLocation: $qiblaDirection")
-                        updateQiblaDirection(qiblaDirection.toFloat())
+
+                        is LocationResult.Success -> {
+                            _qiblaState.update { it.copy(isLocationEnabled = true) }
+                            updateCurrentLatLng(
+                                latitude = locationResult.location.latitude,
+                                longitude = locationResult.location.longitude
+                            )
+                            val qiblaDirection = calculateQiblaDirection(
+                                latitude = locationResult.location.latitude,
+                                longitude = locationResult.location.longitude
+                            )
+                            Log.d("QiblaViewModel", "observerLocation: $qiblaDirection")
+                            updateQiblaDirection(qiblaDirection.toFloat())
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -213,9 +223,10 @@ class QiblaViewModel (
             delay(300)
         }
     }
-     private fun syncCompass(){
-         viewModelScope.launch{
-             qiblaRepository.syncCompassDataIfLoggedIn()
-         }
-     }
+
+    private fun syncCompass() {
+        viewModelScope.launch {
+            qiblaRepository.syncCompassDataIfLoggedIn()
+        }
+    }
 }

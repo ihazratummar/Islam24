@@ -1,5 +1,6 @@
 package com.hazrat.usecase
 
+import com.hazrat.database.entity.LocationDetailsEntity
 import com.hazrat.domain.repository.LocationNameRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -13,8 +14,8 @@ class GetLocationNameUseCase(
     private val locationNameRepository: LocationNameRepository
 ) {
 
-    suspend operator fun invoke(): Flow<String> {
-        return locationNameRepository.locationName()
+    operator fun invoke(): Flow<LocationDetailsEntity> {
+        return locationNameRepository.observeLocationInfo()
     }
 
 }

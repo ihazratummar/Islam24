@@ -9,6 +9,8 @@ import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetNextFridayTime
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
 import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
+import com.hazrat.usecase.RefreshPrayerTimeUseCase
+import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +28,8 @@ class HomeViewModel(
     private val getLocationNameUseCase: GetLocationNameUseCase,
     private val getUpcomingMainIslamicEventUseCase: GetUpcomingMainIslamicEventUseCase,
     private val islamicEventsUseCase: GetIslamicEventsUseCase,
-    private val getNextFridayTime: GetNextFridayTime
+    private val getNextFridayTime: GetNextFridayTime,
+    private val refreshPrayerTimeUseCase: RefreshPrayerTimeUseCase
 ) : ViewModel() {
 
 
@@ -42,6 +45,7 @@ class HomeViewModel(
         getTodayPrayer()
         loadMainIslamicEvent()
         loadIslamicEvents()
+        refreshPrayerTime()
 
         viewModelScope.launch {
             getNextFridayTime.invoke().collectLatest {time ->
@@ -64,10 +68,11 @@ class HomeViewModel(
     }
 
     fun refreshLocation() {
+        _homeState.update { it.copy(isLocationLoading = true) }
         viewModelScope.launch {
             getLocationNameUseCase.invoke().collectLatest { locationName ->
-                _locationName.value = LocationName(address = locationName)
-                Log.d("HomeViewModel", "Location name: $locationName")
+                _locationName.value = LocationName(address = locationName.locationName)
+                _homeState.update { it.copy(isLocationLoading = false) }
             }
         }
     }
@@ -85,6 +90,21 @@ class HomeViewModel(
         }
     }
 
+
+    private fun refreshPrayerTime() {
+        viewModelScope.launch {
+            refreshPrayerTimeUseCase.invoke().collectLatest {result ->
+                when(result){
+                    is Result.Error -> {
+
+                    }
+                    is Result.Success -> {
+
+                    }
+                }
+            }
+        }
+    }
 
 
     private fun getTodayPrayer() {

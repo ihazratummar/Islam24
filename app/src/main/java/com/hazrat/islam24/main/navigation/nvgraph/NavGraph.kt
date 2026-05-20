@@ -28,32 +28,32 @@ fun NavGraph(
         navController = navController,
         startDestination = RootNav,
         enterTransition = {
-            fadeIn(animationSpec = tween(220)) + slideIntoContainer(
+            fadeIn(animationSpec = tween(520)) + slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Start,
-                animationSpec = tween(200)
+                animationSpec = tween(500)
             )
         },
         exitTransition = {
-            fadeOut(animationSpec = tween(220)) + slideOutOfContainer(
+            fadeOut(animationSpec = tween(520)) + slideOutOfContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Start,
-                animationSpec = tween(200)
+                animationSpec = tween(500)
             )
         },
         popEnterTransition = {
             fadeIn(
-                animationSpec = tween(220)
+                animationSpec = tween(520)
             ) + slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.End,
-                animationSpec = tween(220)
+                animationSpec = tween(520)
             )
         },
 
         popExitTransition = {
             fadeOut(
-                animationSpec = tween(220)
+                animationSpec = tween(520)
             ) + slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.End,
-                animationSpec = tween(220)
+                animationSpec = tween(520)
             )
         }
     ) {

@@ -1,5 +1,6 @@
 package com.hazrat.home.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,14 +15,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,19 +39,55 @@ import com.hazrat.home.ui.component.HomeTopCard
 import com.hazrat.home.ui.component.QuickAccessMenu
 import com.hazrat.model.EventType
 import com.hazrat.model.locationmodel.LocationName
+import com.hazrat.permission.PermissionRationaleDialog
+import com.hazrat.permission.PermissionTypes
+import com.hazrat.permission.isPermissionGranted
+import com.hazrat.permission.rememberPermissionRequester
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
 import com.hazrat.utils.IslamicCalendarUtils
 
+@SuppressLint("RememberReturnType")
 @Composable
 fun HomeScreen(
     navigateToPrayerTime: () -> Unit,
     locationName: LocationName,
     onWidgetClick: (HomePageNavIcons) -> Unit,
-    homeState: HomeState
+    homeState: HomeState,
+    refreshLocation: () -> Unit
 ) {
-    Scaffold { paddingValues ->
+    val context = LocalContext.current
+    var showLocationRationale by remember { mutableStateOf(false) }
+
+    val requestLocationPermission = rememberPermissionRequester(
+        permission = PermissionTypes.LOCATION,
+        onGranted = { refreshLocation() }
+    )
+
+    if (showLocationRationale) {
+        PermissionRationaleDialog(
+            title = "Location Required",
+            message = "Allow Islam24 to access your location to show accurate prayer times and your current city.",
+            onConfirm = {
+                showLocationRationale = false
+                requestLocationPermission()
+            },
+            onDismiss = { showLocationRationale = false }
+        )
+    }
+
+    // Automatically check on first composition
+    remember {
+        if (!isPermissionGranted(context, PermissionTypes.LOCATION)) {
+            showLocationRationale = true
+        }
+        Unit
+    }
+
+    Scaffold (
+        contentWindowInsets = WindowInsets(top = dimens.space20)
+    ){ paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -101,16 +144,20 @@ fun HomeScreen(
                                 shape = RoundedCornerShape(dimens.cornerMd)
                             )
                     ) {
-                        Text(
-                            text = locationName.address,
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.surfaceTint
-                            ),
-                            modifier = Modifier.padding(
-                                horizontal = dimens.space8,
-                                vertical = dimens.space4
+                        if (homeState.isLocationLoading){
+                            CircularProgressIndicator(modifier = Modifier.size(dimens.iconSm))
+                        }else{
+                            Text(
+                                text = locationName.address?:"Location",
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.surfaceTint
+                                ),
+                                modifier = Modifier.padding(
+                                    horizontal = dimens.space8,
+                                    vertical = dimens.space4
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

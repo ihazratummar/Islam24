@@ -23,9 +23,26 @@ sealed class LocationError {
 }
 
 data class LocationConfig(
-    val priority: Int =  Priority.PRIORITY_HIGH_ACCURACY,
-    val timeout: Long = 10_000L,
+    val priority: Int =  Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+    val intervalMillis: Long = 5 * 60 * 1000L,
     val maxWaitTimeMs: Long = 5_000L,
-    val minUpdateDistanceMeters: Float = 2000f // 2km
+    val minUpdateIntervalMillis: Long = 2 * 60 * 1000L,
+    val minUpdateDistanceMeters: Float = 1000f // 2km
 )
+
+object LocationConfigs {
+    val Default = LocationConfig(
+        priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+        intervalMillis = 5 * 60 * 1000L,
+        minUpdateIntervalMillis = 2 * 60 * 1000L,
+        minUpdateDistanceMeters = 1000f
+    )
+
+    val Qibla = LocationConfig(
+        priority = Priority.PRIORITY_HIGH_ACCURACY,
+        intervalMillis = 1000L,
+        minUpdateIntervalMillis = 1000L,
+        minUpdateDistanceMeters = 0f
+    )
+}
 

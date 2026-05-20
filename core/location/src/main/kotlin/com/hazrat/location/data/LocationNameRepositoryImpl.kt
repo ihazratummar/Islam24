@@ -13,13 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class LocationNameRepositoryImpl(
@@ -28,88 +26,59 @@ class LocationNameRepositoryImpl(
     private val locationNameDao: LocationNameDao
 ) : LocationNameRepository {
 
-    private var lastLocation: Location? = null
-
     companion object {
-        private const val DISTANCE_THRESHOLD_METERS = 2000f // 2km
+        private const val ADDRESS_THRESHOLD_METERS = 5000f // 2km
         private const val TAG = "LocationNameRepository"
     }
 
-    override suspend fun locationName(): Flow<String> = flow {
-        // Emit cached value first for instant UI response
-        val cached = getCachedLocationName()
-        if (cached != null) emit(cached)
+    override fun observeLocationInfo(): Flow<LocationDetailsEntity> = flow {
 
-        // Then observe location updates and refresh name if user moves > 2km
+        getCachedLocationInfo()?.let {
+            emit(it)
+        }
+
         emitAll(
             locationRepository.observeLocationUpdates()
                 .filterIsInstance<LocationResult.Success>()
                 .map { it.location }
                 .distinctUntilChanged { old, new ->
-                    old.distanceTo(new) < DISTANCE_THRESHOLD_METERS
+                    old.distanceTo(new) < ADDRESS_THRESHOLD_METERS
                 }
                 .map { location ->
                     if (shouldUpdateName(location)) {
-                        fetchAndCacheLocationName(location)
+                        fetchAndCacheLocationInfo(location)
                     } else {
-                        getCachedLocationName() ?: fetchAndCacheLocationName(location)
+                        getCachedLocationInfo()
+                            ?: fetchAndCacheLocationInfo(location)
                     }
                 }
-                .filter { it.isNotBlank() }
                 .distinctUntilChanged()
         )
     }.flowOn(Dispatchers.IO)
 
-    private fun shouldUpdateName(newLocation: Location): Boolean {
-        val last = lastLocation ?: return true
-        return newLocation.distanceTo(last) >= DISTANCE_THRESHOLD_METERS
+    private suspend fun shouldUpdateName(newLocation: Location): Boolean {
+        val cache = locationNameDao.getLocationDetails().firstOrNull() ?: return true
+
+        val result = FloatArray(1)
+
+        Location.distanceBetween(
+            cache.latitude,
+            cache.longitude,
+            newLocation.latitude,
+            newLocation.longitude,
+            result
+        )
+
+        return result[0] >= ADDRESS_THRESHOLD_METERS
     }
 
-    override suspend fun fetchLocationName(): String? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val locationName = getLocationName()
-                if (locationName.isNotBlank()) {
-                    val locationEntity = LocationDetailsEntity(locationName = locationName)
-                    saveLocation(locationEntity)
-                    locationName
-                } else {
-                    null
-                }
-            } catch (e: Exception) {
-                Timber.tag(TAG).e(e, "Error fetching location name")
-                null
-            }
-        }
+
+
+    private suspend fun getCachedLocationInfo(): LocationDetailsEntity? {
+        return locationNameDao.getLocationDetails().firstOrNull()
     }
 
-    override suspend fun getLocationName(): String {
-        return try {
-            val result = locationRepository.getCurrentLocation()
-            if (result is LocationResult.Success) {
-                val location = result.location
-                if (shouldUpdateName(location)) {
-                    fetchAndCacheLocationName(location)
-                } else {
-                    getCachedLocationName() ?: fetchAndCacheLocationName(location)
-                }
-            } else ""
-        } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "Unknown error: ${e.message}")
-            ""
-        }
-    }
-
-    private suspend fun getCachedLocationName(): String? {
-        return locationNameDao.getLocationDetails()
-            .firstOrNull()
-             ?.toLocationNameFinder()
-            ?.takeIf { it.isNotBlank() }
-    }
-
-    private suspend fun fetchAndCacheLocationName(location: Location): String {
-        lastLocation = location
-
+    private suspend fun fetchAndCacheLocationInfo(location: Location) : LocationDetailsEntity {
         return try {
             val response = locationNameApi.getLocationName(
                 key = LOCATION_IQ_API_KEY,
@@ -119,19 +88,25 @@ class LocationNameRepositoryImpl(
             )
 
             if (response.isSuccessful) {
-                val name = response.body()?.toLocationNameFinder() ?: ""
-                if (name.isNotBlank()) {
-                    saveLocation(LocationDetailsEntity(locationName = name))
-                }
-                name
+                val name = response.body()?.toLocationNameFinder().orEmpty()
+                val entity = LocationDetailsEntity(
+                    locationName = name,
+                    latitude = location.latitude,
+                    longitude = location.longitude
+                )
+                saveLocation(locationDetailsEntity = entity)
+                entity
             } else {
                 Timber.tag(TAG).e("API Error: ${response.code()}")
-                ""
+                getCachedLocationInfo()
+                    ?: throw IllegalStateException("No cached location")
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Failed to fetch name from API")
-            ""
+            getCachedLocationInfo()
+                ?: throw IllegalStateException("No cached location")
         }
+
     }
 
     private suspend fun saveLocation(locationDetailsEntity: LocationDetailsEntity) {

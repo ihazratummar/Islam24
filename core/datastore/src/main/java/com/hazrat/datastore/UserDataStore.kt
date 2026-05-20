@@ -66,14 +66,6 @@ class UserDataStore(
         private val MAGHRIB_KEY = stringPreferencesKey(MAGHRIB)
         private val ISHA_KEY = stringPreferencesKey(ISHA)
 
-        //Keys for selected prayer notification
-        private val SELECTED_FAJR_NOTIFICATION_KEY = intPreferencesKey(SELECTED_FAJR_NOTIFICATION)
-        private val SELECTED_DHUHR_NOTIFICATION_KEY = intPreferencesKey(SELECTED_DHUHR_NOTIFICATION)
-        private val SELECTED_ASR_NOTIFICATION_KEY = intPreferencesKey(SELECTED_ASR_NOTIFICATION)
-        private val SELECTED_MAGHRIB_NOTIFICATION_KEY =
-            intPreferencesKey(SELECTED_MAGHRIB_NOTIFICATION)
-        private val SELECTED_ISHA_NOTIFICATION_KEY = intPreferencesKey(SELECTED_ISHA_NOTIFICATION)
-
         // ---------------//
         private val SELECTED_QIBLA_COMPASS_KEY = intPreferencesKey(SELECTED_QIBLA_COMPASS)
 
@@ -103,7 +95,7 @@ class UserDataStore(
 
         val key = notificationEnabledKey(prayerName)
 
-        return userDataStore.data.first()[key] ?: true
+        return userDataStore.data.first()[key] ?: false
     }
 
 
@@ -111,11 +103,11 @@ class UserDataStore(
     val notificationSettingsFlow: Flow<PrayerNotificationSettings> =
         userDataStore.data.map { pref ->
             PrayerNotificationSettings(
-                fajr = pref[notificationEnabledKey(prayerName = Prayer.FAJR)] ?: true,
-                dhuhr = pref[notificationEnabledKey(prayerName = Prayer.DHUHR)] ?: true,
-                asr = pref[notificationEnabledKey(prayerName = Prayer.ASR)] ?: true,
-                maghrib = pref[notificationEnabledKey(prayerName = Prayer.MAGHRIB)] ?: true,
-                isha = pref[notificationEnabledKey(prayerName = Prayer.ISHA)] ?: true,
+                fajr = pref[notificationEnabledKey(prayerName = Prayer.FAJR)] ?: false,
+                dhuhr = pref[notificationEnabledKey(prayerName = Prayer.DHUHR)] ?: false,
+                asr = pref[notificationEnabledKey(prayerName = Prayer.ASR)] ?: false,
+                maghrib = pref[notificationEnabledKey(prayerName = Prayer.MAGHRIB)] ?: false,
+                isha = pref[notificationEnabledKey(prayerName = Prayer.ISHA)] ?: false,
             )
         }
 
@@ -184,11 +176,11 @@ class UserDataStore(
 
     val getPrayerCalculationMethod: Flow<Int> =
         userDataStore.data.map { preferences ->
-            preferences[PrayerCalculationMethodKey] ?: 0
+            preferences[PrayerCalculationMethodKey] ?: 1
         }
 
     suspend fun getPrayerCalculationMethod(): Int {
-        return userDataStore.data.first()[PrayerCalculationMethodKey] ?: 0
+        return userDataStore.data.first()[PrayerCalculationMethodKey] ?: 1
     }
 
 

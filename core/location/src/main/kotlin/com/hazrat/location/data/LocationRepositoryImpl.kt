@@ -1,5 +1,6 @@
 package com.hazrat.location.data
 
+import com.hazrat.location.model.LocationConfig
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,11 +23,8 @@ class LocationRepositoryImpl(
         return locationDataSource.getCurrentLocation()
     }
 
-    override fun observeLocationUpdates(): Flow<LocationResult> {
+    override fun observeLocationUpdates(locationConfig: LocationConfig): Flow<LocationResult> {
         return locationDataSource.observeLocationUpdates()
     }
 
-    override fun stopLocationUpdates() {
-        locationDataSource.stopLocationUpdates()
-    }
 }

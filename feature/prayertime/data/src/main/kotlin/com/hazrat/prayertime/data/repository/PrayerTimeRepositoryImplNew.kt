@@ -25,6 +25,7 @@ import com.hazrat.utils.DateUtil
 import com.hazrat.utils.network.ConnectivityObserver
 import com.hazrat.utils.result.Result
 import com.hazrat.utils.result.error.PrayerTimeError
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -353,7 +354,7 @@ class PrayerTimeRepositoryImplNew(
             }
 
             // ── Location — immutable val, never silent fallback ──────────────
-            val (latitude, longitude) = resolveCoordinates()
+            val coordinateResult = resolveCoordinates()
 
             // ── Settings snapshot ────────────────────────────────────────────
             val method = userDataStore.getPrayerCalculationMethod()
@@ -362,13 +363,13 @@ class PrayerTimeRepositoryImplNew(
             // ── API call ─────────────────────────────────────────────────────
             val apiResponse = api.newPrayerTimesRequest(
                 year = year,
-                latitude = latitude.toString(),
-                longitude = longitude.toString(),
+                latitude = coordinateResult.latitude.toString(),
+                longitude = coordinateResult.longitude.toString(),
                 method = method,
                 school = school,
             )
 
-            val entities = apiResponse.data.values.flatten().toEntityList()
+            val entities = apiResponse.data.values.flatten().toEntityList(isFallBackData = coordinateResult.isFallback)
             prayerTimeDao.insertAllPrayerTimes(entities)
             Result.Success(entities)
 
@@ -409,20 +410,34 @@ class PrayerTimeRepositoryImplNew(
      *
      * Returns a [Pair] of (latitude, longitude) as immutable vals.
      */
-    private suspend fun resolveCoordinates(): Pair<Double, Double> =
+    private suspend fun resolveCoordinates(): CoordinateResult =
         when (val result = locationRepository.getCurrentLocation()) {
-            is LocationResult.Success -> result.location.latitude to result.location.longitude
+            is LocationResult.Success -> {
+                CoordinateResult(
+                    latitude = result.location.latitude,
+                    longitude = result.location.longitude,
+                    isFallback = false
+                )
+            }
             is LocationResult.Error -> {
                 Timber.tag(TAG).w(
                     "Location unavailable (%s) — falling back to Mecca coordinates.",
                     result.error,
                 )
-                FALLBACK_LATITUDE to FALLBACK_LONGITUDE
+                CoordinateResult(
+                    latitude = FALLBACK_LATITUDE,
+                    longitude = FALLBACK_LONGITUDE,
+                    isFallback = true
+                )
             }
         }
-
-
 }
+
+data class CoordinateResult(
+    val latitude: Double,
+    val longitude: Double,
+    val isFallback: Boolean
+)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Result wrapper  (put this in a shared domain module)
@@ -439,18 +454,18 @@ class PrayerTimeRepositoryImplNew(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Abstraction over [kotlinx.coroutines.CoroutineDispatcher] so tests can
+ * Abstraction over [CoroutineDispatcher] so tests can
  * inject [kotlinx.coroutines.test.UnconfinedTestDispatcher] without reflection.
  */
 interface DispatcherProvider {
-    val main: kotlinx.coroutines.CoroutineDispatcher
-    val io: kotlinx.coroutines.CoroutineDispatcher
-    val default: kotlinx.coroutines.CoroutineDispatcher
+    val main: CoroutineDispatcher
+    val io: CoroutineDispatcher
+    val default: CoroutineDispatcher
 }
 
 /** Production implementation — wire via DI (Hilt/Koin). */
 class DefaultDispatcherProvider : DispatcherProvider {
-    override val main = kotlinx.coroutines.Dispatchers.Main
-    override val io = kotlinx.coroutines.Dispatchers.IO
-    override val default = kotlinx.coroutines.Dispatchers.Default
+    override val main = Dispatchers.Main
+    override val io = Dispatchers.IO
+    override val default = Dispatchers.Default
 }

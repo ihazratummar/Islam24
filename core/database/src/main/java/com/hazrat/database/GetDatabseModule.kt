@@ -5,7 +5,6 @@ import com.hazrat.database.dao.AllahNameDao
 import com.hazrat.database.dao.AthkarDao
 import com.hazrat.database.dao.GregorianToHijriDao
 import com.hazrat.database.dao.HijriCalendarDao
-import com.hazrat.database.dao.LocationDao
 import com.hazrat.database.dao.LocationNameDao
 import com.hazrat.database.dao.PrayerLogDao
 import com.hazrat.database.dao.PrayerTimeDao
@@ -77,7 +76,7 @@ fun getDatabaseModule(): Module = module {
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
-    single<LocationDao> { get<LocationDatabase>().locationDao() }
+
     single<LocationNameDao> { get<LocationDatabase>().locationNameDao() }
 
     // Prayer Database

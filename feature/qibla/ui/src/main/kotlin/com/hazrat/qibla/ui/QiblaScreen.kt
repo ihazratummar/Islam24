@@ -169,13 +169,13 @@ fun QiblaScreen(
                         shape = RoundedCornerShape(dimens.cornerXl)
                     )
             ) {
-                QiblaMapView(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    qiblaLocation = LatLng(21.4225, 39.8262),
-                    latitude = state.latitude,
-                    longitude = state.longitude
-                )
+//                QiblaMapView(
+//                    modifier = Modifier
+//                        .fillMaxSize(),
+//                    qiblaLocation = LatLng(21.4225, 39.8262),
+//                    latitude = state.latitude,
+//                    longitude = state.longitude
+//                )
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()

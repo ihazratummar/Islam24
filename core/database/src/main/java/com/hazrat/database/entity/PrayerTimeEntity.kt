@@ -69,5 +69,6 @@ data class PrayerTimeEntity(
     val latitudeAdjustmentMethod: String,
     val midnightMode: String,
     val school: String,
-    val holidays: List<String> = emptyList()
+    val holidays: List<String> = emptyList(),
+    val isFallBackData: Boolean = false
 )

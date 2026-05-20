@@ -35,8 +35,7 @@ fun getLocationModule(): Module = module {
         FusedLocationDataSource(
             context = androidContext(),
             fusedLocationClient = get(),
-            permissionChecker = get(),
-            locationConfig = get()
+            permissionChecker = get()
         )
     }
 
