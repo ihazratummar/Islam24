@@ -1,6 +1,6 @@
 package com.hazrat.usecase
 
-import com.hazrat.domain.repository.PrayerTimeRepositoryNew
+import com.hazrat.domain.repository.PrayerTimeRepository
 import kotlinx.coroutines.flow.Flow
 
 
@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
  * Created on 17/05/26
  */
 
-class GetNextFridayTime(private val prayerTimeRepositoryNew: PrayerTimeRepositoryNew) {
+class GetNextFridayTime(private val prayerTimeRepository: PrayerTimeRepository) {
 
     operator fun invoke() : Flow<Long?>{
-        return prayerTimeRepositoryNew.getNextFridayTime()
+        return prayerTimeRepository.getNextFridayTime()
     }
 
 }

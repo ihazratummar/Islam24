@@ -44,7 +44,8 @@ fun getLocationModule(): Module = module {
         LocationNameRepositoryImpl(
             locationNameApi = get(),
             locationRepository = get(),
-            locationNameDao = get()
+            locationNameDao = get(),
+            prayerTimeRepository = get()
         )
     }
 }

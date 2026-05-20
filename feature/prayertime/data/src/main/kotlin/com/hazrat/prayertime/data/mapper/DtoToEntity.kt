@@ -10,7 +10,7 @@ import com.hazrat.utils.DateUtil.timeStringToLong
  * Created on 17-12-2024
  */
 
-fun DailyDataDto.toEntity(isFallBackData: Boolean = false): PrayerTimeEntity {
+fun DailyDataDto.toEntity(): PrayerTimeEntity {
     return PrayerTimeEntity(
         day = this.date.gregorian.day.toInt(),
         fajrTime = timeStringToLong("${this.date.gregorian.date} ${this.timings.Fajr}"),
@@ -50,10 +50,11 @@ fun DailyDataDto.toEntity(isFallBackData: Boolean = false): PrayerTimeEntity {
         midnightMode = this.meta.midnightMode,
         school = this.meta.school,
         holidays = this.date.hijri.holidays,
-        isFallBackData = isFallBackData
+        latitude = this.meta.latitude,
+        longitude = this.meta.longitude
     )
 }
 
-fun List<DailyDataDto>.toEntityList(isFallBackData: Boolean = false): List<PrayerTimeEntity> {
-    return this.map { it.toEntity(isFallBackData = isFallBackData) }
+fun List<DailyDataDto>.toEntityList(): List<PrayerTimeEntity> {
+    return this.map { it.toEntity() }
 }

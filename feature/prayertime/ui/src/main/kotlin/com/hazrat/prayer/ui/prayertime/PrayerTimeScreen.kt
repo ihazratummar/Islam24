@@ -77,7 +77,7 @@ fun PrayerTimeScreen(
     dailyPrayerStatus: DailyPrayerStatus?,
     notificationState: NotificationState
 ) {
-    val prayerTime = prayerTimeUiState.prayerTimes
+    val prayerTime = prayerTimeUiState.prayerTimes ?: return
     val prayerState = rememberPrayerState(prayerTimes = prayerTime ?: MinimalPrayerData())
     val isNow = prayerState.isNow
     var cardBottom by remember { mutableStateOf(0.dp) }

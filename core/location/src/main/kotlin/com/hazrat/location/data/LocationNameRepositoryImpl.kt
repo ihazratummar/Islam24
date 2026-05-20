@@ -4,7 +4,9 @@ import android.location.Location
 import com.hazrat.database.dao.LocationNameDao
 import com.hazrat.database.entity.LocationDetailsEntity
 import com.hazrat.domain.repository.LocationNameRepository
+import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.location.data.mapper.toLocationNameFinder
+import com.hazrat.location.model.LocationConfigs
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
 import com.hazrat.remote.api.LocationNameApi
@@ -23,38 +25,48 @@ import timber.log.Timber
 class LocationNameRepositoryImpl(
     private val locationNameApi: LocationNameApi,
     private val locationRepository: LocationRepository,
-    private val locationNameDao: LocationNameDao
+    private val locationNameDao: LocationNameDao,
+    private val prayerTimeRepository: PrayerTimeRepository
 ) : LocationNameRepository {
 
     companion object {
-        private const val ADDRESS_THRESHOLD_METERS = 5000f // 2km
+        private const val ADDRESS_THRESHOLD_METERS = 5000f // 5km
         private const val TAG = "LocationNameRepository"
     }
 
     override fun observeLocationInfo(): Flow<LocationDetailsEntity> = flow {
 
-        getCachedLocationInfo()?.let {
-            emit(it)
+        // ── Step 1: Emit cache immediately so UI has something to show ──────
+        getCachedLocationInfo()?.let { emit(it) }
+
+        // ── Step 2: Get current location once (fast, one-shot) ──────────────
+        val currentLocation = locationRepository.getCurrentLocation()
+        if (currentLocation is LocationResult.Success) {
+            val entity = if (shouldUpdateName(newLocation = currentLocation.location)) {
+                fetchAndCacheLocationInfo(currentLocation.location)
+            } else {
+                getCachedLocationInfo() ?: fetchAndCacheLocationInfo(currentLocation.location)
+            }
+            emit(entity)
         }
 
+        // ── Step 3: Then keep listening for GPS updates (background refresh) ─
         emitAll(
-            locationRepository.observeLocationUpdates()
+            locationRepository.observeLocationUpdates(locationConfig = LocationConfigs.Default)
                 .filterIsInstance<LocationResult.Success>()
                 .map { it.location }
-                .distinctUntilChanged { old, new ->
-                    old.distanceTo(new) < ADDRESS_THRESHOLD_METERS
-                }
                 .map { location ->
                     if (shouldUpdateName(location)) {
+                        prayerTimeRepository.refreshPrayerTimes()
                         fetchAndCacheLocationInfo(location)
                     } else {
-                        getCachedLocationInfo()
-                            ?: fetchAndCacheLocationInfo(location)
+                        getCachedLocationInfo() ?: fetchAndCacheLocationInfo(location)
                     }
                 }
                 .distinctUntilChanged()
         )
     }.flowOn(Dispatchers.IO)
+
 
     private suspend fun shouldUpdateName(newLocation: Location): Boolean {
         val cache = locationNameDao.getLocationDetails().firstOrNull() ?: return true
@@ -71,7 +83,6 @@ class LocationNameRepositoryImpl(
 
         return result[0] >= ADDRESS_THRESHOLD_METERS
     }
-
 
 
     private suspend fun getCachedLocationInfo(): LocationDetailsEntity? {
@@ -98,15 +109,20 @@ class LocationNameRepositoryImpl(
                 entity
             } else {
                 Timber.tag(TAG).e("API Error: ${response.code()}")
-                getCachedLocationInfo()
-                    ?: throw IllegalStateException("No cached location")
+                getCachedLocationInfo() ?: LocationDetailsEntity(
+                    locationName = "Unknown",
+                    latitude = location.latitude,
+                    longitude = location.longitude
+                )
             }
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Failed to fetch name from API")
-            getCachedLocationInfo()
-                ?: throw IllegalStateException("No cached location")
+            getCachedLocationInfo() ?: LocationDetailsEntity(
+                locationName = "Unknown",
+                latitude = location.latitude,
+                longitude = location.longitude
+            )
         }
-
     }
 
     private suspend fun saveLocation(locationDetailsEntity: LocationDetailsEntity) {

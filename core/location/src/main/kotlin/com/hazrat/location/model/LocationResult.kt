@@ -27,7 +27,7 @@ data class LocationConfig(
     val intervalMillis: Long = 5 * 60 * 1000L,
     val maxWaitTimeMs: Long = 5_000L,
     val minUpdateIntervalMillis: Long = 2 * 60 * 1000L,
-    val minUpdateDistanceMeters: Float = 1000f // 2km
+    val minUpdateDistanceMeters: Float = 2000f // 2km
 )
 
 object LocationConfigs {
@@ -35,7 +35,7 @@ object LocationConfigs {
         priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY,
         intervalMillis = 5 * 60 * 1000L,
         minUpdateIntervalMillis = 2 * 60 * 1000L,
-        minUpdateDistanceMeters = 1000f
+        minUpdateDistanceMeters = 2000f
     )
 
     val Qibla = LocationConfig(

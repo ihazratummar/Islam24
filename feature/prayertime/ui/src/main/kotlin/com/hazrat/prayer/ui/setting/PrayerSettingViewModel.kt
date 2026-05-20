@@ -1,6 +1,5 @@
 package com.hazrat.prayer.ui.setting
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.datastore.UserDataStore
@@ -47,7 +46,7 @@ class PrayerSettingViewModel (
                     if (networkStatus == ConnectivityObserver.Status.Available) {
                         val result = userDataStore.saveSetPrayerCalculationMethod(calculationMethod = event.value)
                         if (result){
-                            prayerTimeRepository.newPrayerTimesRequest()
+                            prayerTimeRepository.refreshPrayerTimes()
                         }
 //                        reScheduleAlarm() [PRAYER SETTING][TODO][HIGH] ADD RESCHEDULER
                     } else {
@@ -65,7 +64,7 @@ class PrayerSettingViewModel (
 
                         val result = userDataStore.savePrayerJuristicMethod(method = event.value)
                         if (result){
-                            prayerTimeRepository.newPrayerTimesRequest()
+                            prayerTimeRepository.refreshPrayerTimes()
                         }
 //                        reScheduleAlarm()
                     } else {

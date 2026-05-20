@@ -3,6 +3,7 @@ package com.hazrat.islam24.main.navigation.nvgraph
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -29,7 +30,12 @@ fun NavGraphBuilder.prayerNav(
                     }
                 )
         ) {
-            val prayerTimeViewModel = koinViewModel<PrayerTimeViewModel>()
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry<PrayerTime>() // scope to PrayerTime nav graph
+            }
+            val prayerTimeViewModel = koinViewModel<PrayerTimeViewModel>(
+                viewModelStoreOwner = parentEntry
+            )
             val prayerTimesUiState by prayerTimeViewModel.uiState.collectAsStateWithLifecycle()
             val dailyStatus by prayerTimeViewModel.dailyStatus.collectAsStateWithLifecycle()
             val notificationState by prayerTimeViewModel.notificationState.collectAsStateWithLifecycle()

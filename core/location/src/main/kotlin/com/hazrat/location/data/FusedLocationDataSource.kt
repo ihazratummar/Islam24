@@ -8,6 +8,7 @@ import android.os.Looper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.hazrat.location.model.LocationConfig
 import com.hazrat.location.model.LocationError
 import com.hazrat.location.model.LocationResult
@@ -16,7 +17,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 import com.google.android.gms.location.LocationResult as GmsLocationResult
 
@@ -40,9 +43,11 @@ class FusedLocationDataSource(
                 !permissionChecker.hasLocationPermission() -> {
                     LocationResult.Error(LocationError.PermissionDenied)
                 }
+
                 !isLocationEnabled() -> {
                     LocationResult.Error(LocationError.LocationDisabled)
                 }
+
                 else -> {
                     val location = getLastLocationInternal()
                     if (location != null) {
@@ -54,6 +59,9 @@ class FusedLocationDataSource(
                     }
                 }
             }
+        } catch (e: CancellationException) {
+            Timber.d("Last known location request cancelled")
+            throw e
         } catch (e: Exception) {
             Timber.e(e, "Error getting last known location")
             LocationResult.Error(LocationError.Unknown(e))
@@ -66,20 +74,34 @@ class FusedLocationDataSource(
                 !permissionChecker.hasLocationPermission() -> {
                     LocationResult.Error(LocationError.PermissionDenied)
                 }
+
                 !isLocationEnabled() -> {
                     LocationResult.Error(LocationError.LocationDisabled)
                 }
+
                 else -> {
-                    val location = getCurrentLocationInternal(locationConfig = locationConfig)
+                    val location = withTimeoutOrNull(10_000) {
+                        getCurrentLocationInternal(locationConfig = locationConfig)
+                    }
+                    Timber.tag("FusedLocationProvider").d("Location Data $location")
                     if (location != null) {
                         Timber.d("Current location: ${location.latitude}, ${location.longitude}")
                         LocationResult.Success(location)
                     } else {
-                        Timber.w("Current location is null")
-                        LocationResult.Error(LocationError.LocationUnavailable)
+                        val lastKnown = getLastLocationInternal()
+                        if (lastKnown != null) {
+                            LocationResult.Success(lastKnown)
+                        } else {
+                            Timber.w("Current location is null")
+                            LocationResult.Error(LocationError.LocationUnavailable)
+                        }
+
                     }
                 }
             }
+        } catch (e: CancellationException) {
+            Timber.d("Current location request cancelled")
+            throw e
         } catch (e: Exception) {
             Timber.e(e, "Error getting current location")
             LocationResult.Error(LocationError.Unknown(e))
@@ -128,7 +150,8 @@ class FusedLocationDataSource(
                 result.lastLocation?.let { location ->
 
                     Timber.tag("FusedLocationDataSource")
-                        .d("Location update: ${location.latitude}, ${location.longitude} "
+                        .d(
+                            "Location update: ${location.latitude}, ${location.longitude} "
                         )
 
                     trySend(
@@ -174,6 +197,11 @@ class FusedLocationDataSource(
 
             close()
 
+        } catch (e: CancellationException) {
+
+            Timber.d("Current location request cancelled")
+
+            throw e
         } catch (e: Exception) {
 
             Timber.tag("FusedLocationDataSource")
@@ -218,7 +246,7 @@ class FusedLocationDataSource(
     @SuppressLint("MissingPermission")
     private suspend fun getCurrentLocationInternal(locationConfig: LocationConfig): Location? {
         return suspendCancellableCoroutine { continuation ->
-            val cancellationToken = com.google.android.gms.tasks.CancellationTokenSource()
+            val cancellationToken = CancellationTokenSource()
 
             fusedLocationClient.getCurrentLocation(
                 locationConfig.priority,

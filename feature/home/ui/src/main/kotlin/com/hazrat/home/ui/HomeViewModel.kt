@@ -9,7 +9,6 @@ import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetNextFridayTime
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
 import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
-import com.hazrat.usecase.RefreshPrayerTimeUseCase
 import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +27,7 @@ class HomeViewModel(
     private val getLocationNameUseCase: GetLocationNameUseCase,
     private val getUpcomingMainIslamicEventUseCase: GetUpcomingMainIslamicEventUseCase,
     private val islamicEventsUseCase: GetIslamicEventsUseCase,
-    private val getNextFridayTime: GetNextFridayTime,
-    private val refreshPrayerTimeUseCase: RefreshPrayerTimeUseCase
+    private val getNextFridayTime: GetNextFridayTime
 ) : ViewModel() {
 
 
@@ -45,10 +43,9 @@ class HomeViewModel(
         getTodayPrayer()
         loadMainIslamicEvent()
         loadIslamicEvents()
-        refreshPrayerTime()
 
         viewModelScope.launch {
-            getNextFridayTime.invoke().collectLatest {time ->
+            getNextFridayTime.invoke().collectLatest { time ->
                 _homeState.update {
                     it.copy(
                         fridayTime = time
@@ -69,7 +66,7 @@ class HomeViewModel(
 
     fun refreshLocation() {
         _homeState.update { it.copy(isLocationLoading = true) }
-        viewModelScope.launch {
+        viewModelScope.launch (Dispatchers.IO){
             getLocationNameUseCase.invoke().collectLatest { locationName ->
                 _locationName.value = LocationName(address = locationName.locationName)
                 _homeState.update { it.copy(isLocationLoading = false) }
@@ -78,8 +75,8 @@ class HomeViewModel(
     }
 
     private fun loadIslamicEvents() {
-        viewModelScope.launch (Dispatchers.IO){
-            islamicEventsUseCase.invoke().collectLatest {events ->
+        viewModelScope.launch(Dispatchers.IO) {
+            islamicEventsUseCase.invoke().collectLatest { events ->
                 _homeState.update {
                     it.copy(
                         islamicEventsInfoModel = events
@@ -91,31 +88,23 @@ class HomeViewModel(
     }
 
 
-    private fun refreshPrayerTime() {
-        viewModelScope.launch {
-            refreshPrayerTimeUseCase.invoke().collectLatest {result ->
-                when(result){
+
+    private fun getTodayPrayer() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getTodayPrayerTimeUseCase.invoke().collectLatest { result ->
+                when (result) {
                     is Result.Error -> {
 
                     }
                     is Result.Success -> {
-
+                        _homeState.update {
+                            it.copy(
+                                prayerData = result.data
+                            )
+                        }
+                        Log.d("HomeViewModel", "Minimal Prayer Data ${result.data}")
                     }
                 }
-            }
-        }
-    }
-
-
-    private fun getTodayPrayer() {
-        viewModelScope.launch(Dispatchers.IO) {
-            getTodayPrayerTimeUseCase.invoke().collectLatest {prayerTimes ->
-                _homeState.update {
-                    it.copy(
-                        prayerData = prayerTimes
-                    )
-                }
-                Log.d("HomeViewModel", "Minimal Prayer Data $prayerTimes")
             }
         }
     }

@@ -131,14 +131,16 @@ fun HomeTopCard(
                             )
                     ) {
                         val icon = if (isNow) prayerState.prayerIcon else prayerState.nextPrayerIcon
-                        Icon(
-                            painter = painterResource(icon),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .padding(dimens.space12)
-                                .size(dimens.iconLg),
-                            tint = customColors.iconColor
-                        )
+                        icon?.let {
+                            Icon(
+                                painter = painterResource(icon),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(dimens.space12)
+                                    .size(dimens.iconLg),
+                                tint = customColors.iconColor
+                            )
+                        }
                     }
                 }
 

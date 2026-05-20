@@ -13,13 +13,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.datastore.DataStorePreference
-import com.hazrat.datastore.UserDataStore
-import com.hazrat.domain.repository.PrayerTimeRepositoryNew
-import com.hazrat.downloader.Downloader
+import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.Prayer
-import com.hazrat.notification.MediaPlayerHelper
 import com.hazrat.notification.PrayerAlarmScheduler
 import com.hazrat.prayer.ui.notification.NotificationState
 import com.hazrat.usecase.GetDailyPrayerStatusUseCase
@@ -28,7 +24,6 @@ import com.hazrat.usecase.GetPrayerNotificationStateUseCase
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
 import com.hazrat.usecase.PrayerNotificationEnabledUseCase
 import com.hazrat.usecase.TogglePrayerUseCase
-import com.hazrat.utils.network.ConnectivityObserver
 import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -48,7 +43,7 @@ import java.time.LocalDate
 
 class PrayerTimeViewModel(
     private val context: Context,
-    private val repository: PrayerTimeRepositoryNew,
+    private val repository: PrayerTimeRepository,
     private val prayerAlarmManager: PrayerAlarmScheduler,
     private val getTodayPrayerTimeUseCase: GetTodayPrayerTimeUseCase,
     private val getLocationNameUseCase: GetLocationNameUseCase,
@@ -76,9 +71,7 @@ class PrayerTimeViewModel(
     val events = _events.receiveAsFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            observeAndSync()
-        }
+        observeAndSync()
         loadLocationName()
     }
 
@@ -111,12 +104,19 @@ class PrayerTimeViewModel(
     }
 
     private fun observeAndSync() {
-        viewModelScope.launch {
-            getTodayPrayerTimeUseCase.invoke().collectLatest { prayerData ->
-                _uiState.update {
-                    it.copy(
-                        prayerTimes = prayerData
-                    )
+        viewModelScope.launch(Dispatchers.IO) {
+            getTodayPrayerTimeUseCase.invoke().collectLatest { result ->
+                when(result){
+                    is Result.Error -> {
+                        // [PRAYERTIME][TODO][MEDIUM] ADD Error SnackBar
+                    }
+                    is Result.Success ->  {
+                        _uiState.update {
+                            it.copy(
+                                prayerTimes = result.data
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -184,6 +184,7 @@ class PrayerTimeViewModel(
 
                     is Result.Success -> {
                         _uiState.update { it.copy(isRefreshing = false) }
+                        Log.d("PrayerTimeViewModel", "Data - ${result.data}")
                     }
                 }
             }catch (e: Exception){

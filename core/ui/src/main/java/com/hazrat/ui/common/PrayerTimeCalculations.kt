@@ -83,14 +83,14 @@ data class PrayerState(
     val currentPrayer: PrayerType?,
     val currentPrayerTime: Long,
     val nextPrayer: PrayerType?,
-    val prayerIcon: Int,
-    val nextPrayerIcon: Int,
+    val prayerIcon: Int?,
+    val nextPrayerIcon: Int?,
     val nextPrayerGradient: List<Color>,
     val nextPrayerTimeMillis: Long,
     val countdownText: String,
     val isNow: Boolean,
     val nextPrayerIconColor: Color,
-    val currentPrayerIconColor: Color
+    val currentPrayerIconColor: Color?
 )
 
 /**
@@ -194,11 +194,11 @@ private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Lo
         nextPrayerTimeMillis = nextPrayerTime,
         countdownText = countdownText,
         isNow = isNow,
-        prayerIcon = currentPrayer!!.icon,
+        prayerIcon = currentPrayer?.icon,
         nextPrayerIcon = nextPrayer.icon,
         nextPrayerGradient = nextPrayer.gradient,
         nextPrayerIconColor = nextPrayer.color,
-        currentPrayerIconColor = currentPrayer.color
+        currentPrayerIconColor = currentPrayer?.color
     )
 }
 

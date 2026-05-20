@@ -59,5 +59,6 @@ dependencies {
     implementation(libs.koin.android)
 
     implementation(libs.ummalqura)
+    implementation(libs.timber)
 
 }

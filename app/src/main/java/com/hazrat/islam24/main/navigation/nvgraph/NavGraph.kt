@@ -27,35 +27,9 @@ fun NavGraph(
     NavHost(
         navController = navController,
         startDestination = RootNav,
-        enterTransition = {
-            fadeIn(animationSpec = tween(520)) + slideIntoContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Start,
-                animationSpec = tween(500)
-            )
-        },
-        exitTransition = {
-            fadeOut(animationSpec = tween(520)) + slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Start,
-                animationSpec = tween(500)
-            )
-        },
-        popEnterTransition = {
-            fadeIn(
-                animationSpec = tween(520)
-            ) + slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.End,
-                animationSpec = tween(520)
-            )
-        },
-
-        popExitTransition = {
-            fadeOut(
-                animationSpec = tween(520)
-            ) + slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.End,
-                animationSpec = tween(520)
-            )
-        }
+        // ✅ Keep simple — this only wraps AppNavigator
+        enterTransition = { fadeIn(animationSpec = tween(300)) },
+        exitTransition = { fadeOut(animationSpec = tween(300)) },
     ) {
         navigation<RootNav>(startDestination = MainRoute.HomeScreen) {
             composable<MainRoute.HomeScreen> {

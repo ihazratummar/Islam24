@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.hazrat.database.entity.PrayerTimeEntity
 import com.hazrat.database.entity.HolidayInfoEntity
+import com.hazrat.database.entity.LocationDetailsEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -100,4 +101,12 @@ interface PrayerTimeDao {
 
     @Query("SELECT ishaTime FROM prayer_times WHERE gregorianDate == :currentDate ")
     fun getIshaTimeForTheDay(currentDate: String): Long
+
+    @Query("SELECT latitude, longitude FROM prayer_times LIMIT 1")
+    suspend fun getPrayerLocation() : PrayerLocation?
 }
+
+data class PrayerLocation(
+    val latitude: Double?,
+    val longitude: Double?
+)

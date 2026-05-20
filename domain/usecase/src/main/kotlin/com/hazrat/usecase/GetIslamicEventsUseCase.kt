@@ -1,6 +1,6 @@
 package com.hazrat.usecase
 
-import com.hazrat.domain.repository.PrayerTimeRepositoryNew
+import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.model.IslamicEventsInfoModel
 import kotlinx.coroutines.flow.Flow
 
@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.Flow
  */
 
 class GetIslamicEventsUseCase(
-    private val prayerTimeRepositoryNew: PrayerTimeRepositoryNew
+    private val prayerTimeRepository: PrayerTimeRepository
 ) {
 
     operator fun invoke() : Flow<List<IslamicEventsInfoModel?>> {
-        return prayerTimeRepositoryNew.getAllHolidayFromToday()
+        return prayerTimeRepository.getAllHolidayFromToday()
     }
 
 }

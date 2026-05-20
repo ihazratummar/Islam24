@@ -52,8 +52,12 @@ class NetworkConnectivityObserver  (
                 }
             }
             connectivityManager.registerDefaultNetworkCallback(callback)
+
+            val isConnected = connectivityManager.activeNetwork != null
+            send(if (isConnected) ConnectivityObserver.Status.Available else ConnectivityObserver.Status.Unavailable)
+
             awaitClose {
-                connectivityManager.registerDefaultNetworkCallback(callback)
+                connectivityManager.unregisterNetworkCallback(callback)
             }
         }.distinctUntilChanged()
     }

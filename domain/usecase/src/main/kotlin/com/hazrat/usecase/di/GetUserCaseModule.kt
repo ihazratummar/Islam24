@@ -24,18 +24,11 @@ import java.time.Clock
 
 fun getUserCaseModule(): Module = module {
     single { GetTodayPrayerTimeUseCase(prayerTimeRepository = get()) }
-    single { GetLocationNameUseCase(locationNameRepository = get()) }
+    single { GetLocationNameUseCase(locationNameRepository = get(), prayerTimeRepository = get()) }
     single { GetUpcomingMainIslamicEventUseCase() }
-    single { GetIslamicEventsUseCase(prayerTimeRepositoryNew = get()) }
-    single { GetNextFridayTime(prayerTimeRepositoryNew = get()) }
-    single {
-        RefreshPrayerTimeUseCase(
-            prayerTimeRepositoryNew = get(),
-            locationRepository = get(),
-            locationDao = get()
-        )
-    }
-
+    single { GetIslamicEventsUseCase(prayerTimeRepository = get()) }
+    single { GetNextFridayTime(prayerTimeRepository = get()) }
+    single { RefreshPrayerTimeUseCase(prayerTimeRepository = get(), locationNameRepository = get()) }
 
     single<Clock> {
         Clock.systemDefaultZone()

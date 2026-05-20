@@ -2,6 +2,8 @@ package com.hazrat.usecase
 
 import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.model.MinimalPrayerData
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.PrayerTimeError
 import kotlinx.coroutines.flow.Flow
 
 
@@ -14,7 +16,7 @@ class GetTodayPrayerTimeUseCase(
     private val prayerTimeRepository : PrayerTimeRepository
 ) {
 
-    suspend operator  fun invoke(): Flow<MinimalPrayerData> {
+    operator  fun invoke(): Flow<Result<MinimalPrayerData, PrayerTimeError>> {
         return prayerTimeRepository.getTodayPrayerTime()
     }
 
