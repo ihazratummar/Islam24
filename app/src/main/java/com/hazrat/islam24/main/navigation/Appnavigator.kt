@@ -112,6 +112,7 @@ fun AppNavigator(
                 val homeViewModel = koinViewModel<HomeViewModel>()
                 val locationName by homeViewModel.locationName.collectAsState()
                 val homeState by homeViewModel.homeState.collectAsStateWithLifecycle()
+                val dailyStatus by homeViewModel.dailyStatus.collectAsStateWithLifecycle()
 
                 HomeScreen(
                     navigateToPrayerTime = {
@@ -133,7 +134,8 @@ fun AppNavigator(
                         }
                     },
                     homeState = homeState,
-                    refreshLocation = homeViewModel::refreshLocation
+                    refreshLocation = homeViewModel::refreshLocation,
+                    dailyPrayerStatus = dailyStatus
                 )
             }
 

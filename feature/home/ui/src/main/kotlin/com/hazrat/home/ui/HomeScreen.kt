@@ -35,9 +35,12 @@ import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.home.ui.component.DashboardTile
 import com.hazrat.home.ui.component.HomePageNavIcons
 import com.hazrat.home.ui.component.HomeScreenEventCard
+import com.hazrat.home.ui.component.HomeScreenStreakCard
 import com.hazrat.home.ui.component.HomeTopCard
 import com.hazrat.home.ui.component.QuickAccessMenu
+import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.EventType
+import com.hazrat.model.PrayerStreakInfo
 import com.hazrat.model.locationmodel.LocationName
 import com.hazrat.permission.PermissionRationaleDialog
 import com.hazrat.permission.PermissionTypes
@@ -55,7 +58,8 @@ fun HomeScreen(
     locationName: LocationName,
     onWidgetClick: (HomePageNavIcons) -> Unit,
     homeState: HomeState,
-    refreshLocation: () -> Unit
+    refreshLocation: () -> Unit,
+    dailyPrayerStatus: DailyPrayerStatus?
 ) {
     val context = LocalContext.current
     var showLocationRationale by remember { mutableStateOf(false) }
@@ -195,6 +199,11 @@ fun HomeScreen(
                         )
                     }
                 }
+            }
+            item {
+                HomeScreenStreakCard(
+                    dailyPrayerStatus = dailyPrayerStatus
+                )
             }
 
             item {

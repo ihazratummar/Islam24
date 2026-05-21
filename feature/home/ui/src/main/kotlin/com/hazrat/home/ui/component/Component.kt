@@ -1,5 +1,7 @@
 package com.hazrat.home.ui.component
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Space
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,12 +34,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.EventType
 import com.hazrat.model.MinimalPrayerData
+import com.hazrat.model.Prayer
 import com.hazrat.ui.R
+import com.hazrat.ui.common.IconWithBackground
 import com.hazrat.ui.common.LongText
 import com.hazrat.ui.common.PulsingLiveDot
 import com.hazrat.ui.common.rememberPrayerState
+import com.hazrat.ui.theme.InactiveIcon
+import com.hazrat.ui.theme.Islam24Theme
+import com.hazrat.ui.theme.Success
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
@@ -275,6 +284,107 @@ fun HomeTopCard(
 }
 
 
+@Composable
+fun HomeScreenStreakCard(
+    dailyPrayerStatus: DailyPrayerStatus?
+) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
+        shape = RoundedCornerShape(dimens.cornerLg),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.space16),
+            verticalArrangement = Arrangement.spacedBy(dimens.space12)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+            )
+            {
+                IconWithBackground(
+                    icon = R.drawable.fire,
+                    iconColor = Color(0xFFf67217),
+                    containerColor = Color(0xFFf67217).copy(0.1f)
+                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(dimens.space4)
+                ) {
+                    Text(
+                        text = "Prayer Streak",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                    Text(
+                        text = "${dailyPrayerStatus?.loggedPrayers?.size} of 5 prayers today",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = customColors.secondaryText,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(dimens.space4),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(
+                        text = "%${dailyPrayerStatus?.completionPercentage}",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            color = Color(0xFFf67217)
+                        )
+                    )
+                    Text(
+                        text = "completed",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = customColors.secondaryText,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Prayer.entries.forEach { prayer ->
+                    val isLogged = dailyPrayerStatus?.isLogged(prayer = prayer) ?: false
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(dimens.space4),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                                .height(dimens.space12)
+                                .background(
+                                    color = if (isLogged) Success else InactiveIcon,
+                                    shape = RoundedCornerShape(dimens.cornerXl)
+                                )
+                        )
+                        Text(
+                            text = prayer.name,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = customColors.secondaryText
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun DashboardTile(
@@ -329,12 +439,10 @@ fun DashboardTile(
                     fontWeight = FontWeight.Medium
                 ),
 
-            )
+                )
         }
     }
 }
-
-
 
 
 @Composable
@@ -417,10 +525,10 @@ fun HomeScreenEventCard(
                 )
             }
 
-            Column (
+            Column(
                 verticalArrangement = Arrangement.spacedBy(dimens.space8),
                 modifier = Modifier.weight(1f)
-            ){
+            ) {
                 val randomInt = Random.nextInt(5000, 10000)
                 LongText(
                     text = eventName,
@@ -445,9 +553,9 @@ fun HomeScreenEventCard(
                 modifier = Modifier
                     .width(IntrinsicSize.Min)
                     .background(
-                    color = eventType.color().copy(0.1f),
-                    shape = RoundedCornerShape(dimens.cornerLg)
-                ),
+                        color = eventType.color().copy(0.1f),
+                        shape = RoundedCornerShape(dimens.cornerLg)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
