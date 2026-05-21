@@ -14,6 +14,8 @@ sealed interface PrayerEvent {
     data class LogPrayer(val date: Long, val  prayer: Prayer) : PrayerEvent
 
     data class PrayerNotificationToggle(val prayer: Prayer, val enabled: Boolean, val prayerTIme: Long = 0L) : PrayerEvent
+
+    data class OnPageChanged(val index: Int) : PrayerEvent
 }
 
 sealed class PrayerTimeUiEvent {

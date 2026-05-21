@@ -71,5 +71,7 @@ data class PrayerTimeEntity(
     val school: String,
     val holidays: List<String> = emptyList(),
     val latitude: Double?,
-    val longitude: Double?
+    val longitude: Double?,
+    @ColumnInfo("hijriSortKey")
+    val hijriSortKey: Int // compute as : hijriYear * 1000 + hijriMonthNumber * 100 + hijriDay
 )

@@ -5,11 +5,11 @@ import com.hazrat.usecase.GetIslamicEventsUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetNextFridayTime
 import com.hazrat.usecase.GetPrayerNotificationStateUseCase
+import com.hazrat.usecase.GetPrayerTimeWindowForDaysUseCase
 import com.hazrat.usecase.GetTodayPrayerTimeUseCase
 import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
 import com.hazrat.usecase.LogPrayerUseCase
 import com.hazrat.usecase.PrayerNotificationEnabledUseCase
-import com.hazrat.usecase.RefreshPrayerTimeUseCase
 import com.hazrat.usecase.TogglePrayerUseCase
 import com.hazrat.usecase.UnLogPrayerUseCase
 import org.koin.core.module.Module
@@ -28,7 +28,7 @@ fun getUserCaseModule(): Module = module {
     single { GetUpcomingMainIslamicEventUseCase() }
     single { GetIslamicEventsUseCase(prayerTimeRepository = get()) }
     single { GetNextFridayTime(prayerTimeRepository = get()) }
-    single { RefreshPrayerTimeUseCase(prayerTimeRepository = get(), locationNameRepository = get()) }
+    single { GetPrayerTimeWindowForDaysUseCase(prayerTimeRepository = get(),) }
 
     single<Clock> {
         Clock.systemDefaultZone()

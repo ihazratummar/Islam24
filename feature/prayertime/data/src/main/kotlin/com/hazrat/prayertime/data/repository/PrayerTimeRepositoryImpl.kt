@@ -137,21 +137,6 @@ class PrayerTimeRepositoryImpl(
             }
             .flowOn(dispatchers.io)
 
-    /**
-     * Emits the full list of all cached prayer times.
-     * Returns an empty list until the DB is populated.
-     */
-    override fun getAllPrayer(): Flow<List<PrayerTimeModel>> =
-        prayerTimeDao
-            .getAllPrayer()
-            .distinctUntilChanged()
-            .conflate()
-            .map { it.toPrayerModelList() }
-            .catch { e ->
-                Timber.tag(TAG).e(e, "getAllPrayer DB read failed")
-                emit(emptyList())
-            }
-            .flowOn(dispatchers.io)
 
     /**
      * Force-refreshes prayer times from the network for the current year,
@@ -192,68 +177,6 @@ class PrayerTimeRepositoryImpl(
             is Result.Error -> Result.Error(PrayerTimeError.ErrorMessage("Something Went Wrong"))
             is Result.Success -> Result.Success(result.data.size)
         }
-    }
-
-    /**
-     * Bootstraps prayer-time data and keeps it up to date.
-     *
-     * Designed to be collected once from [ViewModel.viewModelScope]. Returns a
-     * [Flow] so the ViewModel controls the lifecycle; it does NOT block forever
-     * as a bare suspend function.
-     *
-     * Emits [Result] for each significant state change so the UI can
-     * show loading/error indicators.
-     */
-    override fun observeAndSyncPrayerTimes(): Flow<Result<List<PrayerTimeModel>, PrayerTimeError>> =
-        getAllPrayer()
-            .onEach { prayerList ->
-                val currentYear = UmmalquraCalendar().get(UmmalquraCalendar.YEAR)
-                val hasOldFormat = prayerList.any { it.gregorianDate.indexOf("-") == 2 }
-                val hasCurrentYearData = prayerList.any { it.gregorianYear.toInt() == currentYear }
-                val isNetworkAvailable = withTimeoutOrNull(2_000){
-                    connectivityObserver.observer().first()
-                } == ConnectivityObserver.Status.Available
-
-                when {
-                    // ── Case 1: DB is empty or data is stale ──────────────────
-                    prayerList.isEmpty() || hasOldFormat || !hasCurrentYearData -> {
-                        if (!isNetworkAvailable) {
-                            Timber.tag(TAG).w("No data and no network — cannot sync.")
-                            return@onEach
-                        }
-                        if (hasOldFormat) {
-                            Timber.tag(TAG)
-                                .i("Old date format detected — clearing DB before re-fetch.")
-                            prayerTimeDao.deleteAllPrayer()
-                        }
-                        fetchAndSaveYearlyPrayerTimes(currentYear)
-                    }
-
-                    // ── Case 2: Data is current — maybe pre-fetch next year ───
-                    else -> {
-                        prefetchNextYearIfNeeded(prayerList, currentYear, isNetworkAvailable)
-                    }
-                }
-            }
-            .map { prayerList ->
-                if (prayerList.isEmpty()) Result.Error<List<PrayerTimeModel>, PrayerTimeError>(
-                    PrayerTimeError.Local.EMPTY_RESPONSE
-                )
-                else Result.Success<List<PrayerTimeModel>, PrayerTimeError>(prayerList)
-            }
-            .catch { e ->
-                Timber.tag(TAG).e(e, "observeAndSyncPrayerTimes failed")
-                emit(Result.Error<List<PrayerTimeModel>, PrayerTimeError>(PrayerTimeError.Local.DB_READ_FAILED))
-            }
-            .flowOn(Dispatchers.IO)
-
-    /**
-     * Returns the Hijri day for today from the given prayer list,
-     * or null if the data is not yet available (ViewModel handles null gracefully).
-     */
-    override fun getHijriDay(prayerTimes: List<PrayerTimeModel>): Int? {
-        val today = DateUtil.getCurrentDate()
-        return prayerTimes.find { it.gregorianDate == today }?.hijriDay
     }
 
     /**
@@ -334,9 +257,56 @@ class PrayerTimeRepositoryImpl(
     }
 
     override suspend fun getCurrentPrayerLocation(): PrayerLocation {
-        val location =  prayerTimeDao.getPrayerLocation()
+        val location = prayerTimeDao.getPrayerLocation()
         return PrayerLocation(latitude = location?.latitude, longitude = location?.longitude)
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getPrayerTimesInHijriRange(
+        fromKey: Int,
+        toKey: Int
+    ): Flow<Result<List<MinimalPrayerData>, PrayerTimeError>> =
+        prayerTimeDao
+            .getPrayerTimesInHijriRange(fromKey, toKey)
+            .flatMapLatest { entities ->
+                val lastKey   = entities.lastOrNull()?.hijriSortKey ?: 0
+                val gapExists = entities.isEmpty() || lastKey < toKey
+
+                if (gapExists) {
+                    flow<Result<List<MinimalPrayerData>, PrayerTimeError>> {  // 👈 explicit type here
+                        val missingYear = toKey / 10000
+                        val alreadyHave = prayerTimeDao.countByHijriYear(missingYear) > 0
+
+                        if (!alreadyHave) {
+                            Timber.tag(TAG).d("Missing hijri year $missingYear — fetching")
+                            val fetchResult = fetchAndSaveYearlyPrayerTimes(year = missingYear)
+                            if (fetchResult is Result.Error) {
+                                if (entities.isNotEmpty()) {
+                                    emit(Result.Success(entities.map { it.toMinimalPrayerData() }))
+                                } else {
+                                    emit(Result.Error(fetchResult.error))
+                                }
+                                return@flow
+                            }
+                        }
+
+                        val updated = prayerTimeDao.getPrayerTimesInHijriRangeOneShot(fromKey, toKey)
+                        emit(
+                            if (updated.isNotEmpty()) Result.Success(updated.map { it.toMinimalPrayerData() })
+                            else Result.Error(PrayerTimeError.Local.EMPTY_RESPONSE)
+                        )
+                    }
+                } else {
+                    flowOf<Result<List<MinimalPrayerData>, PrayerTimeError>>(  // 👈 and here
+                        Result.Success(entities.map { it.toMinimalPrayerData() })
+                    )
+                }
+            }
+            .catch { e ->
+                Timber.tag(TAG).e(e, "getPrayerTimesInHijriRange failed")
+                emit(Result.Error(PrayerTimeError.Local.EMPTY_RESPONSE))
+            }
+            .flowOn(dispatchers.io)
 
     // ─────────────────────────────────────────────────────────────────────────
     // Private helpers
@@ -431,6 +401,7 @@ class PrayerTimeRepositoryImpl(
                 )
 
             }
+
             is LocationResult.Error -> {
                 Timber.tag(TAG).w(
                     "Location unavailable (%s) — falling back to Mecca coordinates.",

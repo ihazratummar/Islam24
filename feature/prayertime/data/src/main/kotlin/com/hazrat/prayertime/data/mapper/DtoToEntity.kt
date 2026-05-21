@@ -51,7 +51,8 @@ fun DailyDataDto.toEntity(): PrayerTimeEntity {
         school = this.meta.school,
         holidays = this.date.hijri.holidays,
         latitude = this.meta.latitude,
-        longitude = this.meta.longitude
+        longitude = this.meta.longitude,
+        hijriSortKey = this.date.hijri.year * 10000 + this.date.hijri.month.number * 100 + this.date.hijri.day
     )
 }
 

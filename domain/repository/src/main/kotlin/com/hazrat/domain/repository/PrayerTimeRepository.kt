@@ -29,11 +29,6 @@ interface PrayerTimeRepository {
      */
     fun getTodayPrayerTime(): Flow<Result<MinimalPrayerData , PrayerTimeError>>
 
-    /**
-     * Emits the full list of all locally cached prayer times.
-     */
-    fun getAllPrayer(): Flow<List<PrayerTimeModel>>
-
 
     /**
      * Force-refreshes prayer times from the network for the current year,
@@ -44,17 +39,7 @@ interface PrayerTimeRepository {
      */
     suspend fun refreshPrayerTimes(): Result<Int, PrayerTimeError>
 
-    /**
-     * Bootstrap + sync flow. Collect this once from [ViewModel.viewModelScope].
-     * Handles: empty DB, old-format migration, current-year missing, December pre-fetch.
-     */
-    fun observeAndSyncPrayerTimes(): Flow<Result<List<PrayerTimeModel>, PrayerTimeError>>
 
-    /**
-     * Returns the Hijri day for today from the provided list, or null if unavailable.
-     * Pure function — no DB / network side effects.
-     */
-    fun getHijriDay(prayerTimes: List<PrayerTimeModel>): Int?
 
     /**
      * Builds a plain-text share string for today's prayer times.
@@ -69,4 +54,9 @@ interface PrayerTimeRepository {
     fun getNextFridayTime() : Flow<Long?>
 
     suspend fun getCurrentPrayerLocation(): PrayerLocation?
+
+    fun getPrayerTimesInHijriRange(
+        fromKey: Int,
+        toKey: Int
+    ): Flow<Result<List<MinimalPrayerData>, PrayerTimeError>>
 }

@@ -20,13 +20,13 @@ fun getPrayerUiModule(): Module = module {
             context = androidContext(),
             repository = get(),
             prayerAlarmManager = get(),
-            getTodayPrayerTimeUseCase = get(),
             getLocationNameUseCase = get(),
-            getDailyPrayerStatus = get(),
+            getDailyPrayerStatusUseCase = get(),
             togglePrayerUseCase = get(),
             clock = get(),
             prayerNotificationEnabledUseCase = get(),
             getPrayerNotificationStateUseCase = get(),
+            getPrayerTimeWindowForDaysUseCase = get(),
         )
     }
 

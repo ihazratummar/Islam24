@@ -11,7 +11,7 @@ import com.hazrat.database.entity.PrayerTimeEntity
 
 @Database(
     entities = [PrayerTimeEntity::class, PrayerLogEntity::class],
-    version = 30,
+    version = 31,
     exportSchema = false
 )
 @TypeConverters(Converter::class)

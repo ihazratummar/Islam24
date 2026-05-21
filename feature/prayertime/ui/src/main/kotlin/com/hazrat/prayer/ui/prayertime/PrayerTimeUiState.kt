@@ -10,5 +10,8 @@ data class PrayerTimeUiState(
     val isRefreshing: Boolean = false,
     val prayerTimes: MinimalPrayerData? = null,
     val error: String? = null,
-    val locationNane: String? = null
+    val locationNane: String? = null,
+    val pages: List<MinimalPrayerData> = emptyList(),
+    val selectedIndex : Int = -1,
+    val isFetchingNextYear : Boolean = false,
 )

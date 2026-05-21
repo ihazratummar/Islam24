@@ -84,6 +84,24 @@ interface PrayerTimeDao {
     @Query("SELECT holidays, gregorianDate, hijriDate, timestamp FROM prayer_times WHERE timestamp > :currentDateTimestamp AND holidays != '[]'")
     fun getAllHolidaysFromToday(currentDateTimestamp: Long ): Flow<List<HolidayInfoEntity>>
 
+
+    @Query("""
+        SELECT * FROM prayer_times
+        WHERE hijriSortKey BETWEEN :fromKey AND :toKey
+        ORDER BY hijriSortKey ASC
+    """)
+    fun getPrayerTimesInHijriRange(fromKey: Int, toKey: Int) : Flow<List<PrayerTimeEntity>>
+
+    @Query("""
+    SELECT * FROM prayer_times 
+    WHERE hijriSortKey BETWEEN :fromKey AND :toKey
+    ORDER BY hijriSortKey ASC
+""")
+    suspend fun getPrayerTimesInHijriRangeOneShot(fromKey: Int, toKey: Int): List<PrayerTimeEntity>
+
+    @Query("SELECT COUNT(*) FROM prayer_times WHERE hijriYear = :year")
+    suspend fun countByHijriYear(year: Int): Int
+
     @Query("SELECT dhuhrTime FROM prayer_times WHERE gregorianWeekday == \"Friday\" and dhuhrTime > :dhuhrTime LIMIT 1")
     fun getNextFridayTime(dhuhrTime: Long): Flow<Long>
 
