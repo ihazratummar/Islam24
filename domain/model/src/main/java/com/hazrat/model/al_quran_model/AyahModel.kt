@@ -8,5 +8,6 @@ data class AyahModel(
     val ayahNumber: Int,
     val englishTranslation : String,
     val transliteration : String,
-    val isBookmarked : Boolean = false
+    val isBookmarked : Boolean = false,
+    val tajweedText: String = ""
 )

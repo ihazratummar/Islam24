@@ -26,5 +26,6 @@ data class AyahEntity(
     val arabicText: String,
     val englishTranslation: String,
     val transliteration: String,
-    val isBookmarked: Boolean = false
+    val isBookmarked: Boolean = false,
+    val tajweedText: String = ""
 )

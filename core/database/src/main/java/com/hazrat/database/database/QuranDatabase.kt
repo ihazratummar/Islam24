@@ -12,7 +12,7 @@ import com.hazrat.database.entity.quran.SurahEntity
  * Created on 27/01/26
  */
 
-@Database(entities = [SurahEntity::class, AyahEntity::class], version = 1, exportSchema = false)
+@Database(entities = [SurahEntity::class, AyahEntity::class], version = 2, exportSchema = false)
 abstract class QuranDatabase : RoomDatabase() {
 
     abstract fun quranDao() : QuranDao

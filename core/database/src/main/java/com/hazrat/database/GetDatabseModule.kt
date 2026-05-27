@@ -111,7 +111,7 @@ fun getDatabaseModule(): Module = module {
             QuranDatabase::class.java,
             "quran_db"
         )
-            .createFromAsset("databases/quran_prepopulated.db")
+            .createFromAsset("databases/quran_prepopulatedold.db")
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }

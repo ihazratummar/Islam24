@@ -40,7 +40,8 @@ fun AyahEntity.toAyahModel() : AyahModel {
         englishTranslation = this.englishTranslation,
         transliteration = this.transliteration,
         isBookmarked = this.isBookmarked,
-        ayahNumber = this.ayahNumber
+        ayahNumber = this.ayahNumber,
+        tajweedText = this.tajweedText
     )
 }
 

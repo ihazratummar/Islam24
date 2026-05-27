@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +36,7 @@ import com.hazrat.ui.theme.dimens
 
 /**
  * @author hazratummar
+ * Created on 27/05/26
  */
 
 private fun String.cleanUthmanic(): String {
@@ -44,6 +46,7 @@ private fun String.cleanUthmanic(): String {
         .replace("\uFEFF", "")       // Remove BOM
         .trim()
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AyahScreen(
@@ -53,9 +56,7 @@ fun AyahScreen(
     surahScreenData: SurahScreenData
 ) {
 
-    // Exact Bismillah from quran-uthmani API
-    val bismillahRaw = "\u0628\u0650\u0633\u0652\u0645\u0650 \u0671\u0644\u0644\u0651\u064e\u0647\u0650 \u0671\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0670\u0646\u0650 \u0671\u0644\u0631\u0651\u064e\u062d\u0650\u064a\u0645\u0650"
-    val bismillahText = bismillahRaw.cleanUthmanic()
+    val defaultTextColor = MaterialTheme.colorScheme.onBackground
 
     Scaffold(
         containerColor = Color(0xFF272727),
@@ -89,9 +90,8 @@ fun AyahScreen(
                 )
             )
         },
-        contentWindowInsets = WindowInsets(0,0,0,0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
-
 
         LazyColumn(
             modifier = modifier
@@ -99,6 +99,7 @@ fun AyahScreen(
                 .padding(horizontal = dimens.space20),
             verticalArrangement = Arrangement.spacedBy(dimens.space12)
         ) {
+            // Bismillah header
             item(key = "bismillah") {
                 val surahNumber = surahScreenData.number
                 if (surahNumber != 1 && surahNumber != 9) {
@@ -106,24 +107,50 @@ fun AyahScreen(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = bismillahText.cleanUthmanic(),
-                            modifier = Modifier.padding(vertical = dimens.space32),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontFamily = ScheherazadeFontFamily,
-                                fontSize = 32.sp
+                        // Use tajweed Bismillah from first ayah if available
+                        val firstAyah = ayahState.ayahs.firstOrNull()
+                        val bismillahTajweed = firstAyah?.tajweedText
+
+                        if (!bismillahTajweed.isNullOrBlank()) {
+                            // Extract Bismillah portion from tajweed HTML
+                            val bismillahAnnotated = remember(bismillahTajweed) {
+                                parseTajweedHtml(
+                                    "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+                                    defaultTextColor
+                                )
+                            }
+                            Text(
+                                text = bismillahAnnotated,
+                                modifier = Modifier.padding(vertical = dimens.space32),
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontFamily = ScheherazadeFontFamily,
+                                    textDirection = TextDirection.Rtl,
+                                    fontFeatureSettings = "cv62",
+                                    fontSize = 32.sp
+                                )
                             )
-                        )
+                        } else {
+                            // Fallback to plain text
+                            val bismillahPlain = "\u0628\u0650\u0633\u0652\u0645\u0650 \u0671\u0644\u0644\u0651\u064e\u0647\u0650 \u0671\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0670\u0646\u0650 \u0671\u0644\u0631\u0651\u064e\u062d\u0650\u064a\u0645\u0650"
+                                .cleanUthmanic()
+                            Text(
+                                text = bismillahPlain,
+                                modifier = Modifier.padding(vertical = dimens.space32),
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontFamily = ScheherazadeFontFamily,
+                                    color = defaultTextColor,
+                                    textDirection = TextDirection.Rtl,
+                                    fontFeatureSettings = "cv62",
+                                    fontSize = 32.sp
+                                )
+                            )
+                        }
                     }
                 }
             }
+
+            // Ayah items
             items(ayahState.ayahs) { ayah ->
-
-                var ayahText = ayah.arabicText.cleanUthmanic()
-
-                if (ayah.ayahNumber == 1 && ayah.surahNumber != 1 && ayah.surahNumber != 9) {
-                    ayahText = ayahText.replace(bismillahText, "").trim()
-                }
 
                 Column(
                     modifier = Modifier
@@ -146,18 +173,38 @@ fun AyahScreen(
                         )
                     }
 
-                    // Arabic Text
-                    Text(
-                        text = ayahText,
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontFamily = ScheherazadeFontFamily,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            textDirection = TextDirection.Rtl,
-                            fontSize = 30.sp,
-                            lineHeight = 60.sp
+                    // Arabic Text — Tajweed colored
+                    if (ayah.tajweedText.isNotBlank()) {
+                        val annotatedAyah = remember(ayah.tajweedText) {
+                            parseTajweedHtml(ayah.tajweedText, defaultTextColor)
+                        }
+                        Text(
+                            text = annotatedAyah,
+                            modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontFamily = ScheherazadeFontFamily,
+                                textDirection = TextDirection.Rtl,
+                                fontFeatureSettings = "cv62",
+                                fontSize = 30.sp,
+                                lineHeight = 60.sp
+                            )
                         )
-                    )
+                    } else {
+                        // Fallback: plain text (no tajweed)
+                        val plainText = ayah.arabicText.cleanUthmanic()
+                        Text(
+                            text = plainText,
+                            modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontFamily = ScheherazadeFontFamily,
+                                color = defaultTextColor,
+                                textDirection = TextDirection.Rtl,
+                                fontFeatureSettings = "cv62",
+                                fontSize = 30.sp,
+                                lineHeight = 60.sp
+                            )
+                        )
+                    }
 
                     // Transliteration
                     Text(
@@ -185,7 +232,6 @@ fun AyahScreen(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f)
                     )
                 }
-
             }
         }
     }
