@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -89,9 +90,9 @@ fun HomeScreen(
         Unit
     }
 
-    Scaffold (
+    Scaffold(
         contentWindowInsets = WindowInsets(top = dimens.space20)
-    ){ paddingValues ->
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -148,11 +149,11 @@ fun HomeScreen(
                                 shape = RoundedCornerShape(dimens.cornerMd)
                             )
                     ) {
-                        if (homeState.isLocationLoading){
+                        if (homeState.isLocationLoading) {
                             CircularProgressIndicator(modifier = Modifier.size(dimens.iconSm))
-                        }else{
+                        } else {
                             Text(
-                                text = locationName.address?:"Location",
+                                text = locationName.address ?: "Location",
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     color = MaterialTheme.colorScheme.surfaceTint
                                 ),
@@ -233,11 +234,8 @@ fun HomeScreen(
                         ),
                         modifier = Modifier.padding(bottom = dimens.space8)
                     )
-                }
 
-                // Show Friday Prayer as the first event if available
-                homeState.fridayTime?.let { time ->
-                    item {
+                    homeState.fridayTime?.let { time ->
                         HomeScreenEventCard(
                             eventName = stringResource(R.string.jummah_prayer),
                             eventDate = DateUtil.dateLongToString(
@@ -248,8 +246,7 @@ fun HomeScreen(
                         )
                     }
                 }
-
-                itemsIndexed(homeState.islamicEventsInfoModel.take(4)) { _, model ->
+                items(homeState.islamicEventsInfoModel.take(2)) {model ->
                     model?.let {
                         HomeScreenEventCard(
                             eventName = it.holidays,

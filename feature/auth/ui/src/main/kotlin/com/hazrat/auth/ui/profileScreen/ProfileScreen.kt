@@ -78,7 +78,6 @@ fun ProfileScreen(
                 title = {},
                 actions = {
                     BackIcon(
-                        icon = painterResource(R.drawable.settings),
                         onBackClick = {
                             onSettingClick()
                         }

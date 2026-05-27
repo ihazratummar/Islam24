@@ -101,6 +101,29 @@ class PrayerAlarmScheduler(
         )
     }
 
+    /**
+     * Reschedules all prayer alarms for the next 24 hours.
+     * It intelligently picks today's or tomorrow's time based on the current time.
+     */
+    fun rescheduleAll(
+        today: com.hazrat.model.MinimalPrayerData,
+        tomorrow: com.hazrat.model.MinimalPrayerData,
+        enabledPrayers: Set<Prayer>
+    ) {
+        val now = System.currentTimeMillis()
+        Prayer.entries.forEach { prayer ->
+            if (enabledPrayers.contains(prayer)) {
+                val todayTime = today.getPrayerTime(prayer)
+                val tomorrowTime = tomorrow.getPrayerTime(prayer)
+
+                val targetTime = if (todayTime > now + 1000) todayTime else tomorrowTime
+                setPrayerAlarm(prayer, targetTime)
+            } else {
+                cancelAlarm(prayer.notificationCode)
+            }
+        }
+    }
+
 
     private fun canScheduleExactAlarms(): Boolean {
 

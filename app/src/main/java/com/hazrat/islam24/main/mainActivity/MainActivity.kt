@@ -62,6 +62,10 @@ class MainActivity : ComponentActivity() {
         // Set window decor to fit system windows
         WindowCompat.setDecorFitsSystemWindows(window, false)
         notificationHelper.createNotificationChannels()
+
+        // Enterprise-grade: Ensure alarms are correctly scheduled on every app launch
+        com.hazrat.notification.PrayerRescheduleWorker.enqueue(this)
+
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()

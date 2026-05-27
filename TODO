@@ -4,4 +4,4 @@
 [UX][TODO][MEDIUM] Restore navigation transitions (Enter/Exit animations)
 [PERF][TODO][MEDIUM] Remove material-icons-extended dependency and use specific icons
 [PERF][TODO][LOW] Implement Baseline Profiles for better startup/frame performance
-[PRAYERTIME][DONE][HIGH] @ihazratummar created:2026-05-18 due:2026-05-19 Desing Prayer Time Card
+[PRAYERTIME][TODO][HIGH] @ihazratummar created:2026-05-18 due:2026-05-19 Desing Prayer Time Card

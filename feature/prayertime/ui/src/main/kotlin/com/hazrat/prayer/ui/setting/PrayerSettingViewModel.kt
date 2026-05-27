@@ -1,9 +1,11 @@
 package com.hazrat.prayer.ui.setting
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.PrayerTimeRepository
+import com.hazrat.notification.PrayerRescheduleWorker
 import com.hazrat.utils.network.ConnectivityObserver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,6 +17,7 @@ import kotlinx.coroutines.launch
 
 
 class PrayerSettingViewModel (
+    private val application: Application,
     private val prayerTimeRepository: PrayerTimeRepository,
     private val connectivityObserver: ConnectivityObserver,
     private val userDataStore: UserDataStore
@@ -47,12 +50,14 @@ class PrayerSettingViewModel (
                         val result = userDataStore.saveSetPrayerCalculationMethod(calculationMethod = event.value)
                         if (result){
                             prayerTimeRepository.refreshPrayerTimes()
+                            _state.update { it.copy(isRefresh = false) }
+                        }else{
+                            _state.update { it.copy(isRefresh = false) }
                         }
-//                        reScheduleAlarm() [PRAYER SETTING][TODO][HIGH] ADD RESCHEDULER
+                        PrayerRescheduleWorker.enqueue(application)
                     } else {
-
+                        _state.update { it.copy(isRefresh = false) }
                     }
-                    _state.update { it.copy(isRefresh = false) }
                 }
             }
 
@@ -65,28 +70,14 @@ class PrayerSettingViewModel (
                         val result = userDataStore.savePrayerJuristicMethod(method = event.value)
                         if (result){
                             prayerTimeRepository.refreshPrayerTimes()
+                            _state.update { it.copy(isRefresh = false) }
+                        }else{
+                            _state.update { it.copy(isRefresh = false) }
                         }
-//                        reScheduleAlarm()
+                        PrayerRescheduleWorker.enqueue(application)
                     } else {
-
+                        _state.update { it.copy(isRefresh = false) }
                     }
-                    _state.update { it.copy(isRefresh = false) }
-                }
-            }
-
-            PrayerSettingEvent.OpenCalculationDialog -> {
-                _state.update {
-                    it.copy(
-                        isCalculationDialogOpen = !it.isCalculationDialogOpen
-                    )
-                }
-            }
-
-            PrayerSettingEvent.OpenJuristicDialog -> {
-                _state.update {
-                    it.copy(
-                        isJuristicDialogOpen = !it.isJuristicDialogOpen
-                    )
                 }
             }
         }

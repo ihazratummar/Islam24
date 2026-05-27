@@ -30,10 +30,7 @@ import org.koin.core.component.inject
 
 class PrayerTimeReceiver : BroadcastReceiver(), KoinComponent {
 
-
     private val notificationManager: NotificationManagerCompat by inject()
-    private val prayerAlarmManager: PrayerAlarmScheduler by inject()
-    private val prayerTimeDatabase: PrayerDatabase by inject()
     private val mediaPlayerHelper: MediaPlayerHelper by inject()
     private val dataStore: UserDataStore by inject()
 
@@ -46,13 +43,9 @@ class PrayerTimeReceiver : BroadcastReceiver(), KoinComponent {
         val pendingResult = goAsync()
         runBlocking(Dispatchers.IO) {
             try {
-                fetchPrayerTimeForNotification(
-                    prayerName = prayer,
-                    prayerDatabase = prayerTimeDatabase
-                ) { prayerTime ->
-                    prayerAlarmManager.setPrayerAlarm(prayer, prayerTime)
-                    Log.d("PrayerTimeReceiver", "Scheduled next alarm for $prayer at $prayerTime")
-                }
+                // Enterprise-grade: Trigger a full reschedule after an alarm fires
+                // to ensure the next day's alarm for this specific prayer is set.
+                PrayerRescheduleWorker.enqueue(context)
 
                 val notificationId = prayer.ordinal + 1000
                 createAndShowNotification(
@@ -173,24 +166,4 @@ class PrayerTimeReceiver : BroadcastReceiver(), KoinComponent {
         }
         return builder
     }
-}
-
-
-fun fetchPrayerTimeForNotification(
-    prayerName: Prayer,
-    prayerDatabase: PrayerDatabase,
-    callback: (Long) -> Unit
-): Unit = runBlocking(Dispatchers.IO) {
-    val prayerTime = when (prayerName) {
-        Prayer.FAJR -> prayerDatabase.prayerTimeDao().getFajrTimeForTheDay(getCurrentDate())
-        Prayer.DHUHR -> prayerDatabase.prayerTimeDao()
-            .getDhuhrTimeForTheDay(getCurrentDate())
-
-        Prayer.ASR -> prayerDatabase.prayerTimeDao().getAsrTimeForTheDay(getCurrentDate())
-        Prayer.MAGHRIB -> prayerDatabase.prayerTimeDao()
-            .getMaghribTimeForTheDay(getCurrentDate())
-
-        Prayer.ISHA -> prayerDatabase.prayerTimeDao().getIshaTimeForTheDay(getCurrentDate())
-    }
-    callback(prayerTime)
 }

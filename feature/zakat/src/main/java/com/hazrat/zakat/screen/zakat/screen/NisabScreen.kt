@@ -31,6 +31,7 @@ import com.hazrat.ui.theme.dimens
 import com.hazrat.zakat.screen.zakat.ZakatEvent
 import com.hazrat.zakat.screen.zakat.ZakatState
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -69,7 +70,7 @@ fun NisabScreen(
             ) {
                 Text(text = stringResource(R.string.nisab_is_a_threshold_referring_to_the_minimum_amount_of_wealth))
                 val nisabAmount = 11.66 * 52.50
-                val roundAmount = String.format(Locale.getDefault(), "%.2f", nisabAmount)
+                val roundAmount = String.format(LocalLocale.current.platformLocale, "%.2f", nisabAmount)
                 Spacer(modifier = Modifier.height(dimens.space12))
                 Text(
                     text = stringResource(

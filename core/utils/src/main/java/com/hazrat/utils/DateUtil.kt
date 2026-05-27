@@ -39,6 +39,16 @@ object DateUtil {
     }
 
     /**
+     * Retrieves tomorrow's date in the "yyyy-MM-dd" format.
+     */
+    fun getTomorrowDate(): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, 1)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        return dateFormat.format(calendar.time)
+    }
+
+    /**
      * Converts a "dd-MM-yyyy" date string to "yyyy-MM-dd".
      */
     fun convertToDbFormat(dateString: String): String {

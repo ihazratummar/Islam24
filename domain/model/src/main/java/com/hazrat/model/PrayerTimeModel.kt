@@ -76,7 +76,17 @@ data class MinimalPrayerData(
     val hijriMonthNumber: Int=0,
     val hijriYear: Int = 0,
     val hijriAbbreviated: String = "",
-)
+) {
+    fun getPrayerTime(prayer: Prayer): Long {
+        return when (prayer) {
+            Prayer.FAJR -> fajrTime
+            Prayer.DHUHR -> dhuhrTime
+            Prayer.ASR -> asrTime
+            Prayer.MAGHRIB -> maghribTime
+            Prayer.ISHA -> ishaTime
+        }
+    }
+}
 
 data class PrayerNotificationSettings(
     val fajr: Boolean = true,

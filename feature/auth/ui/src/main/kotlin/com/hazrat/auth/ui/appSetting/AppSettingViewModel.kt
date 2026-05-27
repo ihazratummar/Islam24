@@ -107,7 +107,6 @@ class AppSettingViewModel(
             AppSettingEvent.SignOut -> {
                 viewModelScope.launch {
                     signOutUseCase()
-                    launch { quranRepository.syncQuranDataIfLoggedIn() }
                     launch { userDataStore.clearSelectedCompassId() }
                 }
             }

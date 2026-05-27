@@ -1,10 +1,9 @@
 package com.hazrat.database.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.hazrat.database.entity.quran.FavoriteAyahEntity
+import com.hazrat.database.entity.quran.AyahEntity
+import com.hazrat.database.entity.quran.SurahEntity
 import kotlinx.coroutines.flow.Flow
 
 
@@ -17,20 +16,15 @@ import kotlinx.coroutines.flow.Flow
 interface QuranDao {
 
     /// Favorite
-    @Query("SELECT * FROM favorite_ayah ORDER BY createdAt DESC")
-    fun getAllFavoriteAyah(): Flow<List<FavoriteAyahEntity>>
+    @Query("SELECT * FROM surah ORDER BY surahNumber ASC")
+    fun getAllSurah(): Flow<List<SurahEntity>>
 
-    @Query("""
-        SELECT * FROM favorite_ayah 
-        WHERE surahNumber = :surah AND ayahNumber = :ayah
-        LIMIT 1
-    """)
-    suspend fun getFavorite(surah: Int, ayah: Int): FavoriteAyahEntity?
+    @Query("SELECT * FROM surah WHERE surahNumber = :surahNumber")
+    fun getSurahByNumber(surahNumber: Int): Flow<SurahEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavoriteAyah(entity: FavoriteAyahEntity)
 
-    @Query("DELETE FROM favorite_ayah WHERE surahNumber = :surah AND ayahNumber = :ayah")
-    suspend fun deleteFavoriteAyah(surah: Int, ayah: Int)
+    @Query("SELECT * FROM ayah WHERE surahNumber = :surahNumber ORDER BY ayahNumber ASC")
+    fun getAllAyah(surahNumber: Int) : Flow<List<AyahEntity>>
+
 
 }

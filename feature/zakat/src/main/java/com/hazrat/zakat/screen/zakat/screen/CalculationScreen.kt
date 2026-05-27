@@ -18,8 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import com.hazrat.common.TopBarWithTwoAction
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
@@ -453,7 +450,7 @@ fun CalculateItems(
         ) {
             Text(text = text, fontWeight = FontWeight.SemiBold)
             IconButton(onClick = { infoNavigation() }) {
-                Icon(imageVector = Icons.Default.Info, contentDescription = "Information")
+                Icon(painter = painterResource(R.drawable.alert), contentDescription = "Information")
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(text = amount, fontWeight = FontWeight.SemiBold, color = fontColor)

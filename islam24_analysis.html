@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islam24 Pro Developer Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Amiri+Quran&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-emerald: #10b981;
+            --accent-gold: #fbbf24;
+            --glass-blur: blur(16px);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05), transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05), transparent 30%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        header { text-align: center; margin-bottom: 60px; }
+        h1 { font-size: 2.8rem; margin-bottom: 15px; color: var(--accent-emerald); }
+        h2 { font-size: 1.8rem; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-top: 50px; }
+        h3 { font-size: 1.3rem; color: var(--text-primary); margin-top: 25px;}
+        p, li { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 12px; }
+        ul { padding-left: 20px; }
+
+        .card {
+            background: var(--surface-color);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #d4d4d4;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 15px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .annotation { color: #c678dd; }
+        .type { color: #4ec9b0; }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.15); 
+            color: var(--accent-emerald);
+            margin-bottom: 20px;
+        }
+        
+        .badge-arch { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Islam24 Pro Developer Guide</h1>
+        <p>The concrete blueprint: Data Classes, Entities, DAOs, and API calls for a scalable Quran architecture.</p>
+    </header>
+
+    <div class="card" style="border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);">
+        <span class="badge badge-arch">CONCRETE BLUEPRINT</span>
+        <h2>1. The Room Database Entities</h2>
+        <p>To support instant loading and dynamic translations, you need a scalable relational database structure. Instead of 4 separate JSON files, we use a structured SQL approach.</p>
+        
+        <h3>The Core Ayah Entity</h3>
+        <p>This table holds the permanent Arabic text. It is populated instantly when the app installs via <code>.createFromAsset()</code>.</p>
+        <div class="code-block">
+<span class="annotation">@Entity</span>(tableName = <span class="string">"ayahs"</span>, indices = [<span class="annotation">Index</span>(value = [<span class="string">"surahNumber"</span>])])
+<span class="keyword">data class</span> <span class="type">AyahEntity</span>(
+    <span class="annotation">@PrimaryKey</span> <span class="keyword">val</span> globalAyahNumber: <span class="type">Int</span>, <span class="comment">// 1 to 6236</span>
+    <span class="keyword">val</span> surahNumber: <span class="type">Int</span>,
+    <span class="keyword">val</span> ayahNumberInSurah: <span class="type">Int</span>,
+    <span class="keyword">val</span> arabicText: <span class="type">String</span>,
+    <span class="keyword">val</span> transliteration: <span class="type">String</span>
+)
+        </div>
+
+        <h3>The Dynamic Translation Entity</h3>
+        <p>This table stores translations. By default, it might only contain English. When a user requests Bengali, you insert Bengali rows here.</p>
+        <div class="code-block">
+<span class="annotation">@Entity</span>(
+    tableName = <span class="string">"translations"</span>,
+    foreignKeys = [<span class="annotation">ForeignKey</span>(
+        entity = AyahEntity::<span class="keyword">class</span>,
+        parentColumns = [<span class="string">"globalAyahNumber"</span>],
+        childColumns = [<span class="string">"ayahId"</span>],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [<span class="annotation">Index</span>(value = [<span class="string">"ayahId"</span>]), <span class="annotation">Index</span>(value = [<span class="string">"languageCode"</span>])]
+)
+<span class="keyword">data class</span> <span class="type">TranslationEntity</span>(
+    <span class="annotation">@PrimaryKey(autoGenerate = true)</span> <span class="keyword">val</span> id: <span class="type">Int</span> = <span class="type">0</span>,
+    <span class="keyword">val</span> ayahId: <span class="type">Int</span>, <span class="comment">// Matches globalAyahNumber</span>
+    <span class="keyword">val</span> languageCode: <span class="type">String</span>, <span class="comment">// "en", "bn", "ur"</span>
+    <span class="keyword">val</span> translationText: <span class="type">String</span>
+)
+        </div>
+
+        <h3>The Unified Data Class (Relation)</h3>
+        <p>Room allows you to query the Ayah AND its requested translation in one smooth operation.</p>
+        <div class="code-block">
+<span class="keyword">data class</span> <span class="type">AyahWithTranslation</span>(
+    <span class="annotation">@Embedded</span> <span class="keyword">val</span> ayah: <span class="type">AyahEntity</span>,
+    <span class="annotation">@Relation</span>(
+        parentColumn = <span class="string">"globalAyahNumber"</span>,
+        entityColumn = <span class="string">"ayahId"</span>
+    )
+    <span class="keyword">val</span> translations: <span class="type">List</span>&lt;TranslationEntity&gt;
+)
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>2. The Room DAO</h2>
+        <p>The Data Access Object defines how you interact with the database. Because it returns a <code>Flow</code>, your UI will update instantly and automatically as soon as a new translation finishes downloading.</p>
+        <div class="code-block">
+<span class="annotation">@Dao</span>
+<span class="keyword">interface</span> <span class="type">QuranDao</span> {
+    
+    <span class="comment">// Get all Ayahs for a Surah, along with translations</span>
+    <span class="annotation">@Transaction</span>
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM ayahs WHERE surahNumber = :surahNumber ORDER BY ayahNumberInSurah ASC"</span>)
+    <span class="keyword">fun</span> <span class="function">getAyahsBySurah</span>(surahNumber: <span class="type">Int</span>): <span class="type">Flow</span>&lt;List&lt;AyahWithTranslation&gt;&gt;
+
+    <span class="comment">// Check if a specific language is already downloaded</span>
+    <span class="annotation">@Query</span>(<span class="string">"SELECT COUNT(*) FROM translations WHERE languageCode = :langCode LIMIT 1"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">isTranslationDownloaded</span>(langCode: <span class="type">String</span>): <span class="type">Int</span>
+
+    <span class="comment">// Save new translations from the API to the database</span>
+    <span class="annotation">@Insert</span>(onConflict = OnConflictStrategy.REPLACE)
+    <span class="keyword">suspend fun</span> <span class="function">insertTranslations</span>(translations: <span class="type">List</span>&lt;TranslationEntity&gt;)
+}
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>3. The Retrofit API (Dynamic Downloads)</h2>
+        <p>We use the Al Quran Cloud API to fetch the full translation (e.g., Bengali) on-demand.</p>
+        <div class="code-block">
+<span class="keyword">interface</span> <span class="type">QuranApi</span> {
+    <span class="comment">// Edition example: "bn.bengali" or "ur.jalandhry"</span>
+    <span class="annotation">@GET</span>(<span class="string">"quran/{edition}"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">downloadTranslation</span>(
+        <span class="annotation">@Path</span>(<span class="string">"edition"</span>) edition: <span class="type">String</span>
+    ): Response&lt;QuranApiResponse&gt;
+}
+
+<span class="comment">// The API Response Models</span>
+<span class="keyword">data class</span> <span class="type">QuranApiResponse</span>(<span class="keyword">val</span> data: <span class="type">QuranApiData</span>)
+<span class="keyword">data class</span> <span class="type">QuranApiData</span>(<span class="keyword">val</span> surahs: <span class="type">List</span>&lt;ApiSurah&gt;)
+<span class="keyword">data class</span> <span class="type">ApiSurah</span>(<span class="keyword">val</span> ayahs: <span class="type">List</span>&lt;ApiAyah&gt;)
+<span class="keyword">data class</span> <span class="type">ApiAyah</span>(<span class="keyword">val</span> number: <span class="type">Int</span>, <span class="keyword">val</span> text: <span class="type">String</span>) <span class="comment">// number is globalAyahNumber</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>4. Where and When to Call the API (The Logic)</h2>
+        <p>This is the orchestration layer in your <code>QuranRepositoryImpl.kt</code>. This is where the magic happens.</p>
+        
+        <h3>The Flow of Events:</h3>
+        <ol>
+            <li>User goes to settings and selects "Language: Bengali".</li>
+            <li>ViewModel calls <code>quranRepository.ensureTranslationExists("bn", "bn.bengali")</code>.</li>
+            <li>Repository checks the Room Database. If Bengali exists, it does nothing!</li>
+            <li>If it does not exist, it hits the API, maps the data, and saves it to Room.</li>
+            <li>Because your Compose UI observes the <code>Flow</code> from the DAO, the Bengali text will magically appear on the screen the exact millisecond the database save is complete!</li>
+        </ol>
+
+        <div class="code-block">
+<span class="keyword">class</span> <span class="type">QuranRepositoryImpl</span>(
+    <span class="keyword">private val</span> api: <span class="type">QuranApi</span>,
+    <span class="keyword">private val</span> dao: <span class="type">QuranDao</span>
+) : <span class="type">QuranRepository</span> {
+
+    <span class="keyword">override suspend fun</span> <span class="function">ensureTranslationExists</span>(langCode: <span class="type">String</span>, editionId: <span class="type">String</span>) = <span class="function">withContext</span>(Dispatchers.IO) {
+        
+        <span class="comment">// 1. Check if we already have this translation cached in Room</span>
+        <span class="keyword">val</span> isDownloaded = dao.<span class="function">isTranslationDownloaded</span>(langCode) > <span class="type">0</span>
+        <span class="keyword">if</span> (isDownloaded) <span class="keyword">return</span>@withContext <span class="comment">// We already have it, do nothing!</span>
+
+        <span class="comment">// 2. If not, fetch it from the API</span>
+        <span class="keyword">val</span> response = api.<span class="function">downloadTranslation</span>(editionId)
+        
+        <span class="keyword">if</span> (response.isSuccessful && response.body() != <span class="keyword">null</span>) {
+            <span class="keyword">val</span> newTranslations = <span class="function">mutableListOf</span>&lt;TranslationEntity&gt;()
+            
+            <span class="comment">// 3. Map the API response to our Room Entities</span>
+            response.body()!!.data.surahs.<span class="function">forEach</span> { surah ->
+                surah.ayahs.<span class="function">forEach</span> { apiAyah ->
+                    newTranslations.<span class="function">add</span>(
+                        <span class="function">TranslationEntity</span>(
+                            ayahId = apiAyah.number,
+                            languageCode = langCode,
+                            translationText = apiAyah.text
+                        )
+                    )
+                }
+            }
+            
+            <span class="comment">// 4. Save to database. This triggers the Flow to update the UI!</span>
+            dao.<span class="function">insertTranslations</span>(newTranslations)
+        }
+    }
+}
+        </div>
+    </div>
+
+    <div class="card" style="border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 0 30px rgba(16, 185, 129, 0.1);">
+        <span class="badge badge-arch" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); border-color: rgba(16, 185, 129, 0.3);">UI / UX ARCHITECTURE</span>
+        <h2>5. Dynamic Settings (Font Size & Type)</h2>
+        <p>To let users change the font size and style on the fly (just like Muslim Pro), you need to inject settings state into your <code>AyahScreen</code> without tightly coupling it.</p>
+        
+        <h3>The Plan: DataStore + StateFlow</h3>
+        <ol>
+            <li><b>DataStore:</b> Save user preferences (e.g., <code>fontSize</code>, <code>fontFamilyType</code>) using Jetpack <code>DataStore</code>.</li>
+            <li><b>ViewModel:</b> In your <code>QuranViewModel</code>, expose these settings as a <code>StateFlow</code>.</li>
+            <li><b>UI Injection:</b> Pass the settings down to your <code>AyahScreen</code> so the Composable automatically recomposes when settings change.</li>
+            <li><b>The Settings Menu:</b> Add an icon in your <code>TopAppBar</code> actions. When clicked, open a <code>ModalBottomSheet</code> containing a Slider for size and Radio Buttons for the font family.</li>
+        </ol>
+
+        <div class="code-block">
+<span class="comment">// 1. Pass the dynamic settings into the Screen</span>
+<span class="an">@Composable</span>
+<span class="keyword">fun</span> <span class="function">AyahScreen</span>(
+    ayahState: <span class="type">AyahState</span>,
+    dynamicFontSize: <span class="type">Int</span>,    <span class="comment">// From Settings StateFlow</span>
+    dynamicFontFamily: <span class="type">FontFamily</span> <span class="comment">// From Settings StateFlow</span>
+) {
+    <span class="comment">// 2. Inside your AyahRow Text</span>
+    <span class="function">Text</span>(
+        text = ayahText,
+        style = MaterialTheme.typography.headlineMedium.<span class="function">copy</span>(
+            fontFamily = dynamicFontFamily,
+            fontSize = dynamicFontSize.sp,
+            <span class="comment">// CRITICAL: Line height must mathematically scale with font size!</span>
+            lineHeight = (dynamicFontSize * <span class="type">2</span>).sp, 
+            fontFeatureSettings = <span class="string">"calt, kern, liga, clig, ss01, ss03"</span>
+        )
+    )
+}
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

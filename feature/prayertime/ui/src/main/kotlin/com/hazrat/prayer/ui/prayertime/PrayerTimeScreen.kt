@@ -45,7 +45,6 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hazrat.model.DailyPrayerStatus
@@ -62,6 +61,7 @@ import com.hazrat.ui.R
 import com.hazrat.ui.common.IconWithBackground
 import com.hazrat.ui.common.PrayerType
 import com.hazrat.ui.common.PulsingLiveDot
+import com.hazrat.ui.common.TopAppBarTitle
 import com.hazrat.ui.common.rememberPrayerState
 import com.hazrat.ui.theme.MutedTextColor
 import com.hazrat.ui.theme.PrayerLocationColor
@@ -154,12 +154,7 @@ fun PrayerTimeScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.prayer_times),
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                    TopAppBarTitle(R.string.prayer_times)
                 },
                 actions = {
                     IconWithBackground(

@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -98,7 +95,7 @@ fun ZakatScreen(
                                 text = stringResource(R.string.start_calculation),
                                 fontWeight = FontWeight.SemiBold
                             )
-                            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                            Icon(painter = painterResource(R.drawable.arrow_left), contentDescription = "Add")
                         }
                     }
                 }
@@ -155,7 +152,7 @@ fun ZakatScreen(
                                         }
                                     ) {
                                         Icon(
-                                            imageVector = Icons.Default.Delete,
+                                            painter = painterResource(R.drawable.menu_01),
                                             contentDescription = "Delete"
                                         )
                                     }

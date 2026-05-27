@@ -175,7 +175,10 @@ class PrayerTimeRepositoryImpl(
 
         return when (result) {
             is Result.Error -> Result.Error(PrayerTimeError.ErrorMessage("Something Went Wrong"))
-            is Result.Success -> Result.Success(result.data.size)
+            is Result.Success -> {
+
+                Result.Success(result.data.size)
+            }
         }
     }
 

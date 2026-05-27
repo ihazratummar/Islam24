@@ -1,9 +1,8 @@
-//PrayerTimeViewmodl.kt
-
 package com.hazrat.prayer.ui.prayertime
 
 
 import android.app.AlarmManager
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -12,7 +11,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.model.DailyPrayerStatus
@@ -25,7 +23,6 @@ import com.hazrat.usecase.GetPrayerNotificationStateUseCase
 import com.hazrat.usecase.GetPrayerTimeWindowForDaysUseCase
 import com.hazrat.usecase.PrayerNotificationEnabledUseCase
 import com.hazrat.usecase.TogglePrayerUseCase
-import com.hazrat.utils.DateUtil
 import com.hazrat.utils.HijriDateUtils
 import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +49,7 @@ import java.time.ZoneId
 
 
 class PrayerTimeViewModel(
-    private val context: Context,
+    private val application: Application,
     private val repository: PrayerTimeRepository,
     private val prayerAlarmManager: PrayerAlarmScheduler,
     private val getLocationNameUseCase: GetLocationNameUseCase,
@@ -275,7 +272,7 @@ class PrayerTimeViewModel(
 
     private fun checkExactAlarmPermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val alarmManager = application.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             return alarmManager.canScheduleExactAlarms()
         }
         return true
@@ -285,10 +282,10 @@ class PrayerTimeViewModel(
     @RequiresApi(Build.VERSION_CODES.S)
     private fun openAppSettings() {
         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-            data = "package:${context.packageName}".toUri()
+            data = "package:${application.packageName}".toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
-        context.startActivity(intent)
+        application.startActivity(intent)
     }
 
 

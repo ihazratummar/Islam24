@@ -636,3 +636,4 @@ data class AzanData(
     val name: String,
     val url: String
 )
+

@@ -51,8 +51,7 @@ fun getAuthDataModule(): Module = module {
     single<SyncRepository> {
         SyncRepositoryImpl(
             zakatRepository = get(),
-            qiblaRepository = get(),
-            quranRepository = get()
+            qiblaRepository = get()
         )
     }
     single<ProfileRepository> {

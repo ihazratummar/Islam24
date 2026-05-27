@@ -2,7 +2,7 @@ package com.hazrat.prayer.ui.di
 
 import com.hazrat.prayer.ui.prayertime.PrayerTimeViewModel
 import com.hazrat.prayer.ui.setting.PrayerSettingViewModel
-import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -17,7 +17,7 @@ fun getPrayerUiModule(): Module = module {
 
     viewModel {
         PrayerTimeViewModel(
-            context = androidContext(),
+            application = androidApplication(),
             repository = get(),
             prayerAlarmManager = get(),
             getLocationNameUseCase = get(),
@@ -32,10 +32,10 @@ fun getPrayerUiModule(): Module = module {
 
     viewModel {
         PrayerSettingViewModel(
+            application = androidApplication(),
             prayerTimeRepository = get(),
             connectivityObserver = get(),
             userDataStore = get()
-
         )
     }
 }

@@ -40,15 +40,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,7 +57,6 @@ import coil.disk.DiskCache
 import coil.request.CachePolicy
 import com.hazrat.ui.R
 import com.hazrat.ui.shimmerEffect
-import com.hazrat.ui.theme.Success
 import com.hazrat.ui.theme.dimens
 
 @Composable
@@ -213,21 +208,30 @@ fun WebViewScreen(
 
 @Composable
 fun BackIcon(
-    onBackClick: () -> Unit,
-    icon: Painter = painterResource(R.drawable.backicon)
+    onBackClick: () -> Unit
 ) {
-    Icon(
-        painter = icon,
-        contentDescription = null,
-        modifier = Modifier
-            .padding(dimens.space4)
-            .clickable(
-                onClick = {
-                    onBackClick()
-                }
-            )
+
+    IconWithBackground(
+        icon = R.drawable.arrow_left,
+        onClick = onBackClick,
+        containerColor = MaterialTheme.colorScheme.onBackground.copy(0.1f)
     )
 }
+
+
+
+@Composable
+fun TopAppBarTitle(
+    title: Int = R.string.prayer_times
+){
+    Text(
+        text = stringResource(title),
+        style = MaterialTheme.typography.headlineMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onBackground
+    )
+}
+
 
 
 @Composable

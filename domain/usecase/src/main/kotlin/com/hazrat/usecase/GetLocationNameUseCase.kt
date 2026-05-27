@@ -4,6 +4,7 @@ import android.location.Location
 import com.hazrat.database.entity.LocationDetailsEntity
 import com.hazrat.domain.repository.LocationNameRepository
 import com.hazrat.domain.repository.PrayerTimeRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -22,6 +23,7 @@ class GetLocationNameUseCase(
         private const val PRAYER_THRESHOLD = 5000f
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<LocationDetailsEntity> {
         return locationNameRepository.observeLocationInfo()
             .mapLatest {location->

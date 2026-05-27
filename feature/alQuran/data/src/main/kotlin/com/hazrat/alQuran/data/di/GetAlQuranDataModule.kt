@@ -15,11 +15,6 @@ fun getAlQuranDataModule(): Module = module {
 
     single<QuranRepository> {
         QuranRepositoryImpl(
-            quranApi = get(),
-            context = get(),
-            dataStorePreference = get(),
-            firebaseAuth = get(),
-            firebaseFirestore = get(),
             quranDao = get()
         )
     }

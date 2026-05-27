@@ -33,6 +33,9 @@ val ScheherazadeFontFamily = FontFamily(
     Font(R.font.scheherazade_new_regular, FontWeight.Normal),
     Font(R.font.scheherazade_new_bold, FontWeight.Bold)
 )
+val UthmanicHafs = FontFamily(Font(R.font.uthman_hafs, FontWeight.Normal))
+val KitabFont = FontFamily(Font(R.font.kitab, FontWeight.Normal))
+
 
 val NotoNaskhFontFamily = FontFamily(
     Font(R.font.noto_naskh_arabic_regular, FontWeight.Normal),

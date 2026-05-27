@@ -19,12 +19,11 @@ secretsGradlePlugin = "2.0.1"
 # ===========================
 # Compose & UI
 # ===========================
-composeBom = "2026.05.00"
-foundation = "1.11.1"
+composeBom = "2026.05.01"
+foundation = "1.11.2"
 material3 = "1.4.0"
 material3WindowClass = "1.4.0"
-materialIconsExtendedAndroid = "1.7.8"
-runtimeLivedata = "1.11.1"
+runtimeLivedata = "1.11.2"
 
 # ===========================
 # Lifecycle
@@ -143,10 +142,9 @@ timber = "5.0.1"
 #
 # ===========================
 kotlinx-coroutines-play = "1.11.0"
-animationCore = "1.11.1"
-coreKtxVersion = "1.7.0"
-runtimeAnnotation = "1.11.1"
-foundationLayout = "1.11.1"
+animationCore = "1.11.2"
+runtimeAnnotation = "1.11.2"
+foundationLayout = "1.11.2"
 
 [libraries]
 # ===========================
@@ -174,7 +172,6 @@ androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedat
 # Material Design
 # ===========================
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android", version.ref = "materialIconsExtendedAndroid" }
 androidx-window = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3WindowClass" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
@@ -305,9 +302,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 timber = {module = "com.jakewharton.timber:timber", version.ref ="timber"}
 
 kotlinx-coroutines-play = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines-play"}
-kotlinx-coroutines-test = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version = "1.11.0"}
 androidx-compose-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }
-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 androidx-compose-runtime-annotation = { group = "androidx.compose.runtime", name = "runtime-annotation", version.ref = "runtimeAnnotation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
