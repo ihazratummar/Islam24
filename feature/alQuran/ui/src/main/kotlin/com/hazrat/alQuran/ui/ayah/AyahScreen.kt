@@ -28,8 +28,7 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.sp
 import com.hazrat.alQuran.ui.surah.SurahScreenData
 import com.hazrat.ui.common.BackIcon
-import com.hazrat.ui.theme.AmiriFontFamily
-import com.hazrat.ui.theme.UthmanicHafs
+import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 
@@ -111,8 +110,7 @@ fun AyahScreen(
                             text = bismillahText.cleanUthmanic(),
                             modifier = Modifier.padding(vertical = dimens.space32),
                             style = MaterialTheme.typography.titleMedium.copy(
-                                fontFamily = UthmanicHafs,
-                                fontFeatureSettings = "calt, kern, liga, clig, ss01, ss03",
+                                fontFamily = ScheherazadeFontFamily,
                                 fontSize = 32.sp
                             )
                         )
@@ -153,10 +151,9 @@ fun AyahScreen(
                         text = ayahText,
                         modifier = Modifier.fillMaxWidth(),
                         style = MaterialTheme.typography.titleMedium.copy(
-                            fontFamily = UthmanicHafs,
+                            fontFamily = ScheherazadeFontFamily,
                             color = MaterialTheme.colorScheme.onBackground,
                             textDirection = TextDirection.Rtl,
-                            fontFeatureSettings = "calt, kern, liga, clig, ss01, ss03",
                             fontSize = 30.sp,
                             lineHeight = 60.sp
                         )
