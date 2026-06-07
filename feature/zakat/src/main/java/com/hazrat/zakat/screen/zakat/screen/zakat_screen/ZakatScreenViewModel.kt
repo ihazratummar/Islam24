@@ -6,8 +6,6 @@ import com.hazrat.datastore.DataStorePreference
 import com.hazrat.model.DateType
 import com.hazrat.zakat.domain.repository.ZakatRepository
 import com.hazrat.zakat.domain.usecase.GetZakatDetailsUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,8 +21,8 @@ import kotlinx.coroutines.launch
  * Created on 20-06-2025
  */
 
-@HiltViewModel
-class ZakatScreenViewModel @Inject constructor(
+
+class ZakatScreenViewModel (
     private val repository: ZakatRepository,
     private val getZakatDetailsUseCase: GetZakatDetailsUseCase,
     private val dataStorePreference: DataStorePreference,

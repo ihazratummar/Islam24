@@ -53,13 +53,13 @@ fun AssetsInfoModal(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimens.size15)
+                    .padding(dimens.space16)
             ) {
                 items (infoText) {text ->
                     Text(
                         text = stringResource(text),
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(bottom = dimens.size15)
+                        modifier = Modifier.padding(bottom = dimens.space16)
                     )
                 }
                 item{
@@ -67,7 +67,7 @@ fun AssetsInfoModal(
                         Text(
                             text = stringResource(text),
                             style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.padding(bottom = dimens.size8)
+                            modifier = Modifier.padding(bottom = dimens.space8)
                         )
                     }
                 }
@@ -81,7 +81,7 @@ fun AssetsInfoModal(
                         Text(
                             text = stringResource(it),
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(bottom = dimens.size15)
+                            modifier = Modifier.padding(bottom = dimens.space16)
                         )
                     }
                 }
@@ -96,12 +96,12 @@ fun AssetsInfoModal(
 fun BulletPoint(text: String) {
     Row(
         verticalAlignment = Alignment.Top,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = dimens.space8)
     ) {
         Text(
             text = "•",
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = Modifier.padding(end = dimens.space8)
         )
         Text(
             text = text,

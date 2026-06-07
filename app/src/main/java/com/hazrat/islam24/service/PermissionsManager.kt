@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.hazrat.islam24.util.Constants.REQUEST_CODE_SCHEDULE_EXACT_ALARM
 
 class PermissionsManager (private val activity: ComponentActivity) {
 
@@ -44,7 +43,7 @@ class PermissionsManager (private val activity: ComponentActivity) {
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun checkAndRequestLocationPermission() {
+    fun checkAndRequestLocationPermission() {
         when {
             ContextCompat.checkSelfPermission(
                 activity,
@@ -68,7 +67,7 @@ class PermissionsManager (private val activity: ComponentActivity) {
 
     @SuppressLint("ObsoleteSdkInt")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun requestNotificationPermission() {
+    fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             when {
                 ContextCompat.checkSelfPermission(
@@ -112,3 +111,5 @@ class PermissionsManager (private val activity: ComponentActivity) {
         }
     }
 }
+
+const val  REQUEST_CODE_SCHEDULE_EXACT_ALARM = 100

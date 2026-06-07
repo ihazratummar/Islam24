@@ -1,10 +1,24 @@
-<vector android:autoMirrored="true" android:height="200dp"
-    android:viewportHeight="500" android:viewportWidth="500"
-    android:width="200dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#31535b" android:pathData="m154.6,257.38c3.04,3.51 8.36,3.9 11.87,0.85 3.52,-3.06 3.85,-8.37 0.83,-11.88l-62.34,-71.78c-3.08,-3.54 -8.4,-3.87 -11.93,-0.83 -3.49,3.02 -3.86,8.33 -0.81,11.86l62.37,71.78Z"/>
-    <path android:fillColor="#31535b" android:pathData="m249.65,230.45c4.63,0.04 8.43,-3.7 8.44,-8.37l0.4,-95.07c0.02,-4.71 -3.73,-8.45 -8.4,-8.47 -4.62,-0.02 -8.4,3.7 -8.43,8.37l-0.38,95.09c-0.04,4.67 3.7,8.43 8.37,8.45Z"/>
-    <path android:fillColor="#31535b" android:pathData="m17.47,305.84l93.05,19.51c4.57,0.93 9.01,-1.98 9.96,-6.53 0.93,-4.49 -1.94,-8.99 -6.5,-9.96l-93.06,-19.51c-4.59,-0.93 -9.02,1.98 -9.98,6.53 -0.99,4.55 1.93,8.99 6.53,9.96Z"/>
-    <path android:fillColor="#31535b" android:pathData="m375.43,318.78c0.93,4.51 5.39,7.42 9.94,6.47l93.12,-19.35c4.55,-0.95 7.49,-5.39 6.49,-9.94 -0.9,-4.53 -5.36,-7.46 -9.93,-6.51l-93.08,19.34c-4.57,0.93 -7.52,5.39 -6.54,9.98Z"/>
-    <path android:fillColor="#31535b" android:pathData="m342.26,255.04l68.39,-66.08c3.34,-3.2 3.43,-8.55 0.2,-11.9 -3.23,-3.35 -8.55,-3.41 -11.89,-0.19l-68.4,66.12c-3.34,3.22 -3.42,8.53 -0.2,11.86 3.24,3.37 8.54,3.43 11.9,0.19Z"/>
-    <path android:fillColor="#31535b" android:pathData="m369.39,363.21c-1.64,-64.57 -54.56,-116.63 -119.51,-116.63s-117.86,52.06 -119.5,116.63L10.74,363.21v18.17h478.26v-18.17h-119.61ZM249.88,264.75c54.27,0 98.73,42.82 101.17,98.46h-202.6c1.61,-54.56 46.5,-98.46 101.44,-98.46Z"/>
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="256dp"
+    android:height="256dp"
+    android:viewportWidth="256"
+    android:viewportHeight="256">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M127.54,70.83C159.02,70.83 184.58,96.4 184.58,127.88C184.58,159.36 159.02,184.92 127.54,184.92C96.05,184.92 70.49,159.36 70.49,127.88C70.49,96.4 96.05,70.83 127.54,70.83ZM127.54,89.45C106.33,89.45 89.11,106.67 89.11,127.88C89.11,149.09 106.33,166.31 127.54,166.31C148.75,166.31 165.97,149.09 165.97,127.88C165.97,106.67 148.75,89.45 127.54,89.45ZM114.79,20.2L137.13,20.2L137.13,51.47L114.79,51.47L114.79,20.2ZM114.79,204.53L137.13,204.53L137.13,235.8L114.79,235.8L114.79,204.53ZM234.05,116.32L234.23,138.66L202.96,138.92L202.77,116.58L234.05,116.32ZM53.04,116.32L53.23,138.66L21.95,138.92L21.77,116.58L53.04,116.32ZM83.05,67.19L67.38,83.11L45.1,61.18L60.76,45.26L83.05,67.19ZM210.88,195.02L195.21,210.94L172.92,189.01L188.59,173.09L210.88,195.02ZM44.12,195.02L66.4,173.09L82.07,189.01L59.79,210.94L44.12,195.02ZM173.09,66.05L195.38,44.11L211.05,60.03L188.76,81.97L173.09,66.05Z"/>
 </vector>

@@ -1,12 +1,15 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace = "com.hazrat.usecase"
-    compileSdk = 35
+    namespace = "com.hazrat.domain.usecase"
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk = 26
@@ -23,27 +26,27 @@ android {
                 "proguard-rules.pro"
             )
         }
-//        debug {
-//            isMinifyEnabled = true
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
+
 dependencies {
+    implementation(project(":core:utils"))
+    implementation(project(":core:location"))
+    implementation(project(":core:database"))
 
-
-    implementation(project(":core:datastore"))
+    api(project(":domain:model"))
+    api(project(":domain:repository"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -52,9 +55,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 
-    //Dagger Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.ummalqura)
+    implementation(libs.timber)
+
 }

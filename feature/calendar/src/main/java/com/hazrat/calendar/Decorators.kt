@@ -3,9 +3,11 @@ package com.hazrat.calendar
 import android.graphics.drawable.GradientDrawable
 import android.icu.util.IslamicCalendar
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import com.github.eltohamy.materialhijricalendarview.CalendarDay
 import com.github.eltohamy.materialhijricalendarview.DayViewDecorator
 import com.github.eltohamy.materialhijricalendarview.DayViewFacade
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -26,24 +28,17 @@ class TodayCircleDecorator(
     private val backgroundColor: Int
 ) : DayViewDecorator {
 
-    private val todayHijri: Triple<Int, Int, Int> = IslamicCalendar().let {
-        Triple(
-            it.get(IslamicCalendar.YEAR),
-            it.get(IslamicCalendar.MONTH),
-            it.get(IslamicCalendar.DATE)
+    private val today: CalendarDay = run {
+        val hijri = UmmalquraCalendar()
+        CalendarDay.from(
+            hijri.get(UmmalquraCalendar.YEAR),
+            hijri.get(UmmalquraCalendar.MONTH), // no +1
+            hijri.get(UmmalquraCalendar.DAY_OF_MONTH)
         )
     }
 
     override fun shouldDecorate(day: CalendarDay?): Boolean {
-        if (day == null) return false
-        // Extract Hijri equivalent of this day
-        val cal = IslamicCalendar()
-        cal.set(day.year, day.month, day.day - 1) // CalendarDay uses 1-based month, IslamicCalendar is 0-based
-        val y = cal.get(IslamicCalendar.YEAR)
-        val m = cal.get(IslamicCalendar.MONTH)
-        val d = cal.get(IslamicCalendar.DATE)
-
-        return todayHijri == Triple(y, m, d)
+        return day == today
     }
 
     override fun decorate(view: DayViewFacade) {
@@ -55,4 +50,3 @@ class TodayCircleDecorator(
         view.setBackgroundDrawable(drawable)
     }
 }
-

@@ -4,8 +4,6 @@ package com.hazrat.calendar
  * @author Hazrat Ummar Shaikh
  */
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -41,10 +39,10 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GregorianCalendarScreen(
     modifier: Modifier = Modifier,
+    onDateSelected: (LocalDate) -> Unit = {},
     adjacentMonths: Long = 500
 ) {
     val currentMonth = remember { YearMonth.now() }
@@ -91,8 +89,10 @@ fun GregorianCalendarScreen(
                     if (selections.contains(clicked)) {
                         selections.remove(clicked)
                     } else {
+                        selections.clear()
                         selections.add(clicked)
                     }
+                    onDateSelected(clicked.date)
                 }
             },
             monthHeader = {
@@ -118,7 +118,6 @@ private fun MonthHeader(daysOfWeek: List<DayOfWeek>) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun Day(
     day: CalendarDay, isSelected: Boolean, today: LocalDate, onClick: (CalendarDay) -> Unit,
@@ -160,4 +159,3 @@ private fun Day(
         )
     }
 }
-

@@ -6,26 +6,24 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import com.hazrat.utils.Constants.APP_DATA_STORE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author Hazrat Ummar Shaikh
  * Created on 22-01-2025
  */
 
-class AppDataStore @Inject constructor(
-    @Named(APP_DATA_STORE) private val appDataStore: DataStore<Preferences>
+class AppDataStore (
+    private val appDataStore: DataStore<Preferences>
 ) {
 
     private object DataStoreKeys {
         ///Theme
         const val THEME_CONST = "THEME_KEY"
         const val HAPTIC_CONST = "HAPTIC_KEY"
+        const val LAST_SEEN_VERSION_CONST = "LAST_SEEN_VERSION_KEY"
 
         /*
        ******************--------------------------*************************
@@ -33,6 +31,7 @@ class AppDataStore @Inject constructor(
         //Theme
         val themeKey = booleanPreferencesKey(THEME_CONST)
         val hapticKey = booleanPreferencesKey(HAPTIC_CONST)
+        val lastSeenVersionKey = androidx.datastore.preferences.core.intPreferencesKey(LAST_SEEN_VERSION_CONST)
     }
 
     private val systemTheme =
@@ -79,6 +78,18 @@ class AppDataStore @Inject constructor(
     suspend fun getHapticEnabled(): Boolean {
         return appDataStore.data.map { preference ->
             preference[DataStoreKeys.hapticKey] == true
+        }.first()
+    }
+
+    suspend fun setLastSeenVersionCode(versionCode: Int) {
+        appDataStore.edit { preference ->
+            preference[DataStoreKeys.lastSeenVersionKey] = versionCode
+        }
+    }
+
+    suspend fun getLastSeenVersionCode(): Int {
+        return appDataStore.data.map { preference ->
+            preference[DataStoreKeys.lastSeenVersionKey] ?: 0
         }.first()
     }
 

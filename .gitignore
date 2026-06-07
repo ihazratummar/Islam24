@@ -21,3 +21,5 @@ app/google-services.json
 .kotlin
 .idea/
 .kotlin/errors
+
+**/build

@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,7 +56,7 @@ fun ZakatScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(Modifier.height(dimens.size40))
+            Spacer(Modifier.height(dimens.space48))
             BasicTopBarWithAction(
                 onBackClick = {
                     onBackClick.invoke()
@@ -76,7 +73,7 @@ fun ZakatScreen(
                 item {
                     Card(
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(dimens.space12)
                             .fillMaxWidth()
                             .clickable {
                                 onNewAddClick()
@@ -89,8 +86,8 @@ fun ZakatScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(65.dp)
-                                .padding(15.dp),
+                                .height(dimens.compTopBar)
+                                .padding(dimens.space16),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -98,7 +95,7 @@ fun ZakatScreen(
                                 text = stringResource(R.string.start_calculation),
                                 fontWeight = FontWeight.SemiBold
                             )
-                            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                            Icon(painter = painterResource(R.drawable.arrow_left), contentDescription = "Add")
                         }
                     }
                 }
@@ -107,7 +104,7 @@ fun ZakatScreen(
                         zakatScreenState.zakatEntity.forEach {
                             Card(
                                 modifier = Modifier
-                                    .padding(10.dp)
+                                    .padding(dimens.space12)
                                     .fillMaxWidth()
                                     .clickable {
                                         getZakatDetails(it.id)
@@ -124,7 +121,7 @@ fun ZakatScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column(
-                                        modifier = Modifier.padding(10.dp)
+                                        modifier = Modifier.padding(dimens.space12)
                                     ) {
                                         Text(
                                             text = getDateFromLong(it.date),
@@ -155,7 +152,7 @@ fun ZakatScreen(
                                         }
                                     ) {
                                         Icon(
-                                            imageVector = Icons.Default.Delete,
+                                            painter = painterResource(R.drawable.menu_01),
                                             contentDescription = "Delete"
                                         )
                                     }

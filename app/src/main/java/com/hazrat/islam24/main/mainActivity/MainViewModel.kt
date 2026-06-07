@@ -1,88 +1,77 @@
 package com.hazrat.islam24.main.mainActivity
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hazrat.auth.domain.usecase.ObserveUserUseCase
 import com.hazrat.datastore.AppDataStore
-import com.hazrat.islam24.auth.repository.ProfileRepository
-import com.hazrat.islam24.core.data.entity.LocationDetailsEntity
-import com.hazrat.islam24.core.domain.repository.NetworkRepository
-import com.hazrat.islam24.core.domain.repository.location.LocationNameRepository
-import com.hazrat.islam24.core.domain.repository.location.LocationRepository
-import com.hazrat.islam24.util.ConnectivityObserver
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import com.hazrat.location.repository.LocationRepository
+import com.hazrat.model.ReleaseNote
+import com.hazrat.utils.ChangelogProvider
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
-
-@HiltViewModel
-class MainViewModel @Inject constructor(
-    private val locationNameRepository: LocationNameRepository,
-    profileRepository: ProfileRepository,
+class MainViewModel(
+    private val observeUserUseCase: ObserveUserUseCase,
     private val locationRepository: LocationRepository,
-    networkRepository: NetworkRepository,
-    private val appDataStore: AppDataStore
+    private val appDataStore: AppDataStore,
+    private val context: android.content.Context
 ) : ViewModel() {
 
+    val isDarkMode: StateFlow<Boolean>
+    val isHapticFeedback: StateFlow<Boolean>
 
-
-    /**
-     * network check
-     */
-
-    val locationName: StateFlow<List<LocationDetailsEntity>> = locationNameRepository.locationName
-
-    val isDarkMode : StateFlow<Boolean>
-    val isHapticFeedback  : StateFlow<Boolean>
-
-
-    private val networkStatus: StateFlow<ConnectivityObserver.Status> =
-        networkRepository.networkStatus
-
+    private val _showChangelog = MutableStateFlow<ReleaseNote?>(null)
+    val showChangelog = _showChangelog.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            fetchDataFromDB()
-            networkStatus.collect { status ->
-                Log.d("MainViewModel", "Network Status : $status")
-                if (status == ConnectivityObserver.Status.Available) {
-                    fetchInitialData()
-                }
+        viewModelScope.launch {
+            observeUserUseCase().collect { _ ->
+                // User state is being observed reactively
             }
         }
-        profileRepository.checkAuthStatus()
-        val initialDarkMode = runBlocking{ appDataStore.getDarkModeEnabled() }
+
+        viewModelScope.launch {
+            locationRepository.getLastKnownLocation()
+        }
+
+        val initialDarkMode = runBlocking { appDataStore.getDarkModeEnabled() }
         isDarkMode = appDataStore.isDarkModeEnabled.stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = initialDarkMode
         )
-        val initialHaptic = runBlocking { appDataStore.getHapticEnabled()}
+        val initialHaptic = runBlocking { appDataStore.getHapticEnabled() }
         isHapticFeedback = appDataStore.isHapticEnabled.stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = initialHaptic
         )
+
+        checkChangelog()
     }
 
-    private fun fetchDataFromDB() {
+    private fun checkChangelog() {
         viewModelScope.launch {
-            locationNameRepository.locationName()
-            locationNameRepository.getLocationDetails()
+            val lastSeenVersion = appDataStore.getLastSeenVersionCode()
+            val latestVersion = ChangelogProvider.getLatestVersionCode(context)
+
+            if (latestVersion != 0 && latestVersion != lastSeenVersion) {
+                _showChangelog.update { ChangelogProvider.getReleaseNotes(context).firstOrNull() }
+            }
         }
     }
 
-    private fun fetchInitialData() {
+    fun onChangelogDismissed() {
         viewModelScope.launch {
-            locationRepository.checkAndUpdateLocation()
-            locationNameRepository.getLocationName()
-            locationNameRepository.fetchLocationName()
+            val latestVersion = ChangelogProvider.getLatestVersionCode(context)
+            appDataStore.setLastSeenVersionCode(latestVersion)
+            _showChangelog.update { null }
         }
     }
-
 }

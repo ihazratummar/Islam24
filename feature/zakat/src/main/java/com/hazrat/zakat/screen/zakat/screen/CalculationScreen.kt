@@ -18,8 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -42,12 +40,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import com.hazrat.common.TopBarWithTwoAction
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
@@ -72,6 +70,7 @@ fun CalculationScreen(
     onSaveClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val localResource = LocalResources.current
 
     Scaffold(
         modifier = modifier
@@ -84,7 +83,7 @@ fun CalculationScreen(
                     .fillMaxHeight(0.3f)
                     .background(
                         color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(topEnd = dimens.size25, topStart = dimens.size25)
+                        shape = RoundedCornerShape(topEnd = dimens.cornerXl, topStart = dimens.cornerXl)
                     ),
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -128,7 +127,7 @@ fun CalculationScreen(
                     zakatEvent(ZakatEvent.ResetAllState)
                     Toast.makeText(
                         context,
-                        context.getString(R.string.done), Toast.LENGTH_SHORT
+                        localResource.getString(R.string.done), Toast.LENGTH_SHORT
                     ).show()
                 },
                 onSecondActionClick = {
@@ -138,7 +137,7 @@ fun CalculationScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(10.dp)
+                    .padding(dimens.space12)
             ) {
                 item {
                     CalculateItems(
@@ -378,7 +377,7 @@ private fun CalculationItemDialogs(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimens.size15),
+                .padding(dimens.space16),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -387,7 +386,7 @@ private fun CalculationItemDialogs(
                     fontWeight = FontWeight.Medium,
                 )
             )
-            Spacer(modifier = Modifier.height(dimens.size15))
+            Spacer(modifier = Modifier.height(dimens.space16))
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -405,9 +404,9 @@ private fun CalculationItemDialogs(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimens.size10),
+                    .padding(vertical = dimens.space12),
                 onClick = onClick,
-                shape = RoundedCornerShape(dimens.size15),
+                shape = RoundedCornerShape(dimens.cornerLg),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
@@ -435,7 +434,7 @@ fun CalculateItems(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 5.dp)
+            .padding(vertical = dimens.space4)
             .clickable {
                 onClick()
             },
@@ -446,12 +445,12 @@ fun CalculateItems(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 10.dp),
+                .padding(horizontal = dimens.space12, vertical = dimens.space12),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = text, fontWeight = FontWeight.SemiBold)
             IconButton(onClick = { infoNavigation() }) {
-                Icon(imageVector = Icons.Default.Info, contentDescription = "Information")
+                Icon(painter = painterResource(R.drawable.alert), contentDescription = "Information")
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(text = amount, fontWeight = FontWeight.SemiBold, color = fontColor)
@@ -465,16 +464,16 @@ private fun BottomBarItem(
     amount: String = "0.0"
 ) {
     Card(
-        modifier = Modifier.padding(vertical = dimens.size1),
+        modifier = Modifier.padding(vertical = dimens.space2),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),
-        shape = RoundedCornerShape(dimens.size3)
+        shape = RoundedCornerShape(dimens.elevation2)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimens.size10),
+                .padding(dimens.space12),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = text)

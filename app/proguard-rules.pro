@@ -91,6 +91,26 @@
 -keep @interface androidx.room.** { *; }
 
 # Logging
+# Coil
+-keep class coil.** { *; }
+-keep class coil.RealImageLoader { *; }
+-dontwarn coil.gif.GifDecoder
+-dontwarn com.airbnb.lottie.**
+
+# OneSignal
+-keep class com.onesignal.** { *; }
+
+# Lottie
+-keep class com.airbnb.lottie.** { *; }
+
+
+# Keep all data classes
+-keep class * extends kotlin.coroutines.jvm.internal.SuspendLambda
+-keep class * implements kotlinx.coroutines.flow.FlowCollector
+
+
+# Keep Hilt view models
+-keep class * extends androidx.lifecycle.ViewModel
 -keep class com.hazrat.islam24.core.data.entity.** { *; }
 -keep class com.hazrat.islam24.core.domain.model.** { *; }
 -keep class com.hazrat.islam24.auth.model.** { *; }
@@ -108,6 +128,12 @@
 # Firebase Auth
 -keep class com.google.firebase.auth.** { *; }
 -dontwarn com.google.firebase.auth.**
+
+# Play Services Auth (Fix R8 Invalid Stack Map Table warnings)
+-keep class com.google.android.gms.auth.api.identity.** { *; }
+-keep class com.google.android.gms.auth.api.signin.internal.** { *; }
+-dontwarn com.google.android.gms.auth.api.identity.**
+-dontwarn com.google.android.gms.auth.api.signin.internal.**
 
 # Firebase Storage
 -keep class com.google.firebase.storage.** { *; }

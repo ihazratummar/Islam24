@@ -10,20 +10,18 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
-class UpdateManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+class UpdateManager(
+    private val context: Context,
     private val appUpdateManager: AppUpdateManager
 ) {
 

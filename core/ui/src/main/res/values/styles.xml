@@ -3,5 +3,19 @@
 	<!-- home_page styles -->
 
 
+	<style name="CalendarWeekDayText">
+		<item name="android:textColor">@color/calendar_day_text_light</item>
+		<item name="android:textSize">16sp</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:textAllCaps">true</item>
+
+	</style>
+
+	<style name="CalendarHeaderText">
+		<item name="android:textColor">@color/calendar_day_text_light</item>
+		<item name="android:textSize">18sp</item>
+		<item name="android:textStyle">bold</item>
+	</style>
+
 
 </resources>
