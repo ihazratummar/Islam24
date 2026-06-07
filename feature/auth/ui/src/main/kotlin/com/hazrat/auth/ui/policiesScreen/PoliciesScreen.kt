@@ -1,5 +1,6 @@
 package com.hazrat.auth.ui.policiesScreen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,8 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import com.hazrat.auth.ui.component.SettingItemCard
 import com.hazrat.ui.R
-import com.hazrat.auth.ui.appSetting.SettingItemCard
 import com.hazrat.ui.common.BackIcon
 import com.hazrat.ui.theme.dimens
 
@@ -31,7 +33,7 @@ import com.hazrat.ui.theme.dimens
 fun PoliciesScreen(
     modifier: Modifier = Modifier,
     onBackClick:() -> Unit,
-    onPolicyClick:() -> Unit
+    onPolicyClick:(String, String) -> Unit
 ) {
 
     Scaffold(
@@ -48,12 +50,26 @@ fun PoliciesScreen(
         }
     ) { paddingValues ->
 
-        val listOfTabs = listOf<PoliciesTabs>(
+        val listOfTabs = listOf(
             PoliciesTabs(
-                leadingIcon = painterResource(R.drawable.privacy_policy),
+                leadingIcon = R.drawable.privacy_policy,
                 tabName = "Privacy Policy",
                 onClick = {
-                    onPolicyClick()
+                    onPolicyClick("https://islam24.hazratdev.top/privacy-policy", "Privacy Policy")
+                }
+            ),
+            PoliciesTabs(
+                leadingIcon = R.drawable.privacy_policy,
+                tabName = "Terms of Service",
+                onClick = {
+                    onPolicyClick("https://islam24.hazratdev.top/terms-of-service", "Terms of Service")
+                }
+            ),
+            PoliciesTabs(
+                leadingIcon = R.drawable.privacy_policy,
+                tabName = "Acknowledgement",
+                onClick = {
+                    onPolicyClick("https://islam24.hazratdev.top/acknowledgements", "Acknowledgement")
                 }
             )
         )
@@ -67,12 +83,21 @@ fun PoliciesScreen(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
                 )
             ){
-                listOfTabs.forEach {
-                    SettingItemCard(
-                        leadingIcon = it.leadingIcon,
-                        text = it.tabName,
-                        onClick = {it.onClick()}
-                    )
+                listOfTabs.forEachIndexed { index, data ->
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(dimens.space8)
+                    ) {
+                        SettingItemCard(
+                            leadingIcon = data.leadingIcon,
+                            settingText = data.tabName,
+                            onClick = {data.onClick()},
+                            trailingIcon = R.drawable.arrowright
+                        )
+                        if (index != listOfTabs.size - 1){
+                            HorizontalDivider()
+                        }
+                    }
                 }
             }
         }
@@ -83,7 +108,7 @@ fun PoliciesScreen(
 
 
 data class PoliciesTabs(
-    val leadingIcon: Painter,
+    val leadingIcon: Int,
     val tabName: String,
     val onClick: () -> Unit = {}
 )

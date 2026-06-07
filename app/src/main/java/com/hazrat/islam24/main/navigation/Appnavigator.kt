@@ -206,14 +206,12 @@ fun AppNavigator(
                 val viewModel: QiblaViewModel = koinViewModel()
                 val state by viewModel.qiblaState.collectAsStateWithLifecycle()
                 val qiblaEvent = viewModel::onEvent
-                val authState by viewModel.authState.observeAsState(initial = AuthState.Unauthenticated)
                 QiblaScreen(
                     state = state,
                     onBackClick = {
                         navController.popBackStack()
                     },
                     isHapticFeedback = isHapticFeedback,
-                    authState = authState,
                     qiblaEvent = qiblaEvent,
                     navigateToLogin = {
                         navController.navigate(Login) {

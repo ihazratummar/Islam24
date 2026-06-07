@@ -25,7 +25,6 @@ fun getAppModule(): Module = module {
 
     viewModel {
         MainViewModel(
-            observeUserUseCase = get(),
             locationRepository = get(),
             appDataStore = get(),
             changelogRepository = get()

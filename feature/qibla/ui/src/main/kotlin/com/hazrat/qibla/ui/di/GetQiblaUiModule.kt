@@ -21,8 +21,7 @@ fun getQiblaUiModule(): Module = module {
             compassSensor = get<MeasurableSensor>(qualifier = CompassSensorQualifier),
             userDataStore = get(),
             qiblaRepository = get(),
-            locationRepository = get(),
-            observeAuthStateUseCase = get()
+            locationRepository = get()
         )
     }
 }

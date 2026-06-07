@@ -20,27 +20,32 @@ import com.hazrat.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PrivacyPolicyScreen(
+fun LegalScreens(
     modifier: Modifier = Modifier,
-    onBackClick:() -> Unit
+    onBackClick: () -> Unit,
+    url: String = "https://islam24.hazratdev.top/privacy-policy",
+    title: String
 ) {
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Privacy Policy") },
+                title = { Text(title) },
                 navigationIcon = {
                     BackIcon(
-                        onBackClick = {onBackClick()}
+                        onBackClick = { onBackClick() }
                     )
                 },
                 windowInsets = WindowInsets(top = dimens.space20)
             )
         }
-    ){ paddingValues ->
+    ) { paddingValues ->
         WebViewScreen(
-            modifier = modifier.fillMaxSize().padding(paddingValues),
-            url = "https://sites.google.com/view/islam24-privacy-policy/home"
+            modifier = modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+            url = url,
+            hideHeaderFooter = true
         )
     }
 

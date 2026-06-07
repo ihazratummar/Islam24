@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,15 +13,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -38,13 +31,140 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import coil.compose.AsyncImage
 import coil.imageLoader
-import com.hazrat.ui.profileCardShimmerEffect
+import com.hazrat.model.Languages
+import com.hazrat.ui.R
+import com.hazrat.ui.common.IconWithBackground
+import com.hazrat.ui.common.SpringToggle
+import com.hazrat.ui.common.customClick
+import com.hazrat.ui.theme.MutedTextColor
+import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 
+
+data class ToggleSettingData(
+    val label: String,
+    val statusText: String,
+    val icon: Int,
+    val isEnable: Boolean,
+    val onClick: () -> Unit
+)
+
+data class AppMetaDataSettings(
+    val icon: Int,
+    val settingName: String,
+    val label: String? = null,
+    val trailingIcon: Int,
+    val onClick: () -> Unit
+)
+
+
+@Composable
+fun ToggleSettings(
+    modifier: Modifier = Modifier,
+    icon: Int,
+    label: String,
+    statusText: String,
+    isEnabled: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .padding(
+                vertical = dimens.space8,
+                horizontal = dimens.space12
+            )
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimens.space8),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconWithBackground(
+            icon = icon,
+            iconColor = customColors.iconColor,
+            containerColor = customColors.iconColor.copy(0.05f)
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(dimens.space4),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            )
+            Text(
+                text = statusText,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = MutedTextColor
+                )
+            )
+        }
+        SpringToggle(
+            checked = isEnabled,
+            onCheckedChange = { onClick() }
+        )
+    }
+}
+
+
+@Composable
+fun SettingItemCard(
+    modifier: Modifier = Modifier,
+    leadingIcon: Int,
+    settingText: String,
+    onClick: () -> Unit = {},
+    label: String? = null,
+    trailingIcon: Int
+) {
+    Row(
+        modifier = modifier
+            .padding(
+                vertical = dimens.space8,
+                horizontal = dimens.space12
+            )
+            .fillMaxWidth().customClick(onClick),
+        horizontalArrangement = Arrangement.spacedBy(dimens.space8),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconWithBackground(
+            icon = leadingIcon,
+            iconColor = customColors.iconColor,
+            containerColor = customColors.iconColor.copy(0.05f)
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(dimens.space4),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = settingText,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            )
+            label?.let { text ->
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = MutedTextColor
+                    )
+                )
+            }
+        }
+
+        IconWithBackground(
+            icon = trailingIcon,
+            iconColor = customColors.progressbarMute,
+            containerColor = Color.Transparent,
+            onClick = onClick
+        )
+    }
+}
 
 @Composable
 fun CustomTextField(
@@ -111,68 +231,6 @@ fun ZoomedProfileImage(
                     contentDescription = null,
                     imageLoader = context.imageLoader
                 )
-            }
-        }
-    }
-}
-
-
-
-@Composable
-fun ButtonLoading(modifier: Modifier = Modifier) {
-    Button(
-        modifier = modifier
-            .profileCardShimmerEffect(),
-        onClick = {},
-        shape = RoundedCornerShape(dimens.cornerMd),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.secondaryContainer
-        )
-    ) {
-        Text("Submit")
-    }
-}
-
-
-@Composable
-fun OtpInputField(
-    otp: String,
-    onOtpChanged: (String) -> Unit
-) {
-    BasicTextField(
-        value = otp,
-        onValueChange = {
-            if (it.length <= 4) {
-                onOtpChanged(it)
-            }
-        },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Done
-        ),
-    ) {
-        Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
-        ) {
-            repeat(4) { index ->
-                val number = when {
-                    index >= otp.length -> ""
-                    else -> otp[index]
-                }
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(dimens.space8),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = number.toString(), style = MaterialTheme.typography.titleLarge)
-                    Box(
-                        modifier = Modifier
-                            .width(dimens.compButton)
-                            .height(dimens.space2)
-                            .background(MaterialTheme.colorScheme.onBackground)
-                    )
-                }
             }
         }
     }

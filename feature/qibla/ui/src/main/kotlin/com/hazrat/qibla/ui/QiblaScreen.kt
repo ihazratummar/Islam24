@@ -87,7 +87,6 @@ fun QiblaScreen(
     state: QiblaState,
     onBackClick: () -> Unit,
     isHapticFeedback: Boolean,
-    authState: AuthState,
     qiblaEvent: (QiblaEvent) -> Unit,
     navigateToLogin: () -> Unit
 ) {
@@ -314,20 +313,7 @@ fun QiblaScreen(
             BottomCompassPreview(
                 modifier = Modifier,
                 onCompassClick = { id, isLoggedInRequired ->
-                    Log.d("QiblaScreen", "Compass Clicked $id, $isLoggedInRequired")
-                    if (!isLoggedInRequired) {
-                        qiblaEvent(QiblaEvent.OnCompassClick(compassId = id))
-                    } else {
-                        when (authState) {
-                            AuthState.Authenticated -> {
-                                qiblaEvent(QiblaEvent.OnCompassClick(compassId = id))
-                            }
 
-                            else -> {
-                                qiblaEvent(QiblaEvent.OnLoggedInRequiredCompassClick)
-                            }
-                        }
-                    }
                 }
             )
         }

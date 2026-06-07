@@ -2,7 +2,6 @@ package com.hazrat.islam24.main.mainActivity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.auth.domain.usecase.ObserveUserUseCase
 import com.hazrat.datastore.AppDataStore
 import com.hazrat.location.repository.LocationRepository
 import com.hazrat.model.ReleaseNote
@@ -17,7 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainViewModel(
-    private val observeUserUseCase: ObserveUserUseCase,
     private val locationRepository: LocationRepository,
     private val appDataStore: AppDataStore,
     private val changelogRepository: ChangelogRepository
@@ -30,12 +28,6 @@ class MainViewModel(
     val showChangelog = _showChangelog.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            observeUserUseCase().collect { _ ->
-                // User state is being observed reactively
-            }
-        }
-
         viewModelScope.launch {
             locationRepository.getLastKnownLocation()
         }

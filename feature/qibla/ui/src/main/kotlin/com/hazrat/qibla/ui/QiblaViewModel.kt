@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.hazrat.auth.domain.usecase.ObserveAuthStateUseCase
 import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.QiblaRepository
 import com.hazrat.location.model.LocationConfigs
@@ -41,7 +40,6 @@ class QiblaViewModel(
     private val userDataStore: UserDataStore,
     private val qiblaRepository: QiblaRepository,
     private val locationRepository: LocationRepository,
-    observeAuthStateUseCase: ObserveAuthStateUseCase
 ) : ViewModel() {
 
 
@@ -57,7 +55,6 @@ class QiblaViewModel(
         initialValue = _qiblaState.value,
     )
 
-    val authState: LiveData<AuthState> = observeAuthStateUseCase().asLiveData()
 
 
     private var previousDirection: Float = 0f

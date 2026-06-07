@@ -4,23 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import androidx.core.net.toUri
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.hazrat.auth.domain.usecase.ObserveAuthStateUseCase
-import com.hazrat.auth.domain.usecase.ObserveUserUseCase
-import com.hazrat.auth.domain.usecase.SignOutUseCase
 import com.hazrat.datastore.AppDataStore
 import com.hazrat.datastore.DataStorePreference
 import com.hazrat.datastore.UserDataStore
-import com.hazrat.domain.repository.QuranRepository
 import com.hazrat.utils.changeLanguage
 import com.hazrat.ui.R
-import com.hazrat.model.AuthState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,16 +27,10 @@ import kotlinx.coroutines.launch
 
 class AppSettingViewModel(
     private val context: Context,
-    private val signOutUseCase: SignOutUseCase,
-    private val observeUserUseCase: ObserveUserUseCase,
-    private val observeAuthStateUseCase: ObserveAuthStateUseCase,
     private val dataStorePreference: DataStorePreference,
-    private val quranRepository: QuranRepository,
     private val appDataStore: AppDataStore,
     private val userDataStore: UserDataStore
 ) : ViewModel() {
-
-    val authState: LiveData<AuthState> = observeAuthStateUseCase().asLiveData()
 
     private val _state = MutableStateFlow(
         AppSettingState(
@@ -104,15 +90,7 @@ class AppSettingViewModel(
                 }
                 context.startActivity(intent)
             }
-            AppSettingEvent.SignOut -> {
-                viewModelScope.launch {
-                    signOutUseCase()
-                    launch { userDataStore.clearSelectedCompassId() }
-                }
-            }
-            AppSettingEvent.RefreshAuth -> {
-                // Not needed with ObserveUserUseCase
-            }
+
             AppSettingEvent.HapticFeedbackClick -> {
                 _state.update { it.copy(isHapticFeedbackEnabled = !it.isHapticFeedbackEnabled) }
                 viewModelScope.launch {
@@ -135,7 +113,7 @@ class AppSettingViewModel(
                 context.startActivity(intent)
                 _state.update { it.copy(isRatingDialogOpen = false) }
             }
-            AppSettingEvent.InviteFriend -> {
+            AppSettingEvent.ShareApp -> {
                 val text = context.getString(R.string.invite_friend)
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND

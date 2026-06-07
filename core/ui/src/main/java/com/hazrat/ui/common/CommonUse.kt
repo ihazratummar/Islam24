@@ -7,16 +7,22 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +30,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -40,11 +48,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -55,8 +65,10 @@ import androidx.compose.ui.window.DialogProperties
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
+import com.hazrat.model.Languages
 import com.hazrat.ui.R
 import com.hazrat.ui.shimmerEffect
+import com.hazrat.ui.theme.NeutralVariant50
 import com.hazrat.ui.theme.dimens
 
 @Composable
@@ -146,7 +158,8 @@ fun rememberImageLoader(context: Context): ImageLoader {
 @Composable
 fun WebViewScreen(
     modifier: Modifier = Modifier,
-    url: String
+    url: String,
+    hideHeaderFooter: Boolean = false
 ) {
     var backEnable by remember { mutableStateOf(false) }
     var webView: WebView? = null
@@ -191,6 +204,29 @@ fun WebViewScreen(
 
                     override fun onPageFinished(view: WebView?, url: String?) {
                         loaderDialogScreen.value = false
+                        // Inject JavaScript to hide footer and nav
+                        if (hideHeaderFooter) {
+                            val script = """
+                                (function() {
+                                    function hide(selector) {
+                                        var elements = document.querySelectorAll(selector);
+                                        for (var i = 0; i < elements.length; i++) {
+                                            elements[i].style.display = 'none';
+                                        }
+                                    }
+                                    hide('header');
+                                    hide('footer');
+                                    hide('nav');
+                                    hide('.nav');
+                                    hide('.navbar');
+                                    hide('.footer');
+                                    hide('.header');
+                                    hide('.site-header');
+                                    hide('.site-footer');
+                                })()
+                            """.trimIndent()
+                            view?.evaluateJavascript(script, null)
+                        }
                     }
                 }
                 settings.javaScriptEnabled = true
@@ -219,11 +255,10 @@ fun BackIcon(
 }
 
 
-
 @Composable
 fun TopAppBarTitle(
     title: Int = R.string.prayer_times
-){
+) {
     Text(
         text = stringResource(title),
         style = MaterialTheme.typography.headlineMedium,
@@ -231,7 +266,6 @@ fun TopAppBarTitle(
         color = MaterialTheme.colorScheme.onBackground
     )
 }
-
 
 
 @Composable
@@ -323,7 +357,7 @@ fun LongText(
     style: TextStyle = MaterialTheme.typography.titleMedium,
     delay: Int = 5000,
     repeatDelay: Int = 5000
-){
+) {
     Text(
         text = text,
         style = style,
@@ -340,3 +374,91 @@ fun LongText(
             )
     )
 }
+
+
+@Composable
+fun AppSection(
+    modifier: Modifier = Modifier,
+    sectionTitle: String,
+    content: @Composable () -> Unit
+) {
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(dimens.space12),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = sectionTitle,
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = NeutralVariant50
+            )
+        )
+        content()
+    }
+
+}
+
+@Composable
+fun SpringToggle(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val thumbOffset by animateDpAsState(
+        targetValue = if (checked) dimens.space20 else dimens.space2,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "thumbOffset"
+    )
+    val trackColor by animateColorAsState(
+        targetValue = if (checked) Color(0xFF1AAA80) else Color(0xFF3A4A52),
+        animationSpec = tween(200),
+        label = "trackColor"
+    )
+
+    Box(
+        modifier = modifier
+            .size(width = dimens.compButton, height = dimens.compChip)
+            .clip(RoundedCornerShape(dimens.space16))
+            .background(trackColor)
+            .toggleable(
+                value = checked,
+                role = Role.Switch,
+                onValueChange = onCheckedChange
+            )
+    ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .offset(x = thumbOffset)          // ← changed from padding to offset
+                .size(dimens.space24)
+                .clip(CircleShape)
+                .background(Color.White)
+        )
+    }
+}
+
+fun Languages.toDisplayName() : String {
+    return when(this){
+        Languages.ENGLISH -> "English"
+        Languages.BENGALI -> "Bengali"
+    }
+}
+
+@Composable
+fun Modifier.customClick(
+    onClick: () -> Unit,
+    hapticFeedbackEnabled: Boolean = true
+): Modifier =
+    composed {
+        val interactionSource = remember { MutableInteractionSource() }
+        this.combinedClickable(
+            onClick = onClick,
+            indication = null,
+            interactionSource = interactionSource,
+            hapticFeedbackEnabled = hapticFeedbackEnabled,
+        )
+    }

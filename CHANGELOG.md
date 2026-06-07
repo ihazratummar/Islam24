@@ -1,14 +1,27 @@
-## [3.0.0] - 2024-05-22
+## [3.1.0] - 2025-03-14
 ### Added
-- Added Dua
-- Initial changelog setup.
+- Brand new Profile screen with a cleaner, more modern look.
+- Support for dynamic titles on Policy and Legal pages.
+- Cleaner reading experience on Policy pages by removing website headers and footers.
+- Added Dua section for daily supplications.
+- Full support for Android 15.
+
+### Changed
+- Manual sign-in has been temporarily removed. Google Sign-in will be returning in the next update!
+- Completely redesigned Home screen and fresh app colors.
 - Improved Qibla direction accuracy.
-- Full support for Android 15 (SDK 36).
-- New 'What's New' feature to keep you updated.
-- Complete New HomeScreen Layout and App Colors.
-- Enhanced prayer times calculation for high latitudes.
 
 ### Fixed
+- Fixed a major crash that prevented some users from accessing their profile.
+- Fixed an issue where some app settings were not appearing correctly.
+- Improved overall app stability and performance.
 - Fixed notification issues on some devices.
-- Fixed Firestore deserialization error for UserData.
-- Minor bug fixes and performance improvements.
+
+## [3.0.0] - 2024-05-22
+### Added
+- Initial release of the new redesign.
+- Enhanced prayer times calculation for high latitudes.
+- New 'What's New' feature to keep you updated.
+
+### Fixed
+- General bug fixes and performance improvements.

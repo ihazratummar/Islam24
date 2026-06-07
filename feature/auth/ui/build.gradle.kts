@@ -43,7 +43,6 @@ dependencies {
     implementation(project(":domain:repository"))
 
     implementation(project(":feature:common"))
-    implementation(project(":feature:auth:domain"))
 
     implementation(project(":core:datastore"))
     implementation(libs.review)

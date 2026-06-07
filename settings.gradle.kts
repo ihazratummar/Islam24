@@ -40,7 +40,6 @@ include(":feature:calendar")
 
 include(":feature:auth:ui")
 include(":feature:auth:data")
-include(":feature:auth:domain")
 
 include(":feature:qibla:ui")
 include(":feature:qibla:data")

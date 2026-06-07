@@ -21,16 +21,13 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         this.targetSdk = 36
-        versionCode = 98
-        versionName = "3.0.1"
+        versionCode = 99
+        versionName = "3.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
-        buildConfigField("String", "MAPS_API_KEY", properties.getProperty("MAPS_API_KEY"))
-
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -101,7 +98,6 @@ dependencies {
 
     implementation(project(":feature:auth:ui"))
     implementation(project(":feature:auth:data"))
-    implementation(project(":feature:auth:domain"))
 
     implementation(project(":feature:qibla:ui"))
     implementation(project(":feature:qibla:data"))

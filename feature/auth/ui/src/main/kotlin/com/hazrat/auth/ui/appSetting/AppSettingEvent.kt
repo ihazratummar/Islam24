@@ -18,14 +18,10 @@ sealed interface AppSettingEvent {
 
     data object OpenAppSetting : AppSettingEvent
 
-    data object SignOut: AppSettingEvent
-
-    data object RefreshAuth: AppSettingEvent
-
     data object HapticFeedbackClick: AppSettingEvent
 
 
-    data object InviteFriend : AppSettingEvent
+    data object ShareApp : AppSettingEvent
     data class RateUs(val activity: Activity) : AppSettingEvent
     data object OpenRatingDialog: AppSettingEvent
     data object GoToRate: AppSettingEvent
