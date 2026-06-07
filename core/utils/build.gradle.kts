@@ -52,6 +52,16 @@ android {
 
 }
 
+tasks.register<Copy>("copyChangelog") {
+    from("${rootProject.projectDir}/CHANGELOG.md")
+    into("$projectDir/src/main/assets")
+    rename { "changelog.md" }
+}
+
+tasks.named("preBuild") {
+    dependsOn("copyChangelog")
+}
+
 dependencies {
     implementation(project(":domain:model"))
 
