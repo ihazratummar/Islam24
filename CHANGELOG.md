@@ -10,4 +10,5 @@
 
 ### Fixed
 - Fixed notification issues on some devices.
+- Fixed Firestore deserialization error for UserData.
 - Minor bug fixes and performance improvements.

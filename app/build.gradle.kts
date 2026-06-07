@@ -15,14 +15,14 @@ plugins {
 
 android {
     namespace = "com.hazrat.islam24"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        targetSdk= 36
-        versionCode = 97
-        versionName = "3.0.0"
+        this.targetSdk = 36
+        versionCode = 98
+        versionName = "3.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

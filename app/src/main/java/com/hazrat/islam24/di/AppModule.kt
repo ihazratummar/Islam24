@@ -6,6 +6,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.service.UpdateManager
+import com.hazrat.utils.ChangelogRepository
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
@@ -20,12 +21,14 @@ import org.koin.dsl.module
 
 fun getAppModule(): Module = module {
 
+    single { ChangelogRepository(androidApplication()) }
+
     viewModel {
         MainViewModel(
             observeUserUseCase = get(),
             locationRepository = get(),
             appDataStore = get(),
-            context = androidApplication()
+            changelogRepository = get()
         )
     }
 

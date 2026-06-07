@@ -1,12 +1,15 @@
 package com.hazrat.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class UserData(
-    val userId: String? = "",
-    val fullName: String? ="",
-    val email: String? = "",
-    val profilePictureUrl: String? = "",
-    val bio: String ? = "",
-    val lastReadSurah: Int? = 0,
-    val lastReadAyah: Int? = 0,
-    val compassModelId : Int ? = 1
+    var userId: String? = "",
+    var fullName: String? = "",
+    var email: String? = "",
+    var profilePictureUrl: String? = "",
+    var bio: String? = "",
+    var lastReadSurah: Int? = 0,
+    var lastReadAyah: Int? = 0,
+    var compassModelId: Int? = 1
 )
