@@ -21,8 +21,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         targetSdk= 36
-        versionCode = 96
-        versionName = "2.5.1"
+        versionCode = 97
+        versionName = "3.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -172,8 +172,6 @@ dependencies {
     implementation(libs.app.update.ktx)
     implementation(libs.review)
     implementation(libs.review.ktx)
-
-//    implementation (libs.kotlin.reflect)
 
     //Glance App Widget
 

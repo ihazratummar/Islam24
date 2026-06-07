@@ -44,6 +44,9 @@ dependencies {
     implementation(project(":feature:athkar:domain"))
     implementation(project(":core:database"))
     implementation(project(":core:remote"))
+    implementation(project(":core:utils"))
+    implementation(project(":domain:model"))
+    implementation(project(":domain:repository"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

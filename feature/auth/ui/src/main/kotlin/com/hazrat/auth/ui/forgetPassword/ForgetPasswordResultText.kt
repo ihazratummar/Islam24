@@ -27,12 +27,12 @@ fun ForgetPasswordError.asUiText(): UiText {
     }
 }
 
-fun Result.Error<*, ForgetPasswordError>.asErrorUiText(): UiText {
+fun Result.Error< ForgetPasswordError>.asErrorUiText(): UiText {
     return error.asUiText()
 }
 
 
-fun Result.Success<ForgetPasswordSuccess, *>.asSuccessUiText(): UiText {
+fun Result.Success<ForgetPasswordSuccess>.asSuccessUiText(): UiText {
     return data.asSuccessUiText()
 }
 

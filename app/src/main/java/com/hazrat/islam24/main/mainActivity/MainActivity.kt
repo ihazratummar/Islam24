@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.auth.ui.login.LoginViewModel
 import com.hazrat.auth.ui.signup.SignUpViewModel
 import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
+import com.hazrat.common.ChangelogDialog
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.notification.NotificationChannels
@@ -47,7 +48,8 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     * @param savedInstanceState If the activity is being re-initialized after previously
+     * being shut down, this contains the data it most recently supplied in onSaveInstanceState(Bundle).
      */
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +71,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
+            val showChangelog by mainViewModel.showChangelog.collectAsStateWithLifecycle()
 
             Islam24Theme(
                 darkTheme = isDarkModeEnabled
@@ -77,6 +80,13 @@ class MainActivity : ComponentActivity() {
                 NavGraph(
                     isHapticFeedback = isHapticFeedback,
                 )
+
+                showChangelog?.let { releaseNote ->
+                    ChangelogDialog(
+                        releaseNote = releaseNote,
+                        onDismiss = { mainViewModel.onChangelogDismissed() }
+                    )
+                }
             }
 
         }

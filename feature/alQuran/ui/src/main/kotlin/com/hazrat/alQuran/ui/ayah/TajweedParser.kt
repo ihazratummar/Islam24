@@ -7,101 +7,82 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 
 /**
- * Tajweed color coding parser.
- * Parses quran.com API v4 `text_uthmani_tajweed` HTML markup
- * and converts it to Jetpack Compose AnnotatedString with colored spans.
+ * Tajweed color coding parser for alquran.cloud API format.
+ *
+ * Parses bracket-based tajweed markup:
+ *   [h:1[ٱ]   -> Hamzat ul Wasl (gray)
+ *   [f:16[نف] -> Ikhfa (purple)
+ *   [n[ـٰ]    -> Madda Normal (blue)
+ *
+ * Color scheme from: https://alquran.cloud/tajweed-guide
+ * Colors brightened for dark mode visibility.
  *
  * @author hazratummar
  */
 
 /**
- * Standard Tajweed color scheme matching quran.com / Muslim Pro.
+ * Official alquran.cloud tajweed color scheme.
+ * Reference: https://alquran.cloud/tajweed-guide
+ *
+ * Original (light-mode) colors listed in comments.
+ * Active colors are brightened for dark (#272727) backgrounds.
  */
 object TajweedColors {
-    // ============================================================
-    // Exact quran.com DARK MODE colors
-    // Extracted from: quran.com/_next/static/css/53aa552c789492f1.css
-    // ============================================================
-
-    // Gray: Edgham category (silent / non-pronounced)  -> quran.com dark-edgham: #999
-    val hamzatWasl = Color(0xFF999999)
-    val laamShamsiyah = Color(0xFF999999)
-    val silent = Color(0xFF999999)
-
-    // Green: Ekhfa category (concealment)              -> quran.com dark-ekhfa: #26b55d
-    val ikhfa = Color(0xFF26B55D)
-    val ikhfaShafawi = Color(0xFF26B55D)
-
-    // Gray: Edgham category (merging)                  -> quran.com dark-edgham: #999
-    val idghamGhunnah = Color(0xFF999999)
-    val idghamNoGhunnah = Color(0xFF999999)
-    val idghamShafawi = Color(0xFF999999)
-    val idghamMutajanisayn = Color(0xFF999999)
-    val idghamMutaqaribayn = Color(0xFF999999)
-
-    // Orange: Ghunnah                                  -> quran.com dark-mad-2-4-6: #ff8e3b
-    val ghunnah = Color(0xFFFF8E3B)
-
-    // Cyan: Qalqalah                                   -> quran.com dark-qalqala: #00deff
-    val iqlab = Color(0xFF3C84D5) // tafkhim blue
-    val qalqalah = Color(0xFF00DEFF)
-
-    // Madd gradient (from quran.com dark mode):
-    val maddNormal = Color(0xFFFFC1E0)       // dark-mad-2:     #ffc1e0 (pink)
-    val maddPermissible = Color(0xFFFF8E3B)  // dark-mad-2-4-6: #ff8e3b (orange)
-    val maddObligatory = Color(0xFFFF5E8E)   // dark-mad-4-5:   #ff5e8e (rose)
-    val maddNecessary = Color(0xFFE30000)     // dark-mad-6:     #e30000 (red)
 
     /**
-     * Maps CSS class names from quran.com API v4 to colors.
-     * These are the EXACT 17 class names used in our database.
+     * Maps single-letter identifiers from alquran.cloud API to colors.
+     *
+     * Format: [identifier:optional_number[text]
+     * The identifier is always a single lowercase letter.
      */
-    private val classToColor = mapOf(
-        // Gray: Silent / Non-pronounced
-        "ham_wasl" to hamzatWasl,                       // 13252 occurrences
-        "laam_shamsiyah" to laamShamsiyah,               // 2608 occurrences
-        "slnt" to silent,                                // 4159 occurrences
+    private val idToColor = mapOf(
+        // Gray: Silent / non-pronounced
+        "h" to Color(0xFFAAAAAA),   // ham_wasl  - Hamzat ul Wasl        (original #AAAAAA)
+        "s" to Color(0xFFAAAAAA),   // slnt      - Silent                (original #AAAAAA)
+        "l" to Color(0xFFAAAAAA),   // slnt      - Lam Shamsiyyah        (original #AAAAAA)
 
-        // Orange: Ghunnah (Nasalization)
-        "ghunnah" to ghunnah,                            // 4923 occurrences
-
-        // Purple: Ikhfa (Concealment)
-        "ikhafa" to ikhfa,                               // 5291 occurrences
-        "ikhafa_shafawi" to ikhfaShafawi,                // 496 occurrences
-
-        // Green/Teal: Idgham (Merging)
-        "idgham_ghunnah" to idghamGhunnah,               // 3933 occurrences
-        "idgham_wo_ghunnah" to idghamNoGhunnah,           // 1036 occurrences
-        "idgham_shafawi" to idghamShafawi,               // 832 occurrences
-        "idgham_mutajanisayn" to idghamMutajanisayn,     // 58 occurrences
-        "idgham_mutaqaribayn" to idghamMutaqaribayn,     // 13 occurrences
-
-        // Light Blue: Iqlab (Conversion)
-        "iqlab" to iqlab,                                // 562 occurrences
+        // Blue: Madd (Prolongation)
+        "n" to Color(0xFF537FFF),   // madda_normal      - 2 Vowels      (original #537FFF)
+        "p" to Color(0xFF4050FF),   // madda_permissible - 2,4,6 Vowels  (original #4050FF)
+        "m" to Color(0xFF5A7FFF),   // madda_necessary   - 6 Vowels      (original #000EBC → brightened)
+        "o" to Color(0xFF4466DD),   // madda_obligatory  - 4-5 Vowels    (original #2144C1 → brightened)
 
         // Red: Qalqalah (Echo)
-        "qalaqah" to qalqalah,                           // 3834 occurrences
+        "q" to Color(0xFFFF4444),   // qlq - Qalqalah                   (original #DD0008 → brightened)
 
-        // Blue gradient: Madd (Prolongation)
-        "madda_normal" to maddNormal,                    // 9028 occurrences
-        "madda_permissible" to maddPermissible,          // 4543 occurrences
-        "madda_obligatory" to maddObligatory,            // 5166 occurrences
-        "madda_necessary" to maddNecessary,              // 143 occurrences
+        // Purple: Ikhfa (Concealment)
+        "f" to Color(0xFFCC44FF),   // ikhf      - Ikhfa                (original #9400A8 → brightened)
+        "c" to Color(0xFFEE55DD),   // ikhf_shfw - Ikhfa Shafawi        (original #D500B7 → brightened)
+
+        // Green/Teal: Idgham (Merging)
+        "a" to Color(0xFF22CC99),   // idgh_ghn  - Idgham w/ Ghunnah    (original #169777 → brightened)
+        "u" to Color(0xFF22BB44),   // idgh_w_ghn - Idgham w/o Ghunnah  (original #169200 → brightened)
+        "w" to Color(0xFF77DD22),   // idghm_shfw - Idgham Shafawi      (original #58B800 → brightened)
+        "d" to Color(0xFFBBBBBB),   // idgh_mus  - Idgham Mutajanisayn  (original #A1A1A1 → brightened)
+
+        // Cyan: Iqlab (Conversion)
+        "i" to Color(0xFF44DDFF),   // iqlb - Iqlab                     (original #26BFFD → brightened)
+
+        // Orange: Ghunnah (Nasalization)
+        "g" to Color(0xFFFF9933),   // ghn - Ghunnah: 2 Vowels          (original #FF7E1E → brightened)
     )
 
-    fun getColor(className: String): Color? = classToColor[className]
+    fun getColor(identifier: String): Color? = idToColor[identifier]
 }
 
 /**
- * Regex patterns for parsing quran.com tajweed HTML markup.
+ * Regex for alquran.cloud tajweed bracket format.
+ *
+ * Matches patterns like:
+ *   [h:1[ٱ]       -> identifier="h", content="ٱ"
+ *   [f:16[نف]     -> identifier="f", content="نف"
+ *   [n[ـٰ]        -> identifier="n", content="ـٰ"
+ *   [g[مّ]        -> identifier="g", content="مّ"
+ *
+ * Pattern: \[ (letter) (?::digits)? \[ (content) \]
  */
-private val TAJWEED_TAG_REGEX =
-    """<tajweed\s+class=(["\']?)([^"'\s>]+)\1[^>]*>(.*?)</tajweed>""".toRegex()
-
-private val SPAN_END_TAG_REGEX =
-    """<span\s+class=(["\']?)end\1[^>]*>(.*?)</span>""".toRegex()
-
-private val ANY_HTML_TAG_REGEX = """<[^>]+>""".toRegex()
+private val TAJWEED_BRACKET_REGEX =
+    """\[([a-z])(?::?\d*)\[([^\]]*)\]""".toRegex()
 
 /**
  * Strips U+06DF (Small High Rounded Zero) and converts sukun to comma-sukun.
@@ -114,13 +95,11 @@ private fun String.cleanUthmanic(): String {
 }
 
 /**
- * Parses quran.com tajweed HTML markup into a Compose AnnotatedString
+ * Parses alquran.cloud tajweed bracket markup into a Compose AnnotatedString
  * with colored spans for each tajweed rule.
  *
- * Input format: "بِسْمِ <tajweed class=ham_wasl>ٱ</tajweed>للَّهِ"
+ * Input:  "بِسْمِ [h:1[ٱ]للَّهِ"
  * Output: AnnotatedString with gray color on "ٱ"
- *
- * Also keeps <span class=end>٢</span> verse-end markers as plain text.
  */
 fun parseTajweedHtml(
     input: String,
@@ -128,32 +107,24 @@ fun parseTajweedHtml(
 ): AnnotatedString {
     if (input.isBlank()) return AnnotatedString("")
 
-    // Step 1: Extract verse-end markers and wrap with decorative ۝ (U+06DD)
-    var processed = SPAN_END_TAG_REGEX.replace(input) { match ->
-        val verseNum = match.groupValues[2]
-        " \u06DD${verseNum} " // U+06DD wraps the number in a decorative ayah marker
-    }
-
-    // Step 2: Parse tajweed tags into segments
     data class Segment(val text: String, val color: Color)
 
     val segments = mutableListOf<Segment>()
     var lastIndex = 0
 
-    TAJWEED_TAG_REGEX.findAll(processed).forEach { match ->
-        // Plain text before this tajweed tag
+    TAJWEED_BRACKET_REGEX.findAll(input).forEach { match ->
+        // Plain text before this tajweed bracket
         if (match.range.first > lastIndex) {
-            val plainText = processed.substring(lastIndex, match.range.first)
-            val cleaned = ANY_HTML_TAG_REGEX.replace(plainText, "").cleanUthmanic()
-            if (cleaned.isNotEmpty()) {
-                segments.add(Segment(cleaned, defaultColor))
+            val plainText = input.substring(lastIndex, match.range.first).cleanUthmanic()
+            if (plainText.isNotEmpty()) {
+                segments.add(Segment(plainText, defaultColor))
             }
         }
 
         // Tajweed-colored text
-        val className = match.groupValues[2]
-        val content = match.groupValues[3].cleanUthmanic()
-        val color = TajweedColors.getColor(className) ?: defaultColor
+        val identifier = match.groupValues[1]
+        val content = match.groupValues[2].cleanUthmanic()
+        val color = TajweedColors.getColor(identifier) ?: defaultColor
 
         if (content.isNotEmpty()) {
             segments.add(Segment(content, color))
@@ -162,16 +133,15 @@ fun parseTajweedHtml(
         lastIndex = match.range.last + 1
     }
 
-    // Remaining plain text after the last tajweed tag
-    if (lastIndex < processed.length) {
-        val remaining = processed.substring(lastIndex)
-        val cleaned = ANY_HTML_TAG_REGEX.replace(remaining, "").cleanUthmanic()
-        if (cleaned.isNotEmpty()) {
-            segments.add(Segment(cleaned, defaultColor))
+    // Remaining plain text after the last tajweed bracket
+    if (lastIndex < input.length) {
+        val remaining = input.substring(lastIndex).cleanUthmanic()
+        if (remaining.isNotEmpty()) {
+            segments.add(Segment(remaining, defaultColor))
         }
     }
 
-    // Step 3: Build AnnotatedString with colored spans
+    // Build AnnotatedString with colored spans (color-only, preserves ligatures)
     return buildAnnotatedString {
         segments.forEach { segment ->
             withStyle(SpanStyle(color = segment.color)) {

@@ -36,8 +36,10 @@ kotlin {
 
 
 dependencies {
-    implementation(project(":core:utils"))
     api(project(":core:ui"))
+    implementation(project(":core:utils"))
+
+    implementation(project(":domain:usecase"))
 
     implementation(project(":feature:common"))
     implementation(project(":feature:athkar:domain"))

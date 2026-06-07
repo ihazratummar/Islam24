@@ -17,12 +17,12 @@ import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.Prayer
 import com.hazrat.notification.PrayerAlarmScheduler
 import com.hazrat.prayer.ui.notification.NotificationState
-import com.hazrat.usecase.GetDailyPrayerStatusUseCase
+import com.hazrat.usecase.prayer.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
-import com.hazrat.usecase.GetPrayerNotificationStateUseCase
-import com.hazrat.usecase.GetPrayerTimeWindowForDaysUseCase
-import com.hazrat.usecase.PrayerNotificationEnabledUseCase
-import com.hazrat.usecase.TogglePrayerUseCase
+import com.hazrat.usecase.prayer.GetPrayerNotificationStateUseCase
+import com.hazrat.usecase.prayer.GetPrayerTimeWindowForDaysUseCase
+import com.hazrat.usecase.prayer.PrayerNotificationEnabledUseCase
+import com.hazrat.usecase.prayer.TogglePrayerUseCase
 import com.hazrat.utils.HijriDateUtils
 import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers

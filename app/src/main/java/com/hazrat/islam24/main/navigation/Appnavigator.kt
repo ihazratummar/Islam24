@@ -46,8 +46,12 @@ import com.hazrat.alQuran.ui.surah.SurahScreenData
 import com.hazrat.alQuran.ui.surah.SurahViewModel
 import com.hazrat.allahNames.ui.namesofallah.NamesOfAllahScreen
 import com.hazrat.allahNames.ui.namesofallah.NamesViewmodel
-import com.hazrat.athkar.ui.AthkarScreen
-import com.hazrat.athkar.ui.AthkarViewModel
+import com.hazrat.athkar.ui.azkar.AthkarScreen
+import com.hazrat.athkar.ui.azkar.AthkarViewModel
+import com.hazrat.athkar.ui.dua.category.DuaScreen
+import com.hazrat.athkar.ui.dua.category.DuaViewModel
+import com.hazrat.athkar.ui.dua.dua_details.DuaItemScreen
+import com.hazrat.athkar.ui.dua.dua_details.DuaItemViewModel
 import com.hazrat.calendar.CalendarScreen
 import com.hazrat.home.ui.HomeScreen
 import com.hazrat.home.ui.HomeViewModel
@@ -252,7 +256,42 @@ fun AppNavigator(
                     athkar = athkarEntity,
                     onBackClick = { navController.popBackStack() }
                 )
+
             }
+
+            composable<HomeRoutes.DuaRoute> {
+                val viewModel: DuaViewModel = koinViewModel()
+                val duaCategoryModel by viewModel.state.collectAsStateWithLifecycle()
+                DuaScreen(
+                    duaCategoryState = duaCategoryModel,
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onDuaClick = {categoryId ->
+                        navController.navigate(HomeRoutes.DuaItemRoute(categoryId = categoryId))
+                    },
+                    event = viewModel::event
+                )
+            }
+
+            composable<HomeRoutes.DuaItemRoute> {navBackStack ->
+
+                val categoryId = navBackStack.toRoute<HomeRoutes.DuaItemRoute>().categoryId
+                val viewModel = koinViewModel<DuaItemViewModel>(
+                    parameters = {
+                        parametersOf(categoryId)
+                    }
+                )
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                DuaItemScreen(
+                    state = state,
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+
+            }
+
 
             authNavGraph(
                 navController = navController,

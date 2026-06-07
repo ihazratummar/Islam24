@@ -2,6 +2,8 @@ package com.hazrat.athkar.di
 
 import com.hazrat.athkar.domain.repository.AthkarRepository
 import com.hazrat.athkar.repository.AthkarRepositoryImpl
+import com.hazrat.athkar.repository.DuaRepositoryImpl
+import com.hazrat.domain.repository.DuaRepository
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -13,4 +15,5 @@ import org.koin.dsl.module
 
 fun getAthkarDataModule(): Module = module {
     single<AthkarRepository> { AthkarRepositoryImpl(api = get(), athkarDao = get()) }
+    single<DuaRepository> { DuaRepositoryImpl(duaDao = get()) }
 }

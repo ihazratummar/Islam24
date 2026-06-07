@@ -150,4 +150,5 @@
     <string name="jummah_prayer">Jummah Prayer</string>
     <string name="hijri_date_label">HIJRI DATE</string>
     <string name="until_event">Until %1$s %2$d AH</string>
+    <string name="dua" translatable="false">Dua</string>
 </resources>

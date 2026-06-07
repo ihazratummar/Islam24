@@ -23,6 +23,7 @@ class AppDataStore (
         ///Theme
         const val THEME_CONST = "THEME_KEY"
         const val HAPTIC_CONST = "HAPTIC_KEY"
+        const val LAST_SEEN_VERSION_CONST = "LAST_SEEN_VERSION_KEY"
 
         /*
        ******************--------------------------*************************
@@ -30,6 +31,7 @@ class AppDataStore (
         //Theme
         val themeKey = booleanPreferencesKey(THEME_CONST)
         val hapticKey = booleanPreferencesKey(HAPTIC_CONST)
+        val lastSeenVersionKey = androidx.datastore.preferences.core.intPreferencesKey(LAST_SEEN_VERSION_CONST)
     }
 
     private val systemTheme =
@@ -76,6 +78,18 @@ class AppDataStore (
     suspend fun getHapticEnabled(): Boolean {
         return appDataStore.data.map { preference ->
             preference[DataStoreKeys.hapticKey] == true
+        }.first()
+    }
+
+    suspend fun setLastSeenVersionCode(versionCode: Int) {
+        appDataStore.edit { preference ->
+            preference[DataStoreKeys.lastSeenVersionKey] = versionCode
+        }
+    }
+
+    suspend fun getLastSeenVersionCode(): Int {
+        return appDataStore.data.map { preference ->
+            preference[DataStoreKeys.lastSeenVersionKey] ?: 0
         }.first()
     }
 

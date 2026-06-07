@@ -3,6 +3,7 @@ package com.hazrat.database
 import androidx.room.Room
 import com.hazrat.database.dao.AllahNameDao
 import com.hazrat.database.dao.AthkarDao
+import com.hazrat.database.dao.DuaDao
 import com.hazrat.database.dao.GregorianToHijriDao
 import com.hazrat.database.dao.HijriCalendarDao
 import com.hazrat.database.dao.LocationNameDao
@@ -12,6 +13,7 @@ import com.hazrat.database.dao.QuranDao
 import com.hazrat.database.dao.ZakatDao
 import com.hazrat.database.database.AthkarDatabase
 import com.hazrat.database.database.CalendarDatabase
+import com.hazrat.database.database.DuaDatabase
 import com.hazrat.database.database.LocationDatabase
 import com.hazrat.database.database.NamesDataBase
 import com.hazrat.database.database.PrayerDatabase
@@ -111,9 +113,23 @@ fun getDatabaseModule(): Module = module {
             QuranDatabase::class.java,
             "quran_db"
         )
-            .createFromAsset("databases/quran_prepopulatedold.db")
+            .createFromAsset("databases/quran_prepopulated.db")
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
     single<QuranDao> { get<QuranDatabase>().quranDao() }
+
+    // Dua Hisnul Muslim Database
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            DuaDatabase::class.java,
+            "dua_db"
+        )
+            .createFromAsset("databases/hisnul_muslim.db")
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
+    }
+
+    single <DuaDao>{ get<DuaDatabase>().duaDao() }
 }

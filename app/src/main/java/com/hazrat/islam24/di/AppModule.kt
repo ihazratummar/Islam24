@@ -24,7 +24,8 @@ fun getAppModule(): Module = module {
         MainViewModel(
             observeUserUseCase = get(),
             locationRepository = get(),
-            appDataStore = get()
+            appDataStore = get(),
+            context = androidApplication()
         )
     }
 

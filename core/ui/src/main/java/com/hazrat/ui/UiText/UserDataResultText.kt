@@ -1,6 +1,7 @@
 package com.hazrat.ui.UiText
 
 
+import android.R.attr.data
 import com.hazrat.ui.R
 import com.hazrat.utils.result.error.UserDataError
 import com.hazrat.utils.result.error.UserDataSuccess
@@ -30,7 +31,7 @@ fun UserDataError.asUiText(): UiText {
     }
 }
 
-fun Result.Error<*, UserDataError>.asErrorUiText(): UiText {
+fun Result.Error<UserDataError>.asErrorUiText(): UiText {
     return error.asUiText()
 }
 
@@ -47,6 +48,6 @@ fun UserDataSuccess.asSuccessUiText(): UiText {
     }
 }
 
-fun Result.Success<UserDataSuccess, *>.asSuccessUiText(): UiText {
+fun Result.Success<UserDataSuccess>.asSuccessUiText(): UiText {
     return data.asSuccessUiText()
 }

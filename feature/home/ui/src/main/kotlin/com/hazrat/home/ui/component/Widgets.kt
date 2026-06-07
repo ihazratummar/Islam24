@@ -142,9 +142,9 @@ sealed class HomePageNavIcons(
         )
 
     data object Tasbih : HomePageNavIcons(
-        icons = R.drawable.zikir,
-        name = R.string.athkar,
-        route = HomeRoutes.Athkar
+        icons = R.drawable.isha,
+        name = R.string.dua,
+        route = HomeRoutes.DuaRoute
     )
 }
 
@@ -158,6 +158,12 @@ sealed class HomeRoutes {
 
     @Serializable
     data object Athkar : HomeRoutes()
+
+    @Serializable
+    data object DuaRoute : HomeRoutes()
+
+    @Serializable
+    data class DuaItemRoute(val categoryId: Int) : HomeRoutes()
 
     @Serializable
     data object Qibla : HomeRoutes()

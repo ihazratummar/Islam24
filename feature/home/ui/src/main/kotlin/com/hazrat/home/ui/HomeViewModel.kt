@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.locationmodel.LocationName
-import com.hazrat.usecase.GetDailyPrayerStatusUseCase
+import com.hazrat.usecase.prayer.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.GetIslamicEventsUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetNextFridayTime
-import com.hazrat.usecase.GetTodayPrayerTimeUseCase
+import com.hazrat.usecase.prayer.GetTodayPrayerTimeUseCase
 import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
 import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
