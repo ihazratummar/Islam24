@@ -92,10 +92,11 @@ fun AyahScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
-                )
+                ),
+                windowInsets = WindowInsets(top = dimens.space20)
             )
         },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets()
     ) { paddingValues ->
 
         LazyColumn(

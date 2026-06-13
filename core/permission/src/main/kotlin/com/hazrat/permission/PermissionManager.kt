@@ -41,19 +41,15 @@ fun rememberPermissionRequester(
 
     return {
         when {
-            permission?.let {
-                ContextCompat.checkSelfPermission(
-                    activity,
-                    it
-                )
-            } == PackageManager.PERMISSION_GRANTED -> {
+            permission == null || ContextCompat.checkSelfPermission(
+                activity,
+                permission
+            ) == PackageManager.PERMISSION_GRANTED -> {
                 onGranted()
             }
 
             else -> {
-                if (permission != null) {
-                    launcher.launch(permission)
-                }
+                launcher.launch(permission)
             }
         }
     }
@@ -63,8 +59,9 @@ fun isPermissionGranted(
     context: Context,
     permission: String?
 ): Boolean {
+    if (permission == null) return true
     return ContextCompat.checkSelfPermission(
         context,
-        permission!!
+        permission
     ) == PackageManager.PERMISSION_GRANTED
 }

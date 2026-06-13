@@ -102,7 +102,8 @@ fun AppSettingScreen(
                 },
                 windowInsets = WindowInsets(top = dimens.space20)
             )
-        }
+        },
+        contentWindowInsets = WindowInsets()
     ) { paddingValues ->
 
         val toggleSettingsTab = listOf(

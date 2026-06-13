@@ -59,7 +59,8 @@ fun PrayerSetting(
                         onBackClick = onBackClick
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                windowInsets = WindowInsets(top = dimens.space20)
             )
         },
         contentWindowInsets = WindowInsets()

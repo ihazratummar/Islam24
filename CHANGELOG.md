@@ -1,3 +1,7 @@
+## [3.1.1] - 2025-03-14
+### Fixed
+- Fixed a crash when toggling prayer notifications on devices running Android versions below API 33.
+
 ## [3.1.0] - 2025-03-14
 ### Added
 - Brand new Profile screen with a cleaner, more modern look.
