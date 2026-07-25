@@ -1,21 +1,17 @@
 package com.hazrat.ui.common
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.ui.R
-import com.hazrat.ui.theme.dimens
+import com.hazrat.ui.theme.customColors
 
 
 /**
@@ -26,31 +22,62 @@ import com.hazrat.ui.theme.dimens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicTopBar(
-    modifier: Modifier = Modifier,
     topBarTitle: String = "",
-    onBackClick: () -> Unit,
-    iconColor: Color = MaterialTheme.colorScheme.onBackground,
-    textColor: Color = MaterialTheme.colorScheme.onBackground
+    onBackClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(
-            modifier = Modifier.padding(dimens.space12),
-            onClick = { onBackClick.invoke() },
-        ) {
-            Icon(
-                painterResource(R.drawable.backicon),
-                contentDescription = null,
-                tint = iconColor
-            )
-        }
-        Text(
-            text = topBarTitle,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.ExtraBold,
-            color = textColor
+
+    TopAppBar(
+        title = {
+            TopAppBarTitle(title = topBarTitle)
+        },
+        navigationIcon = {
+            BackIcon(onBackClick = onBackClick)
+        },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+    )
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AsmaulHusnaTopAppBar(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+) {
+
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TopAppBarTitle(title = "99 Names")
+                Text(
+                    text = "Asmaul Husna",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = customColors.secondaryText
+                    )
+                )
+            }
+        },
+        navigationIcon = {
+            BackIcon(onBackClick = onBackClick)
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent
         )
-    }
+    )
+}
+
+@Composable
+fun TopAppBarTitle(
+    title: String
+) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge.copy(
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Bold
+        )
+    )
 }

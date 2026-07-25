@@ -4,23 +4,26 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
+import androidx.core.os.LocaleListCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.common.ChangelogDialog
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.UpdateManager
+import com.hazrat.model.Languages
 import com.hazrat.notification.NotificationChannels
+import com.hazrat.notification.PrayerRescheduleWorker
 import com.hazrat.ui.common.rememberImageLoader
 import com.hazrat.ui.theme.Islam24Theme
-import com.hazrat.utils.LocaleHelper
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import java.util.Locale
 
 // MainActivity.kt
 
@@ -32,7 +35,7 @@ import java.util.Locale
 /**
  * Author: Hazrat Ummar Shaikh
  */
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val updateManager: UpdateManager by inject()
 
@@ -47,12 +50,12 @@ class MainActivity : ComponentActivity() {
      */
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         // Enable edge-to-edge display
         enableEdgeToEdge()
 
-        // Hide the action bar
-        actionBar?.hide()
+        // Hide the action bar is not needed in Compose and causes AppCompat theme crashes
 
         mainViewModel = getViewModel()
         // Set window decor to fit system windows
@@ -60,7 +63,16 @@ class MainActivity : ComponentActivity() {
         notificationHelper.createNotificationChannels()
 
         // Enterprise-grade: Ensure alarms are correctly scheduled on every app launch
-        com.hazrat.notification.PrayerRescheduleWorker.enqueue(this)
+       PrayerRescheduleWorker.enqueue(this)
+
+        val pref = getSharedPreferences("app_setting", Context.MODE_PRIVATE)
+        val language = pref.getString("language", Languages.ENGLISH.name) ?: Languages.ENGLISH.name
+        val langCode = try {
+            Languages.valueOf(language).code
+        } catch (e: Exception) {
+            "en"
+        }
+       AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(langCode))
 
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
@@ -108,12 +120,6 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-    }
-
-    override fun attachBaseContext(newBase: Context) {
-        val locale = Locale.getDefault()
-        val wrappedContext = LocaleHelper.wrap(newBase, locale)
-        super.attachBaseContext(wrappedContext)
     }
 
 }

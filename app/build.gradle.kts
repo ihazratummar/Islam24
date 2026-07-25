@@ -20,7 +20,7 @@ android {
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        this.targetSdk = 36
+        this.targetSdk = 37
         versionCode = 100
         versionName = "3.1.1"
 
@@ -118,11 +118,13 @@ dependencies {
     implementation(project(":feature:prayertime:data"))
 
     implementation(project(":feature:home:ui"))
+    implementation(project(":feature:tasbih"))
 
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

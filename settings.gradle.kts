@@ -60,3 +60,4 @@ include(":feature:prayertime:ui")
 include(":feature:prayertime:data")
 
 include(":feature:home:ui")
+include(":feature:tasbih")

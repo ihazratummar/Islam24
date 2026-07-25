@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import coil.annotation.ExperimentalCoilApi
 import com.hazrat.auth.ui.appSetting.component.SelectLanguageDialog
@@ -94,7 +95,7 @@ fun AppSettingScreen(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 title = {
                     Text(
-                        text = "Profile",
+                        text = stringResource(R.string.common_profile),
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.ExtraBold
                         )
@@ -244,13 +245,13 @@ fun AppSettingScreen(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                text = "Guest User",
+                                text = stringResource(R.string.common_guest_user) , //stringResource(id = R.string.guest_user),
                                 style = MaterialTheme.typography.headlineMedium.copy(
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
                             )
                             Text(
-                                text = "Tap to sign in and sync your data",
+                                text = stringResource(R.string.common_tap_to_sign_in), //stringResource(id = R.string.tap_to_sign_in),
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     color = Color(0xff79c4bb)
                                 )
@@ -270,7 +271,7 @@ fun AppSettingScreen(
 
             item {
                 AppSection(
-                    sectionTitle = "PREFERENCES"
+                    sectionTitle = "Preference"//stringResource(id = R.string.preferences)
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -300,7 +301,7 @@ fun AppSettingScreen(
 
             item {
                 AppSection(
-                    sectionTitle = "APP"
+                    sectionTitle = "App Settings" //stringResource(id = R.string.app_settings_section)
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -330,7 +331,7 @@ fun AppSettingScreen(
 
             item {
                 AppSection(
-                    sectionTitle = "POLICY"
+                    sectionTitle ="Legal" //stringResource(id = R.string.policy_section)
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -362,13 +363,13 @@ fun AppSettingScreen(
                     verticalArrangement = Arrangement.spacedBy(dimens.space4)
                 ) {
                     Text(
-                        text = "Islam 24 $versionName",
+                        text = stringResource(R.string.common_app_version, versionName.toString()),
                         style = MaterialTheme.typography.labelMedium.copy(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                     Text(
-                        text = "Made with love for the Ummah",
+                        text = stringResource(R.string.common_made_with_love),
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = MaterialTheme.colorScheme.surfaceVariant
                         )

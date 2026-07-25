@@ -21,9 +21,9 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,13 +59,12 @@ import com.hazrat.home.ui.component.HomeRoutes
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
-import com.hazrat.model.AuthState
 import com.hazrat.prayer.ui.setting.PrayerSetting
 import com.hazrat.prayer.ui.setting.PrayerSettingViewModel
 import com.hazrat.qibla.ui.QiblaScreen
 import com.hazrat.qibla.ui.QiblaViewModel
+import com.hazrat.tasbih.ui.TasbihViewModel
 import com.hazrat.ui.R
-import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -90,7 +89,6 @@ fun AppNavigator(
             navController = navController,
             startDestination = MainRoute.HomeScreen,
             modifier = Modifier.padding(bottom = bottomPadding),
-            // ✅ Remove None transitions — let each composable define its own
             enterTransition = {
                 fadeIn(animationSpec = tween(300)) + slideIntoContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.Start,
@@ -135,7 +133,6 @@ fun AppNavigator(
                             restoreState = true
                         }
                     },
-                    locationName = locationName,
                     onWidgetClick = { homeWidgetNav ->
                         navController.navigate(homeWidgetNav.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
@@ -159,21 +156,30 @@ fun AppNavigator(
                 val surahViewModel = koinViewModel<SurahViewModel>()
                 val quranState by surahViewModel.surahState.collectAsStateWithLifecycle()
 
+                DisposableEffect(Unit) {
+                    surahViewModel.loadRecentReads()
+                    onDispose {}
+                }
 
                 QuranScreen(
                     surahState = quranState,
-                    onSurahClick = {surahData ->
+                    onSurahClick = { surahData ->
                         navController.navigate(
                             MainRoute.AyahScreenRoute(
                                 SurahData(
                                     name = surahData.name,
                                     totalAyah = surahData.totalAyah,
                                     meaning = surahData.meaning,
-                                    surahNumber = surahData.number
+                                    surahNumber = surahData.number,
+                                    targetAyahNumber = surahData.targetAyahNumber
                                 )
                             )
                         )
-                    }
+                    },
+                    onSearchQueryChanged = surahViewModel::onSearchQueryChanged,
+                    onSearchActiveChanged = surahViewModel::onSearchActiveChanged,
+                    onTabSelected = surahViewModel::onTabSelected,
+                    onViewModeChanged = surahViewModel::onViewModeChanged
                 )
             }
 
@@ -196,8 +202,15 @@ fun AppNavigator(
                         name = surahData.name,
                         totalAyah = surahData.totalAyah,
                         meaning = surahData.meaning,
-                        number = surahData.surahNumber
-                    )
+                        number = surahData.surahNumber,
+                        targetAyahNumber = surahData.targetAyahNumber
+                    ),
+                    onAyahScrolled = { ayahNum ->
+                        ayahViewModel.saveLastReadAyah(surahData.name, ayahNum)
+                    },
+                    onSurahCompleted = {
+                        ayahViewModel.onSurahCompleted()
+                    }
                 )
             }
 
@@ -257,6 +270,14 @@ fun AppNavigator(
 
             }
 
+            composable<HomeRoutes.TasbihRoute> {
+                val viewModel: TasbihViewModel = koinViewModel()
+                com.hazrat.tasbih.ui.TasbihScreen(
+                    viewModel = viewModel,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
             composable<HomeRoutes.DuaRoute> {
                 val viewModel: DuaViewModel = koinViewModel()
                 val duaCategoryModel by viewModel.state.collectAsStateWithLifecycle()
@@ -265,14 +286,14 @@ fun AppNavigator(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    onDuaClick = {categoryId ->
+                    onDuaClick = { categoryId ->
                         navController.navigate(HomeRoutes.DuaItemRoute(categoryId = categoryId))
                     },
                     event = viewModel::event
                 )
             }
 
-            composable<HomeRoutes.DuaItemRoute> {navBackStack ->
+            composable<HomeRoutes.DuaItemRoute> { navBackStack ->
 
                 val categoryId = navBackStack.toRoute<HomeRoutes.DuaItemRoute>().categoryId
                 val viewModel = koinViewModel<DuaItemViewModel>(
@@ -290,7 +311,6 @@ fun AppNavigator(
 
             }
 
-
             authNavGraph(
                 navController = navController,
                 isHapticFeedback = isHapticFeedback
@@ -300,9 +320,7 @@ fun AppNavigator(
             )
         }
     }
-
 }
-
 
 @Composable
 private fun BottomBar(navController: NavHostController) {
@@ -320,7 +338,7 @@ private fun BottomBar(navController: NavHostController) {
         bottomNavigationItem.any { it.route::class.qualifiedName == currentDestination?.route }
     if (isBottomBarVisible) {
         NavigationBar(
-            containerColor = customColors.navBarColor,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             tonalElevation = dimens.space4,
         ) {
             bottomNavigationItem.forEach { screen ->
@@ -349,9 +367,9 @@ private fun BottomBar(navController: NavHostController) {
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
                         selectedTextColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.outline,
-                        unselectedTextColor = MaterialTheme.colorScheme.outline,
-                        indicatorColor = Color.Transparent
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
                     ),
                     interactionSource = remember { MutableInteractionSource() },
                 )
@@ -377,20 +395,17 @@ sealed class MainRoute {
         val isTracking: Boolean = true
     ) : MainRoute()
 
-
     @Serializable
     data object PrayerSetting : MainRoute()
-
-
 }
-
 
 @Serializable
 data class SurahData(
     val name: String,
     val totalAyah: Int,
     val meaning: String,
-    val surahNumber: Int
+    val surahNumber: Int,
+    val targetAyahNumber: Int = 1
 )
 
 val SurahDataType = object : NavType<SurahData>(isNullableAllowed = false) {

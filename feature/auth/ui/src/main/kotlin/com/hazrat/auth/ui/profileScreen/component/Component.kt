@@ -62,7 +62,7 @@ fun RatingBottomSheet(
                 mutableIntStateOf(0)
             }
             Text(
-                text = "Rate us",
+                text = stringResource(R.string.common_rate_us),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -76,7 +76,7 @@ fun RatingBottomSheet(
                         painter = if (rating > index) painterResource(id = R.drawable.star) else painterResource(
                             R.drawable.outlinstar
                         ),
-                        contentDescription = "Star",
+                        contentDescription = stringResource(R.string.common_star),
                         modifier = Modifier
                             .size(dimens.space64)
                             .clickable {
@@ -89,19 +89,19 @@ fun RatingBottomSheet(
             }
             Spacer(modifier = Modifier.height(dimens.space12))
             if (rating in 1..3) {
-                Text(
-                    text = stringResource(R.string.thank_you_for_your_feedback_we_appreciate_your_input),
-                    modifier = Modifier.padding(dimens.space4),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+//                Text(
+//                    text = stringResource(R.string.thank_you_for_your_feedback_we_appreciate_your_input),
+//                    modifier = Modifier.padding(dimens.space4),
+//                    textAlign = TextAlign.Center,
+//                    color = MaterialTheme.colorScheme.onSurfaceVariant
+//                )
             } else if (rating >= 4) {
-                Text(
-                    text = stringResource(R.string.thank_you_for_your_positive_feedback_we_d_love_for_you_to_rate_us),
-                    modifier = Modifier.padding(dimens.space4),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+//                Text(
+//                    text = stringResource(R.string.thank_you_for_your_positive_feedback_we_d_love_for_you_to_rate_us),
+//                    modifier = Modifier.padding(dimens.space4),
+//                    textAlign = TextAlign.Center,
+//                    color = MaterialTheme.colorScheme.onSurfaceVariant
+//                )
                 Button(
                     onClick = {
                         appSettingEvent(AppSettingEvent.GoToRate)
@@ -118,7 +118,7 @@ fun RatingBottomSheet(
                     )
                 ) {
                     Text(
-                        text = "Go to Rate",
+                        text = stringResource(R.string.common_go_to_rate),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold
                     )

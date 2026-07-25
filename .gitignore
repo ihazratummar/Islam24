@@ -23,3 +23,5 @@ app/google-services.json
 .kotlin/errors
 
 **/build
+/.agents
+/.gemini

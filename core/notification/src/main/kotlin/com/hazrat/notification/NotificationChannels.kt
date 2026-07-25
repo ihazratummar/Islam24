@@ -28,6 +28,17 @@ class NotificationChannels (
         }
         manager.createNotificationChannel(azanPlaybackChannel)
 
+        // Zakat Hawl Reminder Channel
+        val zakatChannel = NotificationChannel(
+            ZAKAT_CHANNEL_ID,
+            "Zakat Hawl Reminders",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Notifications for annual Zakat Hawl due dates"
+            enableVibration(true)
+        }
+        manager.createNotificationChannel(zakatChannel)
+
         Prayer.entries.forEach { prayer ->
             val notificationChannel = NotificationChannel(
                 prayer.notificationChannelId,
@@ -40,6 +51,9 @@ class NotificationChannels (
 
             manager.createNotificationChannel(notificationChannel)
         }
+    }
 
+    companion object {
+        const val ZAKAT_CHANNEL_ID = "zakat_hawl_channel"
     }
 }

@@ -33,42 +33,42 @@ enum class PrayerType(
     val prayer: Prayer
 ) {
     FAJR(
-        nameRes   = R.string.fajr,
+        nameRes   = R.string.prayer_fajr,
         icon      = R.drawable.dawn,
         gradient  = FajrGradient,
         color     = Color(0xFF6d63f2),
         prayer = Prayer.FAJR
     ),
     SUNRISE(
-        nameRes   = R.string.sunrise,
+        nameRes   = R.string.prayer_sunrise,
         icon      = R.drawable.sunrise,
         gradient  = SunriseGradient,
         color     = Color(0xFFFACA96),
         prayer = Prayer.FAJR
     ),
     DHUHR(
-        nameRes   = R.string.dhuhr,
+        nameRes   = R.string.prayer_dhuhr,
         icon      = R.drawable.sun,
         gradient  = DhuhrGradient,
         color     = Color(0xFFFFB752),
         prayer = Prayer.DHUHR
     ),
     ASR(
-        nameRes   = R.string.asr,
+        nameRes   = R.string.prayer_asr,
         icon      = R.drawable.asr,
         gradient  = AsrGradient,
         color     = Color(0xFFFF8E00),
         prayer = Prayer.ASR
     ),
     MAGHRIB(
-        nameRes   = R.string.maghrib,
+        nameRes   = R.string.prayer_maghrib,
         icon      = R.drawable.evening,
         gradient  = MaghribGradient,
         color     = Color(0xFFfa716a),
         prayer = Prayer.MAGHRIB
     ),
     ISHA(
-        nameRes   = R.string.isha_a,
+        nameRes   = R.string.prayer_isha,
         icon      = R.drawable.isha,
         gradient  = IshaGradient,
         color     = Color(0xFF42D6FF),

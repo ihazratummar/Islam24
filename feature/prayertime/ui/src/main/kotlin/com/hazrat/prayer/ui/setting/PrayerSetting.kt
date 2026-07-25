@@ -1,5 +1,6 @@
 package com.hazrat.prayer.ui.setting
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -83,7 +84,7 @@ fun PrayerSetting(
             item {
 
                 Text(
-                    text = "CALCULATION METHOD",
+                    text = stringResource(R.string.prayer_calculation_method),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = customColors.secondaryText,
                         fontWeight = FontWeight.SemiBold
@@ -168,7 +169,7 @@ fun PrayerSetting(
 
             item {
                 Text(
-                    text = "JURUSTIC METHOD (ASR)",
+                    text = stringResource(R.string.prayer_juristic_method_asr),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = customColors.secondaryText,
                         fontWeight = FontWeight.SemiBold

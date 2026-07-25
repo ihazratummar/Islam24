@@ -36,6 +36,7 @@ fun QuickAccessMenu(
             HomePageNavIcons.AsmaUlHusna,
             HomePageNavIcons.Calendar,
             HomePageNavIcons.Athkar,
+            HomePageNavIcons.Dua,
             HomePageNavIcons.Qibla,
             HomePageNavIcons.Tasbih,
             HomePageNavIcons.Zakat,
@@ -46,7 +47,7 @@ fun QuickAccessMenu(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalArrangement = Arrangement.spacedBy(dimens.space8),
-        maxItemsInEachRow = 3
+        maxItemsInEachRow = 4
     ) {
 
         navIcons.forEach {
@@ -109,42 +110,49 @@ sealed class HomePageNavIcons(
     data object AsmaUlHusna :
         HomePageNavIcons(
             icons = R.drawable.allah,
-            name = R.string.names,
+            name = R.string.nav_asmaul_husna,
             route = HomeRoutes.NamesOfAllah
         )
 
     data object Calendar :
         HomePageNavIcons(
             icons = R.drawable.calendar,
-            name = R.string.calendar,
+            name = R.string.nav_calendar,
             route = HomeRoutes.Calendar
         )
 
     data object Athkar :
         HomePageNavIcons(
             icons = R.drawable.zikir,
-            name = R.string.athkar,
+            name = R.string.nav_zikir,
             route = HomeRoutes.Athkar
+        )
+
+    data object Dua :
+        HomePageNavIcons(
+            icons = R.drawable.dua,
+            name = R.string.nav_dua,
+            route = HomeRoutes.DuaRoute
         )
 
     data object Qibla :
         HomePageNavIcons(
             icons = R.drawable.kaba,
-            name = R.string.qibla,
+            name = R.string.nav_qibla,
             route = HomeRoutes.Qibla
         )
 
     data object Zakat :
         HomePageNavIcons(
             icons = R.drawable.zakat,
-            name = R.string.zakat,
+            name = R.string.nav_zakat,
             route = HomeRoutes.Zakat
         )
 
     data object Tasbih : HomePageNavIcons(
-        icons = R.drawable.isha,
-        name = R.string.dua,
-        route = HomeRoutes.DuaRoute
+        icons = R.drawable.tasbih,
+        name = R.string.nav_tasbih,
+        route = HomeRoutes.TasbihRoute
     )
 }
 
@@ -158,6 +166,9 @@ sealed class HomeRoutes {
 
     @Serializable
     data object Athkar : HomeRoutes()
+
+    @Serializable
+    data object TasbihRoute : HomeRoutes()
 
     @Serializable
     data object DuaRoute : HomeRoutes()

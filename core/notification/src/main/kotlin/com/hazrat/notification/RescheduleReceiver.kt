@@ -7,16 +7,16 @@ import android.util.Log
 import org.koin.core.component.KoinComponent
 
 /**
- * Receiver responsible for rescheduling all prayer alarms when system state changes
- * (Timezone change, Time set, App update, etc.)
+ * Receiver responsible for rescheduling all alarms when system state changes
+ * (Timezone change, Time set, App update, exact alarm permission changed, etc.)
  */
 class RescheduleReceiver : BroadcastReceiver(), KoinComponent {
 
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action ?: return
-        Log.d("RescheduleReceiver", "Received action: $action")
+        Log.d("RescheduleReceiver", "Received action: $action. Enqueueing Prayer & Zakat reschedule workers.")
 
-        // Enterprise-grade: Just trigger the worker, don't do logic here.
         PrayerRescheduleWorker.enqueue(context)
+        ZakatRescheduleWorker.enqueue(context)
     }
 }

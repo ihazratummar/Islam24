@@ -53,7 +53,7 @@ fun SelectLanguageDialog(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = stringResource(R.string.select_language),
+                    text = stringResource(R.string.common_language), //stringResource(R.string.select_language),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(horizontal = dimens.space32, vertical = dimens.space12)
                 )

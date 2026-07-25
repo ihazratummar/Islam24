@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_app_name">Islam 24</string>
+    <string name="home_app_tagline">Your Daily Companion</string>
+    <string name="home_time_for">TIME FOR</string>
+    <string name="home_started_at">Started at %1$s</string>
+    <string name="home_next_prayer">Next Prayer %1$s</string>
+    <string name="home_log_prayer">Log Prayer</string>
+    <string name="home_hijri_date_label">HIJRI DATE</string>
+    <string name="home_ramadan_label">RAMADAN</string>
+    <string name="home_ramadan_until">Ramadan until %1$s </string>
+    <string name="home_prayer_steak_title">Prayer Streak</string>
+    <string name="home_prayer_streak_stat_count">%1$d of 5 prayers today</string>
+    <string name="home_quick_access_label">Quick Access</string>
+    <string name="home_upcoming_event_label">Upcoming Events</string>
+    <string name="no_wuzu">No Wuzu</string>
+    <string name="jummah_prayer">Jummah</string>
+    <string name="home_al_quran">Al-Quran</string>
+    <string name="home_duas">Duas</string>
+    <string name="home_daily_supplications">Daily Supplications</string>
+    <string name="home_asmaul_husna">Asmaul Husna</string>
+    <string name="home_ar_rahman">Ar-Rahman</string>
+    <string name="home_the_most_merciful">The Most Merciful</string>
+    <string name="qibla_direction_degree">Qibla Direction: %1$d°</string>
+    <string name="zakat_total">Total: %1$s</string>
+    <string name="zakat_amount">Zakat: %1$s</string>
+    <string name="zakat_added_success">Zakat Added Successfully</string>
+    <string name="zakat_write_silver_price">Write the silver price here.</string>
+    <string name="zakat_cash_savings_title">Enter Total Cash or Bank Savings</string>
+    <string name="zakat_gold_value_title">Enter Total Gold Value</string>
+    <string name="zakat_silver_value_title">Enter Total Silver Value</string>
+    <string name="zakat_business_inventory_title">Enter Value of Business Inventory</string>
+    <string name="zakat_monthly_expenses_title">Enter Total Monthly Expenses</string>
+    <string name="zakat_outstanding_debts_title">Enter Outstanding Debts</string>
+    <string name="calendar_selected_date">Selected Date</string>
+    <string name="calendar_upcoming_events_placeholder">Significant Islamic events or Sunnah fasts will appear here in the next update.</string>
+    <string name="quran_tajweed_colors">Tajweed Colors</string>
+</resources>

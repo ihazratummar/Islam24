@@ -29,3 +29,12 @@ data class AyahEntity(
     val isBookmarked: Boolean = false,
     val tajweedText: String = ""
 )
+
+@Entity(tableName = "recent_surah")
+data class RecentSurahEntity(
+    @PrimaryKey val surahNumber: Int,
+    val surahName: String,
+    val ayahNumber: Int,
+    val formattedDate: String,
+    val timestamp: Long = System.currentTimeMillis()
+)

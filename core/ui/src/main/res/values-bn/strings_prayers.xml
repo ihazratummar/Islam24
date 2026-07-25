@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prayer_fajr">Fajr</string>
+    <string name="prayer_sunrise">Sunrise</string>
+    <string name="prayer_dhuhr">Dhuhr</string>
+    <string name="prayer_asr">Asr</string>
+    <string name="prayer_maghrib">Maghrib</string>
+    <string name="prayer_isha">Isha</string>
+    <string name="prayer_times">Prayer Times</string>
+    <string name="prayer_now_playing_azan">Now playing Azan for %1$s</string>
+    <string name="prayer_azan_index">Azan %1$d</string>
+    <string name="prayer_silent">Silent</string>
+    <string name="prayer_default_notification">Default Notification</string>
+    <string name="prayer_background">Background</string>
+    <string name="prayer_calculation_method">CALCULATION METHOD</string>
+    <string name="prayer_juristic_method_asr">JURUSTIC METHOD (ASR)</string>
+    <string name="prayer_next_prayer_uppercase">NEXT PRAYER</string>
+    <string name="prayer_time_for_uppercase">TIME FOR</string>
+    <string name="prayer_notification_settings">Notification Settings</string>
+    <string name="prayer_notified_stat">%1$d of 5 prayer notified</string>
+    <string name="prayer_logged_stat">%1$d of 5 prayer logged</string>
+    <string name="prayer_progress_stat">%1$s\'s Progress</string>
+    <string name="prayer_logged">Logged</string>
+    <string name="prayer_completed">completed</string>
+    <string name="prayer_streak_title">Prayer Streak</string>
+</resources>

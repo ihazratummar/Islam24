@@ -72,22 +72,6 @@ import com.hazrat.ui.theme.NeutralVariant50
 import com.hazrat.ui.theme.dimens
 
 @Composable
-fun LocationOnCard(
-    modifier: Modifier = Modifier,
-    locationName: String,
-    textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
-) {
-
-    Text(
-        text = locationName,
-        modifier = modifier,
-        style = MaterialTheme.typography.bodyLarge,
-        color = textColor,
-        fontWeight = FontWeight.SemiBold
-    )
-}
-
-@Composable
 fun OfflineCard(
     modifier: Modifier = Modifier
 ) {
@@ -246,7 +230,6 @@ fun WebViewScreen(
 fun BackIcon(
     onBackClick: () -> Unit
 ) {
-
     IconWithBackground(
         icon = R.drawable.arrow_left,
         onClick = onBackClick,

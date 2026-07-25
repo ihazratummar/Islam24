@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_home">হোম</string>
+    <string name="nav_prayer_time">নামাজের সময়</string>
+    <string name="nav_quran">কুরআন</string>
+    <string name="nav_profile">প্রোফাইল</string>
+    <string name="nav_asmaul_husna">Asmaul Husna</string>
+    <string name="nav_calendar">Calendar</string>
+    <string name="nav_zikir">Zikir</string>
+    <string name="nav_qibla">Qibla</string>
+    <string name="nav_dua">Dua</string>
+    <string name="nav_zakat">Zakat</string>
+    <string name="nav_about_app">About Islam 24</string>
+    <string name="nav_legal">Legal Docs</string>
+    <string name="nav_privacy_policy">Privacy Policy</string>
+    <string name="nav_terms_of_service">Terms of Service</string>
+    <string name="nav_terms_of_condition">Terms of Condition</string>
+</resources>

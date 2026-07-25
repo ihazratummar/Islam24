@@ -1,6 +1,8 @@
 package com.hazrat.database
 
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.hazrat.database.dao.AllahNameDao
 import com.hazrat.database.dao.AthkarDao
 import com.hazrat.database.dao.DuaDao
@@ -107,6 +109,24 @@ fun getDatabaseModule(): Module = module {
     single<ZakatDao> { get<ZakatDatabase>().zakatDao() }
 
     // Quran Database
+    // Migration v2 -> v3: add recent_surah table (user read history)
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `recent_surah` (
+                    `surahNumber` INTEGER NOT NULL,
+                    `surahName` TEXT NOT NULL,
+                    `ayahNumber` INTEGER NOT NULL,
+                    `formattedDate` TEXT NOT NULL,
+                    `timestamp` INTEGER NOT NULL,
+                    PRIMARY KEY(`surahNumber`)
+                )
+                """.trimIndent()
+            )
+        }
+    }
+
     single {
         Room.databaseBuilder(
             androidContext(),
@@ -114,6 +134,7 @@ fun getDatabaseModule(): Module = module {
             "quran_db"
         )
             .createFromAsset("databases/quran_prepopulated.db")
+            .addMigrations(MIGRATION_2_3)
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
@@ -132,4 +153,17 @@ fun getDatabaseModule(): Module = module {
     }
 
     single <DuaDao>{ get<DuaDatabase>().duaDao() }
+
+    // Tasbih Database
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            com.hazrat.database.database.TasbihDatabase::class.java,
+            "tasbih_database"
+        )
+            .fallbackToDestructiveMigration(dropAllTables = false)
+            .build()
+    }
+
+    single<com.hazrat.database.dao.TasbihDao> { get<com.hazrat.database.database.TasbihDatabase>().tasbihDao() }
 }

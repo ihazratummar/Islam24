@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.hazrat.zakat"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26
@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:notification"))
     implementation(project(":domain:model"))
     implementation(project(":feature:common"))
 

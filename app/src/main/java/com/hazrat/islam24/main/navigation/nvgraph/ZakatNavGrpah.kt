@@ -1,17 +1,16 @@
 package com.hazrat.islam24.main.navigation.nvgraph
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.hazrat.home.ui.component.HomeRoutes
-import com.hazrat.zakat.screen.zakat.ZakatViewModel
-import com.hazrat.zakat.screen.zakat.screen.CalculationScreen
-import com.hazrat.zakat.screen.zakat.screen.NisabScreen
-import com.hazrat.zakat.screen.zakat.screen.zakat_screen.ZakatScreen
-import com.hazrat.zakat.screen.zakat.screen.zakat_screen.ZakatScreenViewModel
+import com.hazrat.zakat.zakat_calculation.ZakatCalculationScreen
+import com.hazrat.zakat.zakat_calculation.ZakatCalculationViewModel
+import com.hazrat.zakat.zakat_list.ZakatListScreen
+import com.hazrat.zakat.zakat_list.ZakatListViewModel
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -24,49 +23,31 @@ fun NavGraphBuilder.zakatNavGraph(
 ) {
     navigation<Zakat>(HomeRoutes.Zakat) {
         composable<HomeRoutes.Zakat> {
-            val zakatScreenViewModel: ZakatScreenViewModel = koinViewModel()
-            val zakatScreenState by zakatScreenViewModel.zakatState.collectAsState()
-            ZakatScreen(
-                zakatScreenState =zakatScreenState ,
-                zakatScreenEvent = zakatScreenViewModel::zakatScreenEvent,
+            val zakatListViewModel: ZakatListViewModel = koinViewModel()
+            val uiState by zakatListViewModel.uiState.collectAsStateWithLifecycle()
+            ZakatListScreen(
+                uiState = uiState,
+                onEvent = zakatListViewModel::onEvent,
                 onNewAddClick = {
-                    navController.navigate(NisabScreen)
+                    navController.navigate(CalculationScreen)
                 },
                 onBackClick = {
                     navController.popBackStack()
                 },
                 getZakatDetails = {
-                    zakatScreenViewModel.getZakatDetails(it)
+                    zakatListViewModel.getZakatDetails(it)
                 }
             )
         }
 
-        composable<NisabScreen> {
-            val zakatViewModel: ZakatViewModel = koinViewModel()
-            val zakatState by zakatViewModel.zakatState.collectAsState()
-            NisabScreen(
-                zakatState = zakatState,
-                zakatEvent = zakatViewModel::event,
-                onSubmit = {
-                    navController.navigate(CalculationScreen)
-                },
-                onBackClick = {
-                    navController.popBackStack()
-                }
-            )
-        }
         composable<CalculationScreen> {
-            val zakatViewModel: ZakatViewModel = koinViewModel()
-            val zakatState by zakatViewModel.zakatState.collectAsState()
-            CalculationScreen(
-                zakatState = zakatState,
-                zakatEvent = zakatViewModel::event,
+            val zakatCalculationViewModel: ZakatCalculationViewModel = koinViewModel()
+            val uiState by zakatCalculationViewModel.uiState.collectAsStateWithLifecycle()
+            ZakatCalculationScreen(
+                uiState = uiState,
+                onEvent = zakatCalculationViewModel::onEvent,
                 onSaveClick = {
-                    navController.navigate(Zakat){
-                        popUpTo(HomeRoutes.Zakat){
-                            inclusive = true
-                        }
-                    }
+                    navController.popBackStack()
                 },
                 onBackClick = {
                     navController.popBackStack()
@@ -76,14 +57,8 @@ fun NavGraphBuilder.zakatNavGraph(
     }
 }
 
-
 @Serializable
 data object Zakat
 
-
-@Serializable
-data object NisabScreen
-
 @Serializable
 data object CalculationScreen
-

@@ -33,7 +33,7 @@ fun AthkarScreen(
         ) {
             Spacer(Modifier.height(dimens.space48))
             BasicTopBar(
-                topBarTitle = stringResource(R.string.athkar),
+                topBarTitle = stringResource(R.string.nav_zikir),
                 onBackClick = { onBackClick.invoke() }
             )
             LazyColumn(

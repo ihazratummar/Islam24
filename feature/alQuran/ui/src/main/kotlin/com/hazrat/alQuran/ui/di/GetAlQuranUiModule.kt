@@ -6,18 +6,26 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-
 /**
  * @author hazratummar
  * Created on 27/01/26
  */
 
 fun getAlQuranUiModule(): Module = module {
-    viewModel { SurahViewModel(quranRepository = get()) }
+    viewModel {
+        SurahViewModel(
+            getAllSurahListUseCase = get(),
+            getRecentSurahsUseCase = get(),
+            dataStorePreference = get()
+        )
+    }
     viewModel { param ->
         AyahViewModel(
             surahNumber = param.get(),
-            quranRepository = get()
+            getSurahAyahsUseCase = get(),
+            saveRecentSurahUseCase = get(),
+            deleteRecentSurahUseCase = get(),
+            dataStorePreference = get()
         )
     }
 }

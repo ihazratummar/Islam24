@@ -1,10 +1,14 @@
 package com.hazrat.home.ui.component
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.widget.Space
-import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,482 +23,1212 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
+import com.hazrat.home.ui.DailyDuaData
+import com.hazrat.home.ui.DailyVerseData
+import com.hazrat.home.ui.WeeklyPrayerStats
 import com.hazrat.model.DailyPrayerStatus
-import com.hazrat.model.EventType
 import com.hazrat.model.MinimalPrayerData
-import com.hazrat.model.Prayer
 import com.hazrat.ui.R
-import com.hazrat.ui.common.IconWithBackground
-import com.hazrat.ui.common.LongText
 import com.hazrat.ui.common.PulsingLiveDot
 import com.hazrat.ui.common.rememberPrayerState
-import com.hazrat.ui.theme.InactiveIcon
-import com.hazrat.ui.theme.Islam24Theme
-import com.hazrat.ui.theme.Success
+import com.hazrat.ui.theme.IslamicTypography
+import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.usecase.UpcomingIslamicEvent
 import com.hazrat.utils.DateUtil
-import kotlin.random.Random
+import com.hazrat.utils.IslamicCalendarUtils
 
 /**
- * @author Hazrat Ummar Shaikh
+ * Next Prayer Hero Card matching Screenshot 1 Top Red Box.
  */
-
-
 @Composable
-fun HomeTopCard(
+fun NextPrayerHeroCard(
     prayerData: MinimalPrayerData,
-    onLogPrayerClick: () -> Unit
+    onViewScheduleClick: () -> Unit
 ) {
     val prayerState = rememberPrayerState(prayerTimes = prayerData)
     val isNow = prayerState.isNow
 
     val prayerName = if (isNow) {
-        prayerState.currentPrayer?.let { stringResource(it.nameRes) }
+        prayerState.currentPrayer?.let { stringResource(it.nameRes) } ?: "Dhuhr"
     } else {
-        prayerState.nextPrayer?.let { stringResource(it.nameRes) }
+        prayerState.nextPrayer?.let { stringResource(it.nameRes) } ?: "Dhuhr"
     }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(dimens.cornerLg),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-    ) {
-        CardGradient {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimens.space12),
-                verticalArrangement = Arrangement.SpaceAround,
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimens.space8),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(dimens.space4),
-                    ) {
-                        if (isNow) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(dimens.space8),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                PulsingLiveDot()
-                                Text(
-                                    text = "TIME FOR",
-                                    color = customColors.emerald,
-                                    fontWeight = FontWeight.W600,
-                                    style = MaterialTheme.typography.bodySmall,
+    val startTimeStr = if (isNow) {
+        "Started at " + DateUtil.dateLongToString(prayerState.currentPrayerTime, "hh:mm a")
+    } else {
+        "Starts at " + DateUtil.dateLongToString(prayerState.nextPrayerTimeMillis, "hh:mm a")
+    }
 
-                                    )
+    val remainingMillis = prayerState.nextPrayerTimeMillis - System.currentTimeMillis()
+    val totalSeconds = (remainingMillis.coerceAtLeast(0) / 1000)
+    val hours = (totalSeconds / 3600)
+    val minutes = ((totalSeconds % 3600) / 60)
+    val seconds = (totalSeconds % 60)
+
+    val hoursStr = String.format("%02d", hours)
+    val minutesStr = String.format("%02d", minutes)
+    val secondsStr = String.format("%02d", seconds)
+
+    val heroGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF0E7A6E),
+            Color(0xFF0C6B60),
+            Color(0xFF09524A),
+            Color(0xFF053833),
+            Color(0xFF032623)
+        )
+    )
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(dimens.cornerXl),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(dimens.elevation2)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(dimens.cornerXl))
+                .background(heroGradient)
+                .padding(dimens.space24)
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(dimens.space4))
+                        if (isNow) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                PulsingLiveDot()
+                                Spacer(modifier = Modifier.width(dimens.space8))
+                                Text(
+                                    text = "CURRENT PRAYER",
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = customColors.accentColor
+                                )
                             }
                         } else {
                             Text(
-                                text = "Next Prayer",
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
+                                text = "NEXT PRAYER",
+                                style = MaterialTheme.typography.labelMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = Color.White.copy(alpha = 0.8f)
                             )
                         }
-
-                        Text(
-                            text = prayerName ?: "",
-                            style = MaterialTheme.typography.displayMedium.copy(
-                                MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.W700
-                            )
-                        )
                     }
 
-                    Spacer(Modifier.weight(1f))
+                    // Concentric Orbital Rings around Sun Icon
                     Box(
                         modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colorScheme.surfaceTint.copy(0.50f),
-                                shape = CircleShape
-                            )
+                            .size(dimens.space64)
+                            .clip(CircleShape)
                             .border(
-                                width = dimens.elevation2,
-                                color = MaterialTheme.colorScheme.primary.copy(0.4f),
+                                width = dimens.divider,
+                                color = Color.White.copy(alpha = 0.12f),
                                 shape = CircleShape
-                            )
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
-                        val icon = if (isNow) prayerState.prayerIcon else prayerState.nextPrayerIcon
-                        icon?.let {
-                            Icon(
-                                painter = painterResource(icon),
-                                contentDescription = null,
+                        Box(
+                            modifier = Modifier
+                                .size(dimens.space56)
+                                .clip(CircleShape)
+                                .border(
+                                    width = dimens.divider,
+                                    color = Color.White.copy(alpha = 0.20f),
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
                                 modifier = Modifier
-                                    .padding(dimens.space12)
-                                    .size(dimens.iconLg),
-                                tint = customColors.iconColor
-                            )
+                                    .size(dimens.space40)
+                                    .clip(CircleShape)
+                                    .background(Color.White.copy(alpha = 0.18f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                val icon = if (isNow) prayerState.prayerIcon else prayerState.nextPrayerIcon
+                                Icon(
+                                    painter = painterResource(id = icon ?: R.drawable.sun),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier.size(dimens.iconSm)
+                                )
+                            }
                         }
                     }
                 }
 
+                Spacer(modifier = Modifier.height(dimens.space8))
+
+                Text(
+                    text = prayerName,
+                    style = MaterialTheme.typography.displayMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(dimens.space4))
+
+                Text(
+                    text = startTimeStr,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+
+                Spacer(modifier = Modifier.height(dimens.space20))
+
+                Text(
+                    text = "TIME REMAINING",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = Color.White.copy(alpha = 0.7f)
+                )
+
+                Spacer(modifier = Modifier.height(dimens.space8))
+
                 Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                ) {
+                    TimerPill(value = hoursStr)
+                    Text(
+                        text = ":",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                        color = Color.White.copy(alpha = 0.6f)
+                    )
+                    TimerPill(value = minutesStr)
+                    Text(
+                        text = ":",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                        color = Color.White.copy(alpha = 0.6f)
+                    )
+                    TimerPill(value = secondsStr)
+                }
+
+                Spacer(modifier = Modifier.height(dimens.space24))
+
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(dimens.space8),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .height(dimens.compButton)
+                        .clip(RoundedCornerShape(dimens.cornerLg))
+                        .background(Color.White.copy(alpha = 0.12f))
+                        .border(
+                            width = dimens.divider,
+                            color = Color.White.copy(alpha = 0.25f),
+                            shape = RoundedCornerShape(dimens.cornerLg)
+                        )
+                        .clickable { onViewScheduleClick() },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(dimens.space8)
-                    ) {
-
-                        val time = if (isNow) {
-                            DateUtil.dateLongToString(
-                                prayerState.currentPrayerTime,
-                                "hh:mm a"
-                            )
-                        } else {
-                            DateUtil.dateLongToString(
-                                prayerState.nextPrayerTimeMillis,
-                                "hh:mm a"
-                            )
-                        }
-
-                        Text(
-                            text = if (isNow) "Started at $time" else "Starts At",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        )
-                        if (isNow) {
-
-                            Card(
-                                onClick = onLogPrayerClick,
-                                colors = CardDefaults.cardColors(
-                                    containerColor = customColors.accentColor,
-                                    contentColor = MaterialTheme.colorScheme.onSurface
-                                ),
-                                shape = RoundedCornerShape(dimens.cornerMd),
-                                modifier = Modifier.height(dimens.space40)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(dimens.space8),
-                                    modifier = Modifier
-                                        .padding(horizontal = dimens.space12)
-                                        .fillMaxHeight()
-                                        .align(Alignment.CenterHorizontally)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.double_check),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(dimens.iconSx)
-                                    )
-                                    Text(
-                                        text = "Log Prayer",
-                                        style = MaterialTheme.typography.bodySmall,
-                                    )
-                                }
-                            }
-                        } else {
-                            Text(
-                                text = time,
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    MaterialTheme.colorScheme.onSurface,
-                                    fontWeight = FontWeight.W600
-                                )
-                            )
-                        }
-                    }
-
-                    Column(
-                        horizontalAlignment = Alignment.End,
-                        verticalArrangement = Arrangement.spacedBy(dimens.space8)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = if (isNow) "Next Prayer ${stringResource(prayerState.nextPrayer!!.nameRes)}" else "TIME REMAINING",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                MaterialTheme.colorScheme.onPrimaryContainer
-                            )
+                            text = "View Full Schedule",
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = Color.White
                         )
-
-                        prayerState.countdownText.split(":").let {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                it.forEachIndexed { index, string ->
-                                    Box(
-                                        modifier = Modifier
-                                            .size(dimens.space48)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.surfaceTint.copy(
-                                                    0.15f
-                                                ),
-                                                shape = RoundedCornerShape(dimens.cornerMd)
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = string,
-                                            style = MaterialTheme.typography.headlineSmall.copy(
-                                                MaterialTheme.colorScheme.onSurface,
-                                                fontWeight = FontWeight.W700
-                                            ),
-                                            modifier = Modifier.padding(dimens.space8)
-                                        )
-                                    }
-
-                                    if (index != it.size - 1) {
-                                        Text(
-                                            text = ":",
-                                            style = MaterialTheme.typography.titleMedium.copy(
-                                                color = MaterialTheme.colorScheme.onSurface
-                                            ),
-                                            modifier = Modifier.padding(start = dimens.space4)
-                                        )
-                                        Spacer(Modifier.width(dimens.space4))
-                                    }
-                                }
-                            }
-                        }
-
+                        Spacer(modifier = Modifier.width(dimens.space8))
+                        Text(
+                            text = "→",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = Color.White
+                        )
                     }
                 }
             }
         }
-
     }
 }
 
-
 @Composable
-fun HomeScreenStreakCard(
-    dailyPrayerStatus: DailyPrayerStatus?
-) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-        ),
-        shape = RoundedCornerShape(dimens.cornerLg),
-        modifier = Modifier.fillMaxWidth()
+private fun TimerPill(value: String) {
+    Box(
+        modifier = Modifier
+            .size(width = dimens.space56, height = dimens.space48)
+            .clip(RoundedCornerShape(dimens.cornerLg))
+            .background(Color.White.copy(alpha = 0.12f))
+            .border(
+                width = dimens.divider,
+                color = Color.White.copy(alpha = 0.25f),
+                shape = RoundedCornerShape(dimens.cornerLg)
+            ),
+        contentAlignment = Alignment.Center
     ) {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = Color.White
+        )
+    }
+}
 
+/**
+ * 5-Prayer Timeline Progress Card matching Screenshot 1 with Smooth Pulse Animation on Active/Upcoming Prayer Circle.
+ */
+@Composable
+fun PrayerTimelineCard(
+    prayerData: MinimalPrayerData,
+    onFullViewClick: () -> Unit
+) {
+    val hijriDate = IslamicCalendarUtils.getCurrentHijriDateInfo()
+    val hijriDateStr = "${hijriDate.day} ${hijriDate.monthName}"
+
+    // Smooth Infinite Pulse Animation for Active/Upcoming Prayer Node
+    val infiniteTransition = rememberInfiniteTransition(label = "PrayerPulseTransition")
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 1.0f,
+        targetValue = 1.45f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "PulseScale"
+    )
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.45f,
+        targetValue = 0.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "PulseAlpha"
+    )
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(dimens.cornerXl),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimens.space16),
-            verticalArrangement = Arrangement.spacedBy(dimens.space12)
+                .padding(dimens.space20)
         ) {
+            // Header Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(dimens.space4)
-            )
-            {
-                IconWithBackground(
-                    icon = R.drawable.fire,
-                    iconColor = Color(0xFFf67217),
-                    containerColor = Color(0xFFf67217).copy(0.1f)
-                )
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(dimens.space4)
-                ) {
-                    Text(
-                        text = "Prayer Streak",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontWeight = FontWeight.SemiBold
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(dimens.space40)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.prayers),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(dimens.iconSm)
                         )
-                    )
-                    Text(
-                        text = "${dailyPrayerStatus?.loggedPrayers?.size} of 5 prayers today",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            color = customColors.secondaryText,
-                            fontWeight = FontWeight.SemiBold
+                    }
+
+                    Spacer(modifier = Modifier.width(dimens.space12))
+
+                    Column {
+                        Text(
+                            text = "Prayer Times",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                    )
+                        Text(
+                            text = hijriDateStr,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
                 }
-                Spacer(Modifier.weight(1f))
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(dimens.space4),
-                    horizontalAlignment = Alignment.End
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(dimens.cornerFull))
+                        .background(MaterialTheme.colorScheme.surface)
+                        .clickable { onFullViewClick() }
+                        .padding(horizontal = dimens.space12, vertical = dimens.space4)
                 ) {
                     Text(
-                        text = "%${dailyPrayerStatus?.completionPercentage}",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            color = Color(0xFFf67217)
-                        )
-                    )
-                    Text(
-                        text = "completed",
+                        text = "Full View",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            color = customColors.secondaryText,
                             fontWeight = FontWeight.SemiBold
-                        )
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(dimens.space24))
+
+            val prayers = listOf(
+                Triple("Fajr", "04:42 AM", true),
+                Triple("Dhu", "12:34 PM", false),
+                Triple("Asr", "04:15 PM", false),
+                Triple("Mag", "07:00 PM", false),
+                Triple("Ish", "08:30 PM", false)
+            )
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Prayer.entries.forEach { prayer ->
-                    val isLogged = dailyPrayerStatus?.isLogged(prayer = prayer) ?: false
+                prayers.forEachIndexed { index, (label, time, isDone) ->
+                    val isActive = (index == 1) // Dhuhr active/upcoming
+
                     Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(dimens.space4),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // Timeline Dot Node with Smooth Pulsing Outer Glow Ring
+                        if (isDone) {
+                            Box(
+                                modifier = Modifier
+                                    .size(dimens.space32)
+                                    .clip(CircleShape)
+                                    .background(customColors.accentColor),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "✓",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                        } else if (isActive) {
+                            Box(
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Outer Expanding Pulse Ring Animation
+                                Box(
+                                    modifier = Modifier
+                                        .size(dimens.space32)
+                                        .graphicsLayer {
+                                            scaleX = pulseScale
+                                            scaleY = pulseScale
+                                            alpha = pulseAlpha
+                                        }
+                                        .clip(CircleShape)
+                                        .background(customColors.accentColor)
+                                )
+
+                                // Active Core Circle
+                                Box(
+                                    modifier = Modifier
+                                        .size(dimens.space32)
+                                        .clip(CircleShape)
+                                        .background(customColors.accentColor.copy(alpha = 0.25f))
+                                        .border(
+                                            width = dimens.divider,
+                                            color = customColors.accentColor,
+                                            shape = CircleShape
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(dimens.space12)
+                                            .clip(CircleShape)
+                                            .background(customColors.accentColor)
+                                    )
+                                }
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(dimens.space32)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surface),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(dimens.space8)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(dimens.space8))
+
+                        Text(
+                            text = time,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal
+                            ),
+                            color = if (isActive) customColors.accentColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+
+                        Spacer(modifier = Modifier.height(dimens.space4))
+
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium
+                            ),
+                            color = if (isActive) customColors.accentColor else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Side-by-side Streak & Ramadan/Event Tiles with tint = Color.Unspecified.
+ */
+@Composable
+fun StreakAndRamadanRow(
+    dailyPrayerStatus: DailyPrayerStatus?,
+    upcomingEvent: UpcomingIslamicEvent?
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Max),
+        horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+    ) {
+        Card(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(dimens.cornerXl)),
+            shape = RoundedCornerShape(dimens.cornerXl),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimens.space16),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(dimens.space32)
+                            .clip(CircleShape)
+                            .background(customColors.accentColor.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.fire),
+                            contentDescription = "Streak",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(dimens.iconSm)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(dimens.space8))
+                    Text(
+                        text = "STREAK",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(dimens.space12))
+
+                val pct = dailyPrayerStatus?.completionPercentage ?: 0
+                val count = dailyPrayerStatus?.loggedPrayers?.size ?: 0
+
+                Column {
+                    Text(
+                        text = "$pct%",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(dimens.space4))
+
+                    Text(
+                        text = "$count/5 today",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+                }
+            }
+        }
+
+        Card(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(dimens.cornerXl)),
+            shape = RoundedCornerShape(dimens.cornerXl),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimens.space16),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(dimens.space32)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.night_prayer),
+                            contentDescription = "Ramadan",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(dimens.iconSm)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(dimens.space8))
+                    Text(
+                        text = (upcomingEvent?.eventType?.name ?: "RAMADAN").uppercase(),
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(dimens.space12))
+
+                val daysRemaining = upcomingEvent?.daysRemaining ?: 287
+                val subtitleStr = if (upcomingEvent != null) {
+                    "days until ${upcomingEvent.hijriMonth}"
+                } else {
+                    "days until Ramadan 1448 AH"
+                }
+
+                Column {
+                    Text(
+                        text = "$daysRemaining",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(dimens.space4))
+
+                    Text(
+                        text = subtitleStr,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Daily Verse Card with exact ScheherazadeFontFamily and tint = Color.Unspecified.
+ */
+@Composable
+fun DailyVerseCard(
+    dailyVerse: DailyVerseData,
+    onVerseClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onVerseClick() },
+        shape = RoundedCornerShape(dimens.cornerXl),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.space20)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(dimens.space40)
+                            .clip(RoundedCornerShape(dimens.cornerMd))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.book),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(dimens.iconSm)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(dimens.space12))
+
+                    Column {
+                        Text(
+                            text = "Daily Verse",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "${dailyVerse.surahName} · Verse ${dailyVerse.verseNumber}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+
+                IconButton(
+                    onClick = onVerseClick,
+                    modifier = Modifier
+                        .size(dimens.space32)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
+                ) {
+                    Text(
+                        text = "→",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(dimens.space16))
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    thickness = dimens.divider
+                )
+                Box(
+                    modifier = Modifier
+                        .size(dimens.space8)
+                        .clip(CircleShape)
+                        .background(customColors.accentColor)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(dimens.space16))
+
+            Text(
+                text = dailyVerse.arabicText,
+                style = IslamicTypography.ScheherazadeCardArabic,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(dimens.space16))
+
+            Text(
+                text = "\"${dailyVerse.englishTranslation}\"",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontStyle = FontStyle.Italic
+                ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+/**
+ * Clean 2x3 Quick Access Grid with tint = Color.Unspecified on icons.
+ */
+@Composable
+fun CleanQuickAccessGrid(
+    onClick: (HomePageNavIcons) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(dimens.space12)
+    ) {
+        Text(
+            text = "Quick Access",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        val itemsRow1 = listOf<Triple<String, Int, HomePageNavIcons>>(
+            Triple("99 Names", R.drawable.allah, HomePageNavIcons.AsmaUlHusna),
+            Triple("Calendar", R.drawable.calendar, HomePageNavIcons.Calendar),
+            Triple("Dhikr", R.drawable.zikir, HomePageNavIcons.Athkar)
+        )
+
+        val itemsRow2 = listOf<Triple<String, Int, HomePageNavIcons>>(
+            Triple("Zakat", R.drawable.zakat, HomePageNavIcons.Zakat),
+            Triple("Tasbih", R.drawable.tasbih, HomePageNavIcons.Tasbih),
+            Triple("Duas", R.drawable.dua, HomePageNavIcons.Dua)
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+        ) {
+            itemsRow1.forEach { (label, iconRes, navIcon) ->
+                QuickAccessTile(
+                    modifier = Modifier.weight(1f),
+                    label = label,
+                    iconRes = iconRes,
+                    onClick = { onClick(navIcon) }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+        ) {
+            itemsRow2.forEach { (label, iconRes, navIcon) ->
+                QuickAccessTile(
+                    modifier = Modifier.weight(1f),
+                    label = label,
+                    iconRes = iconRes,
+                    onClick = { onClick(navIcon) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuickAccessTile(
+    modifier: Modifier = Modifier,
+    label: String,
+    iconRes: Int,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .clip(RoundedCornerShape(dimens.cornerXl))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(dimens.cornerXl),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = dimens.space20, horizontal = dimens.space8),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(dimens.space48)
+                    .clip(RoundedCornerShape(dimens.cornerMd))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = label,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(dimens.iconLg)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(dimens.space12))
+
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+/**
+ * Weekly Prayer Consistency Card with tint = Color.Unspecified on calendar icon.
+ */
+@Composable
+fun WeeklyPrayerConsistencyCard(
+    weeklyStats: WeeklyPrayerStats,
+    onDetailsClick: () -> Unit
+) {
+    val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(dimens.cornerXl),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.space20)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(dimens.space40)
+                            .clip(RoundedCornerShape(dimens.cornerMd))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.calendar),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(dimens.iconSm)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(dimens.space12))
+
+                    Column {
+                        Text(
+                            text = "This Week",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "Prayer consistency",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(dimens.cornerFull))
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(horizontal = dimens.space12, vertical = dimens.space4)
+                ) {
+                    Text(
+                        text = "${weeklyStats.totalCompleted}/${weeklyStats.totalTarget}",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = customColors.accentColor
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(dimens.space20))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimens.space4),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                dayNames.forEachIndexed { index, day ->
+                    val count = weeklyStats.dailyCounts.getOrElse(index) { 5 }
+                    val isToday = (index == weeklyStats.currentDayIndex)
+
+                    val pillBg = if (count == 5) customColors.accentColor
+                    else if (count > 0) MaterialTheme.colorScheme.surface
+                    else MaterialTheme.colorScheme.surface
+
+                    val pillBorder = if (isToday) Modifier.border(
+                        width = dimens.divider,
+                        color = customColors.accentColor,
+                        shape = RoundedCornerShape(dimens.cornerLg)
+                    ) else Modifier
+
+                    Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth(0.8f)
-                                .height(dimens.space12)
-                                .background(
-                                    color = if (isLogged) Success else InactiveIcon,
-                                    shape = RoundedCornerShape(dimens.cornerXl)
-                                )
-                        )
-                        Text(
-                            text = prayer.name,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                color = customColors.secondaryText
+                                .size(width = dimens.space40, height = dimens.compButton)
+                                .clip(RoundedCornerShape(dimens.cornerLg))
+                                .then(pillBorder)
+                                .background(pillBg),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "$count",
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = if (count == 5) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                        }
+
+                        Spacer(modifier = Modifier.height(dimens.space8))
+
+                        Text(
+                            text = day,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = if (isToday) FontWeight.Bold else FontWeight.Medium
+                            ),
+                            color = if (isToday) customColors.accentColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(dimens.space20))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(dimens.space12)
+                                .clip(RoundedCornerShape(dimens.cornerXs))
+                                .background(customColors.accentColor)
+                        )
+                        Spacer(modifier = Modifier.width(dimens.space4))
+                        Text(
+                            text = "All 5",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(dimens.space12)
+                                .clip(RoundedCornerShape(dimens.cornerXs))
+                                .background(MaterialTheme.colorScheme.surface)
+                        )
+                        Spacer(modifier = Modifier.width(dimens.space4))
+                        Text(
+                            text = "Partial",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                TextButton(onClick = onDetailsClick) {
+                    Text(
+                        text = "Details ›",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
         }
     }
 }
 
-
+/**
+ * Daily Dua Card with tint = Color.Unspecified on dua icon.
+ */
 @Composable
-fun DashboardTile(
-    modifier: Modifier = Modifier,
-    @DrawableRes icon: Int = R.drawable.calendar1,
-    label: String = "HIJRI DATE",
-    mainText: String = "15 Rabi' al-Awwal",
-    bottomLabel: String = "1447 AH"
+fun DailyDuaCard(
+    dailyDua: DailyDuaData,
+    onAllDuasClick: () -> Unit
 ) {
     Card(
-        modifier = modifier,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(dimens.cornerXl),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Column(
-            modifier = Modifier.padding(dimens.space16),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(dimens.space4)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimens.space20)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.surfaceTint,
-                    modifier = Modifier
-                        .size(dimens.iconSx)
-                )
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.Medium
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(dimens.space40)
+                            .clip(RoundedCornerShape(dimens.cornerMd))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.dua),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(dimens.iconSm)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(dimens.space12))
+
+                    Column {
+                        Text(
+                            text = "Daily Dua",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = dailyDua.categoryTitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+
+                TextButton(onClick = onAllDuasClick) {
+                    Text(
+                        text = "All Duas",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.primary
                     )
-                )
+                }
             }
 
-            Spacer(Modifier.height(dimens.space4))
+            Spacer(modifier = Modifier.height(dimens.space16))
 
             Text(
-                text = mainText,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.W700
-                )
+                text = dailyDua.arabicText,
+                style = IslamicTypography.ScheherazadeCardArabic,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
-            LongText(
-                text = bottomLabel,
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Medium
-                ),
 
+            Spacer(modifier = Modifier.height(dimens.space12))
+
+            Text(
+                text = "\"${dailyDua.transliteration}\"",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontStyle = FontStyle.Italic
+                ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(dimens.space12))
+
+            Text(
+                text = dailyDua.translation,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(dimens.space12))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = "— ${dailyDua.reference}",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = FontWeight.Medium
+                    ),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
+            }
         }
     }
 }
-
-
-@Composable
-fun CardGradient(
-    content: @Composable () -> Unit
-) {
-    val gradientColors = customColors.homeCardGradient
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .drawWithCache {
-                val linear = Brush.linearGradient(
-                    colorStops = arrayOf(
-                        0.0f to gradientColors[0],
-                        0.45f to gradientColors[1],
-                        1.0f to gradientColors[2],
-                    ),
-                    start = Offset(0f, 0f),
-                    end = Offset(size.width, size.height)
-                )
-
-                val radial = Brush.radialGradient(
-                    colors = listOf(
-                        Color(0xFF7A8F63).copy(alpha = 0.30f), // yellowish teal glow
-                        Color.Transparent
-                    ),
-                    center = Offset(size.width * 0.88f, size.height * 0.20f),
-                    radius = size.width * 0.45f
-                )
-
-                onDrawBehind {
-                    drawRect(linear)
-                    drawRect(radial)
-                }
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        content()
-    }
-}
-
 
 @Composable
 fun HomeScreenEventCard(
     eventName: String,
     eventDate: String,
-    eventType: EventType,
+    eventType: com.hazrat.model.EventType,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         ),
@@ -511,12 +1245,11 @@ fun HomeScreenEventCard(
                 modifier = Modifier
                     .size(dimens.space56)
                     .background(
-                        color = eventType.containerColor().copy(0.2f),
+                        color = eventType.containerColor().copy(alpha = 0.2f),
                         shape = RoundedCornerShape(dimens.cornerLg)
                     ),
-                contentAlignment = Alignment.Center,
-
-                ) {
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     painter = painterResource(eventType.icon()),
                     contentDescription = null,
@@ -529,31 +1262,27 @@ fun HomeScreenEventCard(
                 verticalArrangement = Arrangement.spacedBy(dimens.space8),
                 modifier = Modifier.weight(1f)
             ) {
-                val randomInt = Random.nextInt(5000, 10000)
-                LongText(
+                Text(
                     text = eventName,
                     style = MaterialTheme.typography.titleLarge.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Medium
                     ),
-                    repeatDelay = randomInt,
-                    delay = randomInt
+                    maxLines = 2
                 )
-
                 Text(
                     text = eventDate,
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
-                    maxLines = 2,
+                    maxLines = 2
                 )
             }
 
             Box(
                 modifier = Modifier
-                    .width(IntrinsicSize.Min)
                     .background(
-                        color = eventType.color().copy(0.1f),
+                        color = eventType.color().copy(alpha = 0.1f),
                         shape = RoundedCornerShape(dimens.cornerLg)
                     ),
                 contentAlignment = Alignment.Center

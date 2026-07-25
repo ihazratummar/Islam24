@@ -122,14 +122,14 @@ fun PrayerProgressCard(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = "${todayTimeStamp.toReadableDate()}'s Progress",
+                        text = stringResource(R.string.prayer_progress_stat, todayTimeStamp.toReadableDate()),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.SemiBold
                         )
                     )
                     Text(
-                        text = "$completePrayerCount of 5 prayer logged",
+                        text = stringResource(R.string.prayer_logged_stat, completePrayerCount),
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = customColors.secondaryText,
                         )
@@ -218,7 +218,7 @@ fun PrayerTimeCard(
                             tint = Success
                         )
                         Text(
-                            text = "Logged",
+                            text = stringResource(R.string.prayer_logged),
                             style = MaterialTheme.typography.labelSmall.copy(
                                 color = Success
                             )
@@ -341,14 +341,14 @@ fun NotificationSettingCard(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Notification Settings",
+                    text = stringResource(R.string.prayer_notification_settings),
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.SemiBold
                     )
                 )
                 Text(
-                    text = "$totalNotificationOn of 5 prayer notified",
+                    text = stringResource(R.string.prayer_notified_stat, totalNotificationOn),
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = customColors.secondaryText,
                     )
@@ -498,7 +498,7 @@ fun AzanList(
                         contentDescription = null
                     )
                     Spacer(Modifier.width(dimens.space20))
-                    Text("Silent")
+                    Text(stringResource(R.string.prayer_silent))
                 }
             }
         }
@@ -526,7 +526,7 @@ fun AzanList(
                         contentDescription = null
                     )
                     Spacer(Modifier.width(dimens.space20))
-                    Text("Default Notification")
+                    Text(stringResource(R.string.prayer_default_notification))
                 }
             }
         }
@@ -555,7 +555,7 @@ fun AzanList(
                         contentDescription = null
                     )
                     Spacer(modifier = Modifier.width(dimens.space20))
-                    Text(text = "Azan ${index + 1}")
+                    Text(text = stringResource(R.string.prayer_azan_index, index + 1))
                     Spacer(Modifier.weight(1f))
                     Icon(
                         modifier = Modifier

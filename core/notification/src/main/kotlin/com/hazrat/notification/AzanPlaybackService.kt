@@ -84,7 +84,7 @@ class AzanPlaybackService : Service() {
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Playing Azan")
-            .setContentText("Now playing Azan for ${prayer.notificationTitle}")
+            .setContentText(getString(com.hazrat.ui.R.string.prayer_now_playing_azan, prayer.notificationTitle))
             .setSmallIcon(R.drawable.naviconhome)
             .setOngoing(true)
             .addAction(R.drawable.volume, "Stop", stopPendingIntent)

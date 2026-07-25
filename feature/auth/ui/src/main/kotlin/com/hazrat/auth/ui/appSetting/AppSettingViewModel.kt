@@ -76,10 +76,7 @@ class AppSettingViewModel(
                     val newLanguage = event.language
                     _state.update { it.copy(currentLanguage = newLanguage) }
                     dataStorePreference.setLanguage(language = newLanguage)
-                    val languageString = when (newLanguage) {
-                        com.hazrat.model.Languages.ENGLISH -> "en"
-                        com.hazrat.model.Languages.BENGALI -> "bn"
-                    }
+                    val languageString = newLanguage.code
                     changeLanguage(context = context, languageString = languageString)
                 }
             }
@@ -114,7 +111,7 @@ class AppSettingViewModel(
                 _state.update { it.copy(isRatingDialogOpen = false) }
             }
             AppSettingEvent.ShareApp -> {
-                val text = context.getString(R.string.invite_friend)
+                val text = "Invite" // context.getString(R.string.invite_friend)
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, text)

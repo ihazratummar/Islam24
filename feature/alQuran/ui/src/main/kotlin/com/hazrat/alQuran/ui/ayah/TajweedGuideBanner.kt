@@ -1,5 +1,6 @@
 package com.hazrat.alQuran.ui.ayah
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -124,7 +125,7 @@ fun TajweedGuideBanner(
                     fontSize = 16.sp
                 )
                 Text(
-                    text = "Tajweed Colors",
+                    text = stringResource(R.string.quran_tajweed_colors),
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White,

@@ -1,5 +1,6 @@
 package com.hazrat.calendar
 
+import androidx.compose.ui.res.stringResource
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -49,7 +50,7 @@ fun SimpleCalendarTitle(
     ) {
         CalendarNavigationIcon(
             icon = R.drawable.arrow_left,
-            contentDescription = "Previous",
+            contentDescription = stringResource(R.string.common_previous),
             onClick = goToPrevious,
             isHorizontal = isHorizontal,
         )
@@ -63,7 +64,7 @@ fun SimpleCalendarTitle(
         )
         CalendarNavigationIcon(
             icon = R.drawable.arrow_left,
-            contentDescription = "Next",
+            contentDescription = stringResource(R.string.common_next),
             onClick = goToNext,
             isHorizontal = isHorizontal,
         )

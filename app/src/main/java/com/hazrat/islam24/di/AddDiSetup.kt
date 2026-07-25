@@ -23,6 +23,7 @@ import com.hazrat.remote.di.getRemoteModule
 import com.hazrat.sensor.geSensorModule
 import com.hazrat.usecase.di.getUserCaseModule
 import com.hazrat.utils.di.getUtilsModule
+import com.hazrat.tasbih.di.tasbihModule
 import com.hazrat.zakat.di.getZakatModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -57,7 +58,8 @@ fun initKoin(app: Application) {
             getAlQuranDataModule(),
             getQiblaDataModule(),
             getPrayerUiModule(),
-            getHomeUiModule()
+            getHomeUiModule(),
+            tasbihModule
         )
     }
 }

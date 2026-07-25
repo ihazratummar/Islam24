@@ -1,5 +1,6 @@
 package com.hazrat.auth.ui.policiesScreen
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -39,7 +40,7 @@ fun PoliciesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Policies") },
+                title = { Text(stringResource(R.string.common_policies)) },
                 navigationIcon = {
                     BackIcon(
                         onBackClick = {onBackClick()}

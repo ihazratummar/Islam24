@@ -54,10 +54,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.google.android.gms.maps.model.LatLng
-import com.hazrat.common.BasicTopBar
-import com.hazrat.model.AuthState
 import com.hazrat.ui.R
+import com.hazrat.ui.common.BasicTopBar
 import com.hazrat.ui.common.PopupDialog
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.drawableToBitmap
@@ -131,7 +129,7 @@ fun QiblaScreen(
 
         Image(
             painter = painterResource(R.drawable.compass_screen_background),
-            contentDescription = "Background",
+            contentDescription = stringResource(R.string.prayer_background),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds,
             colorFilter = ColorFilter.tint(
@@ -146,11 +144,8 @@ fun QiblaScreen(
         ) {
             Spacer(Modifier.height(dimens.space48))
             BasicTopBar(
-                modifier = Modifier,
-                topBarTitle = stringResource(id = R.string.qibla),
-                onBackClick = { onBackClick.invoke() },
-                iconColor = Color.White,
-                textColor = Color.White
+                topBarTitle = stringResource(id = R.string.nav_qibla),
+                onBackClick = { onBackClick.invoke() }
             )
             Box(
                 modifier = Modifier
@@ -186,7 +181,7 @@ fun QiblaScreen(
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Qibla Direction: ${state.qiblaDirection.toInt()}°",
+                        text = stringResource(R.string.qibla_direction_degree, state.qiblaDirection.toInt()),
                         style = MaterialTheme.typography.labelMedium.copy(
                             textAlign = TextAlign.Center
                         )
@@ -242,7 +237,7 @@ fun QiblaScreen(
                 )
                 Image(
                     painter = compassImage,
-                    contentDescription = "Background",
+                    contentDescription = stringResource(R.string.prayer_background),
                     modifier = Modifier
                         .fillMaxSize(0.8f)
                         .graphicsLayer(
@@ -322,8 +317,8 @@ fun QiblaScreen(
             PopupDialog(
                 modifier = Modifier,
                 onDismissRequest = { qiblaEvent(QiblaEvent.OnLoggedInRequiredCompassClick) },
-                title = "Login Required",
-                text = "Login or Register to unlock more compass design",
+                title = stringResource(R.string.common_login_required),
+                text = stringResource(R.string.common_login_to_unlock_compass),
                 icon = R.drawable.alert,
                 confirmButton = { navigateToLogin() }
             )

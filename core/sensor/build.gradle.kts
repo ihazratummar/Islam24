@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.hazrat.sensor"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {

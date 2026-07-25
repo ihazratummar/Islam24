@@ -1,5 +1,6 @@
 package com.hazrat.prayer.ui.prayertime
 
+import androidx.compose.ui.res.stringResource
 
 import android.os.Build
 import android.widget.Toast
@@ -105,10 +106,13 @@ fun PrayerTimeScreen(
     var showNotificationRationale by remember { mutableStateOf(false) }
     var pendingNotificationPrayer by remember { mutableStateOf<PrayerType?>(null) }
 
+    val locationPermissionErrorText = stringResource(R.string.error_location_permission)
+    val notificationPermissionErrorText = stringResource(R.string.error_notification_permission)
+
     val requestLocationPermission = rememberPermissionRequester(
         permission = PermissionTypes.LOCATION,
         onGranted = { event(PrayerEvent.RefreshPrayer) },
-        onDenied = { Toast.makeText(context, "Location permission is needed for prayer times", Toast.LENGTH_SHORT).show() }
+        onDenied = { Toast.makeText(context, locationPermissionErrorText, Toast.LENGTH_SHORT).show() }
     )
 
     val requestNotificationPermission = rememberPermissionRequester(
@@ -122,12 +126,12 @@ fun PrayerTimeScreen(
                 }
             }
         },
-        onDenied = { Toast.makeText(context, "Notification permission is needed for Prayer Notification.", Toast.LENGTH_SHORT).show() }
+        onDenied = { Toast.makeText(context, notificationPermissionErrorText, Toast.LENGTH_SHORT).show() }
     )
 
     if (showLocationRationale) {
         PermissionRationaleDialog(
-            title = "Location Access Required",
+            title = stringResource(R.string.error_location_access_required_title),
             message = "Islam24 needs your location to calculate accurate prayer times for your city.",
             onConfirm = {
                 showLocationRationale = false
@@ -139,7 +143,7 @@ fun PrayerTimeScreen(
 
     if (showNotificationRationale) {
         PermissionRationaleDialog(
-            title = "Notification Access",
+            title = stringResource(R.string.error_notification_access_title),
             message = "Enable notifications to receive timely Azan alerts for each prayer.",
             onConfirm = {
                 showNotificationRationale = false
@@ -266,7 +270,7 @@ fun PrayerTimeScreen(
                                         PulsingLiveDot()
                                     } else {
                                         Text(
-                                            text = "NEXT PRAYER",
+                                            text = stringResource(R.string.prayer_next_prayer_uppercase),
                                             style = MaterialTheme.typography.bodySmall.copy(
                                                 color = PrayerLocationColor
                                             )

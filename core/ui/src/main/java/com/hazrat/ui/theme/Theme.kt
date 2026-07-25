@@ -16,7 +16,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-
+import androidx.compose.ui.graphics.toArgb
 private val LightColorScheme = lightColorScheme(
 
     // Brand
@@ -149,9 +149,7 @@ private val DarkColorScheme = darkColorScheme(
 /**
  * CompositionLocal used to provide [Dimens] throughout the hierarchy.
  */
-val LocalAppDimens = compositionLocalOf {
-    CompactDimens
-}
+
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -184,6 +182,8 @@ fun Islam24Theme(
     if (!view.isInEditMode && activity != null) {
         SideEffect {
             val window = activity.window
+            window.statusBarColor = colorScheme.background.toArgb()
+            window.navigationBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
@@ -199,6 +199,14 @@ fun Islam24Theme(
         )
     }
 }
+
+val LocalAppDimens = compositionLocalOf {
+    CompactDimens
+}
+val LocalCustomColors = compositionLocalOf {
+    CustomColors()
+}
+
 val dimens
     @Composable
     get() = LocalAppDimens.current

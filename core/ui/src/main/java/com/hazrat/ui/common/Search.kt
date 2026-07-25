@@ -1,5 +1,6 @@
 package com.hazrat.ui.common
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -70,7 +71,7 @@ fun SearchField(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.search),
-                    contentDescription = "Search",
+                    contentDescription = stringResource(R.string.common_search),
                     modifier = Modifier.size(dimens.iconSm),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )

@@ -1,5 +1,7 @@
 package com.hazrat.athkar.ui.dua.category
 
+import com.hazrat.ui.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,13 +64,13 @@ fun DuaScreen(
                         verticalArrangement = Arrangement.spacedBy(dimens.space4)
                     ) {
                         Text(
-                            text = "Duas",
+                            text = stringResource(R.string.home_duas),
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
-                            text = "Daily Supplications",
+                            text = stringResource(R.string.home_daily_supplications),
                             style = MaterialTheme.typography.bodySmall,
                             color = customColors.secondaryText
                         )
