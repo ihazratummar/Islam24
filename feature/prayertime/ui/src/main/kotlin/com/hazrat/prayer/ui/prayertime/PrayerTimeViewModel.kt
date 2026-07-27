@@ -16,6 +16,7 @@ import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.Prayer
 import com.hazrat.notification.PrayerAlarmScheduler
+import com.hazrat.notification.PrayerRescheduleWorker
 import com.hazrat.prayer.ui.notification.NotificationState
 import com.hazrat.usecase.prayer.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
@@ -211,11 +212,12 @@ class PrayerTimeViewModel(
                         if (prayerEvent.enabled) {
                             prayerAlarmManager.setPrayerAlarm(
                                 prayerName = prayerEvent.prayer,
-                                prayerEvent.prayerTIme
+                                prayerTime = prayerEvent.prayerTIme
                             )
                         } else {
                             prayerAlarmManager.cancelAlarm(prayerEvent.prayer.notificationCode)
                         }
+                        PrayerRescheduleWorker.enqueue(application)
                     } else {
                         openAppSettings()
                     }

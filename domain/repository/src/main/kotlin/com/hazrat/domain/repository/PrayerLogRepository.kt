@@ -22,7 +22,8 @@ interface PrayerLogRepository {
     fun observeMonthLogs(date: YearMonth) : Flow<Map<LocalDate, Set<Prayer>>>
     fun observeIsLogged(date: LocalDate, prayer: Prayer): Flow<Boolean>
 
+    fun observeTotalLoggedPrayers(): Flow<Int>
+    fun observePrayerStreak(): Flow<Int>
+
     suspend fun computeStreakInfo(today: LocalDate): PrayerStreakInfo
-
-
 }

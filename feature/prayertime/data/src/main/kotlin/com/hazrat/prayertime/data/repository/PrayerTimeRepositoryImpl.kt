@@ -197,18 +197,18 @@ class PrayerTimeRepositoryImpl(
             appendLine("Today's prayer times")
             appendLine("${todayEntry.gregorianDate} // ${todayEntry.hijriDate}")
             appendLine()
-            appendLine("${context.getString(R.string.fajr)}: ${DateUtil.dateLongToString(todayEntry.fajrTime)}")
-            appendLine("${context.getString(R.string.dhuhr)}: ${DateUtil.dateLongToString(todayEntry.dhuhrTime)}")
-            appendLine("${context.getString(R.string.asr)}: ${DateUtil.dateLongToString(todayEntry.asrTime)}")
+            appendLine("${context.getString(R.string.prayer_fajr)}: ${DateUtil.dateLongToString(todayEntry.fajrTime)}")
+            appendLine("${context.getString(R.string.prayer_dhuhr)}: ${DateUtil.dateLongToString(todayEntry.dhuhrTime)}")
+            appendLine("${context.getString(R.string.prayer_asr)}: ${DateUtil.dateLongToString(todayEntry.asrTime)}")
             appendLine(
-                "${context.getString(R.string.maghrib)}: ${
+                "${context.getString(R.string.prayer_maghrib)}: ${
                     DateUtil.dateLongToString(
                         todayEntry.maghribTime
                     )
                 }"
             )
             appendLine(
-                "${context.getString(R.string.isha_a)}: ${
+                "${context.getString(R.string.prayer_isha)}: ${
                     DateUtil.dateLongToString(
                         todayEntry.ishaTime
                     )

@@ -8,9 +8,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.hazrat.islam24.main.navigation.MainRoute
+import com.hazrat.prayer.ui.notification.PrayerNotificationScreen
+import com.hazrat.prayer.ui.notification.PrayerNotificationViewModel
 import com.hazrat.prayer.ui.prayertime.PrayerTimeScreen
 import com.hazrat.prayer.ui.prayertime.PrayerTimeViewModel
 import kotlinx.serialization.Serializable
@@ -22,14 +23,7 @@ fun NavGraphBuilder.prayerNav(
     navController: NavController
 ) {
     navigation<PrayerTime>(PrayerTimeScreenRoute) {
-        composable<PrayerTimeScreenRoute>(
-            deepLinks =
-                listOf(
-                    navDeepLink {
-                        uriPattern = "https://islam24.hazratdev.top/prayertime"
-                    }
-                )
-        ) {
+        composable<PrayerTimeScreenRoute> {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry<PrayerTime>() // scope to PrayerTime nav graph
             }
@@ -42,9 +36,20 @@ fun NavGraphBuilder.prayerNav(
             PrayerTimeScreen(
                 event = prayerTimeViewModel::onEvent,
                 onPrayerSettingClick = { navController.navigate(MainRoute.PrayerSetting) },
+                onManageNotificationsClick = { navController.navigate(PrayerNotificationRoute) },
                 prayerTimeUiState = prayerTimesUiState,
                 dailyPrayerStatus = dailyStatus,
                 notificationState = notificationState
+            )
+        }
+
+        composable<PrayerNotificationRoute> {
+            val viewModel = koinViewModel<PrayerNotificationViewModel>()
+            val state by viewModel.uiState.collectAsStateWithLifecycle()
+            PrayerNotificationScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
@@ -55,6 +60,9 @@ data object PrayerTime
 
 @Serializable
 data object PrayerTimeScreenRoute
+
+@Serializable
+data object PrayerNotificationRoute
 
 @Serializable
 data object FajrSetting

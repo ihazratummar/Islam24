@@ -89,7 +89,7 @@ val Neutral94 = Color(0xFFF2F8F8)
 val Neutral95 = Color(0xFFF5FAFA)
 val Neutral96 = Color(0xFFF8FAF9)
 
-val Neutral98 = Color(0xFFFAFDFC)
+val Neutral98 = Color(0xFFEAE9E3)
 val Neutral99 = Color(0xFFFFFFFF)
 
 
@@ -133,43 +133,28 @@ val IconColor = Color(0xFF6ee7b7)
 // ---------- App Gradients ----------
 
 data class CustomColors(
-    val prayerCard: List<Color>,
+    val prayerCard: List<Color> = emptyList(),
 
-    val fajrGradient: List<Color>,
-    val sunriseGradient: List<Color>,
-    val dhuhrGradient: List<Color>,
-    val asrGradient: List<Color>,
-    val maghribGradient: List<Color>,
-    val ishaGradient: List<Color>,
+    val fajrGradient: List<Color> = emptyList(),
+    val sunriseGradient: List<Color> = emptyList(),
+    val dhuhrGradient: List<Color> = emptyList(),
+    val asrGradient: List<Color> = emptyList(),
+    val maghribGradient: List<Color> = emptyList(),
+    val ishaGradient: List<Color> = emptyList(),
 
-    val emerald: Color,
-    val accentColor : Color,
-    val iconColor: Color,
-    val logoBackground: Color,
-    val homeCardGradient: List<Color>,
-    val secondaryText : Color = SecondaryText,
+    val emerald: Color = Color(0xFF95f0c6),
+    val accentColor: Color = ButtonColorDark,
+    val iconColor: Color = IconColor,
+    val logoBackground: Color = Color(0xFF113736),
+    val homeCardGradient: List<Color> = emptyList(),
+    val secondaryText: Color = SecondaryText,
     val progressbarMute: Color = ProgressBarMuteDark,
-    val navBarColor: Color = Color(0xFF101a1d)
-
+    val navBarColor: Color = Color(0xFF101a1d),
+    val secondCardColor: Color = Color(0xFFECE5D5),
+    val ayahScreenBackground: Color = Color(0xFF272727)
 )
 
-val LocalCustomColors = compositionLocalOf {
-    CustomColors(
-        prayerCard = emptyList(),
 
-        fajrGradient = emptyList(),
-        sunriseGradient = emptyList(),
-        dhuhrGradient = emptyList(),
-        asrGradient = emptyList(),
-        maghribGradient = emptyList(),
-        ishaGradient = emptyList(),
-        emerald = Color(0xFF95f0c6),
-        accentColor = ButtonColorDark,
-        iconColor = IconColor,
-        logoBackground = Color(0xFF113736),
-        homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359))
-    )
-}
 
 
 // ---------- Dark Theme ----------
@@ -189,11 +174,10 @@ val DarkCustomColors = CustomColors(
     asrGradient = AsrGradient,
     maghribGradient = MaghribGradient,
     ishaGradient = IshaGradient,
-    emerald = Color(0xFF95f0c6),
-    accentColor = ButtonColorDark,
-    iconColor = IconColor,
     logoBackground = Color(0xFF113736),
-    homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359))
+    homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359)),
+    secondCardColor = Color(0xFF142428),
+    ayahScreenBackground = Color(0xFF272727)
 )
 
 
@@ -213,9 +197,8 @@ val LightCustomColors = CustomColors(
     asrGradient = AsrGradient,
     maghribGradient = MaghribGradient,
     ishaGradient = IshaGradient,
-    emerald = Color(0xFFA7F5D0),
-    accentColor = ButtonColorDark,
-    iconColor = IconColor,
     logoBackground = Color(0xFF113736),
-    homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359))
+    homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359)),
+    secondCardColor = Color(0xFFECE5D5),
+    ayahScreenBackground = Neutral98
 )

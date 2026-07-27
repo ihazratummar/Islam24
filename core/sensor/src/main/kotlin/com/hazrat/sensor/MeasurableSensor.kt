@@ -10,6 +10,7 @@ abstract class MeasurableSensor(
 ) {
 
     protected var onSensorValuesChanged: ((List<Float>) -> Unit)? = null
+    protected var onAccuracyChanged: ((Int) -> Unit)? = null
 
     abstract val doesSensorExist : Boolean
 
@@ -18,6 +19,10 @@ abstract class MeasurableSensor(
 
     fun setOnSensorValuesChangedLister(listener: (List<Float>) -> Unit) {
         onSensorValuesChanged = listener
+    }
+
+    fun setOnAccuracyChangedListener(listener: (Int) -> Unit) {
+        onAccuracyChanged = listener
     }
 
 }

@@ -23,3 +23,8 @@ app/google-services.json
 .kotlin/errors
 
 **/build
+/.agents
+/.gemini
+
+revenuecat-key.json
+/revenuecat-key.json

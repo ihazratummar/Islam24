@@ -15,5 +15,5 @@ interface LocationRepository {
     suspend fun getLastKnownLocation(): LocationResult
     suspend fun getCurrentLocation(): LocationResult
     fun observeLocationUpdates(locationConfig: LocationConfig = LocationConfigs.Default): Flow<LocationResult>
-
+    fun observeLocationProviderStatus(): Flow<Boolean>
 }

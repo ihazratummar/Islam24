@@ -33,42 +33,42 @@ enum class PrayerType(
     val prayer: Prayer
 ) {
     FAJR(
-        nameRes   = R.string.fajr,
+        nameRes   = R.string.prayer_fajr,
         icon      = R.drawable.dawn,
         gradient  = FajrGradient,
         color     = Color(0xFF6d63f2),
         prayer = Prayer.FAJR
     ),
     SUNRISE(
-        nameRes   = R.string.sunrise,
+        nameRes   = R.string.prayer_sunrise,
         icon      = R.drawable.sunrise,
         gradient  = SunriseGradient,
         color     = Color(0xFFFACA96),
         prayer = Prayer.FAJR
     ),
     DHUHR(
-        nameRes   = R.string.dhuhr,
+        nameRes   = R.string.prayer_dhuhr,
         icon      = R.drawable.sun,
         gradient  = DhuhrGradient,
         color     = Color(0xFFFFB752),
         prayer = Prayer.DHUHR
     ),
     ASR(
-        nameRes   = R.string.asr,
+        nameRes   = R.string.prayer_asr,
         icon      = R.drawable.asr,
         gradient  = AsrGradient,
         color     = Color(0xFFFF8E00),
         prayer = Prayer.ASR
     ),
     MAGHRIB(
-        nameRes   = R.string.maghrib,
+        nameRes   = R.string.prayer_maghrib,
         icon      = R.drawable.evening,
         gradient  = MaghribGradient,
         color     = Color(0xFFfa716a),
         prayer = Prayer.MAGHRIB
     ),
     ISHA(
-        nameRes   = R.string.isha_a,
+        nameRes   = R.string.prayer_isha,
         icon      = R.drawable.isha,
         gradient  = IshaGradient,
         color     = Color(0xFF42D6FF),
@@ -129,11 +129,11 @@ private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Lo
     // Find current active prayer
     val currentPrayer = when {
         currentTime in prayerTimes.fajrTime until prayerTimes.sunriseTime -> PrayerType.FAJR
-        currentTime in prayerTimes.sunriseTime until (prayerTimes.sunriseTime + TimeUnit.MINUTES.toMillis(15)) -> PrayerType.SUNRISE
-        currentTime in (prayerTimes.sunriseTime + TimeUnit.MINUTES.toMillis(15))  until prayerTimes.asrTime -> PrayerType.DHUHR
+        currentTime in prayerTimes.sunriseTime until prayerTimes.dhuhrTime -> PrayerType.SUNRISE
+        currentTime in prayerTimes.dhuhrTime until prayerTimes.asrTime -> PrayerType.DHUHR
         currentTime in prayerTimes.asrTime until prayerTimes.maghribTime -> PrayerType.ASR
         currentTime in prayerTimes.maghribTime until prayerTimes.ishaTime -> PrayerType.MAGHRIB
-        currentTime >= prayerTimes.ishaTime || currentTime < prayerTimes.lastThirdTime -> PrayerType.ISHA
+        currentTime >= prayerTimes.ishaTime || (prayerTimes.fajrTime > 0 && currentTime < prayerTimes.fajrTime) -> PrayerType.ISHA
         else -> null
     }
 

@@ -7,6 +7,8 @@ import com.hazrat.model.DuaCategoryModel
 import com.hazrat.usecase.dua.GetDuaCategoryUseCase
 import com.hazrat.usecase.dua.SearchAndGetDuaCategoriesUseCase
 import com.hazrat.utils.result.Result
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 
 /**
@@ -40,16 +43,17 @@ class DuaViewModel(
     }
 
 
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun observeDuaCategory() {
         viewModelScope.launch {
             _state.map { it.searchText }
                 .distinctUntilChanged()
-                .debounce(300L)
-                .flatMapLatest { qeury ->
-                    if (qeury.isBlank()){
+                .debounce(300L.milliseconds)
+                .flatMapLatest { query ->
+                    if (query.isBlank()){
                         getDuaCategoryUseCase()
                     }else {
-                        searchAndGetDuaCategoriesUseCase(query = qeury)
+                        searchAndGetDuaCategoriesUseCase(query = query)
                     }
                 }.collectLatest { result ->
                     when(result) {

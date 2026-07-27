@@ -3,12 +3,11 @@ package com.hazrat.zakat.di
 import com.hazrat.zakat.data.repository.ZakatRepositoryImpl
 import com.hazrat.zakat.domain.repository.ZakatRepository
 import com.hazrat.zakat.domain.usecase.GetZakatDetailsUseCase
-import com.hazrat.zakat.screen.zakat.ZakatViewModel
-import com.hazrat.zakat.screen.zakat.screen.zakat_screen.ZakatScreenViewModel
+import com.hazrat.zakat.zakat_calculation.ZakatCalculationViewModel
+import com.hazrat.zakat.zakat_list.ZakatListViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-
 
 /**
  * @author hazratummar
@@ -28,7 +27,6 @@ fun getZakatModule(): Module = module {
 
     single { GetZakatDetailsUseCase(zakatRepository = get()) }
 
-    viewModel { ZakatViewModel(repository = get())}
-    viewModel { ZakatScreenViewModel(repository = get(), getZakatDetailsUseCase = get(), dataStorePreference = get()) }
-
+    viewModel { ZakatListViewModel(zakatRepository = get(), zakatAlarmScheduler = get()) }
+    viewModel { ZakatCalculationViewModel(zakatRepository = get(), zakatAlarmScheduler = get()) }
 }

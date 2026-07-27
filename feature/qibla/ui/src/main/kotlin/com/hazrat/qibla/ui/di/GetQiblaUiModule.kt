@@ -22,7 +22,7 @@ fun getQiblaUiModule(): Module = module {
             userDataStore = get(),
             qiblaRepository = get(),
             locationRepository = get(),
-            observeAuthStateUseCase = get()
+            getLocationNameUseCase = get()
         )
     }
 }

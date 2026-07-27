@@ -87,7 +87,7 @@ private val TAJWEED_BRACKET_REGEX =
 /**
  * Strips U+06DF (Small High Rounded Zero) and converts sukun to comma-sukun.
  */
-private fun String.cleanUthmanic(): String {
+fun String.cleanUthmanic(): String {
     return this
         .replace("\u06DF", "")       // Remove Small High Rounded Zero
         .replace('\u0652', '\u06e1') // Convert standard round sukun to comma sukun

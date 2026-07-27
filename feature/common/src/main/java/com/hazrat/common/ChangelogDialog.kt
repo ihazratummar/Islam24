@@ -1,5 +1,7 @@
 package com.hazrat.common
 
+import com.hazrat.ui.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +32,7 @@ fun ChangelogDialog(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "What's New",
+                    text = stringResource(R.string.common_whats_new),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -39,7 +41,7 @@ fun ChangelogDialog(
         text = {
             Column {
                 Text(
-                    text = "Version ${releaseNote.versionName}",
+                    text = stringResource(R.string.common_version_name, releaseNote.versionName),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -68,7 +70,7 @@ fun ChangelogDialog(
         },
         confirmButton = {
             Button(onClick = onDismiss) {
-                Text("Awesome!")
+                Text(stringResource(R.string.common_awesome))
             }
         }
     )

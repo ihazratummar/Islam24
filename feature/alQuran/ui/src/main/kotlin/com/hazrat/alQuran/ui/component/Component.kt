@@ -2,129 +2,95 @@ package com.hazrat.alQuran.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.graphics.Path
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDirection
-import androidx.compose.ui.unit.dp
 import com.hazrat.model.al_quran_model.SurahModel
-import com.hazrat.ui.theme.NotoNaskhFontFamily
-import com.hazrat.ui.theme.ScheherazadeFontFamily
-import com.hazrat.ui.theme.customColors
+import com.hazrat.ui.common.SurahSvgImage
 import com.hazrat.ui.theme.dimens
-import kotlin.math.cos
-import kotlin.math.sin
-
 
 /**
+ * Surah Card matching user's reference design with direct Coil SVG Calligraphy rendering.
+ *
  * @author hazratummar
- * Created on 27/05/26
  */
-
-
-// Hexagon badge (approximated with a rotated box)
-@Composable
-fun SurahNumberBadge(number: Int) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(dimens.space40)
-            .drawBehind {
-                // Draw hexagon outline
-                val path = hexagonPath(size)
-                drawPath(
-                    path = path,
-                    color = Color(0xFF4DB6AC),
-                    style = Stroke(width = 1.5.dp.toPx())
-                )
-            }
-    ) {
-        Text(
-            text = number.toString(),
-            color = Color(0xFF4DB6AC),
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
-}
-
-fun hexagonPath(size: Size): Path {
-    val path = Path()
-    val cx = size.width / 2f
-    val cy = size.height / 2f
-    val r = size.minDimension / 2f * 0.9f
-    for (i in 0..5) {
-        val angle = Math.toRadians((60.0 * i) - 30.0)
-        val x = cx + r * cos(angle).toFloat()
-        val y = cy + r * sin(angle).toFloat()
-        if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
-    }
-    path.close()
-    return path
-}
-
-
 @Composable
 fun SurahCard(
     modifier: Modifier = Modifier,
     surah: SurahModel,
     onClick: () -> Unit
 ) {
-    Row(
+    Card(
         modifier = modifier
-            .padding(dimens.space12)
-            .clickable(
-                onClick = onClick
-            )
-        ,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(dimens.cornerXl),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.08f)
+        )
     ) {
-        SurahNumberBadge(
-            surah.surahNumber
-        )
-        Spacer(Modifier.width(dimens.space8))
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(dimens.space4)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimens.space16, vertical = dimens.space12),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = surah.nameEnglish,
-                style = MaterialTheme.typography.bodyMedium.copy(
+            // Left: Number & Calligraphy Image together
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimens.space16)
+            ) {
+                Text(
+                    text = surah.surahNumber.toString(),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.SemiBold
+                    modifier = Modifier.width(dimens.space24)
                 )
-            )
-            Text(
-                text = "${surah.nameTransliterated} • ${surah.totalAyahs} verses • ${surah.type}",
-                style = MaterialTheme.typography.labelMedium.copy(
-                    color = customColors.secondaryText
-                )
-            )
-        }
 
-        Text(
-            text = surah.nameArabic,
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontFamily = ScheherazadeFontFamily,
-                color = MaterialTheme.colorScheme.onBackground,
-                textDirection = TextDirection.Rtl,
-                fontFeatureSettings = "calt, kern, liga, clig, ss01, ss03"
-            )
-        )
+                // Calligraphy SVG - Prominent & Large using design system dimens!
+                SurahSvgImage(
+                    surahNumber = surah.surahNumber,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .height(dimens.space40)
+                        .width(dimens.avatarXl)
+                )
+            }
+
+            // Right: Transliterated Name & English Meaning (Right aligned)
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(dimens.space2)
+            ) {
+                Text(
+                    text = surah.nameTransliterated,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = surah.nameEnglish,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
+        }
     }
 }

@@ -2,10 +2,10 @@ package com.hazrat.alQuran.ui.di
 
 import com.hazrat.alQuran.ui.ayah.AyahViewModel
 import com.hazrat.alQuran.ui.surah.SurahViewModel
+import com.hazrat.usecase.quran.ControlQuranAudioUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-
 
 /**
  * @author hazratummar
@@ -13,11 +13,21 @@ import org.koin.dsl.module
  */
 
 fun getAlQuranUiModule(): Module = module {
-    viewModel { SurahViewModel(quranRepository = get()) }
+    viewModel {
+        SurahViewModel(
+            getAllSurahListUseCase = get(),
+            getRecentSurahsUseCase = get(),
+            dataStorePreference = get()
+        )
+    }
     viewModel { param ->
         AyahViewModel(
             surahNumber = param.get(),
-            quranRepository = get()
+            getSurahAyahsUseCase = get(),
+            saveRecentSurahUseCase = get(),
+            deleteRecentSurahUseCase = get(),
+            dataStorePreference = get(),
+            controlQuranAudioUseCase = getOrNull<ControlQuranAudioUseCase>()
         )
     }
 }

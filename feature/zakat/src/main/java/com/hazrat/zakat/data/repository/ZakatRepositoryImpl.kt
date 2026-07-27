@@ -58,7 +58,7 @@ class ZakatRepositoryImpl (
         fireStore.collection(USER_COLLECTION).document(userId).collection(ZAKAT_COLLECTION)
             .document(newZakatEntity.id).set(zakatEntity)
             .addOnSuccessListener {
-                Toast.makeText(context, "Zakat Added Successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(com.hazrat.ui.R.string.zakat_added_success), Toast.LENGTH_SHORT).show()
             }.addOnFailureListener {
             }
     }
@@ -122,15 +122,15 @@ class ZakatRepositoryImpl (
                     is FirebaseFirestoreException -> {
                         when (e.code) {
                             FirebaseFirestoreException.Code.UNAVAILABLE -> {
-                                Toast.makeText(context, "Network error. Please check your connection and try again.", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, context.getString(com.hazrat.ui.R.string.error_network), Toast.LENGTH_LONG).show()
                             }
                             else -> {
-                                Toast.makeText(context, "Error synchronizing data with Firestore: ${e.message}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, context.getString(com.hazrat.ui.R.string.error_firestore_sync, e.message), Toast.LENGTH_LONG).show()
                             }
                         }
                     }
                     else -> {
-                        Toast.makeText(context, "An unexpected error occurred: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, context.getString(com.hazrat.ui.R.string.error_unexpected, e.message), Toast.LENGTH_LONG).show()
                     }
                 }
             }

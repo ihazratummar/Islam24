@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "com.hazrat.qibla.ui"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
@@ -41,11 +41,12 @@ dependencies {
     implementation(project(":core:sensor"))
     implementation(project(":core:location"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
 
     implementation(project(":feature:common"))
-    implementation(project(":feature:auth:domain"))
 
     api(project(":domain:repository"))
+    implementation(project(":domain:usecase"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

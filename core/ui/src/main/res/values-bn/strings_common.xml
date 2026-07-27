@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_add">Add</string>
+    <string name="common_search">Search</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_next">Next</string>
+    <string name="common_previous">Previous</string>
+    <string name="common_submit">Submit</string>
+    <string name="common_confirm">Confirm</string>
+    <string name="common_dismiss">Dismiss</string>
+    <string name="common_information">Information</string>
+    <string name="common_profile">Profile</string>
+    <string name="common_guest_user">Guest User</string>
+    <string name="common_tap_to_sign_in">Tap to Sign In</string>
+    <string name="common_rate_us">Rate us</string>
+    <string name="common_go_to_rate">Go to Rate</string>
+    <string name="common_policies">Policies</string>
+    <string name="common_whats_new">What\'s New</string>
+    <string name="common_awesome">Awesome!</string>
+    <string name="common_star">Star</string>
+    <string name="common_invite">Invite</string>
+    <string name="common_language">Language</string>
+    <string name="common_login_required">Login Required</string>
+    <string name="common_login_to_unlock_compass">Login or Register to unlock more compass design</string>
+    <string name="common_made_with_love">Made with love for the Ummah</string>
+    <string name="common_version_name">Version %1$s</string>
+    <string name="common_app_version">Islam 24 %1$s</string>
+    <string name="athkar_morning">Morning Azkar</string>
+    <string name="athkar_evening">Evening Azkar</string>
+    <string name="athkar_reset_all">Reset All</string>
+    <string name="athkar_completed">completed</string>
+</resources>

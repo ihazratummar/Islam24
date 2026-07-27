@@ -2,11 +2,10 @@ package com.hazrat.islam24.main.mainActivity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.auth.domain.usecase.ObserveUserUseCase
 import com.hazrat.datastore.AppDataStore
 import com.hazrat.location.repository.LocationRepository
 import com.hazrat.model.ReleaseNote
-import com.hazrat.utils.ChangelogProvider
+import com.hazrat.utils.ChangelogRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,10 +16,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainViewModel(
-    private val observeUserUseCase: ObserveUserUseCase,
     private val locationRepository: LocationRepository,
     private val appDataStore: AppDataStore,
-    private val context: android.content.Context
+    private val changelogRepository: ChangelogRepository
 ) : ViewModel() {
 
     val isDarkMode: StateFlow<Boolean>
@@ -30,12 +28,6 @@ class MainViewModel(
     val showChangelog = _showChangelog.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            observeUserUseCase().collect { _ ->
-                // User state is being observed reactively
-            }
-        }
-
         viewModelScope.launch {
             locationRepository.getLastKnownLocation()
         }
@@ -59,17 +51,17 @@ class MainViewModel(
     private fun checkChangelog() {
         viewModelScope.launch {
             val lastSeenVersion = appDataStore.getLastSeenVersionCode()
-            val latestVersion = ChangelogProvider.getLatestVersionCode(context)
+            val latestVersion = changelogRepository.getLatestVersionCode()
 
             if (latestVersion != 0 && latestVersion != lastSeenVersion) {
-                _showChangelog.update { ChangelogProvider.getReleaseNotes(context).firstOrNull() }
+                _showChangelog.update { changelogRepository.getReleaseNotes().firstOrNull() }
             }
         }
     }
 
     fun onChangelogDismissed() {
         viewModelScope.launch {
-            val latestVersion = ChangelogProvider.getLatestVersionCode(context)
+            val latestVersion = changelogRepository.getLatestVersionCode()
             appDataStore.setLastSeenVersionCode(latestVersion)
             _showChangelog.update { null }
         }

@@ -1,24 +1,29 @@
 package com.hazrat.usecase.di
 
-import com.hazrat.usecase.dua.GetDuaCategoryUseCase
-import com.hazrat.usecase.dua.GetDuaItemListUseCase
-import com.hazrat.usecase.prayer.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.GetIslamicEventsUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetNextFridayTime
+import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
+import com.hazrat.usecase.dua.GetDuaCategoryUseCase
+import com.hazrat.usecase.dua.GetDuaItemListUseCase
+import com.hazrat.usecase.dua.SearchAndGetDuaCategoriesUseCase
+import com.hazrat.usecase.prayer.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.prayer.GetPrayerNotificationStateUseCase
 import com.hazrat.usecase.prayer.GetPrayerTimeWindowForDaysUseCase
 import com.hazrat.usecase.prayer.GetTodayPrayerTimeUseCase
-import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
-import com.hazrat.usecase.dua.SearchAndGetDuaCategoriesUseCase
 import com.hazrat.usecase.prayer.LogPrayerUseCase
 import com.hazrat.usecase.prayer.PrayerNotificationEnabledUseCase
 import com.hazrat.usecase.prayer.TogglePrayerUseCase
 import com.hazrat.usecase.prayer.UnLogPrayerUseCase
+import com.hazrat.usecase.quran.ControlQuranAudioUseCase
+import com.hazrat.usecase.quran.DeleteRecentSurahUseCase
+import com.hazrat.usecase.quran.GetAllSurahListUseCase
+import com.hazrat.usecase.quran.GetRecentSurahsUseCase
+import com.hazrat.usecase.quran.GetSurahAyahsUseCase
+import com.hazrat.usecase.quran.SaveRecentSurahUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.time.Clock
-
 
 /**
  * @author hazratummar
@@ -31,7 +36,7 @@ fun getUserCaseModule(): Module = module {
     single { GetUpcomingMainIslamicEventUseCase() }
     single { GetIslamicEventsUseCase(prayerTimeRepository = get()) }
     single { GetNextFridayTime(prayerTimeRepository = get()) }
-    single { GetPrayerTimeWindowForDaysUseCase(prayerTimeRepository = get(),) }
+    single { GetPrayerTimeWindowForDaysUseCase(prayerTimeRepository = get()) }
 
     single<Clock> {
         Clock.systemDefaultZone()
@@ -47,4 +52,10 @@ fun getUserCaseModule(): Module = module {
     single { GetDuaItemListUseCase(duaRepository = get()) }
     single { SearchAndGetDuaCategoriesUseCase(duaRepository = get()) }
 
+    single { GetAllSurahListUseCase(quranRepository = get()) }
+    single { GetSurahAyahsUseCase(quranRepository = get()) }
+    single { GetRecentSurahsUseCase(quranRepository = get()) }
+    single { SaveRecentSurahUseCase(quranRepository = get()) }
+    single { DeleteRecentSurahUseCase(quranRepository = get()) }
+    single { ControlQuranAudioUseCase(audioPlaybackRepository = get()) }
 }

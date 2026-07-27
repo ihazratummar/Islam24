@@ -3,7 +3,6 @@ package com.hazrat.notification
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,7 +12,6 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.net.toUri
 import com.hazrat.database.database.PrayerDatabase
 import com.hazrat.datastore.NotificationType
 import com.hazrat.datastore.UserDataStore
@@ -113,9 +111,21 @@ class PrayerTimeReceiver : BroadcastReceiver(), KoinComponent {
     ): NotificationCompat.Builder {
 
         val clickIntent = Intent(
-            Intent.ACTION_VIEW,
-            "https://islam24.hazratdev.top/prayertime".toUri()
+            context,
+            Class.forName("com.hazrat.islam24.main.mainActivity.MainActivity")
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("extra_nav_target", "prayertime")
+        }
+
+        val clickPendingIntent: PendingIntent = PendingIntent.getActivity(
+            context,
+            prayerName.ordinal,
+            clickIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
+
+
 
         val muteIntent = PendingIntent.getBroadcast(
             context,
@@ -123,12 +133,6 @@ class PrayerTimeReceiver : BroadcastReceiver(), KoinComponent {
             Intent(context, MuteReceiver::class.java),
             PendingIntent.FLAG_IMMUTABLE
         )
-
-        val clickPendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(clickIntent)
-            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-
 
         val pattern = longArrayOf(0, 500, 1000)
         val builder = NotificationCompat.Builder(context, channelId)

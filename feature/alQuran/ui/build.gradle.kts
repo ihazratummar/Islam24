@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "com.hazrat.alQuran.ui"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
@@ -37,10 +37,13 @@ kotlin {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:datastore"))
+    implementation(project(":core:downloader"))
     api(project(":core:ui"))
 
     implementation(project(":domain:model"))
     implementation(project(":domain:repository"))
+    implementation(project(":domain:usecase"))
 
     implementation(project(":feature:common"))
     implementation(project(":feature:alQuran:domain"))

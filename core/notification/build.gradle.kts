@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.hazrat.notification"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
@@ -33,11 +33,14 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:downloader"))
 
     implementation(project(":domain:model"))
+    implementation(project(":domain:repository"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.media)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.koin.workmanager)
     implementation(libs.material)

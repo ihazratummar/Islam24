@@ -8,7 +8,6 @@ import com.hazrat.allahNames.ui.di.getAllahNamesUiModule
 import com.hazrat.athkar.di.getAthkarDataModule
 import com.hazrat.athkar.ui.di.getAthkarUiModule
 import com.hazrat.auth.data.di.getAuthDataModule
-import com.hazrat.auth.domain.di.getAuthDomainModule
 import com.hazrat.auth.ui.di.getAuthUiModule
 import com.hazrat.database.getDatabaseModule
 import com.hazrat.datastore.di.getDatastoreModule
@@ -24,6 +23,7 @@ import com.hazrat.remote.di.getRemoteModule
 import com.hazrat.sensor.geSensorModule
 import com.hazrat.usecase.di.getUserCaseModule
 import com.hazrat.utils.di.getUtilsModule
+import com.hazrat.tasbih.di.tasbihModule
 import com.hazrat.zakat.di.getZakatModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -49,7 +49,6 @@ fun initKoin(app: Application) {
             getQiblaUiModule(),
             getAuthUiModule(),
             getAuthDataModule(),
-            getAuthDomainModule(),
             getNotificationModule(),
             getAllahNamesUiModule(),
             getAllahNamesDataModule(),
@@ -59,7 +58,8 @@ fun initKoin(app: Application) {
             getAlQuranDataModule(),
             getQiblaDataModule(),
             getPrayerUiModule(),
-            getHomeUiModule()
+            getHomeUiModule(),
+            tasbihModule
         )
     }
 }

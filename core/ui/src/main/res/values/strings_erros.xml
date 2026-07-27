@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="check_internet">Check Internet connection</string>
+    <string name="invalid_name">Invalid name</string>
+    <string name="invalid_bio">Invalid user bio</string>
+    <string name="user_id">Invalid user id</string>
+    <string name="unknown_error">Cause of this error not found</string>
+    <string name="error_unexpected">An unexpected error occurred: %1$s</string>
+    <string name="error_firestore_sync">Error synchronizing data with Firestore: %1$s</string>
+    <string name="error_network">Network error. Please check your connection and try again.</string>
+    <string name="error_location_permission">Location permission is needed for prayer times</string>
+    <string name="error_notification_permission">Notification permission is needed for Prayer Notification.</string>
+    <string name="error_location_required_title">Location Required</string>
+    <string name="error_location_access_required_title">Location Access Required</string>
+    <string name="error_notification_access_title">Notification Access</string>
+</resources>

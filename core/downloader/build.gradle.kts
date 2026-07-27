@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.hazrat.downloader"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
@@ -42,6 +42,7 @@ kotlin {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:database"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

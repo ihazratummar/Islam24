@@ -182,6 +182,14 @@ object IslamicTypography {
     val ArabicSm = TextStyle(fontFamily = AmiriFontFamily, fontSize = 18.sp, lineHeight = 28.sp)
     val ArabicXs = TextStyle(fontFamily = AmiriFontFamily, fontSize = 16.sp, lineHeight = 24.sp)
     
+    val ScheherazadeCardArabic = TextStyle(
+        fontFamily = ScheherazadeFontFamily,
+        textDirection = androidx.compose.ui.text.style.TextDirection.Rtl,
+        fontFeatureSettings = "cv62",
+        fontSize = 25.sp,
+        lineHeight = 50.sp
+    )
+
     val CounterXl = TextStyle(fontFamily = InterFontFamily, fontWeight = FontWeight.Bold, fontSize = 48.sp, lineHeight = 56.sp, letterSpacing = (-0.5).sp)
     val CounterLg = TextStyle(fontFamily = InterFontFamily, fontWeight = FontWeight.Bold, fontSize = 36.sp, lineHeight = 44.sp, letterSpacing = (-0.5).sp)
     val CounterMd = TextStyle(fontFamily = InterFontFamily, fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 32.sp)

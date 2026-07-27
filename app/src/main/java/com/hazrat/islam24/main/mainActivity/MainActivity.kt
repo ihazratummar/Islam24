@@ -4,29 +4,29 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
+import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hazrat.auth.ui.login.LoginViewModel
-import com.hazrat.auth.ui.signup.SignUpViewModel
-import com.hazrat.auth.ui.profiledetails.ProfileDetailsViewModel
 import com.hazrat.common.ChangelogDialog
+import com.hazrat.islam24.main.navigation.NavigationCommandBus
+import com.hazrat.islam24.main.navigation.NavigationTarget
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.UpdateManager
+import com.hazrat.model.Languages
 import com.hazrat.notification.NotificationChannels
-import com.hazrat.prayer.ui.prayertime.PrayerTimeViewModel
+import com.hazrat.notification.PrayerRescheduleWorker
 import com.hazrat.ui.common.rememberImageLoader
 import com.hazrat.ui.theme.Islam24Theme
-import com.hazrat.utils.LocaleHelper
-import com.hazrat.zakat.screen.zakat.ZakatViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import java.util.Locale
 
 // MainActivity.kt
 
@@ -38,7 +38,7 @@ import java.util.Locale
 /**
  * Author: Hazrat Ummar Shaikh
  */
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val updateManager: UpdateManager by inject()
 
@@ -53,20 +53,37 @@ class MainActivity : ComponentActivity() {
      */
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
-        // Enable edge-to-edge display
-        enableEdgeToEdge()
-
-        // Hide the action bar
-        actionBar?.hide()
+        // Enable edge-to-edge display with explicit transparent status and navigation bars
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            ),
+            navigationBarStyle = SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            )
+        )
 
         mainViewModel = getViewModel()
-        // Set window decor to fit system windows
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         notificationHelper.createNotificationChannels()
 
         // Enterprise-grade: Ensure alarms are correctly scheduled on every app launch
-        com.hazrat.notification.PrayerRescheduleWorker.enqueue(this)
+       PrayerRescheduleWorker.enqueue(this)
+
+        val pref = getSharedPreferences("app_setting", Context.MODE_PRIVATE)
+        val language = pref.getString("language", Languages.ENGLISH.name) ?: Languages.ENGLISH.name
+        val langCode = try {
+            Languages.valueOf(language).code
+        } catch (e: Exception) {
+            "en"
+        }
+       AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(langCode))
+
+        // Handle notification deep link on cold start
+        handleNavigationIntent(intent)
 
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
@@ -113,13 +130,48 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
+        setIntent(intent)
+        // Handle notification navigation when app is already running (singleTask)
+        handleNavigationIntent(intent)
     }
 
-    override fun attachBaseContext(newBase: Context) {
-        val locale = Locale.getDefault()
-        val wrappedContext = LocaleHelper.wrap(newBase, locale)
-        super.attachBaseContext(wrappedContext)
+    /**
+     * Reads navigation extras from the intent and posts a command via
+     * [NavigationCommandBus]. Handles both screen-level targets (prayer, zakat)
+     * and Quran Ayah targets. Works for both cold start and warm relaunch.
+     */
+    private fun handleNavigationIntent(intent: Intent?) {
+        intent ?: return
+
+        // 1. Check for screen-level navigation target (prayer, zakat notifications)
+        val navTarget = intent.getStringExtra(EXTRA_NAV_TARGET)
+        if (navTarget != null) {
+            when (navTarget) {
+                NAV_TARGET_PRAYER_TIME -> NavigationCommandBus.navigateTo(NavigationTarget.PrayerTime)
+                NAV_TARGET_ZAKAT -> NavigationCommandBus.navigateTo(NavigationTarget.Zakat)
+            }
+            intent.removeExtra(EXTRA_NAV_TARGET)
+            return
+        }
+
+        // 2. Check for Quran Ayah navigation target (audio service notifications)
+        val surahNumber = intent.getIntExtra(EXTRA_NAV_SURAH_NUMBER, -1)
+        val ayahNumber = intent.getIntExtra(EXTRA_NAV_AYAH_NUMBER, -1)
+        if (surahNumber > 0 && ayahNumber > 0) {
+            NavigationCommandBus.navigateToAyah(surahNumber, ayahNumber)
+            intent.removeExtra(EXTRA_NAV_SURAH_NUMBER)
+            intent.removeExtra(EXTRA_NAV_AYAH_NUMBER)
+        }
+    }
+
+    companion object {
+        const val EXTRA_NAV_SURAH_NUMBER = "extra_nav_surah_number"
+        const val EXTRA_NAV_AYAH_NUMBER = "extra_nav_ayah_number"
+        /** Screen-level navigation target key used by notification receivers. */
+        const val EXTRA_NAV_TARGET = "extra_nav_target"
+        const val NAV_TARGET_PRAYER_TIME = "prayertime"
+        const val NAV_TARGET_ZAKAT = "zakat"
     }
 
 }
+

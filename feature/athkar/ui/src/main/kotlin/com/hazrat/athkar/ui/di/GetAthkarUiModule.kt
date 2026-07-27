@@ -15,7 +15,7 @@ import org.koin.dsl.module
  */
 
 fun getAthkarUiModule(): Module = module {
-    viewModel { AthkarViewModel(athkarRepository = get(), connectivityObserver = get()) }
+    viewModelOf(::AthkarViewModel)
     viewModelOf(::DuaViewModel)
 
     viewModel { params ->

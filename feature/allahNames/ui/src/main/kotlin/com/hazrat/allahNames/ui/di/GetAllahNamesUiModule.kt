@@ -12,5 +12,5 @@ import org.koin.dsl.module
  */
 
 fun getAllahNamesUiModule() : Module = module {
-    viewModel { NamesViewmodel(namesRepository = get(), connectivityObserver = get()) }
+    viewModel { NamesViewmodel(namesRepository = get()) }
 }

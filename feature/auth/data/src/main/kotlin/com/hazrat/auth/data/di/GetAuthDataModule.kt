@@ -3,18 +3,15 @@ package com.hazrat.auth.data.di
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.hazrat.auth.data.repository.ForgetPasswordRepositoryImpl
-import com.hazrat.auth.data.repository.ProfileRepositoryImpl
-import com.hazrat.auth.data.repository.SyncRepositoryImpl
-import com.hazrat.auth.domain.repository.ForgetPasswordRepository
-import com.hazrat.auth.domain.repository.SyncRepository
-import com.hazrat.domain.repository.ProfileRepository
+import com.hazrat.auth.data.billing.BillingRepositoryImpl
+import com.hazrat.auth.data.billing.RevenueCatBillingDataSource
+import com.hazrat.domain.repository.BillingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
-
 
 /**
  * @author hazratummar
@@ -42,26 +39,16 @@ fun getAuthDataModule(): Module = module {
         FirebaseStorage.getInstance()
     }
 
-    single<ForgetPasswordRepository> {
-        ForgetPasswordRepositoryImpl(
-            api = get(),
-            connectivityObserver = get()
-        )
+    // RevenueCat Data Source
+    single {
+        RevenueCatBillingDataSource(context = androidContext())
     }
-    single<SyncRepository> {
-        SyncRepositoryImpl(
-            zakatRepository = get(),
-            qiblaRepository = get()
-        )
-    }
-    single<ProfileRepository> {
-        ProfileRepositoryImpl(
-            context = get(),
-            auth = get(),
-            fireStore = get(),
-            storage = get(),
-            syncRepository = get(),
-            connectivityObserver = get()
+
+    // Billing Repository
+    single<BillingRepository> {
+        BillingRepositoryImpl(
+            revenueCatBillingDataSource = get(),
+            userDataStore = get()
         )
     }
 }

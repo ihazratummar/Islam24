@@ -1,6 +1,7 @@
 package com.hazrat.qibla.ui
 
-import android.util.Log
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -8,25 +9,31 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -34,91 +41,75 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.google.android.gms.maps.model.LatLng
-import com.hazrat.common.BasicTopBar
-import com.hazrat.model.AuthState
 import com.hazrat.ui.R
-import com.hazrat.ui.common.PopupDialog
+import com.hazrat.ui.common.BasicTopBar
+import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.drawableToBitmap
 import com.hazrat.utils.hapticFeedbacks
-import kotlin.math.abs
 
 /**
- * @author Hazrat Ummar Shaikh
+ * Pure Compose Qibla Screen strictly following SOLID and Clean Architecture.
+ * Interacts exclusively with ViewModel via QiblaState and sealed QiblaEvent.
  */
-
-
-/**
- * QiblaScreen is a composable function that displays a compass indicating the Qibla direction.
- * It also vibrates the device when the user faces the Qibla.
- *
- * @param state The current state of the Qibla screen.
- * @param onBackClick A lambda function to handle the back button click.
- * @param isHapticFeedback A boolean value indicating whether haptic feedback should be enabled.
- * @param authState The current authentication state of the user.
- * @param qiblaEvent A lambda function to handle Qibla-related events.
- * @param navigateToLogin A lambda function to navigate to the login screen.
- */
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QiblaScreen(
     state: QiblaState,
-    onBackClick: () -> Unit,
-    isHapticFeedback: Boolean,
-    authState: AuthState,
-    qiblaEvent: (QiblaEvent) -> Unit,
-    navigateToLogin: () -> Unit
+    onBackClick: () -> Unit = {},
+    qiblaEvent: (QiblaEvent) -> Unit = {},
+    navigateToTasbih: () -> Unit = {},
+    isHapticFeedback: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
-
     val context = LocalContext.current
     val hapticFeedback = LocalHapticFeedback.current
 
+    val composeModel = compassList.find { it.id == state.selectedCompassId } ?: compassList.first()
 
+    // Qibla icon: gold kaabaniddle when facing Qibla, kaabaicon when not facing
     val qiblaIcon = if (state.isFacingQibla) R.drawable.kaabaniddle else R.drawable.kaabaicon
-    val qiblaIconBitmap =
-        remember(state.isFacingQibla) { drawableToBitmap(context, qiblaIcon).asImageBitmap() }
-
-    val composeModel = compassList.find { it.id == state.selectedCompassId }
+    val qiblaIconBitmap = remember(state.isFacingQibla) {
+        drawableToBitmap(context, qiblaIcon).asImageBitmap()
+    }
 
     val needleBitmap = remember(state.selectedCompassId) {
         drawableToBitmap(
             context,
-            composeModel?.compassNeedle ?: R.drawable.needles
+            composeModel.compassNeedle
         ).asImageBitmap()
     }
 
-    val compassNeedleMiddle = composeModel?.compassMiddle?.let { painterResource(it) }
-
+    val compassNeedleMiddle = composeModel.compassMiddle.let { painterResource(it) }
 
     val compassImage = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(context).data(composeModel?.compassImage)
+        model = ImageRequest.Builder(context)
+            .data(composeModel.compassImage)
             .decoderFactory(SvgDecoder.Factory())
             .build(),
         imageLoader = context.imageLoader
     )
 
+    DisposableEffect(Unit) {
+        qiblaEvent(QiblaEvent.StartSensorsAndLocation)
+        onDispose {
+            qiblaEvent(QiblaEvent.StopSensorsAndLocation)
+        }
+    }
 
     LaunchedEffect(state.isFacingQibla) {
         if (state.isFacingQibla) {
@@ -126,250 +117,357 @@ fun QiblaScreen(
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-        Image(
-            painter = painterResource(R.drawable.compass_screen_background),
-            contentDescription = "Background",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds,
-            colorFilter = ColorFilter.tint(
-                MaterialTheme.colorScheme.primaryContainer,
-                BlendMode.Softlight
-            )
-        )
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(Modifier.height(dimens.space48))
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
             BasicTopBar(
-                modifier = Modifier,
-                topBarTitle = stringResource(id = R.string.qibla),
-                onBackClick = { onBackClick.invoke() },
-                iconColor = Color.White,
-                textColor = Color.White
+                topBarTitle = stringResource(id = R.string.nav_qibla),
+                onBackClick = onBackClick
             )
-            Box(
+        },
+        modifier = modifier.fillMaxSize()
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(
                 modifier = Modifier
-                    .padding(horizontal = dimens.space20)
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.2f)
-                    .clip(
-                        shape = RoundedCornerShape(dimens.cornerXl)
-                    )
-                    .border(
-                        dimens.space2,
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(dimens.cornerXl)
-                    )
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                QiblaMapView(
-//                    modifier = Modifier
-//                        .fillMaxSize(),
-//                    qiblaLocation = LatLng(21.4225, 39.8262),
-//                    latitude = state.latitude,
-//                    longitude = state.longitude
-//                )
+                Spacer(Modifier.height(dimens.space4))
+
+                // Top Status Badges Row (Location, Accuracy, Degrees)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = dimens.space16),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Location Badge
+                    StatusPillBadge(
+                        iconText = if (state.isLocationEnabled) "📍" else "⚠️",
+                        label = if (state.isLocationEnabled) {
+                            if (state.locationName.isNotBlank()) state.locationName else "Location"
+                        } else {
+                            "Location Off"
+                        },
+                        iconColor = if (state.isLocationEnabled) Color.Unspecified else Color(0xFFFA716A),
+                        onClick = if (!state.isLocationEnabled) {
+                            {
+                                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                context.startActivity(intent)
+                            }
+                        } else null
+                    )
+
+                    // Accuracy Badge (ONLY shown when Location is Enabled to eliminate duplicate error badge!)
+                    if (state.isLocationEnabled) {
+                        val (accText, accColor, isAccClickable) = when (state.sensorAccuracy) {
+                            3 -> Triple("High accuracy", Color(0xFF4CAF50), false)
+                            2 -> Triple("Medium accuracy", Color(0xFFFFB752), false)
+                            1 -> Triple("Calibrate Compass", Color(0xFFFF8E00), true)
+                            else -> Triple("Calibrate Compass", Color(0xFFFA716A), true)
+                        }
+
+                        StatusPillBadge(
+                            iconText = if (state.sensorAccuracy >= 2) "✔" else "⚠️",
+                            label = accText,
+                            iconColor = accColor,
+                            onClick = if (isAccClickable) {
+                                { qiblaEvent(QiblaEvent.ToggleCalibrationDialog(true)) }
+                            } else null
+                        )
+                    }
+
+                    // Qibla Degree Badge
+                    StatusPillBadge(
+                        iconText = "🧭",
+                        label = if (!state.isLocationEnabled) "--" else if (state.isQiblaCalculated) "${state.qiblaDirection.toInt()}°" else "..."
+                    )
+                }
+
+                // Location Off Alert Banner
+                if (!state.isLocationEnabled) {
+                    Card(
+                        shape = RoundedCornerShape(dimens.cornerLg),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFFA716A).copy(alpha = 0.15f)
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = dimens.space16)
+                            .padding(top = dimens.space8)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = dimens.space12, vertical = dimens.space8),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                        ) {
+                            Text(text = "⚠️", style = MaterialTheme.typography.titleMedium)
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Location Services Disabled",
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                                    color = Color(0xFFFA716A)
+                                )
+                                Text(
+                                    text = "Turn on location services to compute accurate Qibla direction.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = customColors.secondaryText
+                                )
+                            }
+                            Button(
+                                onClick = {
+                                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                    context.startActivity(intent)
+                                },
+                                shape = RoundedCornerShape(dimens.cornerMd),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFA716A)),
+                                modifier = Modifier.height(dimens.space32)
+                            ) {
+                                Text(text = "Enable", color = Color.White, style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold))
+                            }
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(dimens.space8))
+
+                // Central Compass Engine Container
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .padding(horizontal = dimens.space16),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Top North Indicator Line
+                    Box(
+                        modifier = Modifier
+                            .size(width = dimens.divider * 3, height = dimens.space20)
+                            .clip(RoundedCornerShape(dimens.cornerXs))
+                            .background(
+                                if (state.isFacingQibla) Color(0xFF4CAF50)
+                                else MaterialTheme.colorScheme.primary
+                            )
+                            .align(Alignment.TopCenter)
+                    )
+
+                    // Rotation Angle (Smooth GPU animation)
+                    val rotationAngle by animateFloatAsState(
+                        targetValue = -state.currentDirection,
+                        animationSpec = tween(
+                            durationMillis = 150,
+                            easing = LinearOutSlowInEasing
+                        ),
+                        label = "CompassRotation"
+                    )
+
+                    // Compass Dial Background (Original 0.8f Scale)
+                    Image(
+                        painter = compassImage,
+                        contentDescription = stringResource(R.string.prayer_background),
+                        modifier = Modifier
+                            .fillMaxSize(0.8f)
+                            .graphicsLayer(
+                                rotationZ = rotationAngle,
+                                transformOrigin = TransformOrigin.Center
+                            )
+                    )
+
+                    // Needle & Kaaba Icon Canvas (Exact Reference Implementation)
+                    Canvas(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        val compassCenter = Offset(size.width / 2, size.height / 2)
+                        val compassRadius = size.minDimension / 2.5f
+
+                        if (state.isQiblaCalculated) {
+                            // 1. Rotate & Draw Needle from Center
+                            rotate(
+                                degrees = state.qiblaDirection - state.currentDirection,
+                                pivot = compassCenter
+                            ) {
+                                val needleStartY = compassCenter.y - needleBitmap.height / 1.1f
+                                drawImage(
+                                    image = needleBitmap,
+                                    topLeft = Offset(
+                                        compassCenter.x - needleBitmap.width / 2f,
+                                        needleStartY
+                                    )
+                                )
+                            }
+
+                            // 2. Rotate & Draw Kaaba Icon (Switches to gold kaabaniddle when facing Qibla)
+                            rotate(
+                                degrees = state.qiblaDirection - state.currentDirection,
+                                pivot = compassCenter
+                            ) {
+                                with(drawContext.canvas) {
+                                    save()
+                                    val scaleFactor = 0.3f
+                                    val iconY = compassCenter.y - compassRadius - needleBitmap.height / 4f
+                                    scale(
+                                        scale = scaleFactor,
+                                        pivot = Offset(
+                                            compassCenter.x,
+                                            iconY
+                                        )
+                                    ) {
+                                        drawImage(
+                                            image = qiblaIconBitmap,
+                                            topLeft = Offset(
+                                                compassCenter.x - qiblaIconBitmap.width / 2,
+                                                iconY
+                                            )
+                                        )
+                                    }
+                                    restore()
+                                }
+                            }
+                        }
+                    }
+
+                    // Needle Middle Center Cap (Centered in Box)
+                    Image(
+                        painter = compassNeedleMiddle,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(dimens.iconLg)
+                            .align(Alignment.Center)
+                    )
+                }
+
+                // Guidance Status Text
+                val guidanceText = when {
+                    !state.isLocationEnabled -> "Enable location services"
+                    !state.isQiblaCalculated -> "Locating Qibla..."
+                    state.isFacingQibla -> "Facing Qibla"
+                    state.qiblaDegreeDifference > 0 -> "Turn to your right"
+                    else -> "Turn to your left"
+                }
+
+                Text(
+                    text = guidanceText,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = if (state.isFacingQibla) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(vertical = dimens.space8)
+                )
+
+                // Tasbih Recommendation Card (Compact)
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.BottomCenter),
+                        .padding(horizontal = dimens.space16)
+                        .clip(RoundedCornerShape(dimens.cornerLg))
+                        .clickable { navigateToTasbih() },
+                    shape = RoundedCornerShape(dimens.cornerLg),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(
-                            0.3f
-                        )
-                    ),
-                    shape = RoundedCornerShape(dimens.cornerLg)
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
                 ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Qibla Direction: ${state.qiblaDirection.toInt()}°",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            textAlign = TextAlign.Center
-                        )
-                    )
-                }
-                Log.d("QiblaScreen", "QiblaScreen: ${state.latitude}")
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.7f)
-                    .padding(dimens.space12),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.arrowup),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .size(dimens.iconXl)
-                        .align(
-                            Alignment.TopCenter
-                        )
-                )
-                Text(
-                    text = if (state.isFacingQibla) {
-                        "You are now facing the Mecca"
-                    } else if (state.qiblaDegreeDifference >= 0) {
-                        "Rotate your device to ${state.qiblaDegreeDifference.toInt()}° right"
-                    } else {
-                        "Rotate your device to ${abs(state.qiblaDegreeDifference.toInt())}° left"
-                    },
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.align(
-                        Alignment.BottomCenter
-                    )
-                )
-
-                OrientationIndicator(
-                    pitch = state.pitch,
-                    roll = state.roll,
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                )
-
-                val rotationAngle by animateFloatAsState(
-                    targetValue = -state.currentDirection,
-                    animationSpec = tween(
-                        durationMillis = 500,
-                        easing = LinearOutSlowInEasing
-                    )
-                )
-                Image(
-                    painter = compassImage,
-                    contentDescription = "Background",
-                    modifier = Modifier
-                        .fillMaxSize(0.8f)
-                        .graphicsLayer(
-                            rotationZ = rotationAngle,
-                            transformOrigin = TransformOrigin.Center
-                        )
-                )
-
-                Canvas(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    val compassCenter = Offset(size.width / 2, size.height / 2)
-                    val compassRadius = size.minDimension / 2.5f
-
-                    rotate(
-                        degrees = state.qiblaDirection - state.currentDirection,
-                        pivot = compassCenter
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = dimens.space12, vertical = dimens.space8),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(dimens.space12)
                     ) {
-                        val needleStartY = compassCenter.y - needleBitmap.height / 1.1f
-                        drawImage(
-                            image = needleBitmap,
-                            topLeft = Offset(
-                                compassCenter.x - needleBitmap.width / 2f,
-                                needleStartY
+                        Image(
+                            painter = painterResource(R.drawable.tasbih),
+                            contentDescription = "Tasbih",
+                            modifier = Modifier.size(dimens.avatarLg)
+                        )
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Go to the Tasbih feature",
+                                style = MaterialTheme.typography.titleSmall.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = MaterialTheme.colorScheme.onBackground
                             )
-                        )
-                    }
-                    rotate(
-                        degrees = state.qiblaDirection - state.currentDirection,
-                        pivot = Offset(
-                            compassCenter.x,
-                            compassCenter.y   // Rotate around the center of the compass
-                        )
-                    ) {
-                        with(drawContext.canvas) {
-                            save()
-                            val scaleFactor = 0.3f
-                            scale(
-                                scale = scaleFactor,
-                                pivot = Offset(
-                                    compassCenter.x,
-                                    compassCenter.y - compassRadius - needleBitmap.height / 4f
-                                )
-                            ) {
-                                drawImage(
-                                    image = qiblaIconBitmap,
-                                    topLeft = Offset(
-                                        compassCenter.x - qiblaIconBitmap.width / 2,
-                                        compassCenter.y - compassRadius - needleBitmap.height / 4f
-                                    ),
-                                )
-                            }
-                            restore()
+                            Text(
+                                text = "Find solace in dhikr",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = customColors.secondaryText
+                            )
                         }
-
                     }
                 }
-                compassNeedleMiddle?.let {
-                    Image(
-                        painter = it,
-                        contentDescription = null,
-                        modifier = Modifier.size(dimens.iconLg)
-                    )
-                }
+
+                Spacer(Modifier.height(dimens.space8))
+
+                // Bottom Compass Selector Row (Smaller circular compass previews)
+                BottomCompassPreview(
+                    selectedCompassId = state.selectedCompassId,
+                    onCompassClick = { compassId ->
+                        qiblaEvent(QiblaEvent.OnCompassClick(compassId))
+                    },
+                    modifier = Modifier.padding(bottom = dimens.space8)
+                )
             }
-            
-            Spacer(modifier = Modifier.weight(1f))
-            BottomCompassPreview(
-                modifier = Modifier,
-                onCompassClick = { id, isLoggedInRequired ->
-                    Log.d("QiblaScreen", "Compass Clicked $id, $isLoggedInRequired")
-                    if (!isLoggedInRequired) {
-                        qiblaEvent(QiblaEvent.OnCompassClick(compassId = id))
-                    } else {
-                        when (authState) {
-                            AuthState.Authenticated -> {
-                                qiblaEvent(QiblaEvent.OnCompassClick(compassId = id))
-                            }
-
-                            else -> {
-                                qiblaEvent(QiblaEvent.OnLoggedInRequiredCompassClick)
-                            }
-                        }
-                    }
-                }
-            )
         }
+    }
 
-        if (state.isLoggedInRequiredPopupVisible) {
-            PopupDialog(
-                modifier = Modifier,
-                onDismissRequest = { qiblaEvent(QiblaEvent.OnLoggedInRequiredCompassClick) },
-                title = "Login Required",
-                text = "Login or Register to unlock more compass design",
-                icon = R.drawable.alert,
-                confirmButton = { navigateToLogin() }
-            )
-        }
+    // Figure-8 Compass Calibration Dialog Modal
+    if (state.isCalibrationDialogVisible) {
+        CompassCalibrationDialog(
+            sensorAccuracy = state.sensorAccuracy,
+            onDismiss = { qiblaEvent(QiblaEvent.ToggleCalibrationDialog(false)) }
+        )
     }
 }
 
+/**
+ * Pill status badge composable used for top location, accuracy, and degree info.
+ */
 @Composable
-fun OrientationIndicator(pitch: Float, roll: Float, modifier: Modifier = Modifier) {
-    val circleSize = dimens.compCardMin // Size of the circle box
-    val radius = with(LocalDensity.current) { circleSize.toPx() / 2 }
-    val dotRadius = dimens.space8 // Size of the red dot
-
-    Canvas(
+private fun StatusPillBadge(
+    iconText: String,
+    label: String,
+    iconColor: Color? = null,
+    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    Box(
         modifier = modifier
-            .size(circleSize)
-            .background(Color.Transparent, shape = CircleShape)
-            .border(dimens.elevation2, Color.Gray, CircleShape)
-    ) {
-        // Normalize pitch and roll to keep the red dot within the circle
-        val maxOffset = radius - dotRadius.toPx() * 2
-        val xOffset = (roll / 45f).coerceIn(-1f, 1f) * maxOffset
-        val yOffset = (-pitch / 45f).coerceIn(-1f, 1f) * maxOffset // Inverted for pitch
-
-        // Draw the red dot
-        drawCircle(
-            color = Color.Red,
-            radius = dotRadius.toPx(),
-            center = Offset(
-                x = center.x + xOffset,
-                y = center.y + yOffset
+            .clip(RoundedCornerShape(dimens.cornerFull))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
+            .border(
+                width = dimens.divider,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(dimens.cornerFull)
             )
-        )
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
+            .padding(horizontal = dimens.space12, vertical = dimens.space4)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+        ) {
+            Text(
+                text = iconText,
+                style = MaterialTheme.typography.labelMedium,
+                color = iconColor ?: MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }

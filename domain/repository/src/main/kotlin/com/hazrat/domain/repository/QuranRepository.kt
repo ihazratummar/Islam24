@@ -1,6 +1,7 @@
 package com.hazrat.domain.repository
 
 import com.hazrat.model.al_quran_model.AyahModel
+import com.hazrat.model.al_quran_model.RecentReadSurah
 import com.hazrat.model.al_quran_model.SurahModel
 import kotlinx.coroutines.flow.Flow
 
@@ -11,8 +12,15 @@ import kotlinx.coroutines.flow.Flow
 
 interface QuranRepository {
 
-    fun getAllSurahList() : Flow<List<SurahModel>>
+    fun getAllSurahList(): Flow<List<SurahModel>>
 
-    fun getASurahAyas(surahNumber: Int) : Flow<List<AyahModel>>
+    fun getASurahAyas(surahNumber: Int): Flow<List<AyahModel>>
 
+    suspend fun insertRecentSurah(surahNumber: Int, surahName: String, ayahNumber: Int, formattedDate: String)
+
+    fun getRecentSurahs(): Flow<List<RecentReadSurah>>
+
+    suspend fun deleteRecentSurah(surahNumber: Int)
+
+    fun observeTotalBookmarkedAyahs(): Flow<Int>
 }

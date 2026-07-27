@@ -23,6 +23,7 @@ fun DuaItemEntity.toItemModel(): DuaItemModel {
         categoryId = categoryId,
         arabicText = arabicText,
         translation = translation,
+        transliteration = transliteration,
         reference = reference,
         repeatCount = repeatCount
     )

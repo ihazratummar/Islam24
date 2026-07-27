@@ -5,7 +5,7 @@ package com.hazrat.model
  * Created on 19-06-2025
  */
 
-enum class Languages {
-    ENGLISH,
-    BENGALI
+enum class Languages(val code: String) {
+    ENGLISH("en"),
+    BENGALI("bn")
 }

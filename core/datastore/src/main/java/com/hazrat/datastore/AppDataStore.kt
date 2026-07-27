@@ -24,6 +24,7 @@ class AppDataStore (
         const val THEME_CONST = "THEME_KEY"
         const val HAPTIC_CONST = "HAPTIC_KEY"
         const val LAST_SEEN_VERSION_CONST = "LAST_SEEN_VERSION_KEY"
+        const val TASBIH_TARGET_CONST = "TASBIH_TARGET_KEY"
 
         /*
        ******************--------------------------*************************
@@ -32,6 +33,7 @@ class AppDataStore (
         val themeKey = booleanPreferencesKey(THEME_CONST)
         val hapticKey = booleanPreferencesKey(HAPTIC_CONST)
         val lastSeenVersionKey = androidx.datastore.preferences.core.intPreferencesKey(LAST_SEEN_VERSION_CONST)
+        val tasbihTargetKey = androidx.datastore.preferences.core.intPreferencesKey(TASBIH_TARGET_CONST)
     }
 
     private val systemTheme =
@@ -91,6 +93,16 @@ class AppDataStore (
         return appDataStore.data.map { preference ->
             preference[DataStoreKeys.lastSeenVersionKey] ?: 0
         }.first()
+    }
+
+    suspend fun saveTasbihTarget(target: Int) {
+        appDataStore.edit { preference ->
+            preference[DataStoreKeys.tasbihTargetKey] = target
+        }
+    }
+
+    val tasbihTarget: Flow<Int> = appDataStore.data.map { preference ->
+        preference[DataStoreKeys.tasbihTargetKey] ?: 33
     }
 
 

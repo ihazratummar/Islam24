@@ -47,10 +47,15 @@ class PrayerJanitorWorker(
                     userDataStore.isPrayerNotificationEnabled(prayer)
                 }.toSet()
 
+                val preAlertOffsets = Prayer.entries.associateWith { prayer ->
+                    userDataStore.getPrayerPreAlertOffsetSync(prayer)
+                }
+
                 prayerAlarmManager.rescheduleAll(
                     today = todayData,
                     tomorrow = tomorrowData,
-                    enabledPrayers = enabledPrayers
+                    enabledPrayers = enabledPrayers,
+                    preAlertOffsets = preAlertOffsets
                 )
                 Result.success()
             } else {

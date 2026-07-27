@@ -12,11 +12,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.model.Prayer
+import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 
 class PrayerAlarmScheduler(
-    private val context: Context
+    private val context: Context,
+    private val userDataStore: UserDataStore
 ) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -92,9 +95,13 @@ class PrayerAlarmScheduler(
         }
     }
 
-    fun setPrayerAlarm(prayerName: Prayer, prayerTime: Long) {
+    fun setPrayerAlarm(prayerName: Prayer, prayerTime: Long, preAlertMinutes: Int? = null) {
+        val offset = preAlertMinutes ?: runBlocking {
+            userDataStore.getPrayerPreAlertOffsetSync(prayerName)
+        }
+        val adjustedTime = prayerTime - (offset * 60 * 1000L)
         setAlarm(
-            prayerTime = prayerTime,
+            prayerTime = adjustedTime,
             titleContent = prayerName.notificationTitle,
             requestCode = prayerName.notificationCode,
             prayer = prayerName
@@ -103,21 +110,31 @@ class PrayerAlarmScheduler(
 
     /**
      * Reschedules all prayer alarms for the next 24 hours.
-     * It intelligently picks today's or tomorrow's time based on the current time.
+     * It intelligently picks today's or tomorrow's time based on the current time
+     * and accounts for pre-alert offsets (e.g. 5 min before).
      */
     fun rescheduleAll(
         today: com.hazrat.model.MinimalPrayerData,
         tomorrow: com.hazrat.model.MinimalPrayerData,
-        enabledPrayers: Set<Prayer>
+        enabledPrayers: Set<Prayer>,
+        preAlertOffsets: Map<Prayer, Int> = emptyMap()
     ) {
         val now = System.currentTimeMillis()
         Prayer.entries.forEach { prayer ->
             if (enabledPrayers.contains(prayer)) {
-                val todayTime = today.getPrayerTime(prayer)
-                val tomorrowTime = tomorrow.getPrayerTime(prayer)
+                val offset = preAlertOffsets[prayer] ?: 0
+                val offsetMillis = offset * 60 * 1000L
 
-                val targetTime = if (todayTime > now + 1000) todayTime else tomorrowTime
-                setPrayerAlarm(prayer, targetTime)
+                val todayAdjustedTime = today.getPrayerTime(prayer) - offsetMillis
+                val tomorrowAdjustedTime = tomorrow.getPrayerTime(prayer) - offsetMillis
+
+                val targetAdjustedTime = if (todayAdjustedTime > now + 1000) todayAdjustedTime else tomorrowAdjustedTime
+                setAlarm(
+                    prayerTime = targetAdjustedTime,
+                    titleContent = prayer.notificationTitle,
+                    requestCode = prayer.notificationCode,
+                    prayer = prayer
+                )
             } else {
                 cancelAlarm(prayer.notificationCode)
             }

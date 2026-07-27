@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "com.hazrat.athkar.ui"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
@@ -39,6 +39,7 @@ dependencies {
     api(project(":core:ui"))
     implementation(project(":core:utils"))
 
+    implementation(project(":core:datastore"))
     implementation(project(":domain:usecase"))
 
     implementation(project(":feature:common"))

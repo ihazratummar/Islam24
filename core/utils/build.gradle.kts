@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.hazrat.utils"
-    compileSdk = 36
+    compileSdk = 37
 
     val properties = Properties()
     properties.load(project.rootProject.file("local.properties").inputStream())

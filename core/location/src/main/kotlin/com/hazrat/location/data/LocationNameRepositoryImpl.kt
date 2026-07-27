@@ -43,28 +43,13 @@ class LocationNameRepositoryImpl(
         val currentLocation = locationRepository.getCurrentLocation()
         if (currentLocation is LocationResult.Success) {
             val entity = if (shouldUpdateName(newLocation = currentLocation.location)) {
+                prayerTimeRepository.refreshPrayerTimes()
                 fetchAndCacheLocationInfo(currentLocation.location)
             } else {
                 getCachedLocationInfo() ?: fetchAndCacheLocationInfo(currentLocation.location)
             }
             emit(entity)
         }
-
-        // ── Step 3: Then keep listening for GPS updates (background refresh) ─
-        emitAll(
-            locationRepository.observeLocationUpdates(locationConfig = LocationConfigs.Default)
-                .filterIsInstance<LocationResult.Success>()
-                .map { it.location }
-                .map { location ->
-                    if (shouldUpdateName(location)) {
-                        prayerTimeRepository.refreshPrayerTimes()
-                        fetchAndCacheLocationInfo(location)
-                    } else {
-                        getCachedLocationInfo() ?: fetchAndCacheLocationInfo(location)
-                    }
-                }
-                .distinctUntilChanged()
-        )
     }.flowOn(Dispatchers.IO)
 
 

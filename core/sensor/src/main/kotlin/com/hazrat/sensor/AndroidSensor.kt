@@ -58,5 +58,7 @@ abstract class AndroidSensor(
         }
     }
 
-    override fun onAccuracyChanged(p0: Sensor?, p1: Int) = Unit
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+        onAccuracyChanged?.invoke(p1)
+    }
 }

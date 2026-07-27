@@ -15,22 +15,19 @@ plugins {
 
 android {
     namespace = "com.hazrat.islam24"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
-        targetSdk= 36
-        versionCode = 97
-        versionName = "3.0.0"
+        this.targetSdk = 37
+        versionCode = 105
+        versionName = "4.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "MY_PASS_PHRASE", properties.getProperty("MY_PASS_PHRASE"))
-        buildConfigField("String", "MAPS_API_KEY", properties.getProperty("MAPS_API_KEY"))
-
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -41,6 +38,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -101,7 +99,6 @@ dependencies {
 
     implementation(project(":feature:auth:ui"))
     implementation(project(":feature:auth:data"))
-    implementation(project(":feature:auth:domain"))
 
     implementation(project(":feature:qibla:ui"))
     implementation(project(":feature:qibla:data"))
@@ -122,11 +119,13 @@ dependencies {
     implementation(project(":feature:prayertime:data"))
 
     implementation(project(":feature:home:ui"))
+    implementation(project(":feature:tasbih"))
 
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -167,7 +166,8 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.runtime.livedata)
 
-    //Google Play Store Update
+    //Google Play Store Update & Billing
+    implementation(libs.android.billing.ktx)
     implementation(libs.app.update)
     implementation(libs.app.update.ktx)
     implementation(libs.review)

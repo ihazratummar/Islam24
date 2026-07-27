@@ -9,11 +9,11 @@ data class JuristicMethodDetails(
 )
 
 val schoolDetailsList = listOf(
-    _root_ide_package_.com.hazrat.model.prayersettingmodel.JuristicMethodDetails(
+    JuristicMethodDetails(
         number = 0,
         name = "Shafi'i, Maliki & Hanbali"
     ),
-    _root_ide_package_.com.hazrat.model.prayersettingmodel.JuristicMethodDetails(
+    JuristicMethodDetails(
         number = 1,
         name = "Hanafi"
     )
