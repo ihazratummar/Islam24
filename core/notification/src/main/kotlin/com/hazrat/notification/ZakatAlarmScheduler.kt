@@ -48,20 +48,11 @@ class ZakatAlarmScheduler(
         )
 
         try {
-            if (canScheduleExactAlarms()) {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerTimeMillis,
-                    pendingIntent
-                )
-            } else {
-                Log.w("ZakatAlarmScheduler", "Exact alarms not allowed, falling back to setAndAllowWhileIdle.")
-                alarmManager.setAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerTimeMillis,
-                    pendingIntent
-                )
-            }
+            alarmManager.setAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerTimeMillis,
+                pendingIntent
+            )
         } catch (e: SecurityException) {
             Log.e("ZakatAlarmScheduler", "SecurityException while scheduling Zakat alarm", e)
             alarmManager.set(

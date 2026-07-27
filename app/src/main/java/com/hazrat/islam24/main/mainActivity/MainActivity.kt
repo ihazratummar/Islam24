@@ -54,14 +54,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        // Enable edge-to-edge display
-        enableEdgeToEdge()
-
-        // Hide the action bar is not needed in Compose and causes AppCompat theme crashes
+        // Enable edge-to-edge display with explicit transparent status and navigation bars
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            ),
+            navigationBarStyle = SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            )
+        )
 
         mainViewModel = getViewModel()
-        // Set window decor to fit system windows
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         notificationHelper.createNotificationChannels()
 
         // Enterprise-grade: Ensure alarms are correctly scheduled on every app launch
