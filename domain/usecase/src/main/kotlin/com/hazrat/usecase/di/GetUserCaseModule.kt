@@ -15,6 +15,7 @@ import com.hazrat.usecase.prayer.LogPrayerUseCase
 import com.hazrat.usecase.prayer.PrayerNotificationEnabledUseCase
 import com.hazrat.usecase.prayer.TogglePrayerUseCase
 import com.hazrat.usecase.prayer.UnLogPrayerUseCase
+import com.hazrat.usecase.quran.ControlQuranAudioUseCase
 import com.hazrat.usecase.quran.DeleteRecentSurahUseCase
 import com.hazrat.usecase.quran.GetAllSurahListUseCase
 import com.hazrat.usecase.quran.GetRecentSurahsUseCase
@@ -56,4 +57,5 @@ fun getUserCaseModule(): Module = module {
     single { GetRecentSurahsUseCase(quranRepository = get()) }
     single { SaveRecentSurahUseCase(quranRepository = get()) }
     single { DeleteRecentSurahUseCase(quranRepository = get()) }
+    single { ControlQuranAudioUseCase(audioPlaybackRepository = get()) }
 }

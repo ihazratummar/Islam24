@@ -11,4 +11,11 @@ sealed interface QiblaEvent {
 
     data object OnLoggedInRequiredCompassClick : QiblaEvent
 
+    data class ToggleCalibrationDialog(val isVisible: Boolean) : QiblaEvent
+
+    data class OnLocationStatusChanged(val isEnabled: Boolean) : QiblaEvent
+
+    data object StartSensorsAndLocation : QiblaEvent
+
+    data object StopSensorsAndLocation : QiblaEvent
 }

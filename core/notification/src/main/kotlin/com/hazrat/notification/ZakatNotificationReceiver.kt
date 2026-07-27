@@ -3,7 +3,6 @@ package com.hazrat.notification
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,7 +12,6 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.net.toUri
 import com.hazrat.ui.R
 import com.hazrat.utils.formatCurrency
 import org.koin.core.component.KoinComponent
@@ -37,14 +35,19 @@ class ZakatNotificationReceiver : BroadcastReceiver(), KoinComponent {
         Log.d("ZakatNotificationReceiver", "Alarm triggered for Zakat ID: $zakatId (Amount: $zakatAmount)")
 
         val clickIntent = Intent(
-            Intent.ACTION_VIEW,
-            "https://islam24.hazratdev.top/zakat".toUri()
-        )
-
-        val pendingIntent: PendingIntent = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(clickIntent)
-            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+            context,
+            Class.forName("com.hazrat.islam24.main.mainActivity.MainActivity")
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("extra_nav_target", "zakat")
         }
+
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            context,
+            zakatId.hashCode(),
+            clickIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
         val amountFormatted = formatCurrency(zakatAmount)
         val title = "🌙 Zakat Hawl Due Reminder"

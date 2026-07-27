@@ -37,7 +37,6 @@ fun QuickAccessMenu(
             HomePageNavIcons.Calendar,
             HomePageNavIcons.Athkar,
             HomePageNavIcons.Dua,
-            HomePageNavIcons.Qibla,
             HomePageNavIcons.Tasbih,
             HomePageNavIcons.Zakat,
         )
@@ -47,7 +46,7 @@ fun QuickAccessMenu(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalArrangement = Arrangement.spacedBy(dimens.space8),
-        maxItemsInEachRow = 4
+        maxItemsInEachRow = 3
     ) {
 
         navIcons.forEach {

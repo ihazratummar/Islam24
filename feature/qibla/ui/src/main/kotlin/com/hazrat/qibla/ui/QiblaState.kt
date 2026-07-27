@@ -17,4 +17,8 @@ data class QiblaState (
     val isLocationEnabled: Boolean = false,
     val isLoggedInRequiredPopupVisible: Boolean = false,
     val selectedCompassId: Int = 1,
+    val locationName: String = "Location",
+    val sensorAccuracy: Int = 3,
+    val isCalibrationDialogVisible: Boolean = false,
+    val isQiblaCalculated: Boolean = false
 )

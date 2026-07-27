@@ -32,7 +32,9 @@ interface PrayerLogDao {
     @Query("SELECT * FROM prayer_logs WHERE date = :date AND is_deleted = 0 ORDER BY prayer ASC")
     fun observeDailyLogs(date: String) : Flow<List<PrayerLogEntity>>
 
+    @Query("SELECT COUNT(*) FROM prayer_logs WHERE is_deleted = 0")
+    fun getTotalLoggedPrayersCount(): Flow<Int>
 
-
-
+    @Query("SELECT DISTINCT date FROM prayer_logs WHERE is_deleted = 0 ORDER BY date DESC")
+    fun getLoggedDates(): Flow<List<String>>
 }

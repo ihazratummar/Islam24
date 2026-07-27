@@ -264,6 +264,25 @@ class FusedLocationDataSource(
         }
     }
 
+    override fun observeLocationProviderStatus(): Flow<Boolean> = callbackFlow {
+        val receiver = object : android.content.BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: android.content.Intent?) {
+                if (intent?.action == LocationManager.PROVIDERS_CHANGED_ACTION) {
+                    trySend(isLocationEnabled())
+                }
+            }
+        }
+        val filter = android.content.IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
+        context.registerReceiver(receiver, filter)
+        trySend(isLocationEnabled())
+
+        awaitClose {
+            try {
+                context.unregisterReceiver(receiver)
+            } catch (_: Exception) {}
+        }
+    }
+
     private fun isLocationEnabled(): Boolean {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||

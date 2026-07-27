@@ -58,6 +58,29 @@ class PrayerLogsRepositoryImpl(
         TODO("Not yet implemented")
     }
 
+    override fun observeTotalLoggedPrayers(): Flow<Int> =
+        prayerLogDao.getTotalLoggedPrayersCount()
+
+    override fun observePrayerStreak(): Flow<Int> =
+        prayerLogDao.getLoggedDates().map { dates ->
+            if (dates.isEmpty()) return@map 0
+            var streak = 0
+            var currentDate = LocalDate.now()
+            val dateSet = dates.mapNotNull {
+                try { LocalDate.parse(it) } catch (_: Exception) { null }
+            }.toSet()
+
+            if (!dateSet.contains(currentDate)) {
+                currentDate = currentDate.minusDays(1)
+            }
+
+            while (dateSet.contains(currentDate)) {
+                streak++
+                currentDate = currentDate.minusDays(1)
+            }
+            streak
+        }
+
     override suspend fun computeStreakInfo(today: LocalDate): PrayerStreakInfo {
         TODO("Not yet implemented")
     }

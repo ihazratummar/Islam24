@@ -109,6 +109,65 @@ fun getDatabaseModule(): Module = module {
     single<ZakatDao> { get<ZakatDatabase>().zakatDao() }
 
     // Quran Database
+    // Migration v0/v1 -> v4: add missing tables from asset version 0/1
+    val MIGRATION_0_4 = object : Migration(0, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `recent_surah` (
+                    `surahNumber` INTEGER NOT NULL,
+                    `surahName` TEXT NOT NULL,
+                    `ayahNumber` INTEGER NOT NULL,
+                    `formattedDate` TEXT NOT NULL,
+                    `timestamp` INTEGER NOT NULL,
+                    PRIMARY KEY(`surahNumber`)
+                )
+                """.trimIndent()
+            )
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `audio_cache` (
+                    `globalAyahNumber` INTEGER NOT NULL,
+                    `edition` TEXT NOT NULL,
+                    `localPath` TEXT NOT NULL,
+                    `fileSize` INTEGER NOT NULL,
+                    `timestamp` INTEGER NOT NULL,
+                    PRIMARY KEY(`globalAyahNumber`, `edition`)
+                )
+                """.trimIndent()
+            )
+        }
+    }
+
+    val MIGRATION_1_4 = object : Migration(1, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `recent_surah` (
+                    `surahNumber` INTEGER NOT NULL,
+                    `surahName` TEXT NOT NULL,
+                    `ayahNumber` INTEGER NOT NULL,
+                    `formattedDate` TEXT NOT NULL,
+                    `timestamp` INTEGER NOT NULL,
+                    PRIMARY KEY(`surahNumber`)
+                )
+                """.trimIndent()
+            )
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `audio_cache` (
+                    `globalAyahNumber` INTEGER NOT NULL,
+                    `edition` TEXT NOT NULL,
+                    `localPath` TEXT NOT NULL,
+                    `fileSize` INTEGER NOT NULL,
+                    `timestamp` INTEGER NOT NULL,
+                    PRIMARY KEY(`globalAyahNumber`, `edition`)
+                )
+                """.trimIndent()
+            )
+        }
+    }
+
     // Migration v2 -> v3: add recent_surah table (user read history)
     val MIGRATION_2_3 = object : Migration(2, 3) {
         override fun migrate(db: SupportSQLiteDatabase) {
@@ -127,6 +186,24 @@ fun getDatabaseModule(): Module = module {
         }
     }
 
+    // Migration v3 -> v4: add audio_cache table for offline recitation playback
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `audio_cache` (
+                    `globalAyahNumber` INTEGER NOT NULL,
+                    `edition` TEXT NOT NULL,
+                    `localPath` TEXT NOT NULL,
+                    `fileSize` INTEGER NOT NULL,
+                    `timestamp` INTEGER NOT NULL,
+                    PRIMARY KEY(`globalAyahNumber`, `edition`)
+                )
+                """.trimIndent()
+            )
+        }
+    }
+
     single {
         Room.databaseBuilder(
             androidContext(),
@@ -134,7 +211,7 @@ fun getDatabaseModule(): Module = module {
             "quran_db"
         )
             .createFromAsset("databases/quran_prepopulated.db")
-            .addMigrations(MIGRATION_2_3)
+            .addMigrations(MIGRATION_0_4, MIGRATION_1_4, MIGRATION_2_3, MIGRATION_3_4)
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }

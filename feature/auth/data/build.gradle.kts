@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -11,10 +12,21 @@ android {
         version = release(37)
     }
 
-    defaultConfig {
-        minSdk = 26
+    buildFeatures {
+        buildConfig = true
     }
 
+    defaultConfig {
+        minSdk = 26
+
+        val properties = Properties()
+        val localPropertiesFile = project.rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        val apiKey = properties.getProperty("REVENUECAT_API_KEY")?.replace("\"", "") ?: ""
+        buildConfigField("String", "REVENUECAT_API_KEY", "\"$apiKey\"")
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -28,15 +40,15 @@ kotlin {
     }
 }
 
-
 dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:remote"))
+    implementation(project(":core:datastore"))
 
     implementation(project(":domain:repository"))
 
     implementation(project(":feature:zakat"))
-
+    implementation(libs.revenuecat.purchases)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -44,7 +56,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 
     implementation (libs.koin.compose)
 

@@ -129,11 +129,11 @@ private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Lo
     // Find current active prayer
     val currentPrayer = when {
         currentTime in prayerTimes.fajrTime until prayerTimes.sunriseTime -> PrayerType.FAJR
-        currentTime in prayerTimes.sunriseTime until (prayerTimes.sunriseTime + TimeUnit.MINUTES.toMillis(15)) -> PrayerType.SUNRISE
-        currentTime in (prayerTimes.sunriseTime + TimeUnit.MINUTES.toMillis(15))  until prayerTimes.asrTime -> PrayerType.DHUHR
+        currentTime in prayerTimes.sunriseTime until prayerTimes.dhuhrTime -> PrayerType.SUNRISE
+        currentTime in prayerTimes.dhuhrTime until prayerTimes.asrTime -> PrayerType.DHUHR
         currentTime in prayerTimes.asrTime until prayerTimes.maghribTime -> PrayerType.ASR
         currentTime in prayerTimes.maghribTime until prayerTimes.ishaTime -> PrayerType.MAGHRIB
-        currentTime >= prayerTimes.ishaTime || currentTime < prayerTimes.lastThirdTime -> PrayerType.ISHA
+        currentTime >= prayerTimes.ishaTime || (prayerTimes.fajrTime > 0 && currentTime < prayerTimes.fajrTime) -> PrayerType.ISHA
         else -> null
     }
 

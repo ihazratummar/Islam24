@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.hazrat.database.entity.quran.AudioCacheEntity
 import com.hazrat.database.entity.quran.AyahEntity
 import com.hazrat.database.entity.quran.RecentSurahEntity
 import com.hazrat.database.entity.quran.SurahEntity
@@ -34,4 +35,16 @@ interface QuranDao {
 
     @Query("DELETE FROM recent_surah WHERE surahNumber = :surahNumber")
     suspend fun deleteRecentSurah(surahNumber: Int)
+
+    @Query("SELECT * FROM audio_cache WHERE globalAyahNumber = :globalAyahNumber AND edition = :edition")
+    suspend fun getAudioCache(globalAyahNumber: Int, edition: String = "ar.alafasy"): AudioCacheEntity?
+
+    @Query("SELECT * FROM audio_cache WHERE globalAyahNumber IN (:globalAyahNumbers) AND edition = :edition")
+    suspend fun getAudioCacheBatch(globalAyahNumbers: List<Int>, edition: String = "ar.alafasy"): List<AudioCacheEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAudioCache(audioCache: AudioCacheEntity)
+
+    @Query("SELECT COUNT(*) FROM ayah WHERE isBookmarked = 1")
+    fun getTotalBookmarkedAyahsCount(): Flow<Int>
 }

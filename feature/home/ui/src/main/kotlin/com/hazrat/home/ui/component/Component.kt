@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -35,6 +37,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import com.hazrat.ui.common.DateFormatter
+import com.hazrat.ui.common.SurahSvgImage
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,6 +88,13 @@ fun NextPrayerHeroCard(
         "Started at " + DateUtil.dateLongToString(prayerState.currentPrayerTime, "hh:mm a")
     } else {
         "Starts at " + DateUtil.dateLongToString(prayerState.nextPrayerTimeMillis, "hh:mm a")
+    }
+
+    val nextPrayerName = prayerState.nextPrayer?.let { stringResource(it.nameRes) } ?: ""
+    val remainingLabel = if (isNow && nextPrayerName.isNotBlank()) {
+        "TIME REMAINING UNTIL ${nextPrayerName.uppercase()}"
+    } else {
+        "TIME REMAINING"
     }
 
     val remainingMillis = prayerState.nextPrayerTimeMillis - System.currentTimeMillis()
@@ -156,7 +168,7 @@ fun NextPrayerHeroCard(
                             .clip(CircleShape)
                             .border(
                                 width = dimens.divider,
-                                color = Color.White.copy(alpha = 0.12f),
+                                color = Color(0xFFF59E0B).copy(alpha = 0.30f),
                                 shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
@@ -167,7 +179,7 @@ fun NextPrayerHeroCard(
                                 .clip(CircleShape)
                                 .border(
                                     width = dimens.divider,
-                                    color = Color.White.copy(alpha = 0.20f),
+                                    color = Color(0xFFF59E0B).copy(alpha = 0.50f),
                                     shape = CircleShape
                                 ),
                             contentAlignment = Alignment.Center
@@ -176,15 +188,15 @@ fun NextPrayerHeroCard(
                                 modifier = Modifier
                                     .size(dimens.space40)
                                     .clip(CircleShape)
-                                    .background(Color.White.copy(alpha = 0.18f)),
+                                    .background(Color(0xFFF59E0B)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 val icon = if (isNow) prayerState.prayerIcon else prayerState.nextPrayerIcon
                                 Icon(
                                     painter = painterResource(id = icon ?: R.drawable.sun),
                                     contentDescription = null,
-                                    tint = Color.Unspecified,
-                                    modifier = Modifier.size(dimens.iconSm)
+                                    tint = Color.White,
+                                    modifier = Modifier.size(dimens.iconMd)
                                 )
                             }
                         }
@@ -212,7 +224,7 @@ fun NextPrayerHeroCard(
                 Spacer(modifier = Modifier.height(dimens.space20))
 
                 Text(
-                    text = "TIME REMAINING",
+                    text = remainingLabel,
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -409,12 +421,30 @@ fun PrayerTimelineCard(
 
             Spacer(modifier = Modifier.height(dimens.space24))
 
+            val prayerState = rememberPrayerState(prayerTimes = prayerData)
+            val now = System.currentTimeMillis()
+
+            val fajrTime = prayerData.fajrTime
+            val dhuhrTime = prayerData.dhuhrTime
+            val asrTime = prayerData.asrTime
+            val maghribTime = prayerData.maghribTime
+            val ishaTime = prayerData.ishaTime
+
+            val fajrStr = if (fajrTime > 0) DateUtil.dateLongToString(fajrTime, "hh:mm a") else "04:42 AM"
+            val dhuhrStr = if (dhuhrTime > 0) DateUtil.dateLongToString(dhuhrTime, "hh:mm a") else "12:34 PM"
+            val asrStr = if (asrTime > 0) DateUtil.dateLongToString(asrTime, "hh:mm a") else "04:15 PM"
+            val maghribStr = if (maghribTime > 0) DateUtil.dateLongToString(maghribTime, "hh:mm a") else "07:00 PM"
+            val ishaStr = if (ishaTime > 0) DateUtil.dateLongToString(ishaTime, "hh:mm a") else "08:30 PM"
+
+            val sunriseTime = prayerData.sunriseTime
+            val activeOrNextPrayer = prayerState.currentPrayer ?: prayerState.nextPrayer
+
             val prayers = listOf(
-                Triple("Fajr", "04:42 AM", true),
-                Triple("Dhu", "12:34 PM", false),
-                Triple("Asr", "04:15 PM", false),
-                Triple("Mag", "07:00 PM", false),
-                Triple("Ish", "08:30 PM", false)
+                Triple("Fajr", fajrStr, (sunriseTime > 0 && now >= sunriseTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.FAJR)),
+                Triple("Dhu", dhuhrStr, (asrTime > 0 && now >= asrTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.DHUHR || (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.SUNRISE && now < dhuhrTime))),
+                Triple("Asr", asrStr, (maghribTime > 0 && now >= maghribTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.ASR)),
+                Triple("Mag", maghribStr, (ishaTime > 0 && now >= ishaTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.MAGHRIB)),
+                Triple("Ish", ishaStr, (ishaTime > 0 && now >= ishaTime + 7200000L) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.ISHA))
             )
 
             Row(
@@ -422,8 +452,8 @@ fun PrayerTimelineCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                prayers.forEachIndexed { index, (label, time, isDone) ->
-                    val isActive = (index == 1) // Dhuhr active/upcoming
+                prayers.forEach { (label, time, statePair) ->
+                    val (isDone, isActive) = statePair
 
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -557,17 +587,21 @@ fun StreakAndRamadanRow(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+                    val fireColor = if (isDark) Color(0xFFFF7043) else Color(0xFFEA580C)
+                    val fireBg = fireColor.copy(alpha = if (isDark) 0.20f else 0.12f)
+
                     Box(
                         modifier = Modifier
                             .size(dimens.space32)
                             .clip(CircleShape)
-                            .background(customColors.accentColor.copy(alpha = 0.2f)),
+                            .background(fireBg),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.fire),
                             contentDescription = "Streak",
-                            tint = Color.Unspecified,
+                            tint = fireColor,
                             modifier = Modifier.size(dimens.iconSm)
                         )
                     }
@@ -616,6 +650,7 @@ fun StreakAndRamadanRow(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant
             )
         ) {
+            val isDark = androidx.compose.foundation.isSystemInDarkTheme()
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -623,17 +658,20 @@ fun StreakAndRamadanRow(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    val moonColor = if (isDark) Color(0xFFFFC107) else Color(0xFFD97706)
+                    val moonBg = moonColor.copy(alpha = if (isDark) 0.20f else 0.12f)
+
                     Box(
                         modifier = Modifier
                             .size(dimens.space32)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                            .background(moonBg),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.night_prayer),
                             contentDescription = "Ramadan",
-                            tint = Color.Unspecified,
+                            tint = moonColor,
                             modifier = Modifier.size(dimens.iconSm)
                         )
                     }
@@ -1009,7 +1047,7 @@ fun WeeklyPrayerConsistencyCard(
                     val pillBorder = if (isToday) Modifier.border(
                         width = dimens.divider,
                         color = customColors.accentColor,
-                        shape = RoundedCornerShape(dimens.cornerLg)
+                        shape = RoundedCornerShape(dimens.cornerFull)
                     ) else Modifier
 
                     Column(
@@ -1017,15 +1055,15 @@ fun WeeklyPrayerConsistencyCard(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(width = dimens.space40, height = dimens.compButton)
-                                .clip(RoundedCornerShape(dimens.cornerLg))
+                                .size(width = dimens.space32, height = dimens.space40)
+                                .clip(RoundedCornerShape(dimens.cornerFull))
                                 .then(pillBorder)
                                 .background(pillBg),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "$count",
-                                style = MaterialTheme.typography.titleMedium.copy(
+                                style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
                                 color = if (count == 5) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
@@ -1299,5 +1337,109 @@ fun HomeScreenEventCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun HomeRecentsSection(
+    recentReads: List<com.hazrat.model.al_quran_model.RecentReadSurah>,
+    onRecentReadClick: (com.hazrat.model.al_quran_model.RecentReadSurah) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (recentReads.isEmpty()) return
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(dimens.space12)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "Recents",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.width(dimens.space4))
+            Text(
+                text = "ⓘ",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+            )
+        }
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+        ) {
+            items(recentReads) { recent ->
+                HomeRecentSurahCard(
+                    recent = recent,
+                    onClick = { onRecentReadClick(recent) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeRecentSurahCard(
+    recent: com.hazrat.model.al_quran_model.RecentReadSurah,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .width(dimens.layoutXs)
+            .clickable { onClick() },
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(dimens.space2)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimens.space64)
+                .clip(RoundedCornerShape(dimens.cornerXl))
+                .background(Color.White.copy(alpha = 0.08f))
+                .border(
+                    width = dimens.divider,
+                    color = Color.White.copy(alpha = 0.12f),
+                    shape = RoundedCornerShape(dimens.cornerXl)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            SurahSvgImage(
+                surahNumber = recent.surahNumber,
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .height(dimens.space40)
+                    .fillMaxWidth()
+                    .padding(horizontal = dimens.space8)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dimens.space4))
+
+        Text(
+            text = recent.surahName,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.onBackground,
+            maxLines = 1
+        )
+
+        Text(
+            text = "Aya ${recent.ayahNumber}",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        val displayDate = remember(recent.formattedDate) {
+            DateFormatter.formatHumanReadableDate(recent.formattedDate)
+        }
+        Text(
+            text = displayDate,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+        )
     }
 }

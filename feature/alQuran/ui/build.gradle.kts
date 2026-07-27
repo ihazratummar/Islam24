@@ -38,6 +38,7 @@ kotlin {
 dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:downloader"))
     api(project(":core:ui"))
 
     implementation(project(":domain:model"))

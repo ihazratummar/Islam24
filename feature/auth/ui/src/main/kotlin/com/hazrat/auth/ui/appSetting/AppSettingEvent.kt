@@ -6,23 +6,19 @@ import com.hazrat.model.Languages
 /**
  * @author Hazrat Ummar Shaikh
  */
-
 sealed interface AppSettingEvent {
-
 
     data object ClickLanguageDialog : AppSettingEvent
     data class SelectLanguage(val language: Languages) : AppSettingEvent
 
-
-    data object ToggleTheme: AppSettingEvent
-
+    data object ToggleTheme : AppSettingEvent
+    data object ToggleMasterNotification : AppSettingEvent
     data object OpenAppSetting : AppSettingEvent
-
-    data object HapticFeedbackClick: AppSettingEvent
-
+    data object HapticFeedbackClick : AppSettingEvent
 
     data object ShareApp : AppSettingEvent
+    data object SupportIslam24 : AppSettingEvent
     data class RateUs(val activity: Activity) : AppSettingEvent
-    data object OpenRatingDialog: AppSettingEvent
-    data object GoToRate: AppSettingEvent
+    data object OpenRatingDialog : AppSettingEvent
+    data object GoToRate : AppSettingEvent
 }

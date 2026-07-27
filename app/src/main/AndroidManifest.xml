@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
 
 
@@ -48,21 +49,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="islam24.hazratdev.top"
-                    android:path="/prayertime"
-                    />
-                <data
-                    android:scheme="https"
-                    android:host="islam24.hazratdev.top"
-                    android:path="/zakat"
-                    />
-            </intent-filter>
+
+
         </activity>
 
         <receiver
@@ -81,6 +69,12 @@
 
         <service
             android:name="com.hazrat.notification.AzanPlaybackService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <service
+            android:name="com.hazrat.notification.QuranAudioService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />

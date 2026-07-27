@@ -1,12 +1,15 @@
 package com.hazrat.auth.ui.appSetting
 
-
 import com.hazrat.model.Languages
 
 data class AppSettingState(
-    val currentLanguage: Languages ? = null ,
+    val currentLanguage: Languages? = null,
     val isLanguageDialogOpen: Boolean = false,
     val isHapticFeedbackEnabled: Boolean = false,
     val toggleTheme: Boolean = false,
-    val isRatingDialogOpen: Boolean = false
+    val isRatingDialogOpen: Boolean = false,
+    val totalPrayersLogged: Int = 0,
+    val prayerStreak: Int = 0,
+    val totalBookmarkedAyahs: Int = 0,
+    val isMasterNotificationEnabled: Boolean = true
 )

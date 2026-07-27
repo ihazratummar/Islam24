@@ -154,3 +154,26 @@
 -keep class com.hazrat.ui.theme.Dimens.**{ *; }
 -keep class com.hazrat.ui.theme.ThemeKt.**{ *; }
 -keep class com.hazrat.ui.theme.TypeKt.**{ *; }
+
+# R8 missing rules auto-suppression
+-dontwarn com.google.api.client.http.GenericUrl
+-dontwarn com.google.api.client.http.HttpHeaders
+-dontwarn com.google.api.client.http.HttpRequest
+-dontwarn com.google.api.client.http.HttpRequestFactory
+-dontwarn com.google.api.client.http.HttpResponse
+-dontwarn com.google.api.client.http.HttpTransport
+-dontwarn com.google.api.client.http.javanet.NetHttpTransport$Builder
+-dontwarn com.google.api.client.http.javanet.NetHttpTransport
+-dontwarn org.joda.time.Instant
+
+# RevenueCat & Google Play Billing
+-keep class com.revenuecat.purchases.** { *; }
+-dontwarn com.revenuecat.purchases.**
+-keep class com.android.vending.billing.** { *; }
+-dontwarn com.android.vending.billing.**
+
+# Domain & UI Route models
+-keep class com.hazrat.domain.repository.** { *; }
+-keep class com.hazrat.domain.model.** { *; }
+-keep class com.hazrat.auth.ui.support.** { *; }
+-keep class com.hazrat.islam24.main.navigation.** { *; }

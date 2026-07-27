@@ -25,7 +25,11 @@ class LocationRepositoryImpl(
     }
 
     override fun observeLocationUpdates(locationConfig: LocationConfig): Flow<LocationResult> {
-        return locationDataSource.observeLocationUpdates()
+        return locationDataSource.observeLocationUpdates(locationConfig = locationConfig)
+    }
+
+    override fun observeLocationProviderStatus(): Flow<Boolean> {
+        return locationDataSource.observeLocationProviderStatus()
     }
 
 }

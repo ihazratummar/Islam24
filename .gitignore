@@ -25,3 +25,6 @@ app/google-services.json
 **/build
 /.agents
 /.gemini
+
+revenuecat-key.json
+/revenuecat-key.json

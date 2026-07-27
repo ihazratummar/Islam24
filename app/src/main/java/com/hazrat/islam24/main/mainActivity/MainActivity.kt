@@ -15,6 +15,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.common.ChangelogDialog
+import com.hazrat.islam24.main.navigation.NavigationCommandBus
+import com.hazrat.islam24.main.navigation.NavigationTarget
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.model.Languages
@@ -74,6 +76,9 @@ class MainActivity : AppCompatActivity() {
         }
        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(langCode))
 
+        // Handle notification deep link on cold start
+        handleNavigationIntent(intent)
+
         setContent {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
@@ -119,7 +124,48 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setIntent(intent)
+        // Handle notification navigation when app is already running (singleTask)
+        handleNavigationIntent(intent)
+    }
 
+    /**
+     * Reads navigation extras from the intent and posts a command via
+     * [NavigationCommandBus]. Handles both screen-level targets (prayer, zakat)
+     * and Quran Ayah targets. Works for both cold start and warm relaunch.
+     */
+    private fun handleNavigationIntent(intent: Intent?) {
+        intent ?: return
+
+        // 1. Check for screen-level navigation target (prayer, zakat notifications)
+        val navTarget = intent.getStringExtra(EXTRA_NAV_TARGET)
+        if (navTarget != null) {
+            when (navTarget) {
+                NAV_TARGET_PRAYER_TIME -> NavigationCommandBus.navigateTo(NavigationTarget.PrayerTime)
+                NAV_TARGET_ZAKAT -> NavigationCommandBus.navigateTo(NavigationTarget.Zakat)
+            }
+            intent.removeExtra(EXTRA_NAV_TARGET)
+            return
+        }
+
+        // 2. Check for Quran Ayah navigation target (audio service notifications)
+        val surahNumber = intent.getIntExtra(EXTRA_NAV_SURAH_NUMBER, -1)
+        val ayahNumber = intent.getIntExtra(EXTRA_NAV_AYAH_NUMBER, -1)
+        if (surahNumber > 0 && ayahNumber > 0) {
+            NavigationCommandBus.navigateToAyah(surahNumber, ayahNumber)
+            intent.removeExtra(EXTRA_NAV_SURAH_NUMBER)
+            intent.removeExtra(EXTRA_NAV_AYAH_NUMBER)
+        }
+    }
+
+    companion object {
+        const val EXTRA_NAV_SURAH_NUMBER = "extra_nav_surah_number"
+        const val EXTRA_NAV_AYAH_NUMBER = "extra_nav_ayah_number"
+        /** Screen-level navigation target key used by notification receivers. */
+        const val EXTRA_NAV_TARGET = "extra_nav_target"
+        const val NAV_TARGET_PRAYER_TIME = "prayertime"
+        const val NAV_TARGET_ZAKAT = "zakat"
     }
 
 }
+

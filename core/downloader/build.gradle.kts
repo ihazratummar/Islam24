@@ -42,6 +42,7 @@ kotlin {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:database"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -1,5 +1,6 @@
 package com.hazrat.prayer.ui.di
 
+import com.hazrat.prayer.ui.notification.PrayerNotificationViewModel
 import com.hazrat.prayer.ui.prayertime.PrayerTimeViewModel
 import com.hazrat.prayer.ui.setting.PrayerSettingViewModel
 import org.koin.android.ext.koin.androidApplication
@@ -36,6 +37,14 @@ fun getPrayerUiModule(): Module = module {
             prayerTimeRepository = get(),
             connectivityObserver = get(),
             userDataStore = get()
+        )
+    }
+
+    viewModel {
+        PrayerNotificationViewModel(
+            application = androidApplication(),
+            userDataStore = get(),
+            prayerAlarmScheduler = get()
         )
     }
 }

@@ -29,6 +29,9 @@ class DataStorePreference(
 
         private const val RECENT_READS_KEY = "quran_recent_reads"
         private const val KEY_LANGUAGE = "language"
+
+        private const val DAILY_ATHKAR_DATE = "daily_athkar_date"
+        private const val DAILY_ATHKAR_COUNTS = "daily_athkar_counts"
     }
 
     fun saveQuranLastRead(surahNumber: Int, ayahNumber: Int) {
@@ -159,5 +162,38 @@ class DataStorePreference(
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val sortType = pref.getString(KEY_SORT_BY, DateType.DATE_DESC.name)
         return DateType.valueOf(sortType!!)
+    }
+
+    fun saveDailyAthkarCounts(todayDateString: String, counts: Map<Int, Int>) {
+        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val jsonObj = JSONObject()
+        counts.forEach { (id, count) ->
+            jsonObj.put(id.toString(), count)
+        }
+        pref.edit {
+            putString(DAILY_ATHKAR_DATE, todayDateString)
+            putString(DAILY_ATHKAR_COUNTS, jsonObj.toString())
+        }
+    }
+
+    fun getDailyAthkarCounts(todayDateString: String): Map<Int, Int> {
+        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val savedDate = pref.getString(DAILY_ATHKAR_DATE, null)
+        if (savedDate != todayDateString) {
+            return emptyMap()
+        }
+        val jsonStr = pref.getString(DAILY_ATHKAR_COUNTS, null) ?: return emptyMap()
+        return try {
+            val jsonObj = JSONObject(jsonStr)
+            val map = mutableMapOf<Int, Int>()
+            val keys = jsonObj.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                map[key.toInt()] = jsonObj.getInt(key)
+            }
+            map
+        } catch (e: Exception) {
+            emptyMap()
+        }
     }
 }

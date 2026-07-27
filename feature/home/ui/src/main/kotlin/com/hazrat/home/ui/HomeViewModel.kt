@@ -15,6 +15,7 @@ import com.hazrat.usecase.GetNextFridayTime
 import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
 import com.hazrat.usecase.prayer.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.prayer.GetTodayPrayerTimeUseCase
+import com.hazrat.usecase.quran.GetAllSurahListUseCase
 import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +45,8 @@ class HomeViewModel(
     private val islamicEventsUseCase: GetIslamicEventsUseCase,
     private val getNextFridayTime: GetNextFridayTime,
     private val dailyPrayerStatusUseCase: GetDailyPrayerStatusUseCase,
+    private val getRecentSurahsUseCase: com.hazrat.usecase.quran.GetRecentSurahsUseCase,
+    private val getAllSurahListUseCase: GetAllSurahListUseCase,
     private val dataStorePreference: DataStorePreference? = null,
     private val quranDao: QuranDao? = null,
     private val duaDao: DuaDao? = null,
@@ -72,6 +75,8 @@ class HomeViewModel(
         loadDailyVerse()
         loadDailyDua()
         loadWeeklyPrayerConsistency()
+        loadRecentReads()
+        loadSurahList()
 
         viewModelScope.launch {
             getNextFridayTime.invoke().collectLatest { time ->
@@ -241,6 +246,32 @@ class HomeViewModel(
                         Log.d("HomeViewModel", "Minimal Prayer Data ${result.data}")
                     }
                 }
+            }
+        }
+    }
+
+    private fun loadRecentReads() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                getRecentSurahsUseCase.invoke().collectLatest { recents ->
+                    _homeState.update {
+                        it.copy(recentReads = recents)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("HomeViewModel", "Error loading recent reads", e)
+            }
+        }
+    }
+
+    private fun loadSurahList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                getAllSurahListUseCase.invoke().collectLatest { surahs ->
+                    _homeState.update { it.copy(surahs = surahs) }
+                }
+            } catch (e: Exception) {
+                Log.e("HomeViewModel", "Error loading surah list", e)
             }
         }
     }

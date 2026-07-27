@@ -14,6 +14,7 @@ appcompat = "1.7.1"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
 preferenceKtx = "1.2.1"
+media = "1.7.0"
 secretsGradlePlugin = "2.0.1"
 
 # ===========================
@@ -101,6 +102,8 @@ pagingRuntimeKtx = "3.5.0"
 # ===========================
 appUpdateKtx = "2.1.0"
 review = "2.0.2"
+revenuecat = "10.15.1"
+billingKtx = "7.1.1"
 
 # ===========================
 # Widgets (Glance)
@@ -152,6 +155,7 @@ foundationLayout = "1.11.2"
 # ===========================
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-media = { group = "androidx.media", name = "media", version.ref = "media" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 
@@ -300,6 +304,8 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 # Logging
 # ===========================
 timber = {module = "com.jakewharton.timber:timber", version.ref ="timber"}
+revenuecat-purchases = { module = "com.revenuecat.purchases:purchases", version.ref = "revenuecat" }
+android-billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billingKtx" }
 
 kotlinx-coroutines-play = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines-play"}
 androidx-compose-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }

@@ -25,4 +25,8 @@
     <string name="common_made_with_love">Made with love for the Ummah</string>
     <string name="common_version_name">Version %1$s</string>
     <string name="common_app_version">Islam 24 %1$s</string>
+    <string name="athkar_morning">Morning Azkar</string>
+    <string name="athkar_evening">Evening Azkar</string>
+    <string name="athkar_reset_all">Reset All</string>
+    <string name="athkar_completed">completed</string>
 </resources>

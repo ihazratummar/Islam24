@@ -5,6 +5,7 @@ import com.hazrat.model.MinimalPrayerData
 import com.hazrat.usecase.UpcomingIslamicEvent
 
 data class DailyVerseData(
+    val surahNumber: Int = 29,
     val surahName: String = "Al-Ankabut",
     val verseNumber: Int = 45,
     val arabicText: String = "وَأَقِمِ الصَّلَاةَ لِذِكْرِي وَإِنَّ الصَّلَاةَ تَنْهَىٰ عَنِ الْفَحْشَاءِ وَالْمُنْكَرِ",
@@ -37,5 +38,7 @@ data class HomeState(
     val isPrayerTimeLoading: Boolean = false,
     val dailyVerse: DailyVerseData = DailyVerseData(),
     val dailyDua: DailyDuaData = DailyDuaData(),
-    val weeklyPrayerStats: WeeklyPrayerStats = WeeklyPrayerStats()
+    val weeklyPrayerStats: WeeklyPrayerStats = WeeklyPrayerStats(),
+    val recentReads: List<com.hazrat.model.al_quran_model.RecentReadSurah> = emptyList(),
+    val surahs: List<com.hazrat.model.al_quran_model.SurahModel> = emptyList()
 )

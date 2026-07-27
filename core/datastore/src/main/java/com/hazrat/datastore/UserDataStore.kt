@@ -34,6 +34,15 @@ class UserDataStore(
     private fun notificationTypeKey(prayerName: Prayer) =
         stringPreferencesKey("${prayerName.key}_notification_type")
 
+    private fun preAlertOffsetKey(prayerName: Prayer) =
+        intPreferencesKey("${prayerName.key}_pre_alert_offset")
+
+    private fun vibrationEnabledKey(prayerName: Prayer) =
+        booleanPreferencesKey("${prayerName.key}_vibration_enabled")
+
+    private fun azanSoundKey(prayerName: Prayer) =
+        stringPreferencesKey("${prayerName.key}_azan_sound")
+
 
     companion object {
 
@@ -71,7 +80,38 @@ class UserDataStore(
 
         private val PrayerCalculationMethodKey = intPreferencesKey(PRAYER_CALCULATION_METHOD)
         private val PrayerJuristicMethodKey = intPreferencesKey(PRAYER_JURISTIC_METHOD)
+        private val MasterNotificationEnabledKey = booleanPreferencesKey("MASTER_NOTIFICATION_ENABLED")
+        private val TotalSupportedAmountUSDKey = androidx.datastore.preferences.core.doublePreferencesKey("TOTAL_SUPPORTED_AMOUNT_USD")
+        private val LastKnownLatitudeKey = androidx.datastore.preferences.core.doublePreferencesKey("LAST_KNOWN_LATITUDE")
+        private val LastKnownLongitudeKey = androidx.datastore.preferences.core.doublePreferencesKey("LAST_KNOWN_LONGITUDE")
 
+    }
+
+    suspend fun setMasterNotificationEnabled(enabled: Boolean) {
+        userDataStore.edit { pref ->
+            pref[MasterNotificationEnabledKey] = enabled
+        }
+    }
+
+    val isMasterNotificationEnabled: Flow<Boolean> = userDataStore.data.map { pref ->
+        pref[MasterNotificationEnabledKey] ?: true
+    }
+
+    val totalSupportedAmountUSD: Flow<Double> = userDataStore.data.map { pref ->
+        pref[TotalSupportedAmountUSDKey] ?: 0.0
+    }
+
+    suspend fun addSupportedAmountUSD(amount: Double) {
+        userDataStore.edit { pref ->
+            val current = pref[TotalSupportedAmountUSDKey] ?: 0.0
+            pref[TotalSupportedAmountUSDKey] = current + amount
+        }
+    }
+
+    suspend fun setTotalSupportedAmountUSD(total: Double) {
+        userDataStore.edit { pref ->
+            pref[TotalSupportedAmountUSDKey] = total
+        }
     }
 
 
@@ -204,6 +244,74 @@ class UserDataStore(
             preferences[PrayerJuristicMethodKey] ?: 0
         }
 
+    /*
+    -------------------------------------------
+    PRE-ALERT OFFSET, VIBRATION & AZAN SOUND
+    -------------------------------------------
+     */
+
+    suspend fun setPrayerPreAlertOffset(prayerName: Prayer, minutes: Int) {
+        val key = preAlertOffsetKey(prayerName)
+        userDataStore.edit { pref ->
+            pref[key] = minutes
+        }
+    }
+
+    fun getPrayerPreAlertOffset(prayerName: Prayer): Flow<Int> {
+        val key = preAlertOffsetKey(prayerName)
+        return userDataStore.data.map { pref ->
+            pref[key] ?: 0
+        }
+    }
+
+    suspend fun getPrayerPreAlertOffsetSync(prayerName: Prayer): Int {
+        val key = preAlertOffsetKey(prayerName)
+        return userDataStore.data.first()[key] ?: 0
+    }
+
+    suspend fun setPrayerVibrationEnabled(prayerName: Prayer, enabled: Boolean) {
+        val key = vibrationEnabledKey(prayerName)
+        userDataStore.edit { pref ->
+            pref[key] = enabled
+        }
+    }
+
+    fun getPrayerVibrationEnabled(prayerName: Prayer): Flow<Boolean> {
+        val key = vibrationEnabledKey(prayerName)
+        return userDataStore.data.map { pref ->
+            pref[key] ?: true
+        }
+    }
+
+    suspend fun setPrayerAzanSound(prayerName: Prayer, soundName: String) {
+        val key = azanSoundKey(prayerName)
+        userDataStore.edit { pref ->
+            pref[key] = soundName
+        }
+    }
+
+    fun getPrayerAzanSound(prayerName: Prayer): Flow<String> {
+        val key = azanSoundKey(prayerName)
+        return userDataStore.data.map { pref ->
+            pref[key] ?: "System Default"
+        }
+    }
+
+    suspend fun saveLastKnownLocation(latitude: Double, longitude: Double) {
+        userDataStore.edit { pref ->
+            pref[LastKnownLatitudeKey] = latitude
+            pref[LastKnownLongitudeKey] = longitude
+        }
+    }
+
+    suspend fun getLastKnownLocationSync(): Pair<Double, Double>? {
+        val pref = userDataStore.data.first()
+        val lat = pref[LastKnownLatitudeKey]
+        val lng = pref[LastKnownLongitudeKey]
+        return if (lat != null && lng != null && lat != 0.0 && lng != 0.0) {
+            Pair(lat, lng)
+        } else null
+    }
 }
 
 

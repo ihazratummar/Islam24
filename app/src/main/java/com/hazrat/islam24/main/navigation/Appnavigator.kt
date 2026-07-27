@@ -22,11 +22,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -78,6 +78,50 @@ fun AppNavigator(
     isHapticFeedback: Boolean = false
 ) {
     val navController = rememberNavController()
+
+    // Observe notification navigation commands and navigate programmatically.
+    // This is the single entry point for all notification-driven navigation,
+    // avoiding synthetic back stacks created by URI deep links.
+    val pendingNav by NavigationCommandBus.pendingNavigation.collectAsStateWithLifecycle()
+    LaunchedEffect(pendingNav) {
+        val target = pendingNav ?: return@LaunchedEffect
+        when (target) {
+            is NavigationTarget.Ayah -> {
+                val surahName = com.hazrat.ui.common.SurahNameProvider.getSurahName(target.surahNumber)
+                navController.navigate(
+                    MainRoute.AyahScreenRoute(
+                        SurahData(
+                            name = surahName,
+                            totalAyah = 286,
+                            meaning = "",
+                            surahNumber = target.surahNumber,
+                            targetAyahNumber = target.ayahNumber,
+                            isRecordRecentRead = false
+                        )
+                    )
+                ) {
+                    launchSingleTop = true
+                }
+            }
+
+            is NavigationTarget.PrayerTime -> {
+                navController.navigate(PrayerTimeScreenRoute) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+
+            is NavigationTarget.Zakat -> {
+                navController.navigate(HomeRoutes.Zakat) {
+                    launchSingleTop = true
+                }
+            }
+        }
+        NavigationCommandBus.consumePendingNavigation()
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -114,9 +158,7 @@ fun AppNavigator(
                 )
             }
         ) {
-            composable<MainRoute.HomeScreen>(
-                deepLinks = listOf(navDeepLink { uriPattern = "https://islam24.hazratdev.top" })
-            ) {
+            composable<MainRoute.HomeScreen> {
 
                 val homeViewModel = koinViewModel<HomeViewModel>()
                 val locationName by homeViewModel.locationName.collectAsState()
@@ -141,9 +183,39 @@ fun AppNavigator(
                             launchSingleTop = true
                         }
                     },
+                    onRecentReadClick = { recent ->
+                        val surahInfo = homeState.surahs.find { it.surahNumber == recent.surahNumber }
+                        navController.navigate(
+                            MainRoute.AyahScreenRoute(
+                                surahData = SurahData(
+                                    name = recent.surahName,
+                                    totalAyah = surahInfo?.totalAyahs ?: recent.ayahNumber,
+                                    meaning = surahInfo?.nameEnglish ?: "",
+                                    surahNumber = recent.surahNumber,
+                                    targetAyahNumber = recent.ayahNumber
+                                )
+                            )
+                        )
+                    },
                     homeState = homeState,
                     refreshLocation = homeViewModel::refreshLocation,
-                    dailyPrayerStatus = dailyStatus
+                    dailyPrayerStatus = dailyStatus,
+                    onSupportClick = { navController.navigate(SupportIslam24Route) },
+                    onDailyVerseClick = { dailyVerse ->
+                        val surahInfo = homeState.surahs.find { it.surahNumber == dailyVerse.surahNumber }
+                        navController.navigate(
+                            MainRoute.AyahScreenRoute(
+                                surahData = SurahData(
+                                    name = dailyVerse.surahName,
+                                    totalAyah = surahInfo?.totalAyahs ?: 69,
+                                    meaning = surahInfo?.nameEnglish ?: "The Spider",
+                                    surahNumber = dailyVerse.surahNumber,
+                                    targetAyahNumber = dailyVerse.verseNumber,
+                                    isRecordRecentRead = false
+                                )
+                            )
+                        )
+                    }
                 )
             }
 
@@ -171,7 +243,8 @@ fun AppNavigator(
                                     totalAyah = surahData.totalAyah,
                                     meaning = surahData.meaning,
                                     surahNumber = surahData.number,
-                                    targetAyahNumber = surahData.targetAyahNumber
+                                    targetAyahNumber = surahData.targetAyahNumber,
+                                    isRecordRecentRead = true
                                 )
                             )
                         )
@@ -192,7 +265,9 @@ fun AppNavigator(
                         parametersOf(surahData.surahNumber)
                     }
                 )
+
                 val state by ayahViewModel.state.collectAsStateWithLifecycle()
+
                 AyahScreen(
                     ayahState = state,
                     onBackClick = {
@@ -206,11 +281,16 @@ fun AppNavigator(
                         targetAyahNumber = surahData.targetAyahNumber
                     ),
                     onAyahScrolled = { ayahNum ->
-                        ayahViewModel.saveLastReadAyah(surahData.name, ayahNum)
+                        if (surahData.isRecordRecentRead) {
+                            ayahViewModel.saveLastReadAyah(surahData.name, ayahNum)
+                        }
                     },
                     onSurahCompleted = {
-                        ayahViewModel.onSurahCompleted()
-                    }
+                        if (surahData.isRecordRecentRead) {
+                            ayahViewModel.onSurahCompleted()
+                        }
+                    },
+                    onEvent = ayahViewModel::onEvent
                 )
             }
 
@@ -226,8 +306,8 @@ fun AppNavigator(
                     },
                     isHapticFeedback = isHapticFeedback,
                     qiblaEvent = qiblaEvent,
-                    navigateToLogin = {
-                        navController.navigate(Login) {
+                    navigateToTasbih = {
+                        navController.navigate(HomeRoutes.TasbihRoute) {
                             launchSingleTop = true
                         }
                     }
@@ -241,7 +321,8 @@ fun AppNavigator(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    nameEntity = names
+                    nameEntity = names,
+                    onSupportClick = { navController.navigate(SupportIslam24Route) }
                 )
             }
             composable<MainRoute.PrayerSetting> {
@@ -262,12 +343,14 @@ fun AppNavigator(
             }
             composable<HomeRoutes.Athkar> {
                 val viewModel: AthkarViewModel = koinViewModel()
-                val athkarEntity by viewModel.athkarList.collectAsState()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 AthkarScreen(
-                    athkar = athkarEntity,
-                    onBackClick = { navController.popBackStack() }
+                    uiState = uiState,
+                    onBackClick = { navController.popBackStack() },
+                    onCountClick = viewModel::incrementCount,
+                    onResetItemClick = viewModel::resetItemCount,
+                    onResetAllClick = viewModel::resetCounts
                 )
-
             }
 
             composable<HomeRoutes.TasbihRoute> {
@@ -329,6 +412,7 @@ private fun BottomBar(navController: NavHostController) {
             ContentDestination.Home,
             ContentDestination.PrayerTime,
             ContentDestination.Quran,
+            ContentDestination.Qibla,
             ContentDestination.Profile
         )
     }
@@ -405,7 +489,8 @@ data class SurahData(
     val totalAyah: Int,
     val meaning: String,
     val surahNumber: Int,
-    val targetAyahNumber: Int = 1
+    val targetAyahNumber: Int = 1,
+    val isRecordRecentRead: Boolean = true
 )
 
 val SurahDataType = object : NavType<SurahData>(isNullableAllowed = false) {
@@ -444,17 +529,9 @@ sealed class ContentDestination<T>(
     @Serializable
     data object PrayerTime :
         ContentDestination<PrayerTimeScreenRoute>(
-            "PrayerTime",
+            "Prayers",
             R.drawable.pray,
             PrayerTimeScreenRoute
-        )
-
-    @Serializable
-    data object Profile :
-        ContentDestination<MainRoute.ProfileScreen>(
-            "Profile",
-            R.drawable.profile,
-            MainRoute.ProfileScreen
         )
 
     @Serializable
@@ -463,4 +540,19 @@ sealed class ContentDestination<T>(
         R.drawable.quran,
         MainRoute.QuranScreenRoute
     )
+
+    @Serializable
+    data object Qibla : ContentDestination<HomeRoutes.Qibla>(
+        "Qibla",
+        R.drawable.qibla_compass,
+        HomeRoutes.Qibla
+    )
+
+    @Serializable
+    data object Profile :
+        ContentDestination<MainRoute.ProfileScreen>(
+            "Profile",
+            R.drawable.profile,
+            MainRoute.ProfileScreen
+        )
 }

@@ -39,6 +39,7 @@ dependencies {
     api(project(":core:ui"))
     implementation(project(":core:utils"))
 
+    implementation(project(":core:datastore"))
     implementation(project(":domain:usecase"))
 
     implementation(project(":feature:common"))

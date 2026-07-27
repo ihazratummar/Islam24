@@ -21,4 +21,6 @@ interface QuranRepository {
     fun getRecentSurahs(): Flow<List<RecentReadSurah>>
 
     suspend fun deleteRecentSurah(surahNumber: Int)
+
+    fun observeTotalBookmarkedAyahs(): Flow<Int>
 }

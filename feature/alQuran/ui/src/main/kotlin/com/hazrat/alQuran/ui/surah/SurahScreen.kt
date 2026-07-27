@@ -367,12 +367,10 @@ fun QuranScreen(
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                             Spacer(modifier = Modifier.width(dimens.space4))
-                                            Text(
-                                                text = "∨",
-                                                style = MaterialTheme.typography.labelSmall.copy(
-                                                    fontWeight = FontWeight.Bold
-                                                ),
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            Icon(
+                                                painter = painterResource(R.drawable.down_arrow),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(dimens.iconSm)
                                             )
                                         }
                                     }

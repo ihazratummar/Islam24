@@ -67,7 +67,9 @@ class CompassSensor(
             }
         }
 
-        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+            onAccuracyChanged?.invoke(accuracy)
+        }
     }
 
 

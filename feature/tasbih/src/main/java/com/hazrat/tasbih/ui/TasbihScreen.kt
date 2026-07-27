@@ -632,7 +632,7 @@ private fun DhikrListItem(
             ) {
                 IconButton(onClick = { onToggleFavorite() }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.favourite),
+                        painter = painterResource(id = R.drawable.heart),
                         contentDescription = "Favorite",
                         tint = if (tasbih.isFavorite) customColors.accentColor else customColors.secondaryText,
                         modifier = Modifier.size(dimens.iconSm)

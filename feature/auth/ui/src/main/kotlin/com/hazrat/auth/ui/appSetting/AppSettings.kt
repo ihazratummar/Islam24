@@ -3,6 +3,8 @@ package com.hazrat.auth.ui.appSetting
 import android.content.pm.PackageManager
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,7 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -41,7 +44,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import coil.annotation.ExperimentalCoilApi
-import com.hazrat.auth.ui.appSetting.component.SelectLanguageDialog
 import com.hazrat.auth.ui.component.AppMetaDataSettings
 import com.hazrat.auth.ui.component.SettingItemCard
 import com.hazrat.auth.ui.component.ToggleSettingData
@@ -49,15 +51,14 @@ import com.hazrat.auth.ui.component.ToggleSettings
 import com.hazrat.auth.ui.profileScreen.component.RatingBottomSheet
 import com.hazrat.ui.R
 import com.hazrat.ui.common.AppSection
-import com.hazrat.ui.common.IconWithBackground
-import com.hazrat.ui.common.toDisplayName
+import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.hapticFeedbacks
 
 /**
+ * Premium Profile Screen matching exact user mockup & real database metrics.
  * @author Hazrat Ummar Shaikh
  */
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Composable
 fun AppSettingScreen(
@@ -65,9 +66,10 @@ fun AppSettingScreen(
     appSettingState: AppSettingState,
     isHapticFeedback: Boolean = false,
     onPolicyClick: () -> Unit = {},
-    onAboutUsClick: (String, String) -> Unit,
+    onAboutUsClick: (String, String) -> Unit = { _, _ -> },
+    onAuthClick: () -> Unit = {},
+    onSupportClick: () -> Unit = {}
 ) {
-
     val context = LocalContext.current
     val activity = LocalActivity.current
 
@@ -110,7 +112,7 @@ fun AppSettingScreen(
         val toggleSettingsTab = listOf(
             ToggleSettingData(
                 label = "Dark Mode",
-                statusText = if (appSettingState.toggleTheme) "Currently On" else "Currently Off",
+                statusText = if (appSettingState.toggleTheme) "On" else "Off",
                 icon = R.drawable.isha,
                 onClick = {
                     hapticFeedbacks(
@@ -122,8 +124,21 @@ fun AppSettingScreen(
                 isEnable = appSettingState.toggleTheme
             ),
             ToggleSettingData(
-                label = "Haptic",
-                statusText = if (appSettingState.isHapticFeedbackEnabled) "Currently On" else "Currently Off",
+                label = "Notifications",
+                statusText = if (appSettingState.isMasterNotificationEnabled) "Enabled" else "Disabled",
+                icon = R.drawable.notification,
+                onClick = {
+                    hapticFeedbacks(
+                        isEnable = isHapticFeedback,
+                        hapticFeedback = hapticFeedback
+                    )
+                    appSettingEvent(AppSettingEvent.ToggleMasterNotification)
+                },
+                isEnable = appSettingState.isMasterNotificationEnabled
+            ),
+            ToggleSettingData(
+                label = "Haptic Feedback",
+                statusText = if (appSettingState.isHapticFeedbackEnabled) "Enabled" else "Disabled",
                 icon = R.drawable.vibrate,
                 onClick = {
                     hapticFeedbacks(
@@ -136,21 +151,7 @@ fun AppSettingScreen(
             )
         )
 
-
         val appMetaSettings = listOf(
-            AppMetaDataSettings(
-                icon = R.drawable.language,
-                settingName = "Language",
-                label = appSettingState.currentLanguage?.toDisplayName() ,
-                trailingIcon = R.drawable.arrowright,
-                onClick = {
-                    hapticFeedbacks(
-                        isEnable = isHapticFeedback,
-                        hapticFeedback = hapticFeedback
-                    )
-                    appSettingEvent(AppSettingEvent.ClickLanguageDialog)
-                }
-            ),
             AppMetaDataSettings(
                 icon = R.drawable.outlinstar,
                 settingName = "About Islam 24",
@@ -166,7 +167,7 @@ fun AppSettingScreen(
             AppMetaDataSettings(
                 icon = R.drawable.share,
                 settingName = "Share App",
-                trailingIcon = R.drawable.share2,
+                trailingIcon = R.drawable.arrowright,
                 onClick = {
                     hapticFeedbacks(
                         isEnable = isHapticFeedback,
@@ -179,7 +180,7 @@ fun AppSettingScreen(
                 icon = R.drawable.star,
                 settingName = "Rate Us",
                 trailingIcon = R.drawable.arrowright,
-                label = "Share You Valuable Feedback",
+                label = "Share Your Valuable Feedback",
                 onClick = {
                     hapticFeedbacks(
                         isEnable = isHapticFeedback,
@@ -190,8 +191,20 @@ fun AppSettingScreen(
                     }
                 }
             ),
+            AppMetaDataSettings(
+                icon = R.drawable.heart,
+                settingName = "Support Islam 24",
+                label = "Keep us free",
+                trailingIcon = R.drawable.arrowright,
+                onClick = {
+                    hapticFeedbacks(
+                        isEnable = isHapticFeedback,
+                        hapticFeedback = hapticFeedback
+                    )
+                    onSupportClick()
+                }
+            )
         )
-
 
         LazyColumn(
             modifier = Modifier
@@ -202,81 +215,139 @@ fun AppSettingScreen(
             verticalArrangement = Arrangement.spacedBy(dimens.space20)
         ) {
 
+            // Top Guest Profile Hero Card & Metrics (Exact Mockup Match)
             item {
-                Box(
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(
-                                    Color((0xFF0b5a5d)),
-                                    Color((0xFF0b5a5d)),
-                                    Color((0xFF23655b)),
-                                )
-                            ),
-                            shape = RoundedCornerShape(dimens.space12)
-                        ),
-                    contentAlignment = Alignment.Center
+                        .clip(RoundedCornerShape(dimens.cornerXl))
+                        .border(
+                            width = dimens.divider,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                            shape = RoundedCornerShape(dimens.cornerXl)
+                        )
+                        .clickable {
+                            android.widget.Toast.makeText(context, "Coming Soon!", android.widget.Toast.LENGTH_SHORT).show()
+                        },
+                    shape = RoundedCornerShape(dimens.cornerXl),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
                 ) {
-                    Row(
+                    Column(
                         modifier = Modifier
-                            .padding(dimens.space16)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+                            .fillMaxWidth()
+                            .padding(dimens.space20)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    color = Color(0xFF387578),
-                                    shape = RoundedCornerShape(dimens.space12)
-                                )
+                        // User Header Row
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(dimens.space16)
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.splash_logo),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .padding(dimens.space4)
-                                    .size(dimens.iconXl)
-                            )
-                        }
+                            // Circle Avatar with Plus Badge Overlay
+                            Box(
+                                modifier = Modifier.size(dimens.space48 + dimens.space16)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.surface)
+                                        .border(
+                                            width = dimens.space2,
+                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                                            shape = CircleShape
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.splash_logo),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(dimens.iconXl),
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
 
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.common_guest_user) , //stringResource(id = R.string.guest_user),
-                                style = MaterialTheme.typography.headlineMedium.copy(
+                                Box(
+                                    modifier = Modifier
+                                        .size(dimens.space20)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                                        .border(
+                                            width = dimens.divider,
+                                            color = MaterialTheme.colorScheme.surface,
+                                            shape = CircleShape
+                                        )
+                                        .align(Alignment.BottomEnd),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "+",
+                                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                }
+                            }
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(R.string.common_guest_user),
+                                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
-                            )
-                            Text(
-                                text = stringResource(R.string.common_tap_to_sign_in), //stringResource(id = R.string.tap_to_sign_in),
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    color = Color(0xff79c4bb)
+                                Text(
+                                    text = stringResource(R.string.common_tap_to_sign_in),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = customColors.secondaryText
                                 )
+                            }
+
+                            Icon(
+                                painter = painterResource(R.drawable.arrowright),
+                                contentDescription = null,
+                                modifier = Modifier.size(dimens.iconSm),
+                                tint = customColors.secondaryText
                             )
                         }
 
-                        IconWithBackground(
-                            icon = R.drawable.arrow_right2,
-                            iconColor = MaterialTheme.colorScheme.onBackground,
-                            containerColor = Color(0xFF4b7e76),
-                            onClick = {}
-                        )
+                        Spacer(modifier = Modifier.height(dimens.space16))
+                        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                        Spacer(modifier = Modifier.height(dimens.space16))
+
+                        // Real Database Metrics Row
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MetricItem(
+                                count = appSettingState.totalPrayersLogged.toString(),
+                                label = "Prayers"
+                            )
+                            MetricItem(
+                                count = appSettingState.prayerStreak.toString(),
+                                label = "• Streak",
+                                labelColor = Color(0xFFFF8E00)
+                            )
+                            MetricItem(
+                                count = appSettingState.totalBookmarkedAyahs.toString(),
+                                label = "Bookmarks"
+                            )
+                        }
                     }
                 }
             }
 
-
+            // PREFERENCES Section
             item {
                 AppSection(
-                    sectionTitle = "Preference"//stringResource(id = R.string.preferences)
+                    sectionTitle = "PREFERENCES"
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         toggleSettingsTab.forEachIndexed { index, toggles ->
@@ -299,14 +370,15 @@ fun AppSettingScreen(
                 }
             }
 
+            // APP Section
             item {
                 AppSection(
-                    sectionTitle = "App Settings" //stringResource(id = R.string.app_settings_section)
+                    sectionTitle = "APP"
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         appMetaSettings.forEachIndexed { index, appSettings ->
@@ -329,14 +401,15 @@ fun AppSettingScreen(
                 }
             }
 
+            // LEGAL Section
             item {
                 AppSection(
-                    sectionTitle ="Legal" //stringResource(id = R.string.policy_section)
+                    sectionTitle = "LEGAL"
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
                         )
                     ) {
                         SettingItemCard(
@@ -349,12 +422,12 @@ fun AppSettingScreen(
                 }
             }
 
+            // Footer Section
             item {
-                val versionName = context.packageName?.let {
-                    context.packageManager.getPackageInfo(
-                        it,
-                        PackageManager.GET_META_DATA
-                    ).versionName
+                val versionName = try {
+                    context.packageManager.getPackageInfo(context.packageName, 0).versionName
+                } catch (_: Exception) {
+                    "1.1.0"
                 }
 
                 Column(
@@ -363,28 +436,25 @@ fun AppSettingScreen(
                     verticalArrangement = Arrangement.spacedBy(dimens.space4)
                 ) {
                     Text(
-                        text = stringResource(R.string.common_app_version, versionName.toString()),
+                        text = "Islam 24 v${versionName ?: "1.1.0"}",
                         style = MaterialTheme.typography.labelMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = customColors.secondaryText
                         )
                     )
                     Text(
-                        text = stringResource(R.string.common_made_with_love),
+                        text = "Made with love for the Ummah",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            color = MaterialTheme.colorScheme.surfaceVariant
+                            color = customColors.secondaryText.copy(alpha = 0.7f)
                         )
                     )
                 }
             }
+
             item {
                 Spacer(Modifier.height(dimens.space64))
             }
-
-
         }
-        if (appSettingState.isLanguageDialogOpen) {
-            SelectLanguageDialog(appSettingEvent)
-        }
+
         if (appSettingState.isRatingDialogOpen) {
             RatingBottomSheet(
                 appSettingEvent,
@@ -393,5 +463,28 @@ fun AppSettingScreen(
                 }
             )
         }
+    }
+}
+
+@Composable
+private fun MetricItem(
+    count: String,
+    label: String,
+    labelColor: Color = customColors.secondaryText
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(dimens.space4)
+    ) {
+        Text(
+            text = count,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = labelColor
+        )
     }
 }

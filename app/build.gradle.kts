@@ -21,8 +21,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         this.targetSdk = 37
-        versionCode = 100
-        versionName = "3.1.1"
+        versionCode = 105
+        versionName = "4.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -38,6 +38,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -165,7 +166,8 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.runtime.livedata)
 
-    //Google Play Store Update
+    //Google Play Store Update & Billing
+    implementation(libs.android.billing.ktx)
     implementation(libs.app.update)
     implementation(libs.app.update.ktx)
     implementation(libs.review)

@@ -48,10 +48,15 @@ class PrayerRescheduleWorker(
                     userDataStore.isPrayerNotificationEnabled(prayer)
                 }.toSet()
 
+                val preAlertOffsets = Prayer.entries.associateWith { prayer ->
+                    userDataStore.getPrayerPreAlertOffsetSync(prayer)
+                }
+
                 prayerAlarmManager.rescheduleAll(
                     today = todayData,
                     tomorrow = tomorrowData,
-                    enabledPrayers = enabledPrayers
+                    enabledPrayers = enabledPrayers,
+                    preAlertOffsets = preAlertOffsets
                 )
                 Result.success()
             } else {
@@ -69,7 +74,11 @@ class PrayerRescheduleWorker(
     companion object {
         fun enqueue(context: Context) {
             val workRequest = OneTimeWorkRequestBuilder<PrayerRescheduleWorker>().build()
-            WorkManager.getInstance(context).enqueue(workRequest)
+            WorkManager.getInstance(context).enqueueUniqueWork(
+                "PrayerRescheduleWork",
+                androidx.work.ExistingWorkPolicy.REPLACE,
+                workRequest
+            )
         }
     }
 }

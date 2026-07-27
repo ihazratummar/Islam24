@@ -41,10 +41,12 @@ dependencies {
     implementation(project(":core:sensor"))
     implementation(project(":core:location"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
 
     implementation(project(":feature:common"))
 
     api(project(":domain:repository"))
+    implementation(project(":domain:usecase"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

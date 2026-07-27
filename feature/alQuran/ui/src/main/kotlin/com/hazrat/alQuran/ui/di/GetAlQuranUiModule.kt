@@ -2,6 +2,7 @@ package com.hazrat.alQuran.ui.di
 
 import com.hazrat.alQuran.ui.ayah.AyahViewModel
 import com.hazrat.alQuran.ui.surah.SurahViewModel
+import com.hazrat.usecase.quran.ControlQuranAudioUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -25,7 +26,8 @@ fun getAlQuranUiModule(): Module = module {
             getSurahAyahsUseCase = get(),
             saveRecentSurahUseCase = get(),
             deleteRecentSurahUseCase = get(),
-            dataStorePreference = get()
+            dataStorePreference = get(),
+            controlQuranAudioUseCase = getOrNull<ControlQuranAudioUseCase>()
         )
     }
 }

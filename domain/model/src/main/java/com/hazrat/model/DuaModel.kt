@@ -16,6 +16,7 @@ data class DuaItemModel(
     val categoryId: Int,
     val arabicText: String,
     val translation: String,
+    val transliteration: String = "",
     val reference: String,
     val repeatCount: Int
 )

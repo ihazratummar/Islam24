@@ -68,4 +68,8 @@ class QuranRepositoryImpl(
     override suspend fun deleteRecentSurah(surahNumber: Int) {
         quranDao.deleteRecentSurah(surahNumber)
     }
+
+    override fun observeTotalBookmarkedAyahs(): Flow<Int> {
+        return quranDao.getTotalBookmarkedAyahsCount()
+    }
 }

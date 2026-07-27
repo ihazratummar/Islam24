@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -13,6 +14,8 @@ import com.hazrat.auth.ui.appSetting.AppSettingScreen
 import com.hazrat.auth.ui.appSetting.AppSettingViewModel
 import com.hazrat.auth.ui.policiesScreen.PoliciesScreen
 import com.hazrat.auth.ui.policiesScreen.LegalScreens
+import com.hazrat.auth.ui.support.SupportIslam24Screen
+import com.hazrat.auth.ui.support.SupportViewModel
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -40,10 +43,12 @@ fun NavGraphBuilder.authNavGraph(
                 },
                 onAboutUsClick = { link, title ->
                     navController.navigate(LegalScreenRoute(link = link, title = title))
+                },
+                onSupportClick = {
+                    navController.navigate(SupportIslam24Route)
                 }
             )
         }
-
 
         composable<PoliciesScreenRoute> {
             PoliciesScreen(
@@ -54,13 +59,20 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
 
-        composable<LegalScreenRoute> {navBackStack ->
-
+        composable<LegalScreenRoute> { navBackStack ->
             val route = navBackStack.toRoute<LegalScreenRoute>()
             LegalScreens(
                 onBackClick = { navController.popBackStack() },
                 url = route.link,
                 title = route.title
+            )
+        }
+
+        composable<SupportIslam24Route> {
+            val viewModel = koinViewModel<SupportViewModel>()
+            SupportIslam24Screen(
+                viewModel = viewModel,
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
@@ -78,7 +90,6 @@ data object SignUp
 @Serializable
 data object ForgettingPassword
 
-
 @Serializable
 data object ProfileSettingScreen
 
@@ -88,6 +99,8 @@ data object ProfileDetailsScreen
 @Serializable
 data object PoliciesScreenRoute
 
+@Serializable
+data object SupportIslam24Route
 
 @Serializable
 data class LegalScreenRoute(val link: String, val title: String)

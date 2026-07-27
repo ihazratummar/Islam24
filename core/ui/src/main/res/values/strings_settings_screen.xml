@@ -1,4 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="prayer_setting">Prayer Settings</string>
+
+    <!-- Support Islam 24 Screen -->
+    <string name="support_title">Support Islam 24</string>
+    <string name="support_every_feature_free">Every Feature is Free</string>
+    <string name="support_subtitle" formatted="false">Islam 24 is 100% free and ad-free. There are no locked features, no premium tiers — never.</string>
+    <string name="support_sadaqah_tagline">Your support is a sadaqah jariyah that keeps the app alive for the Ummah.</string>
+    
+    <string name="support_supporters_count">Supporters</string>
+    <string name="support_you_supported">You Supported</string>
+    <string name="support_ad_free">Ad-Free</string>
+    
+    <string name="support_one_time_tip">One-Time Tip</string>
+    <string name="support_monthly_support">Monthly Support</string>
+    
+    <string name="support_badge_most_popular">Most Popular</string>
+    <string name="support_badge_best_value">Best Value</string>
+    <string name="support_badge_top_supporter">Top Supporter</string>
+    
+    <string name="support_tip_small_title">Small Tip</string>
+    <string name="support_tip_small_desc">Buy us a cup of tea. Every little bit helps keep the app running.</string>
+
+    <string name="support_tip_generous_title">Generous Tip</string>
+    <string name="support_tip_generous_desc">Support a week of server costs. JazakAllah Khair for your generosity!</string>
+
+    <string name="support_tip_supporter_title">Supporter</string>
+    <string name="support_tip_supporter_desc">Help us add new features like audio recitations and tafsir content.</string>
+
+    <string name="support_tip_patron_title">Patron</string>
+    <string name="support_tip_patron_desc">Fund a full month of development. You are truly making a difference.</string>
+
+    <string name="support_tip_champion_title">Champion</string>
+    <string name="support_tip_champion_desc">Become a Champion of the Ummah. Your support sustains our mission.</string>
+
+    <string name="support_sub_supporter_title">Monthly Supporter</string>
+    <string name="support_sub_supporter_desc">The price of a coffee. A small monthly gift that keeps Islam 24 alive for millions.</string>
+
+    <string name="support_sub_guardian_title">Monthly Guardian</string>
+    <string name="support_sub_guardian_desc">Fund server costs and content licensing. You are a guardian of the Ummah.</string>
+
+    <string name="support_sub_patron_title">Monthly Patron</string>
+    <string name="support_sub_patron_desc">Your monthly support directly funds new features — Quran audio, tafsir, and more.</string>
+
+    <string name="support_cta_choose">Choose an option to continue</string>
+    <string name="support_cta_tip">Tip %1$s</string>
+    <string name="support_cta_subscribe">Subscribe %1$s</string>
+    <string name="support_sub_billing_disclaimer">%1$s/month, billed monthly. Cancel anytime through Google Play or App Store subscriptions. No minimum commitment.</string>
+
+    <string name="support_secure_payment">Secure payment via Google Play · App Store</string>
+    <string name="support_disclaimer_title">Islam 24 has no premium features.</string>
+    <string name="support_disclaimer_desc">Every feature is free forever. You are not unlocking anything — you are giving a gift.</string>
+
+    <string name="support_faq_title">Common Questions</string>
+    <string name="support_faq_q1">Do I need to pay to use Islam 24?</string>
+    <string name="support_faq_a1" formatted="false">No, absolutely not. Islam 24 is 100% free and ad-free forever. Tipping or subscribing is entirely voluntary to help cover development and server costs.</string>
+
+    <string name="support_faq_q2">Where does my support go?</string>
+    <string name="support_faq_a2">Your support directly funds server infrastructure, domain hosting, licensing for Quran audio recitations, and ongoing app development.</string>
+
+    <string name="support_faq_q3">What is the difference between a tip and a subscription?</string>
+    <string name="support_faq_a3">A One-Time Tip is a single gift of any amount. A Monthly Support subscription recurs automatically each month until you cancel.</string>
+
+    <string name="support_faq_q4">Can I cancel my subscription?</string>
+    <string name="support_faq_a4">Yes, you can cancel your subscription at any time directly through Google Play Store subscriptions with zero hassle.</string>
+
+    <string name="support_faq_q5">Can I get a refund?</string>
+    <string name="support_faq_a5">Refunds are handled according to Google Play Store refund policies. You can request a refund through your Google account purchase history.</string>
+
+    <string name="support_faq_q6">Is my payment secure?</string>
+    <string name="support_faq_a6">Yes, all payments are processed securely by Google Play Store. We never store or see your payment information.</string>
+
+    <string name="support_offline_title">No Internet Connection</string>
+    <string name="support_offline_desc">Please connect to the internet to load live regional prices and complete support gifts via Google Play.</string>
 </resources>

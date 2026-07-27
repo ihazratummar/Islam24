@@ -1,3 +1,17 @@
+## [4.0.0-Beta 4] - 2026-07-26
+
+### What's New
+- **Support Islam 24**: You can now support the app through voluntary Sadaqah gifts! Islam 24 remains 100% free with zero ads, zero tracking, and zero paywalls for the entire Ummah — forever.
+- **Regional Currency Support**: Support prices and totals now automatically display in your country's local currency (₹, $, €, SAR, etc.).
+- **Vibrant Home Screen Redesign**: Refreshed Home screen icons with vivid, beautiful colors that look stunning in both Light Mode and Dark Mode.
+- **Offline Connection Banner**: A friendly alert lets you know whenever your internet connection is turned off.
+- **Easy Support Access**: Quick access to support the app directly from the Home screen and the end of the 99 Names of Allah screen.
+
+### Improvements & Fixes
+- Replaced icons across the app with crisp, high-resolution vector assets for a cleaner look.
+- Polished support cards and layout badges for smooth viewing on all screen sizes.
+- General performance improvements and bug fixes for a smoother experience.
+
 ## [3.1.1] - 2025-03-14
 ### Fixed
 - Fixed a crash when toggling prayer notifications on devices running Android versions below API 33.
