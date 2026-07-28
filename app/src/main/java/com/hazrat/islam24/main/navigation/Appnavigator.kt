@@ -243,8 +243,9 @@ fun AppNavigator(
                                     meaning = surahData.meaning,
                                     surahNumber = surahData.number,
                                     targetAyahNumber = surahData.targetAyahNumber,
-                                    isRecordRecentRead = !surahData.isFromBookmark,
-                                    isFromBookmark = surahData.isFromBookmark
+                                    isRecordRecentRead = !surahData.isFromBookmark && !surahData.isFromKhatam,
+                                    isFromBookmark = surahData.isFromBookmark,
+                                    isFromKhatam = surahData.isFromKhatam
                                 )
                             )
                         )
@@ -252,7 +253,13 @@ fun AppNavigator(
                     onSearchQueryChanged = surahViewModel::onSearchQueryChanged,
                     onSearchActiveChanged = surahViewModel::onSearchActiveChanged,
                     onTabSelected = surahViewModel::onTabSelected,
-                    onViewModeChanged = surahViewModel::onViewModeChanged
+                    onViewModeChanged = surahViewModel::onViewModeChanged,
+                    onStartNewKhatamClick = surahViewModel::onOpenTargetDatePicker,
+                    onTargetDateSelected = surahViewModel::onTargetDateSelected,
+                    onOpenEditPlanSheet = surahViewModel::onOpenEditPlanSheet,
+                    onResetPlanClicked = surahViewModel::onResetPlanClicked,
+                    onEndPlanClicked = surahViewModel::onEndPlanClicked,
+                    onDismissSheets = surahViewModel::dismissSheets
                 )
             }
 
@@ -262,7 +269,7 @@ fun AppNavigator(
                 val surahData = navBackStackEntry.toRoute<MainRoute.AyahScreenRoute>().surahData
                 val ayahViewModel = koinViewModel<AyahViewModel>(
                     parameters = {
-                        parametersOf(surahData.surahNumber, surahData.targetAyahNumber, surahData.isFromBookmark)
+                        parametersOf(surahData.surahNumber, surahData.targetAyahNumber, surahData.isFromBookmark, surahData.isFromKhatam)
                     }
                 )
 
@@ -279,17 +286,14 @@ fun AppNavigator(
                         meaning = surahData.meaning,
                         number = surahData.surahNumber,
                         targetAyahNumber = surahData.targetAyahNumber,
-                        isFromBookmark = surahData.isFromBookmark
+                        isFromBookmark = surahData.isFromBookmark,
+                        isFromKhatam = surahData.isFromKhatam
                     ),
                     onAyahScrolled = { ayahNum ->
-                        if (surahData.isRecordRecentRead && !surahData.isFromBookmark) {
-                            ayahViewModel.saveLastReadAyah(ayahNumber = ayahNum)
-                        }
+                        ayahViewModel.saveLastReadAyah(ayahNumber = ayahNum)
                     },
                     onSurahCompleted = {
-                        if (surahData.isRecordRecentRead) {
-                            ayahViewModel.onSurahCompleted()
-                        }
+                        ayahViewModel.onSurahCompleted()
                     },
                     onEvent = ayahViewModel::onEvent
                 )
@@ -492,7 +496,8 @@ data class SurahData(
     val surahNumber: Int,
     val targetAyahNumber: Int = 1,
     val isRecordRecentRead: Boolean = true,
-    val isFromBookmark: Boolean = false
+    val isFromBookmark: Boolean = false,
+    val isFromKhatam: Boolean = false
 )
 
 val SurahDataType = object : NavType<SurahData>(isNullableAllowed = false) {

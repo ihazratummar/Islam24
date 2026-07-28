@@ -11,6 +11,7 @@ import com.hazrat.database.dao.HijriCalendarDao
 import com.hazrat.database.dao.LocationNameDao
 import com.hazrat.database.dao.PrayerLogDao
 import com.hazrat.database.dao.PrayerTimeDao
+import com.hazrat.database.dao.KhatamDao
 import com.hazrat.database.dao.QuranDao
 import com.hazrat.database.dao.ZakatDao
 import com.hazrat.database.database.AthkarDatabase
@@ -204,6 +205,30 @@ fun getDatabaseModule(): Module = module {
         }
     }
 
+    // Migration v4 -> v5: add khatam_plan table
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `khatam_plan` (
+                    `id` TEXT NOT NULL,
+                    `title` TEXT NOT NULL,
+                    `startDateTimestamp` INTEGER NOT NULL,
+                    `targetEndDateTimestamp` INTEGER NOT NULL,
+                    `lastReadSurahNumber` INTEGER NOT NULL,
+                    `lastReadAyahNumber` INTEGER NOT NULL,
+                    `lastReadGlobalAyahNumber` INTEGER NOT NULL,
+                    `completedAyahsCount` INTEGER NOT NULL,
+                    `status` TEXT NOT NULL,
+                    `completedTimestamp` INTEGER,
+                    `updatedTimestamp` INTEGER NOT NULL,
+                    PRIMARY KEY(`id`)
+                )
+                """.trimIndent()
+            )
+        }
+    }
+
     single {
         Room.databaseBuilder(
             androidContext(),
@@ -211,11 +236,12 @@ fun getDatabaseModule(): Module = module {
             "quran_db"
         )
             .createFromAsset("databases/quran_prepopulated.db")
-            .addMigrations(MIGRATION_0_4, MIGRATION_1_4, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_0_4, MIGRATION_1_4, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
     single<QuranDao> { get<QuranDatabase>().quranDao() }
+    single<KhatamDao> { get<QuranDatabase>().khatamDao() }
 
     // Dua Hisnul Muslim Database
     single {

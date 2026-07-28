@@ -70,8 +70,6 @@ dependencies {
     /*
     Calendar
      */
-    implementation(libs.kiziton.calendar)
-    implementation(libs.hijri)
     implementation(libs.ummalqura)
 
 }

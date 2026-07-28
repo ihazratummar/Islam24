@@ -56,9 +56,6 @@ dependencies {
     //Datastore
     implementation (libs.androidx.datastore.preferences)
 
-    //dataStorePreference
-    implementation(libs.androidx.preference.ktx)
-
     //koin
     implementation(libs.koin.compose)
 }

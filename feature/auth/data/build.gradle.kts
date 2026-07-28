@@ -57,16 +57,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation (libs.koin.compose)
+    implementation(libs.koin.compose)
 
     /*
     FireBase
      */
-    implementation (libs.play.services.auth)
-
-    api(libs.firebase.auth.ktx)
-    api (libs.firebase.database)
     platform(libs.firebase.bom)
-    api(libs.firebase.firestore)
-    api(libs.firebase.storage)
 }

@@ -35,11 +35,7 @@ class AzanPlaybackService : Service() {
             val intent = Intent(context, AzanPlaybackService::class.java).apply {
                 putExtra(EXTRA_PRAYER_KEY, prayer.key)
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent)
-            } else {
-                context.startService(intent)
-            }
+            context.startForegroundService(intent)
         }
     }
 
@@ -93,23 +89,21 @@ class AzanPlaybackService : Service() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Azan Playback",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "Notification for active Azan playback"
-                setSound(null, null) // Sound is handled by MediaPlayer
-            }
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "Azan Playback",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Notification for active Azan playback"
+            setSound(null, null) // Sound is handled by MediaPlayer
         }
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(channel)
     }
 
     private fun stopAzan() {
         mediaPlayerHelper.stopAzan()
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 

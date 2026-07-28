@@ -1,10 +1,11 @@
 package com.hazrat.alQuran.data.di
 
+import com.hazrat.alQuran.data.repository.KhatamRepositoryImpl
 import com.hazrat.alQuran.data.repository.QuranRepositoryImpl
+import com.hazrat.domain.repository.KhatamRepository
 import com.hazrat.domain.repository.QuranRepository
 import org.koin.core.module.Module
 import org.koin.dsl.module
-
 
 /**
  * @author hazratummar
@@ -16,6 +17,12 @@ fun getAlQuranDataModule(): Module = module {
     single<QuranRepository> {
         QuranRepositoryImpl(
             quranDao = get()
+        )
+    }
+
+    single<KhatamRepository> {
+        KhatamRepositoryImpl(
+            khatamDao = get()
         )
     }
 }

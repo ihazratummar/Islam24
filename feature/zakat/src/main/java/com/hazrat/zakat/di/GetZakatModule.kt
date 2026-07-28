@@ -19,8 +19,6 @@ fun getZakatModule(): Module = module {
     single<ZakatRepository> {
         ZakatRepositoryImpl(
             dao = get(),
-            auth = get(),
-            fireStore = get(),
             context = get()
         )
     }

@@ -62,4 +62,12 @@ fun getUserCaseModule(): Module = module {
     single { ControlQuranAudioUseCase(audioPlaybackRepository = get()) }
     single { ToggleAyahBookmarkUseCase(quranRepository = get()) }
     single { GetBookmarkedAyahsUseCase(quranRepository = get()) }
+
+    single { com.hazrat.usecase.khatam.GetActiveKhatamPlanUseCase(repository = get()) }
+    single { com.hazrat.usecase.khatam.GetKhatamHistoryUseCase(repository = get()) }
+    single { com.hazrat.usecase.khatam.StartKhatamPlanUseCase(repository = get()) }
+    single { com.hazrat.usecase.khatam.UpdateKhatamProgressUseCase(repository = get()) }
+    single { com.hazrat.usecase.khatam.UpdateKhatamTargetDateUseCase(repository = get()) }
+    single { com.hazrat.usecase.khatam.ResetKhatamPlanUseCase(repository = get()) }
+    single { com.hazrat.usecase.khatam.EndKhatamPlanUseCase(repository = get()) }
 }

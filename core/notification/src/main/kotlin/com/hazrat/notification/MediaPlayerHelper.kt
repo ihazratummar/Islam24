@@ -42,7 +42,12 @@ class MediaPlayerHelper (
 
     fun registerVolumeReceiver() {
         if (!isReceiverRegistered) { // Only register if not already registered
-            context.registerReceiver(volumeReceiver, IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
+            androidx.core.content.ContextCompat.registerReceiver(
+                context,
+                volumeReceiver,
+                IntentFilter("android.media.VOLUME_CHANGED_ACTION"),
+                androidx.core.content.ContextCompat.RECEIVER_EXPORTED
+            )
             isReceiverRegistered = true
         }
     }
@@ -138,6 +143,7 @@ class MediaPlayerHelper (
                 if (it.isPlaying) {
                     it.stop()
                 }
+                it.release()
             }
             unregisterVolumeReceiver()
             mediaPlayer = null

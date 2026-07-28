@@ -97,7 +97,7 @@ class PrayerTimeRepositoryImpl(
         prayerTimeDao
             .getPrayerTimeForToday(currentDate = DateUtil.getCurrentDate())
             .flatMapLatest { entity ->
-                if (entity != null) {
+                if (entity != null && entity.fajrTime > 0L) {
                     flowOf(
                         Result.Success(entity.toMinimalPrayerData())
                     )

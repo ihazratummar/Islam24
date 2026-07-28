@@ -61,9 +61,4 @@ dependencies {
 
     implementation (libs.koin.compose)
     implementation (libs.kotlinx.serialization.json)
-
-    api (libs.firebase.firestore)
-    api (libs.firebase.auth.ktx)
-
-
 }

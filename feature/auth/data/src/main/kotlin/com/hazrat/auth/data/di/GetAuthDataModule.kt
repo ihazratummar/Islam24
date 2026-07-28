@@ -1,8 +1,5 @@
 package com.hazrat.auth.data.di
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.hazrat.auth.data.billing.BillingRepositoryImpl
 import com.hazrat.auth.data.billing.RevenueCatBillingDataSource
 import com.hazrat.domain.repository.BillingRepository
@@ -22,21 +19,6 @@ fun getAuthDataModule(): Module = module {
 
     single<CoroutineScope> {
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    }
-
-    // FirebaseAuth
-    single<FirebaseAuth> {
-        FirebaseAuth.getInstance()
-    }
-
-    // FirebaseFirestore (if not already defined)
-    single<FirebaseFirestore> {
-        FirebaseFirestore.getInstance()
-    }
-
-    // FirebaseStorage (if not already defined)
-    single<FirebaseStorage> {
-        FirebaseStorage.getInstance()
     }
 
     // RevenueCat Data Source

@@ -27,12 +27,14 @@ class AyahViewModel(
     private val surahNumber: Int,
     private val initialTargetAyahNumber: Int = 1,
     private val isFromBookmark: Boolean = false,
+    private val isFromKhatam: Boolean = false,
     private val getSurahAyahsUseCase: GetSurahAyahsUseCase,
     private val saveRecentSurahUseCase: SaveRecentSurahUseCase,
     private val deleteRecentSurahUseCase: DeleteRecentSurahUseCase,
     private val dataStorePreference: DataStorePreference? = null,
     private val controlQuranAudioUseCase: ControlQuranAudioUseCase? = null,
-    private val toggleAyahBookmarkUseCase: com.hazrat.usecase.quran.ToggleAyahBookmarkUseCase? = null
+    private val toggleAyahBookmarkUseCase: com.hazrat.usecase.quran.ToggleAyahBookmarkUseCase? = null,
+    private val updateKhatamProgressUseCase: com.hazrat.usecase.khatam.UpdateKhatamProgressUseCase? = null
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AyahState())
@@ -44,20 +46,20 @@ class AyahViewModel(
 
     init {
         loadAyah(surahNumber)
-        if (!isFromBookmark) {
-            saveLastReadAyah(ayahNumber = initialTargetAyahNumber)
-        }
         observeBackgroundAudioService()
     }
 
     private fun loadAyah(targetSurahNumber: Int = currentSurahNumber) {
         currentSurahNumber = targetSurahNumber
+        isCompleted = false
         ayahJob?.cancel()
         ayahJob = viewModelScope.launch(Dispatchers.IO) {
             getSurahAyahsUseCase(surahNumber = targetSurahNumber).collectLatest { ayahModels ->
                 _state.update {
                     it.copy(ayahs = ayahModels)
                 }
+                val targetAyahNum = if (targetSurahNumber == surahNumber) initialTargetAyahNumber else 1
+                saveLastReadAyah(ayahNumber = targetAyahNum)
             }
         }
     }
@@ -198,18 +200,29 @@ class AyahViewModel(
         if (isCompleted || isFromBookmark) return
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val resolvedSurahName = if (surahName.isNotBlank()) surahName else com.hazrat.ui.common.SurahNameProvider.getSurahName(currentSurahNumber)
-                val formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
-                saveRecentSurahUseCase(
-                    surahNumber = currentSurahNumber,
-                    surahName = resolvedSurahName,
-                    ayahNumber = ayahNumber,
-                    formattedDate = formattedDate
-                )
-                dataStorePreference?.saveQuranLastRead(
-                    surahNumber = currentSurahNumber,
-                    ayahNumber = ayahNumber
-                )
+                if (isFromKhatam) {
+                    val targetAyah = _state.value.ayahs.find { it.ayahNumber == ayahNumber }
+                    if (targetAyah != null && targetAyah.globalAyahNumber > 0) {
+                        updateKhatamProgressUseCase?.invoke(
+                            surahNumber = currentSurahNumber,
+                            ayahNumber = ayahNumber,
+                            globalAyahNumber = targetAyah.globalAyahNumber
+                        )
+                    }
+                } else {
+                    val resolvedSurahName = if (surahName.isNotBlank()) surahName else com.hazrat.ui.common.SurahNameProvider.getSurahName(currentSurahNumber)
+                    val formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
+                    saveRecentSurahUseCase(
+                        surahNumber = currentSurahNumber,
+                        surahName = resolvedSurahName,
+                        ayahNumber = ayahNumber,
+                        formattedDate = formattedDate
+                    )
+                    dataStorePreference?.saveQuranLastRead(
+                        surahNumber = currentSurahNumber,
+                        ayahNumber = ayahNumber
+                    )
+                }
             } catch (_: Exception) {}
         }
     }
@@ -217,14 +230,16 @@ class AyahViewModel(
     fun onSurahCompleted() {
         if (isCompleted) return
         isCompleted = true
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                deleteRecentSurahUseCase(currentSurahNumber)
-                dataStorePreference?.saveQuranLastRead(
-                    surahNumber = 0,
-                    ayahNumber = 0
-                )
-            } catch (_: Exception) {}
+        if (!isFromKhatam) {
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    deleteRecentSurahUseCase(currentSurahNumber)
+                    dataStorePreference?.saveQuranLastRead(
+                        surahNumber = 0,
+                        ayahNumber = 0
+                    )
+                } catch (_: Exception) {}
+            }
         }
     }
 }

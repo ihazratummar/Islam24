@@ -1,21 +1,16 @@
 package com.hazrat.utils
 
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 /**
- * Object containing utility methods for date manipulation.
+ * Object containing utility methods for date manipulation using modern java.time APIs.
  */
 object DateUtil {
-
 
     /**
      * Retrieves the current month.
@@ -23,10 +18,8 @@ object DateUtil {
      * @return The current month as an integer (1-12).
      */
     fun getCurrentMonth(): Int {
-        val calendar = Calendar.getInstance()
-        return calendar.get(Calendar.MONTH) + 1 // Adding 1 because Calendar.MONTH starts from 0
+        return LocalDate.now().monthValue
     }
-
 
     /**
      * Retrieves the current date in the "yyyy-MM-dd" format for sortable database storage.
@@ -34,18 +27,14 @@ object DateUtil {
      * @return The current date as a string.
      */
     fun getCurrentDate(): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
-        return dateFormat.format(Date())
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH))
     }
 
     /**
      * Retrieves tomorrow's date in the "yyyy-MM-dd" format.
      */
     fun getTomorrowDate(): String {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, 1)
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
-        return dateFormat.format(calendar.time)
+        return LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH))
     }
 
     /**
@@ -53,10 +42,10 @@ object DateUtil {
      */
     fun convertToDbFormat(dateString: String): String {
         return try {
-            val inputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
-            val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
-            val date = inputFormat.parse(dateString)
-            outputFormat.format(date!!)
+            val inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale.ENGLISH)
+            val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
+            val date = LocalDate.parse(dateString, inputFormatter)
+            date.format(outputFormatter)
         } catch (e: Exception) {
             dateString
         }
@@ -72,30 +61,47 @@ object DateUtil {
         return dateString == getCurrentDate()
     }
 
-
-    fun timeStringToLong(dateString: String, format: String = "dd-MM-yyyy HH:mm"): Long{
-        val dateFormat = SimpleDateFormat(format, Locale.ENGLISH)
-        val date = dateFormat.parse(dateString) ?: return 0L
-        return date.time
+    fun timeStringToLong(dateString: String, format: String = "dd-MM-yyyy HH:mm"): Long {
+        if (dateString.isBlank()) return 0L
+        val cleanedDate = dateString.replace(Regex("\\s*\\(.*?\\)"), "")
+            .replace(Regex("\\s*\\+.*"), "")
+            .trim()
+        return try {
+            val sdf = java.text.SimpleDateFormat(format, Locale.ENGLISH)
+            val parsed = sdf.parse(cleanedDate)
+            parsed?.time ?: 0L
+        } catch (e: Exception) {
+            try {
+                val sdf2 = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)
+                sdf2.parse(cleanedDate)?.time ?: 0L
+            } catch (e2: Exception) {
+                0L
+            }
+        }
     }
 
     fun getDateFromLong(dateLong: Long, format: String = "dd/MM/yyyy"): String {
-        val date = Date(dateLong)
-        val dateFormat = SimpleDateFormat(format, Locale.getDefault())
-        return dateFormat.format(date)
+        if (dateLong <= 0L) return ""
+        val formatter = DateTimeFormatter.ofPattern(format, Locale.getDefault())
+        val localDate = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDate()
+        return localDate.format(formatter)
     }
 
     fun dateLongToString(dateLong: Long, format: String = "hh:mm a"): String {
-        val formatter =SimpleDateFormat(format, Locale.ENGLISH)
-        val date = Date(dateLong)
-        return formatter.format(date)
+        if (dateLong <= 0L) return ""
+        return try {
+            val formatter = DateTimeFormatter.ofPattern(format, Locale.ENGLISH)
+            val localDateTime = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDateTime()
+            localDateTime.format(formatter)
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     /**
      *  Create Readable date for Time millis
      */
-
-    fun Long.toReadableDate() : String {
+    fun Long.toReadableDate(): String {
         val zoneId = ZoneId.systemDefault()
         val targetDate = Instant
             .ofEpochMilli(this)
@@ -105,7 +111,7 @@ object DateUtil {
         val today = LocalDate.now(zoneId)
 
         return when {
-            targetDate.isEqual(today) ->{
+            targetDate.isEqual(today) -> {
                 "Today"
             }
             targetDate.isEqual(today.minusDays(1)) -> {
@@ -115,11 +121,10 @@ object DateUtil {
                 "Tomorrow"
             }
             targetDate.year == today.year -> {
-                targetDate.format(DateTimeFormatter.ofPattern("d MMM"))
+                targetDate.format(DateTimeFormatter.ofPattern("d MMM", Locale.ENGLISH))
             }
-
             else -> {
-                targetDate.format(DateTimeFormatter.ofPattern("d MMM yyyy"))
+                targetDate.format(DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH))
             }
         }
     }
@@ -133,5 +138,4 @@ object DateUtil {
             .atZone(zoneId)
             .toLocalDate()
     }
-
 }

@@ -1,3 +1,18 @@
+## [4.1.0] - 2026-07-28
+
+### What's New
+- **Khatam Quran (Reading Plan)**: Brand-new Khatam Quran tracking feature replacing the progress tab. Set your target completion date (7 to 180 days) and track your full Quran reading journey with real-time percentage progress.
+- **Emerald Khatam Dashboard**: Beautiful hero card featuring an emerald gradient theme, live progress bar, current reading position pill (*Surah Al-Baqarah: 89*), remaining days countdown, and former plans history.
+- **Dedicated Continuation**: Tap *"Continue Reading"* on the Khatam tab to jump straight to your exact reading position.
+- **Independent Reading Progress**: Khatam reading and regular Read tab recents are 100% isolated into separate data streams, ensuring regular reading doesn't affect your Khatam plan and vice versa.
+
+### Improvements & Fixes
+- **Resume Position Protection**: Your furthest unread position in Khatam is protected — accidentally swiping back to review past Surahs will never regress your Khatam resume point.
+- **Dwell-Time Scroll Tracking**: Position saving is debounced by 600ms so fast flings or peeking ahead won't overwrite your last read Ayah position.
+- **Khatam Paging Restriction**: Right-swiping to advance to the next Surah in Khatam mode is locked until reaching the final Ayah of the current Surah.
+- **Prayer Time Calculations**: Fixed timezone string parsing in prayer calculation algorithms to prevent zero-duration countdown timer issues.
+- **Clean Dependency Tree**: Removed unused Firebase (Auth/Storage) and Google Maps libraries to optimize build size and APK overhead.
+
 ## [4.0.1] - 2026-07-28
 
 ### What's New

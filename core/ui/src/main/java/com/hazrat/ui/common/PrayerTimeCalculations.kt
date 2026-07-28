@@ -128,18 +128,18 @@ private fun calculatePrayerState(prayerTimes: MinimalPrayerData, currentTime: Lo
 
     // Find current active prayer
     val currentPrayer = when {
-        currentTime in prayerTimes.fajrTime until prayerTimes.sunriseTime -> PrayerType.FAJR
-        currentTime in prayerTimes.sunriseTime until prayerTimes.dhuhrTime -> PrayerType.SUNRISE
-        currentTime in prayerTimes.dhuhrTime until prayerTimes.asrTime -> PrayerType.DHUHR
-        currentTime in prayerTimes.asrTime until prayerTimes.maghribTime -> PrayerType.ASR
-        currentTime in prayerTimes.maghribTime until prayerTimes.ishaTime -> PrayerType.MAGHRIB
-        currentTime >= prayerTimes.ishaTime || (prayerTimes.fajrTime > 0 && currentTime < prayerTimes.fajrTime) -> PrayerType.ISHA
+        prayerTimes.fajrTime > 0 && currentTime in prayerTimes.fajrTime until prayerTimes.sunriseTime -> PrayerType.FAJR
+        prayerTimes.sunriseTime > 0 && currentTime in prayerTimes.sunriseTime until prayerTimes.dhuhrTime -> PrayerType.SUNRISE
+        prayerTimes.dhuhrTime > 0 && currentTime in prayerTimes.dhuhrTime until prayerTimes.asrTime -> PrayerType.DHUHR
+        prayerTimes.asrTime > 0 && currentTime in prayerTimes.asrTime until prayerTimes.maghribTime -> PrayerType.ASR
+        prayerTimes.maghribTime > 0 && currentTime in prayerTimes.maghribTime until prayerTimes.ishaTime -> PrayerType.MAGHRIB
+        (prayerTimes.ishaTime > 0 && currentTime >= prayerTimes.ishaTime) || (prayerTimes.fajrTime > 0 && currentTime < prayerTimes.fajrTime) -> PrayerType.ISHA
         else -> null
     }
 
     // Find next prayer
     val nextPrayerInfo = prayers.firstOrNull { it.second > currentTime }
-        ?: Pair(PrayerType.FAJR, prayerTimes.fajrTime + TimeUnit.DAYS.toMillis(1))
+        ?: Pair(PrayerType.FAJR, if (prayerTimes.fajrTime > 0) prayerTimes.fajrTime + TimeUnit.DAYS.toMillis(1) else 0L)
 
     val (nextPrayer, nextPrayerTime) = nextPrayerInfo
 

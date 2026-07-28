@@ -44,7 +44,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -179,7 +183,7 @@ fun AyahScreen(
         }
     }
 
-    // Track active viewed Ayah on scroll — uses rememberUpdatedState to avoid stale closures
+    // Track active viewed Ayah on scroll — updates UI instantly
     LaunchedEffect(listState) {
         snapshotFlow { Pair(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset) }
             .collect {
@@ -199,9 +203,15 @@ fun AyahScreen(
                     val ayahIdx = (rawIndex - headerCount).coerceIn(0, ayahs.lastIndex)
                     val currentAyahNum = ayahs[ayahIdx].ayahNumber
                     currentViewedAyah = currentAyahNum
-                    currentOnAyahScrolled(currentAyahNum)
                 }
             }
+    }
+
+    // Dwell-Time Debounce (600ms): Only save position when user actually pauses/dwells on an Ayah.
+    // Prevents accidental fast-scrolls or peeking ahead from overwriting last read position.
+    LaunchedEffect(currentViewedAyah) {
+        delay(600.milliseconds)
+        currentOnAyahScrolled(currentViewedAyah)
     }
 
     // Detect surah completion: when user stays on the last ayah for 2 seconds, remove from recent
@@ -212,10 +222,34 @@ fun AyahScreen(
         }
     }
 
-    // Notify ViewModel when user swipes to a new Surah page
+    // Initial page index
+    val initialPageIndex = remember { (surahScreenData.number - 1).coerceIn(0, 113) }
+
+    // Notify ViewModel when user swipes to a new Surah page and reset scroll position to 0
     LaunchedEffect(pagerState.currentPage) {
         val targetSurahNum = pagerState.currentPage + 1
         onEvent(AyahUiEvent.OnSurahPageChanged(targetSurahNum))
+        
+        if (pagerState.currentPage != initialPageIndex || hasInitialScrolled) {
+            listState.scrollToItem(0)
+        }
+    }
+
+    // Nested scroll connection to block forward swipe in Khatam mode unless user reaches the last Ayah
+    val khatamNestedScrollConnection = remember(surahScreenData.isFromKhatam, currentViewedAyah, ayahState.ayahs) {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (surahScreenData.isFromKhatam && source == NestedScrollSource.UserInput) {
+                    val totalAyahs = ayahState.ayahs.size
+                    val isAtLastAyah = totalAyahs > 0 && currentViewedAyah >= totalAyahs
+                    // Block RIGHT swipe (swiping right towards next Surah) until user reaches last Ayah
+                    if (!isAtLastAyah && available.x > 0f) {
+                        return available // Consume scroll delta to block right swipe to next Surah
+                    }
+                }
+                return Offset.Zero
+            }
+        }
     }
 
     val currentSurahNum = pagerState.currentPage + 1
@@ -272,6 +306,7 @@ fun AyahScreen(
             modifier = modifier
                 .padding(paddingValues)
                 .fillMaxSize()
+                .nestedScroll(khatamNestedScrollConnection)
         ) { page ->
             val pageSurahNumber = page + 1
             Box(

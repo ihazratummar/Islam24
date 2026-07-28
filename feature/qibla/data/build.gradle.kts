@@ -58,9 +58,4 @@ dependencies {
     implementation(libs.timber)
 
     implementation (libs.koin.compose)
-
-    api (libs.firebase.firestore)
-    api (libs.firebase.auth.ktx)
-
-
 }

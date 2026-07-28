@@ -78,7 +78,8 @@ data class SurahScreenData(
     val meaning: String,
     val number: Int,
     val targetAyahNumber: Int = 1,
-    val isFromBookmark: Boolean = false
+    val isFromBookmark: Boolean = false,
+    val isFromKhatam: Boolean = false
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,7 +91,13 @@ fun QuranScreen(
     onSearchQueryChanged: (String) -> Unit = {},
     onSearchActiveChanged: (Boolean) -> Unit = {},
     onTabSelected: (QuranTab) -> Unit = {},
-    onViewModeChanged: (QuranViewMode) -> Unit = {}
+    onViewModeChanged: (QuranViewMode) -> Unit = {},
+    onStartNewKhatamClick: () -> Unit = {},
+    onTargetDateSelected: (Long) -> Unit = {},
+    onOpenEditPlanSheet: () -> Unit = {},
+    onResetPlanClicked: () -> Unit = {},
+    onEndPlanClicked: () -> Unit = {},
+    onDismissSheets: () -> Unit = {}
 ) {
     var isViewModeDropdownExpanded by remember { mutableStateOf(false) }
 
@@ -207,10 +214,10 @@ fun QuranScreen(
                     }
                 }
 
-                // 1. Navigation Tabs Row (Read | My Progress | Bookmark)
+                // 1. Navigation Tabs Row (Read | Khatam | Bookmark)
                 val tabs = listOf(
                     QuranTab.READ to "Read",
-                    QuranTab.MY_PROGRESS to "My Progress",
+                    QuranTab.KHATAM to "Khatam",
                     QuranTab.BOOKMARK to "Bookmark"
                 )
                 val selectedTabIndex = tabs.indexOfFirst { it.first == surahState.selectedTab }.coerceAtLeast(0)
@@ -541,47 +548,26 @@ fun QuranScreen(
                             Spacer(Modifier.height(dimens.space32))
                         }
                     }
-                } else if (surahState.selectedTab == QuranTab.MY_PROGRESS) {
-                    // My Progress Tab Placeholder
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(dimens.space32),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(dimens.space16)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(dimens.space64)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primaryContainer),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.book),
-                                    contentDescription = null,
-                                    tint = Color.Unspecified,
-                                    modifier = Modifier.size(dimens.iconLg)
+                } else if (surahState.selectedTab == QuranTab.KHATAM) {
+                    com.hazrat.alQuran.ui.khatam.KhatamScreenContent(
+                        activePlan = surahState.activeKhatamPlan,
+                        khatamHistory = surahState.khatamHistory,
+                        onStartNewPlanClick = onStartNewKhatamClick,
+                        onContinueReadingClick = { surahNum, ayahNum ->
+                            val surahModel = surahState.quranData.find { it.surahNumber == surahNum }
+                            onSurahClick(
+                                SurahScreenData(
+                                    name = surahModel?.nameEnglish ?: "Al-Fatihah",
+                                    totalAyah = surahModel?.totalAyahs ?: 7,
+                                    meaning = surahModel?.nameTransliterated ?: "The Opening",
+                                    number = surahNum,
+                                    targetAyahNumber = ayahNum,
+                                    isFromKhatam = true
                                 )
-                            }
-                            Text(
-                                text = "My Reading Progress",
-                                style = MaterialTheme.typography.titleLarge.copy(
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                color = MaterialTheme.colorScheme.onBackground
                             )
-                            Text(
-                                text = "Track your daily Quran completion goals and reading streak here soon.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
+                        },
+                        onEditPlanClick = onOpenEditPlanSheet
+                    )
                 } else if (surahState.selectedTab == QuranTab.BOOKMARK) {
                     // Bookmark Tab View
                     if (surahState.bookmarkedAyahs.isEmpty()) {
@@ -795,6 +781,43 @@ fun QuranScreen(
                     }
                 }
             }
+        }
+
+        if (surahState.showTargetDatePickerSheet) {
+            com.hazrat.alQuran.ui.khatam.TargetDatePickerSheet(
+                initialTargetTimestamp = surahState.activeKhatamPlan?.targetEndDateTimestamp,
+                onDismissRequest = onDismissSheets,
+                onDateSelected = onTargetDateSelected
+            )
+        }
+
+        if (surahState.showSettingCompletedSheet) {
+            com.hazrat.alQuran.ui.khatam.SettingCompletedSheet(
+                onDismissRequest = onDismissSheets,
+                onStartNow = {
+                    onDismissSheets()
+                    val firstSurah = surahState.quranData.firstOrNull()
+                    onSurahClick(
+                        SurahScreenData(
+                            name = firstSurah?.nameEnglish ?: "Al-Fatihah",
+                            totalAyah = firstSurah?.totalAyahs ?: 7,
+                            meaning = firstSurah?.nameTransliterated ?: "The Opening",
+                            number = 1,
+                            targetAyahNumber = 1,
+                            isFromKhatam = true
+                        )
+                    )
+                }
+            )
+        }
+
+        if (surahState.showEditPlanSheet) {
+            com.hazrat.alQuran.ui.khatam.EditReadingPlanSheet(
+                onDismissRequest = onDismissSheets,
+                onEditTargetDateClick = onStartNewKhatamClick,
+                onResetPlanClick = onResetPlanClicked,
+                onEndPlanClick = onEndPlanClicked
+            )
         }
     }
 }

@@ -70,17 +70,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
     /*
     FireBase
      */
-    implementation (libs.play.services.auth)
-
-    implementation(libs.firebase.auth.ktx)
-    implementation (libs.firebase.database)
     platform(libs.firebase.bom)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
 
     //koin
     implementation(libs.koin.compose)

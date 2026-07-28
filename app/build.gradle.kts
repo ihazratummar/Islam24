@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     alias(libs.plugins.kotlin.android)
 }
 
@@ -21,8 +20,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         this.targetSdk = 37
-        versionCode = 108
-        versionName = "4.0.2"
+        versionCode = 109
+        versionName = "4.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -164,7 +163,6 @@ dependencies {
 
     //Observe
     implementation (libs.androidx.lifecycle.viewmodel.compose)
-    implementation (libs.androidx.runtime.livedata)
 
     //Google Play Store Update & Billing
     implementation(libs.android.billing.ktx)

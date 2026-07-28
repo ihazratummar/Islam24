@@ -1,23 +1,12 @@
 package com.hazrat.zakat.data.repository
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
 import com.hazrat.database.dao.ZakatDao
 import com.hazrat.database.entity.zakat.NisabEntity
 import com.hazrat.database.entity.zakat.ZakatEntity
-import com.hazrat.utils.Constants.USER_COLLECTION
-import com.hazrat.utils.Constants.ZAKAT_COLLECTION
 import com.hazrat.zakat.domain.repository.ZakatRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import java.util.UUID
 
 /**
@@ -26,12 +15,9 @@ import java.util.UUID
 
 class ZakatRepositoryImpl (
     private val dao: ZakatDao,
-    private val auth: FirebaseAuth,
-    private val fireStore: FirebaseFirestore,
     private val context: Context
 ) : ZakatRepository {
     override suspend fun insertNisab(nisabEntity: NisabEntity) {
-
         dao.insertNisab(nisabEntity)
     }
 
@@ -44,7 +30,7 @@ class ZakatRepositoryImpl (
             if (entity == null){
                 insertNisab(NisabEntity(silverPrice = 0.0))
                 emit(NisabEntity(silverPrice = 0.0))
-            }else{
+            } else {
                 emit(entity)
             }
         }
@@ -53,21 +39,10 @@ class ZakatRepositoryImpl (
     override suspend fun insertZakat(zakatEntity: ZakatEntity) {
         val newZakatEntity = zakatEntity.copy(id = UUID.randomUUID().toString())
         dao.insertZakatDetails(zakatEntity = newZakatEntity)
-
-        val userId = auth.currentUser?.uid ?: return
-        fireStore.collection(USER_COLLECTION).document(userId).collection(ZAKAT_COLLECTION)
-            .document(newZakatEntity.id).set(zakatEntity)
-            .addOnSuccessListener {
-                Toast.makeText(context, context.getString(com.hazrat.ui.R.string.zakat_added_success), Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener {
-            }
     }
 
     override suspend fun deleteZakat(zakatId: String) {
         dao.deleteZakatDetails(zakatId)
-        val userId = auth.currentUser?.uid?:return
-        fireStore.collection(USER_COLLECTION).document(userId).collection(ZAKAT_COLLECTION)
-            .document(zakatId).delete()
     }
 
     override fun getZakatList(): Flow<List<ZakatEntity>> {
@@ -82,67 +57,10 @@ class ZakatRepositoryImpl (
         return dao.getZakatDetailsByDateAsc()
     }
 
-
     override suspend fun syncData() {
-        val userId = auth.currentUser?.uid ?: return
-
-        try {
-            // Collect the Flow to get the list of ZakatEntity objects
-            val localZakatEntities = dao.getZakatList().first()
-            val firestoreZakatEntities = mutableListOf<ZakatEntity>()
-
-            // Fetch data from Firestore
-            val querySnapshot = fireStore.collection(USER_COLLECTION).document(userId).collection(ZAKAT_COLLECTION  ).get().await()
-
-            for (document in querySnapshot.documents) {
-                val zakatEntity = document.toObject(ZakatEntity::class.java)
-                zakatEntity?.let { firestoreZakatEntities.add(it) }
-            }
-
-            // Backup local data to Firestore
-            for (localEntity in localZakatEntities) {
-                if (!firestoreZakatEntities.any { it.id == localEntity.id }) {
-                    fireStore.collection(USER_COLLECTION).document(userId).collection("zakat")
-                        .document(localEntity.id).set(localEntity).await()
-                }
-            }
-
-            for (firestoreEntity in firestoreZakatEntities) {
-                if (!localZakatEntities.any { it.id == firestoreEntity.id }) {
-                    dao.insertZakatDetails(firestoreEntity)
-                }
-            }
-        } catch (e: Exception) {
-            // Log detailed error information
-            Log.e("SyncDataError", "Error synchronizing data", e)
-
-            // Provide meaningful feedback to the user on the main thread
-            withContext(Dispatchers.Main) {
-                when (e) {
-                    is FirebaseFirestoreException -> {
-                        when (e.code) {
-                            FirebaseFirestoreException.Code.UNAVAILABLE -> {
-                                Toast.makeText(context, context.getString(com.hazrat.ui.R.string.error_network), Toast.LENGTH_LONG).show()
-                            }
-                            else -> {
-                                Toast.makeText(context, context.getString(com.hazrat.ui.R.string.error_firestore_sync, e.message), Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    }
-                    else -> {
-                        Toast.makeText(context, context.getString(com.hazrat.ui.R.string.error_unexpected, e.message), Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        }
     }
 
     override fun getZakatDetails(id: String): Flow<ZakatEntity> {
-        try {
-            val zakat = dao.getZakatDetails(id = id)
-            return zakat
-        } catch (e: Exception) {
-            throw e
-        }
+        return dao.getZakatDetails(id = id)
     }
 }
