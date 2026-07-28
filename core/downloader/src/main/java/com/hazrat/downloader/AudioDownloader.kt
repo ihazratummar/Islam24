@@ -3,23 +3,20 @@ package com.hazrat.downloader
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.hazrat.database.dao.QuranDao
 import com.hazrat.database.entity.quran.AudioCacheEntity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 sealed class AudioDownloadState {
     object Idle : AudioDownloadState()
@@ -59,14 +56,12 @@ class AudioDownloader(
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Quran Recitation Downloads",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(
+            channelId,
+            "Quran Recitation Downloads",
+            NotificationManager.IMPORTANCE_LOW
+        )
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun updateNotification(globalAyahNumber: Int, progressPercent: Int) {
@@ -88,15 +83,6 @@ class AudioDownloader(
         try {
             notificationManager.cancel(1001)
         } catch (_: Exception) {}
-    }
-
-    @Suppress("MissingPermission")
-    @androidx.annotation.RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
-    private fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-        return capabilities.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     /**
@@ -144,8 +130,8 @@ class AudioDownloader(
                 val url = "https://cdn.islamic.network/quran/audio/128/$edition/$globalAyahNumber.mp3"
                 val request = Request.Builder().url(url).build()
                 val response = client.newCall(request).execute()
-                if (response.isSuccessful && response.body != null) {
-                    val body = response.body!!
+                if (response.isSuccessful) {
+                    val body = response.body
                     val totalBytes = body.contentLength().coerceAtLeast(1)
                     var bytesDownloaded = 0L
                     val buffer = ByteArray(8192)
@@ -185,7 +171,7 @@ class AudioDownloader(
                 lastErrorMsg = e.localizedMessage ?: "Network connection error"
                 if (localFile.exists()) localFile.delete()
                 if (attempts < 3) {
-                    kotlinx.coroutines.delay(1000)
+                    kotlinx.coroutines.delay(1000.milliseconds)
                 }
             }
         }
@@ -224,7 +210,7 @@ class AudioDownloader(
                 val request = Request.Builder().url(url).build()
                 val response = client.newCall(request).execute()
                 val responseBody = response.body
-                if (response.isSuccessful && responseBody != null) {
+                if (response.isSuccessful) {
                     localFile.outputStream().use { out ->
                         responseBody.byteStream().copyTo(out)
                     }

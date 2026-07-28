@@ -89,14 +89,6 @@ class ZakatAlarmScheduler(
         }
     }
 
-    private fun canScheduleExactAlarms(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            alarmManager.canScheduleExactAlarms()
-        } else {
-            true
-        }
-    }
-
     companion object {
         const val EXTRA_ZAKAT_ID = "extra_zakat_id"
         const val EXTRA_ZAKAT_AMOUNT = "extra_zakat_amount"

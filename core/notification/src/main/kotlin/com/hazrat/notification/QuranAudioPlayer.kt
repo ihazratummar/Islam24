@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.net.Uri
-import android.os.Build
 import java.io.File
 
 /**
@@ -157,7 +156,7 @@ class QuranAudioPlayer(private val context: Context) {
     }
 
     private fun setSpeedInternal(speed: Float) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mediaPlayer != null) {
+        if (mediaPlayer != null) {
             try {
                 val params = mediaPlayer?.playbackParams ?: PlaybackParams()
                 params.speed = speed
@@ -166,11 +165,4 @@ class QuranAudioPlayer(private val context: Context) {
         }
     }
 
-    fun isPlaying(): Boolean {
-        return try {
-            mediaPlayer?.isPlaying == true
-        } catch (_: Exception) {
-            false
-        }
-    }
 }

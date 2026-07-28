@@ -17,8 +17,7 @@ fun getAlQuranUiModule(): Module = module {
         SurahViewModel(
             getAllSurahListUseCase = get(),
             getRecentSurahsUseCase = get(),
-            getBookmarkedAyahsUseCase = get(),
-            dataStorePreference = get()
+            getBookmarkedAyahsUseCase = get()
         )
     }
     viewModel { param ->

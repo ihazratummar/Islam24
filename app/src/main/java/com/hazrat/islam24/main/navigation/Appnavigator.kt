@@ -161,7 +161,6 @@ fun AppNavigator(
             composable<MainRoute.HomeScreen> {
 
                 val homeViewModel = koinViewModel<HomeViewModel>()
-                val locationName by homeViewModel.locationName.collectAsState()
                 val homeState by homeViewModel.homeState.collectAsStateWithLifecycle()
                 val dailyStatus by homeViewModel.dailyStatus.collectAsStateWithLifecycle()
 

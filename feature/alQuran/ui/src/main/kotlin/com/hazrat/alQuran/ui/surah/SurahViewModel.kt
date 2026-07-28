@@ -2,7 +2,6 @@ package com.hazrat.alQuran.ui.surah
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.datastore.DataStorePreference
 import com.hazrat.usecase.quran.GetAllSurahListUseCase
 import com.hazrat.usecase.quran.GetBookmarkedAyahsUseCase
 import com.hazrat.usecase.quran.GetRecentSurahsUseCase
@@ -22,8 +21,7 @@ import kotlinx.coroutines.launch
 class SurahViewModel(
     private val getAllSurahListUseCase: GetAllSurahListUseCase,
     private val getRecentSurahsUseCase: GetRecentSurahsUseCase,
-    private val getBookmarkedAyahsUseCase: GetBookmarkedAyahsUseCase? = null,
-    private val dataStorePreference: DataStorePreference? = null
+    private val getBookmarkedAyahsUseCase: GetBookmarkedAyahsUseCase? = null
 ) : ViewModel() {
 
     private val _surahState = MutableStateFlow(SurahState())

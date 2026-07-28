@@ -354,18 +354,16 @@ class QuranAudioService : Service() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Quran Recitation Playback",
-                NotificationManager.IMPORTANCE_LOW
-            ).apply {
-                description = "Shows Quran Ayah recitation background player controls"
-                setShowBadge(false)
-            }
-            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "Quran Recitation Playback",
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = "Shows Quran Ayah recitation background player controls"
+            setShowBadge(false)
         }
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(channel)
     }
 
     private fun buildMediaNotification(
@@ -466,12 +464,7 @@ class QuranAudioService : Service() {
         mediaSession?.isActive = false
         mediaSession?.release()
         mediaSession = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            stopForeground(STOP_FOREGROUND_REMOVE)
-        } else {
-            @Suppress("DEPRECATION")
-            stopForeground(true)
-        }
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
@@ -525,11 +518,7 @@ class QuranAudioService : Service() {
                 putExtra(EXTRA_TOTAL_AYAH, totalAyahInSurah)
                 putExtra(EXTRA_PLAYBACK_MODE, mode)
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent)
-            } else {
-                context.startService(intent)
-            }
+            context.startForegroundService(intent)
         }
 
         fun sendAction(context: Context, action: String) {

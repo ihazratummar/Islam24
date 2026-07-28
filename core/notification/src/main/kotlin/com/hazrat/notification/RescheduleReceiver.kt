@@ -13,7 +13,6 @@ import android.content.Intent
 class RescheduleReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
-        val action = intent?.action ?: return
         PrayerRescheduleWorker.enqueue(context)
         ZakatRescheduleWorker.enqueue(context)
     }
