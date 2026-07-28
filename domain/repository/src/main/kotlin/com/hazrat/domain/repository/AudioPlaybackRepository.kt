@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface AudioPlaybackRepository {
     val playbackState: StateFlow<AudioPlaybackState>
-    fun startAudio(surahName: String, surahNumber: Int, ayahNumber: Int, globalAyahNumber: Int, totalAyahInSurah: Int)
+    fun startAudio(surahName: String, surahNumber: Int, ayahNumber: Int, globalAyahNumber: Int, totalAyahInSurah: Int, mode: String = "PLAY_SURAH")
+    fun setPlaybackSpeed(speed: Float)
     fun pauseAudio()
     fun resumeAudio()
     fun playNext()
@@ -27,5 +28,7 @@ data class AudioPlaybackState(
     val isDownloading: Boolean = false,
     val downloadProgress: Float = 0f,
     val playingAudioPath: String? = null,
-    val isActive: Boolean = false
+    val isActive: Boolean = false,
+    val playbackSpeed: Float = 1.0f,
+    val playbackMode: String = "PLAY_SURAH"
 )

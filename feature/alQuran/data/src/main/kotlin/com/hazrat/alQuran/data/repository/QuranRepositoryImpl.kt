@@ -10,6 +10,7 @@ import com.hazrat.model.al_quran_model.RecentReadSurah
 import com.hazrat.model.al_quran_model.SurahModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 
 /**
@@ -71,5 +72,15 @@ class QuranRepositoryImpl(
 
     override fun observeTotalBookmarkedAyahs(): Flow<Int> {
         return quranDao.getTotalBookmarkedAyahsCount()
+    }
+
+    override fun getBookmarkedAyahs(): Flow<List<AyahModel>> {
+        return quranDao.getBookmarkedAyahs().map { entities ->
+            entities.toAyahModelList()
+        }
+    }
+
+    override suspend fun toggleBookmark(surahNumber: Int, ayahNumber: Int, isBookmarked: Boolean) {
+        quranDao.updateBookmarkState(surahNumber, ayahNumber, isBookmarked)
     }
 }

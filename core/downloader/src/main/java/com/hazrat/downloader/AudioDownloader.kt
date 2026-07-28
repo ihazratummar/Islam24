@@ -8,9 +8,12 @@ import androidx.core.app.NotificationCompat
 import com.hazrat.database.dao.QuranDao
 import com.hazrat.database.entity.quran.AudioCacheEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -42,6 +45,10 @@ class AudioDownloader(
     private val client = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
+        .dispatcher(okhttp3.Dispatcher().apply {
+            maxRequests = 20
+            maxRequestsPerHost = 10
+        })
         .build()
 
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -93,8 +100,7 @@ class AudioDownloader(
     }
 
     /**
-     * Retrieves cached file if present, otherwise downloads from CDN:
-     * https://cdn.islamic.network/quran/audio/128/{edition}/{globalAyahNumber}.mp3
+     * Retrieves cached file if present, otherwise downloads from CDN with up to 3 retries.
      */
     fun downloadAudio(
         globalAyahNumber: Int,
@@ -103,7 +109,7 @@ class AudioDownloader(
         val fileName = "${edition}_${globalAyahNumber}.mp3"
         val localFile = File(audioDir, fileName)
 
-        // 1. Check O(1) DB Cache record
+        // 1. Check DB Cache record
         val dbRecord = quranDao.getAudioCache(globalAyahNumber, edition)
         if (dbRecord != null && localFile.exists() && localFile.length() > 0) {
             emit(AudioDownloadState.Success(globalAyahNumber, localFile))
@@ -124,81 +130,83 @@ class AudioDownloader(
             return@flow
         }
 
-        // Check network connection before starting download
-        if (!isNetworkAvailable(context)) {
-            emit(AudioDownloadState.Error(globalAyahNumber, "Internet not available. Please check your connection.", isNetworkError = true))
-            return@flow
-        }
+        // 3. Download via HTTP Streaming with progress emission & 3 automatic retries
+        var attempts = 0
+        var success = false
+        var lastErrorMsg = "Network error"
 
-        // 3. Download via HTTP Streaming with progress emission & status bar notification
-        val url = "https://cdn.islamic.network/quran/audio/128/$edition/$globalAyahNumber.mp3"
-        val request = Request.Builder().url(url).build()
+        emit(AudioDownloadState.Downloading(globalAyahNumber, 0f, 0, 100))
+        updateNotification(globalAyahNumber, 0)
 
-        try {
-            emit(AudioDownloadState.Downloading(globalAyahNumber, 0f, 0, 100))
-            updateNotification(globalAyahNumber, 0)
-
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                cancelNotification()
-                emit(AudioDownloadState.Error(globalAyahNumber, "HTTP ${response.code}", isNetworkError = true))
-                return@flow
-            }
-
-            val body = response.body
-            if (body == null) {
-                cancelNotification()
-                emit(AudioDownloadState.Error(globalAyahNumber, "Empty response body", isNetworkError = false))
-                return@flow
-            }
-
-            val totalBytes = body.contentLength().coerceAtLeast(1)
-            var bytesDownloaded = 0L
-
-            val buffer = ByteArray(8192)
-            body.byteStream().use { input ->
-                FileOutputStream(localFile).use { output ->
-                    var read: Int
-                    var lastEmittedPercent = -1
-                    while (input.read(buffer).also { read = it } != -1) {
-                        output.write(buffer, 0, read)
-                        bytesDownloaded += read
-                        val progress = (bytesDownloaded.toFloat() / totalBytes.toFloat()).coerceIn(0f, 1f)
-                        val percent = (progress * 100).toInt()
-                        
-                        if (percent != lastEmittedPercent) {
-                            lastEmittedPercent = percent
-                            updateNotification(globalAyahNumber, percent)
+        while (attempts < 3 && !success) {
+            attempts++
+            try {
+                val url = "https://cdn.islamic.network/quran/audio/128/$edition/$globalAyahNumber.mp3"
+                val request = Request.Builder().url(url).build()
+                val response = client.newCall(request).execute()
+                if (response.isSuccessful && response.body != null) {
+                    val body = response.body!!
+                    val totalBytes = body.contentLength().coerceAtLeast(1)
+                    var bytesDownloaded = 0L
+                    val buffer = ByteArray(8192)
+                    body.byteStream().use { input ->
+                        FileOutputStream(localFile).use { output ->
+                            var read: Int
+                            var lastEmittedPercent = -1
+                            while (input.read(buffer).also { read = it } != -1) {
+                                output.write(buffer, 0, read)
+                                bytesDownloaded += read
+                                val progress = (bytesDownloaded.toFloat() / totalBytes.toFloat()).coerceIn(0f, 1f)
+                                val percent = (progress * 100).toInt()
+                                if (percent != lastEmittedPercent) {
+                                    lastEmittedPercent = percent
+                                    updateNotification(globalAyahNumber, percent)
+                                }
+                                emit(AudioDownloadState.Downloading(globalAyahNumber, progress, bytesDownloaded, totalBytes))
+                            }
+                            output.flush()
                         }
-                        
-                        emit(AudioDownloadState.Downloading(globalAyahNumber, progress, bytesDownloaded, totalBytes))
                     }
-                    output.flush()
+                    cancelNotification()
+                    quranDao.insertAudioCache(
+                        AudioCacheEntity(
+                            globalAyahNumber = globalAyahNumber,
+                            edition = edition,
+                            localPath = localFile.absolutePath,
+                            fileSize = localFile.length()
+                        )
+                    )
+                    success = true
+                    emit(AudioDownloadState.Success(globalAyahNumber, localFile))
+                } else {
+                    lastErrorMsg = "HTTP ${response.code}"
+                }
+            } catch (e: Exception) {
+                lastErrorMsg = e.localizedMessage ?: "Network connection error"
+                if (localFile.exists()) localFile.delete()
+                if (attempts < 3) {
+                    kotlinx.coroutines.delay(1000)
                 }
             }
+        }
 
+        if (!success) {
             cancelNotification()
-
-            // Save to DB Cache
-            quranDao.insertAudioCache(
-                AudioCacheEntity(
-                    globalAyahNumber = globalAyahNumber,
-                    edition = edition,
-                    localPath = localFile.absolutePath,
-                    fileSize = localFile.length()
-                )
-            )
-
-            emit(AudioDownloadState.Success(globalAyahNumber, localFile))
-        } catch (e: Exception) {
-            cancelNotification()
-            if (localFile.exists()) localFile.delete()
-            emit(AudioDownloadState.Error(globalAyahNumber, e.localizedMessage ?: "Network error", isNetworkError = true))
+            emit(AudioDownloadState.Error(globalAyahNumber, lastErrorMsg, isNetworkError = true))
         }
     }.flowOn(Dispatchers.IO)
 
+    fun getCachedFile(globalAyahNumber: Int, edition: String = "ar.alafasy"): File? {
+        val fileName = "${edition}_${globalAyahNumber}.mp3"
+        val localFile = File(audioDir, fileName)
+        if (localFile.exists() && localFile.length() > 0) {
+            return localFile
+        }
+        return null
+    }
+
     /**
-     * Batch pre-fetching for pagination (e.g. pre-fetch next 10 ayahs in background)
+     * Parallel Batch pre-fetching for instant real-time playback buffer (pre-fetch next N ayahs)
      */
     suspend fun prefetchBatch(
         startGlobalAyah: Int,

@@ -12,13 +12,29 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Preserve line number information for Crashlytics stack traces
+-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Hide the original source file name in stack traces
+-renamesourcefileattribute SourceFile
+
+# Strip all Log calls (v/d/i/w) in release builds — improves R8 optimization rate
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+    public static int w(...);
+}
+
+# Strip Timber debug logging in release builds
+-assumenosideeffects class timber.log.Timber {
+    public static void v(...);
+    public static void d(...);
+    public static void i(...);
+    public static void w(...);
+}
+
+
 
 # Prevent R8 from removing internal location classes
 -keep class com.google.android.gms.internal.location.** { *; }

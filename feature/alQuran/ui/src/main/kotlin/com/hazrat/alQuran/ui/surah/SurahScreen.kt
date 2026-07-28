@@ -58,6 +58,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.sp
 import com.hazrat.alQuran.ui.component.SurahCard
 import com.hazrat.model.al_quran_model.RecentReadSurah
 import com.hazrat.model.al_quran_model.SurahModel
@@ -69,12 +70,15 @@ import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 
+import com.hazrat.alQuran.ui.ayah.cleanUthmanic
+
 data class SurahScreenData(
     val name: String,
     val totalAyah: Int,
     val meaning: String,
     val number: Int,
-    val targetAyahNumber: Int = 1
+    val targetAyahNumber: Int = 1,
+    val isFromBookmark: Boolean = false
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -203,10 +207,11 @@ fun QuranScreen(
                     }
                 }
 
-                // 1. Clean 2-Tab Navigation Row (Read | My Progress)
+                // 1. Navigation Tabs Row (Read | My Progress | Bookmark)
                 val tabs = listOf(
                     QuranTab.READ to "Read",
-                    QuranTab.MY_PROGRESS to "My Progress"
+                    QuranTab.MY_PROGRESS to "My Progress",
+                    QuranTab.BOOKMARK to "Bookmark"
                 )
                 val selectedTabIndex = tabs.indexOfFirst { it.first == surahState.selectedTab }.coerceAtLeast(0)
 
@@ -536,7 +541,7 @@ fun QuranScreen(
                             Spacer(Modifier.height(dimens.space32))
                         }
                     }
-                } else {
+                } else if (surahState.selectedTab == QuranTab.MY_PROGRESS) {
                     // My Progress Tab Placeholder
                     Box(
                         modifier = Modifier
@@ -575,6 +580,217 @@ fun QuranScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = TextAlign.Center
                             )
+                        }
+                    }
+                } else if (surahState.selectedTab == QuranTab.BOOKMARK) {
+                    // Bookmark Tab View
+                    if (surahState.bookmarkedAyahs.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(dimens.space32),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(dimens.space16)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(dimens.space64)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primaryContainer),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.star),
+                                        contentDescription = null,
+                                        tint = Color(0xFFFFB800),
+                                        modifier = Modifier.size(dimens.iconLg)
+                                    )
+                                }
+                                Text(
+                                    text = "No Bookmarked Ayahs",
+                                    style = MaterialTheme.typography.titleLarge.copy(
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                                Text(
+                                    text = "Tap the context menu on any Ayah while reading to add it to your Bookmarks.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = dimens.space20),
+                            verticalArrangement = Arrangement.spacedBy(dimens.space16)
+                        ) {
+                            item {
+                                Spacer(modifier = Modifier.height(dimens.space8))
+                                Text(
+                                    text = "Bookmarked Ayahs (${surahState.bookmarkedAyahs.size})",
+                                    style = MaterialTheme.typography.headlineSmall.copy(
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+
+                            surahState.bookmarkedAyahsGrouped.forEach { (surahNum, ayahs) ->
+                                val matchedSurah = surahState.quranData.find { it.surahNumber == surahNum }
+                                val surahName = matchedSurah?.nameTransliterated ?: "Surah $surahNum"
+                                val surahMeaning = matchedSurah?.nameEnglish ?: ""
+                                val totalAyahs = matchedSurah?.totalAyahs ?: 0
+
+                                item(key = "surah_header_$surahNum") {
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = RoundedCornerShape(dimens.cornerXl),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+                                        )
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = dimens.space16, vertical = dimens.space12),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(dimens.space16)
+                                            ) {
+                                                Text(
+                                                    text = surahNum.toString(),
+                                                    style = MaterialTheme.typography.titleMedium.copy(
+                                                        fontWeight = FontWeight.Bold
+                                                    ),
+                                                    color = MaterialTheme.colorScheme.onBackground,
+                                                    modifier = Modifier.width(dimens.space24)
+                                                )
+
+                                                SurahSvgImage(
+                                                    surahNumber = surahNum,
+                                                    tint = MaterialTheme.colorScheme.onBackground,
+                                                    modifier = Modifier
+                                                        .height(dimens.space32)
+                                                        .width(dimens.avatarXl)
+                                                )
+                                            }
+
+                                            Column(
+                                                horizontalAlignment = Alignment.End,
+                                                verticalArrangement = Arrangement.spacedBy(dimens.space2)
+                                            ) {
+                                                Text(
+                                                    text = surahName,
+                                                    style = MaterialTheme.typography.titleMedium.copy(
+                                                        fontWeight = FontWeight.Bold
+                                                    ),
+                                                    color = MaterialTheme.colorScheme.onBackground
+                                                )
+                                                Text(
+                                                    text = "$surahMeaning • ${ayahs.size} saved",
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+                                items(ayahs, key = { "bkm_${it.id}" }) { ayah ->
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(dimens.cornerLg))
+                                            .clickable {
+                                                onSurahClick(
+                                                    SurahScreenData(
+                                                        name = surahName,
+                                                        totalAyah = totalAyahs,
+                                                        meaning = surahMeaning,
+                                                        number = surahNum,
+                                                        targetAyahNumber = ayah.ayahNumber,
+                                                        isFromBookmark = true
+                                                    )
+                                                )
+                                            },
+                                        shape = RoundedCornerShape(dimens.cornerLg),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                        )
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(dimens.space16),
+                                            verticalArrangement = Arrangement.spacedBy(dimens.space12)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .clip(RoundedCornerShape(50))
+                                                        .background(MaterialTheme.colorScheme.primaryContainer)
+                                                        .padding(horizontal = dimens.space12, vertical = dimens.space4)
+                                                ) {
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+                                                    ) {
+                                                        Text(
+                                                            text = "Aya ${ayah.surahNumber}:${ayah.ayahNumber}",
+                                                            style = MaterialTheme.typography.labelMedium,
+                                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                                        )
+                                                        Icon(
+                                                            painter = painterResource(id = R.drawable.star),
+                                                            contentDescription = null,
+                                                            tint = Color(0xFFFFB800),
+                                                            modifier = Modifier.size(dimens.iconXs)
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                            Text(
+                                                text = ayah.arabicText.cleanUthmanic(),
+                                                style = MaterialTheme.typography.titleMedium.copy(
+                                                    fontFamily = ScheherazadeFontFamily,
+                                                    fontSize = 24.sp,
+                                                    lineHeight = 44.sp,
+                                                    textDirection = TextDirection.Rtl
+                                                ),
+                                                modifier = Modifier.fillMaxWidth(),
+                                                color = MaterialTheme.colorScheme.onBackground
+                                            )
+
+                                            if (ayah.englishTranslation.isNotBlank()) {
+                                                Text(
+                                                    text = ayah.englishTranslation,
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            item {
+                                Spacer(modifier = Modifier.height(dimens.space32))
+                            }
                         }
                     }
                 }

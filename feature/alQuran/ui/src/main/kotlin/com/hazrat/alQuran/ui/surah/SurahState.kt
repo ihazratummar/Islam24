@@ -1,11 +1,13 @@
 package com.hazrat.alQuran.ui.surah
 
+import com.hazrat.model.al_quran_model.AyahModel
 import com.hazrat.model.al_quran_model.RecentReadSurah
 import com.hazrat.model.al_quran_model.SurahModel
 
 enum class QuranTab {
     READ,
-    MY_PROGRESS
+    MY_PROGRESS,
+    BOOKMARK
 }
 
 enum class QuranViewMode {
@@ -21,5 +23,7 @@ data class SurahState(
     val selectedTab: QuranTab = QuranTab.READ,
     val selectedViewMode: QuranViewMode = QuranViewMode.SURA,
     val recentReads: List<RecentReadSurah> = emptyList(),
-    val juzList: List<JuzItem> = JuzDataHelper.getJuzList()
+    val juzList: List<JuzItem> = JuzDataHelper.getJuzList(),
+    val bookmarkedAyahs: List<AyahModel> = emptyList(),
+    val bookmarkedAyahsGrouped: Map<Int, List<AyahModel>> = emptyMap()
 )

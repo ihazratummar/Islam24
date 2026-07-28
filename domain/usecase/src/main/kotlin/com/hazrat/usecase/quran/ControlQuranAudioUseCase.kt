@@ -15,8 +15,12 @@ class ControlQuranAudioUseCase(
     val playbackState: StateFlow<AudioPlaybackState>
         get() = audioPlaybackRepository.playbackState
 
-    fun startAudio(surahName: String, surahNumber: Int, ayahNumber: Int, globalAyahNumber: Int, totalAyahInSurah: Int) {
-        audioPlaybackRepository.startAudio(surahName, surahNumber, ayahNumber, globalAyahNumber, totalAyahInSurah)
+    fun startAudio(surahName: String, surahNumber: Int, ayahNumber: Int, globalAyahNumber: Int, totalAyahInSurah: Int, mode: String = "PLAY_SURAH") {
+        audioPlaybackRepository.startAudio(surahName, surahNumber, ayahNumber, globalAyahNumber, totalAyahInSurah, mode)
+    }
+
+    fun setSpeed(speed: Float) {
+        audioPlaybackRepository.setPlaybackSpeed(speed)
     }
 
     fun pauseAudio() {

@@ -17,17 +17,21 @@ fun getAlQuranUiModule(): Module = module {
         SurahViewModel(
             getAllSurahListUseCase = get(),
             getRecentSurahsUseCase = get(),
+            getBookmarkedAyahsUseCase = get(),
             dataStorePreference = get()
         )
     }
     viewModel { param ->
         AyahViewModel(
-            surahNumber = param.get(),
+            surahNumber = param[0],
+            initialTargetAyahNumber = param[1],
+            isFromBookmark = param[2],
             getSurahAyahsUseCase = get(),
             saveRecentSurahUseCase = get(),
             deleteRecentSurahUseCase = get(),
             dataStorePreference = get(),
-            controlQuranAudioUseCase = getOrNull<ControlQuranAudioUseCase>()
+            controlQuranAudioUseCase = getOrNull<ControlQuranAudioUseCase>(),
+            toggleAyahBookmarkUseCase = get()
         )
     }
 }
