@@ -2,8 +2,6 @@
 <resources>
     <!-- Base application theme. -->
     <style name="Theme.Islam24" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
 </resources>

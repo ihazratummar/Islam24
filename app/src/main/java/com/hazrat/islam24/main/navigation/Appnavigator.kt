@@ -244,7 +244,8 @@ fun AppNavigator(
                                     meaning = surahData.meaning,
                                     surahNumber = surahData.number,
                                     targetAyahNumber = surahData.targetAyahNumber,
-                                    isRecordRecentRead = true
+                                    isRecordRecentRead = !surahData.isFromBookmark,
+                                    isFromBookmark = surahData.isFromBookmark
                                 )
                             )
                         )
@@ -262,7 +263,7 @@ fun AppNavigator(
                 val surahData = navBackStackEntry.toRoute<MainRoute.AyahScreenRoute>().surahData
                 val ayahViewModel = koinViewModel<AyahViewModel>(
                     parameters = {
-                        parametersOf(surahData.surahNumber)
+                        parametersOf(surahData.surahNumber, surahData.targetAyahNumber, surahData.isFromBookmark)
                     }
                 )
 
@@ -278,11 +279,12 @@ fun AppNavigator(
                         totalAyah = surahData.totalAyah,
                         meaning = surahData.meaning,
                         number = surahData.surahNumber,
-                        targetAyahNumber = surahData.targetAyahNumber
+                        targetAyahNumber = surahData.targetAyahNumber,
+                        isFromBookmark = surahData.isFromBookmark
                     ),
                     onAyahScrolled = { ayahNum ->
-                        if (surahData.isRecordRecentRead) {
-                            ayahViewModel.saveLastReadAyah(surahData.name, ayahNum)
+                        if (surahData.isRecordRecentRead && !surahData.isFromBookmark) {
+                            ayahViewModel.saveLastReadAyah(ayahNumber = ayahNum)
                         }
                     },
                     onSurahCompleted = {
@@ -490,7 +492,8 @@ data class SurahData(
     val meaning: String,
     val surahNumber: Int,
     val targetAyahNumber: Int = 1,
-    val isRecordRecentRead: Boolean = true
+    val isRecordRecentRead: Boolean = true,
+    val isFromBookmark: Boolean = false
 )
 
 val SurahDataType = object : NavType<SurahData>(isNullableAllowed = false) {

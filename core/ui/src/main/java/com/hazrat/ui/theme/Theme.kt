@@ -16,7 +16,6 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.compose.ui.graphics.toArgb
 private val LightColorScheme = lightColorScheme(
 
     // Brand
@@ -178,13 +177,13 @@ fun Islam24Theme(
         if (darkTheme) DarkCustomColors else LightCustomColors
     }
 
-    // System bars management
+    // System bars icon color management (works with enableEdgeToEdge in MainActivity)
     if (!view.isInEditMode && activity != null) {
         SideEffect {
             val window = activity.window
-            window.statusBarColor = colorScheme.background.toArgb()
-            window.navigationBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            val insetsController = WindowCompat.getInsetsController(window, view)
+            insetsController.isAppearanceLightStatusBars = !darkTheme
+            insetsController.isAppearanceLightNavigationBars = !darkTheme
         }
     }
 

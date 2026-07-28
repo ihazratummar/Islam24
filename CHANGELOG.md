@@ -1,3 +1,18 @@
+## [4.0.1] - 2026-07-28
+
+### What's New
+- **Ayah Bookmarks**: Bookmark any Ayah while reading and access all your bookmarks from a dedicated tab in the Surah screen, organized by Surah name.
+- **Surah Calligraphy in Top Bar**: Beautiful Arabic calligraphy of the current Surah name is now displayed in the Ayah screen's top bar.
+
+### Improvements & Fixes
+- **Recent Read Tracking**: Fixed a critical issue where the app was only recording the first Ayah instead of tracking scroll position. Your reading progress now accurately updates as you scroll.
+- **Surah Completion**: Completing a Surah (reaching the last Ayah) now correctly removes it from recent reads.
+- **Swipe Navigation**: Swiping to the next Surah from the Ayah screen now correctly records the new Surah in recent reads.
+- **Play Console Compliance**: Resolved restricted foreground service warning for Android 15+ by migrating Zakat alarm scheduling to use inexact alarms.
+- **Edge-to-Edge Display**: Removed deprecated system bar color APIs for full Android 15 edge-to-edge compatibility.
+- **Performance**: Stripped debug logging from release builds and improved R8 optimization configuration for a smaller, faster APK.
+- **Audio Playback**: Fine-tuned leading and trailing silence detection for smoother Ayah-by-Ayah audio playback.
+
 ## [4.0.0-Beta 4] - 2026-07-26
 
 ### What's New

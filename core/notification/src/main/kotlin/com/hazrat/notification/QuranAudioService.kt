@@ -52,9 +52,12 @@ class QuranAudioService : Service() {
         val ayahNumber = intent?.getIntExtra(EXTRA_AYAH_NUMBER, 1) ?: _serviceState.value.ayahNumber
         val globalAyahNumber = intent?.getIntExtra(EXTRA_GLOBAL_AYAH_NUMBER, 1) ?: _serviceState.value.globalAyahNumber
         val totalAyahInSurah = intent?.getIntExtra(EXTRA_TOTAL_AYAH, 286) ?: _serviceState.value.totalAyahInSurah
+        val speed = intent?.getFloatExtra(EXTRA_PLAYBACK_SPEED, _serviceState.value.playbackSpeed) ?: _serviceState.value.playbackSpeed
+        val mode = intent?.getStringExtra(EXTRA_PLAYBACK_MODE) ?: _serviceState.value.playbackMode
 
         when (action) {
             ACTION_START -> {
+                _serviceState.update { it.copy(playbackMode = mode) }
                 startAudioForAyah(surahName, surahNumber, ayahNumber, globalAyahNumber, totalAyahInSurah)
             }
             ACTION_TOGGLE_PLAY_PAUSE -> {
@@ -72,11 +75,22 @@ class QuranAudioService : Service() {
             ACTION_PREV_AYAH -> {
                 playPreviousAyah()
             }
+            ACTION_SET_SPEED -> {
+                setPlaybackSpeed(speed)
+            }
+            ACTION_SET_MODE -> {
+                _serviceState.update { it.copy(playbackMode = mode) }
+            }
             ACTION_STOP -> {
                 stopPlaybackAndService()
             }
         }
         return START_NOT_STICKY
+    }
+
+    private fun setPlaybackSpeed(speed: Float) {
+        _serviceState.update { it.copy(playbackSpeed = speed) }
+        audioPlayer?.setSpeed(speed)
     }
 
     private fun startAudioForAyah(
@@ -88,6 +102,44 @@ class QuranAudioService : Service() {
     ) {
         downloadJob?.cancel()
 
+        // 1. Instant Cache Check for zero-latency / real-time playback
+        val cachedFile = audioDownloader.getCachedFile(globalAyahNumber)
+
+        if (cachedFile != null) {
+            _serviceState.update {
+                it.copy(
+                    surahName = surahName,
+                    surahNumber = surahNumber,
+                    ayahNumber = ayahNumber,
+                    globalAyahNumber = globalAyahNumber,
+                    totalAyahInSurah = totalAyahInSurah,
+                    isDownloading = false,
+                    isPlaying = true,
+                    isActive = true,
+                    playingAudioPath = cachedFile.absolutePath
+                )
+            }
+            updateNotificationAndSession(surahName, ayahNumber, isPlaying = true)
+
+            // Trigger background prefetch for next 5 Ayahs to keep buffer filled
+            serviceScope.launch {
+                audioDownloader.prefetchBatch(globalAyahNumber + 1, count = 5)
+            }
+
+            // Play audio instantly from cached file with single reusable player reset
+            audioPlayer?.playFile(
+                file = cachedFile,
+                onCompletion = {
+                    playNextAyah()
+                },
+                onError = {
+                    stopPlaybackAndService()
+                }
+            )
+            return
+        }
+
+        // 2. File not yet cached: download with progress updates
         _serviceState.update {
             it.copy(
                 surahName = surahName,
@@ -102,11 +154,6 @@ class QuranAudioService : Service() {
         }
 
         updateNotificationAndSession(surahName, ayahNumber, isPlaying = false)
-
-        // Prefetch next 10 ayahs in background chunk
-        serviceScope.launch {
-            audioDownloader.prefetchBatch(globalAyahNumber + 1, count = 10)
-        }
 
         // Download & Play Current Ayah
         downloadJob = serviceScope.launch {
@@ -126,6 +173,11 @@ class QuranAudioService : Service() {
                             )
                         }
                         updateNotificationAndSession(surahName, ayahNumber, isPlaying = true)
+
+                        // Prefetch next 5 ayahs in background once current Ayah is ready
+                        serviceScope.launch {
+                            audioDownloader.prefetchBatch(globalAyahNumber + 1, count = 5)
+                        }
 
                         // Play audio via native MediaPlayer engine
                         audioPlayer?.playFile(
@@ -184,16 +236,53 @@ class QuranAudioService : Service() {
 
     private fun playNextAyah() {
         val currentState = _serviceState.value
-        if (currentState.ayahNumber < currentState.totalAyahInSurah) {
-            startAudioForAyah(
-                surahName = currentState.surahName,
-                surahNumber = currentState.surahNumber,
-                ayahNumber = currentState.ayahNumber + 1,
-                globalAyahNumber = currentState.globalAyahNumber + 1,
-                totalAyahInSurah = currentState.totalAyahInSurah
-            )
-        } else {
-            stopPlaybackAndService()
+        when (currentState.playbackMode) {
+            "REPEAT_AYAH" -> {
+                startAudioForAyah(
+                    surahName = currentState.surahName,
+                    surahNumber = currentState.surahNumber,
+                    ayahNumber = currentState.ayahNumber,
+                    globalAyahNumber = currentState.globalAyahNumber,
+                    totalAyahInSurah = currentState.totalAyahInSurah
+                )
+            }
+            "PLAY_JUZ" -> {
+                if (currentState.ayahNumber < currentState.totalAyahInSurah) {
+                    startAudioForAyah(
+                        surahName = currentState.surahName,
+                        surahNumber = currentState.surahNumber,
+                        ayahNumber = currentState.ayahNumber + 1,
+                        globalAyahNumber = currentState.globalAyahNumber + 1,
+                        totalAyahInSurah = currentState.totalAyahInSurah
+                    )
+                } else if (currentState.surahNumber < 114) {
+                    val nextSurah = currentState.surahNumber + 1
+                    val nextSurahName = com.hazrat.ui.common.SurahNameProvider.getSurahName(nextSurah)
+                    val nextSurahTotalAyahs = com.hazrat.ui.common.SurahNameProvider.getSurahTotalAyahs(nextSurah)
+                    startAudioForAyah(
+                        surahName = nextSurahName,
+                        surahNumber = nextSurah,
+                        ayahNumber = 1,
+                        globalAyahNumber = currentState.globalAyahNumber + 1,
+                        totalAyahInSurah = nextSurahTotalAyahs
+                    )
+                } else {
+                    stopPlaybackAndService()
+                }
+            }
+            else -> { // PLAY_SURAH
+                if (currentState.ayahNumber < currentState.totalAyahInSurah) {
+                    startAudioForAyah(
+                        surahName = currentState.surahName,
+                        surahNumber = currentState.surahNumber,
+                        ayahNumber = currentState.ayahNumber + 1,
+                        globalAyahNumber = currentState.globalAyahNumber + 1,
+                        totalAyahInSurah = currentState.totalAyahInSurah
+                    )
+                } else {
+                    stopPlaybackAndService()
+                }
+            }
         }
     }
 
@@ -404,12 +493,16 @@ class QuranAudioService : Service() {
         const val ACTION_NEXT_AYAH = "com.hazrat.islam24.ACTION_NEXT_AYAH"
         const val ACTION_PREV_AYAH = "com.hazrat.islam24.ACTION_PREV_AYAH"
         const val ACTION_STOP = "com.hazrat.islam24.ACTION_STOP_AUDIO"
+        const val ACTION_SET_SPEED = "com.hazrat.islam24.ACTION_SET_SPEED"
+        const val ACTION_SET_MODE = "com.hazrat.islam24.ACTION_SET_MODE"
 
         const val EXTRA_SURAH_NAME = "extra_surah_name"
         const val EXTRA_SURAH_NUMBER = "extra_surah_number"
         const val EXTRA_AYAH_NUMBER = "extra_ayah_number"
         const val EXTRA_GLOBAL_AYAH_NUMBER = "extra_global_ayah_number"
         const val EXTRA_TOTAL_AYAH = "extra_total_ayah"
+        const val EXTRA_PLAYBACK_SPEED = "extra_playback_speed"
+        const val EXTRA_PLAYBACK_MODE = "extra_playback_mode"
 
         private val _serviceState = MutableStateFlow(QuranServiceState())
         val serviceState: StateFlow<QuranServiceState> = _serviceState.asStateFlow()
@@ -420,7 +513,8 @@ class QuranAudioService : Service() {
             surahNumber: Int,
             ayahNumber: Int,
             globalAyahNumber: Int,
-            totalAyahInSurah: Int
+            totalAyahInSurah: Int,
+            mode: String = "PLAY_SURAH"
         ) {
             val intent = Intent(context, QuranAudioService::class.java).apply {
                 action = ACTION_START
@@ -429,6 +523,7 @@ class QuranAudioService : Service() {
                 putExtra(EXTRA_AYAH_NUMBER, ayahNumber)
                 putExtra(EXTRA_GLOBAL_AYAH_NUMBER, globalAyahNumber)
                 putExtra(EXTRA_TOTAL_AYAH, totalAyahInSurah)
+                putExtra(EXTRA_PLAYBACK_MODE, mode)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(intent)
@@ -456,5 +551,7 @@ data class QuranServiceState(
     val isDownloading: Boolean = false,
     val downloadProgress: Float = 0f,
     val playingAudioPath: String? = null,
-    val isActive: Boolean = false
+    val isActive: Boolean = false,
+    val playbackSpeed: Float = 1.0f,
+    val playbackMode: String = "PLAY_SURAH"
 )

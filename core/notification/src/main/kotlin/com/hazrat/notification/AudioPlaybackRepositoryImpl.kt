@@ -37,7 +37,9 @@ class AudioPlaybackRepositoryImpl(
                     isDownloading = serviceState.isDownloading,
                     downloadProgress = serviceState.downloadProgress,
                     playingAudioPath = serviceState.playingAudioPath,
-                    isActive = serviceState.isActive
+                    isActive = serviceState.isActive,
+                    playbackSpeed = serviceState.playbackSpeed,
+                    playbackMode = serviceState.playbackMode
                 )
             }
         }
@@ -48,7 +50,8 @@ class AudioPlaybackRepositoryImpl(
         surahNumber: Int,
         ayahNumber: Int,
         globalAyahNumber: Int,
-        totalAyahInSurah: Int
+        totalAyahInSurah: Int,
+        mode: String
     ) {
         QuranAudioService.startService(
             context = context,
@@ -56,8 +59,17 @@ class AudioPlaybackRepositoryImpl(
             surahNumber = surahNumber,
             ayahNumber = ayahNumber,
             globalAyahNumber = globalAyahNumber,
-            totalAyahInSurah = totalAyahInSurah
+            totalAyahInSurah = totalAyahInSurah,
+            mode = mode
         )
+    }
+
+    override fun setPlaybackSpeed(speed: Float) {
+        val intent = android.content.Intent(context, QuranAudioService::class.java).apply {
+            action = QuranAudioService.ACTION_SET_SPEED
+            putExtra(QuranAudioService.EXTRA_PLAYBACK_SPEED, speed)
+        }
+        context.startService(intent)
     }
 
     override fun pauseAudio() {

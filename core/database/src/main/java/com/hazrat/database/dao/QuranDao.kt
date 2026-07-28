@@ -47,4 +47,10 @@ interface QuranDao {
 
     @Query("SELECT COUNT(*) FROM ayah WHERE isBookmarked = 1")
     fun getTotalBookmarkedAyahsCount(): Flow<Int>
+
+    @Query("SELECT * FROM ayah WHERE isBookmarked = 1 ORDER BY surahNumber ASC, ayahNumber ASC")
+    fun getBookmarkedAyahs(): Flow<List<com.hazrat.database.entity.quran.AyahEntity>>
+
+    @Query("UPDATE ayah SET isBookmarked = :isBookmarked WHERE surahNumber = :surahNumber AND ayahNumber = :ayahNumber")
+    suspend fun updateBookmarkState(surahNumber: Int, ayahNumber: Int, isBookmarked: Boolean)
 }

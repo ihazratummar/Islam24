@@ -1,6 +1,5 @@
 package com.hazrat.notification
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -19,7 +18,6 @@ class ZakatAlarmScheduler(
 ) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    @SuppressLint("ScheduleExactAlarm")
     fun scheduleZakatReminder(
         zakatId: String,
         triggerTimeMillis: Long,
@@ -48,11 +46,23 @@ class ZakatAlarmScheduler(
         )
 
         try {
-            alarmManager.setAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                triggerTimeMillis,
-                pendingIntent
-            )
+            if (Build.VERSION.SDK_INT >= 35) {
+                // Android 15+: Use inexact alarm with a 15-minute window to avoid
+                // restricted foreground service type restrictions with BOOT_COMPLETED
+                val windowLengthMs = 15 * 60 * 1000L // 15 minutes
+                alarmManager.setWindow(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTimeMillis,
+                    windowLengthMs,
+                    pendingIntent
+                )
+            } else {
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTimeMillis,
+                    pendingIntent
+                )
+            }
         } catch (e: SecurityException) {
             Log.e("ZakatAlarmScheduler", "SecurityException while scheduling Zakat alarm", e)
             alarmManager.set(

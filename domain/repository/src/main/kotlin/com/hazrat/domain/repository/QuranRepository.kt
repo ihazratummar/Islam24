@@ -23,4 +23,8 @@ interface QuranRepository {
     suspend fun deleteRecentSurah(surahNumber: Int)
 
     fun observeTotalBookmarkedAyahs(): Flow<Int>
+
+    fun getBookmarkedAyahs(): Flow<List<AyahModel>>
+
+    suspend fun toggleBookmark(surahNumber: Int, ayahNumber: Int, isBookmarked: Boolean)
 }

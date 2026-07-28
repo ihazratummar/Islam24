@@ -25,26 +25,36 @@ import java.time.format.DateTimeFormatter
  */
 class AyahViewModel(
     private val surahNumber: Int,
+    private val initialTargetAyahNumber: Int = 1,
+    private val isFromBookmark: Boolean = false,
     private val getSurahAyahsUseCase: GetSurahAyahsUseCase,
     private val saveRecentSurahUseCase: SaveRecentSurahUseCase,
     private val deleteRecentSurahUseCase: DeleteRecentSurahUseCase,
     private val dataStorePreference: DataStorePreference? = null,
-    private val controlQuranAudioUseCase: ControlQuranAudioUseCase? = null
+    private val controlQuranAudioUseCase: ControlQuranAudioUseCase? = null,
+    private val toggleAyahBookmarkUseCase: com.hazrat.usecase.quran.ToggleAyahBookmarkUseCase? = null
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AyahState())
     val state: StateFlow<AyahState> = _state.asStateFlow()
 
+    private var currentSurahNumber: Int = surahNumber
+    private var ayahJob: kotlinx.coroutines.Job? = null
     private var isCompleted = false
 
     init {
-        loadAyah()
+        loadAyah(surahNumber)
+        if (!isFromBookmark) {
+            saveLastReadAyah(ayahNumber = initialTargetAyahNumber)
+        }
         observeBackgroundAudioService()
     }
 
-    private fun loadAyah() {
-        viewModelScope.launch(Dispatchers.IO) {
-            getSurahAyahsUseCase(surahNumber = surahNumber).collectLatest { ayahModels ->
+    private fun loadAyah(targetSurahNumber: Int = currentSurahNumber) {
+        currentSurahNumber = targetSurahNumber
+        ayahJob?.cancel()
+        ayahJob = viewModelScope.launch(Dispatchers.IO) {
+            getSurahAyahsUseCase(surahNumber = targetSurahNumber).collectLatest { ayahModels ->
                 _state.update {
                     it.copy(ayahs = ayahModels)
                 }
@@ -90,13 +100,18 @@ class AyahViewModel(
         when (event) {
             is AyahUiEvent.OnAyahClick -> onAyahClick(event.ayah)
             is AyahUiEvent.OnDismissMenu -> dismissAyahMenu()
-            is AyahUiEvent.OnPlayAyah -> playAyah(event.ayahNumber)
+            is AyahUiEvent.OnPlayAyah -> playAyahWithMode(event.ayahNumber, "PLAY_SURAH")
+            is AyahUiEvent.OnPlaySurahFrom -> playAyahWithMode(event.ayahNumber, "PLAY_SURAH")
+            is AyahUiEvent.OnPlayJuzFrom -> playAyahWithMode(event.ayahNumber, "PLAY_JUZ")
+            is AyahUiEvent.OnRepeatAyah -> playAyahWithMode(event.ayahNumber, "REPEAT_AYAH")
+            is AyahUiEvent.OnToggleBookmark -> toggleBookmark(event.ayah)
             is AyahUiEvent.OnPauseAudio -> pauseAudio()
             is AyahUiEvent.OnResumeAudio -> resumeAudio()
             is AyahUiEvent.OnStopAudio -> stopAudioPlayback()
             is AyahUiEvent.OnPlayNextAyah -> playNextAyah()
             is AyahUiEvent.OnPlayPreviousAyah -> playPreviousAyah()
             is AyahUiEvent.OnSpeedChange -> setPlaybackSpeed(event.speed)
+            is AyahUiEvent.OnSurahPageChanged -> loadAyah(event.surahNumber)
         }
     }
 
@@ -108,14 +123,15 @@ class AyahViewModel(
         _state.update { it.copy(selectedAyahForMenu = null) }
     }
 
-    private fun playAyah(ayahNumber: Int) {
+    private fun playAyahWithMode(ayahNumber: Int, mode: String) {
+        val activeSurahNum = currentSurahNumber
         val ayahList = _state.value.ayahs
         val targetAyah = ayahList.find { it.ayahNumber == ayahNumber } ?: return
-        val surahName = com.hazrat.ui.common.SurahNameProvider.getSurahName(surahNumber)
+        val surahName = com.hazrat.ui.common.SurahNameProvider.getSurahName(activeSurahNum)
 
         _state.update {
             it.copy(
-                playingSurahNumber = surahNumber,
+                playingSurahNumber = activeSurahNum,
                 playingAyahNumber = ayahNumber,
                 selectedAyahForMenu = null
             )
@@ -123,11 +139,24 @@ class AyahViewModel(
 
         controlQuranAudioUseCase?.startAudio(
             surahName = surahName,
-            surahNumber = surahNumber,
+            surahNumber = activeSurahNum,
             ayahNumber = ayahNumber,
             globalAyahNumber = targetAyah.globalAyahNumber,
-            totalAyahInSurah = ayahList.size
+            totalAyahInSurah = ayahList.size,
+            mode = mode
         )
+    }
+
+    private fun toggleBookmark(ayah: AyahModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newBookmarkState = !ayah.isBookmarked
+            toggleAyahBookmarkUseCase?.invoke(
+                surahNumber = ayah.surahNumber,
+                ayahNumber = ayah.ayahNumber,
+                isBookmarked = newBookmarkState
+            )
+            dismissAyahMenu()
+        }
     }
 
     private fun pauseAudio() {
@@ -162,21 +191,23 @@ class AyahViewModel(
 
     private fun setPlaybackSpeed(speed: Float) {
         _state.update { it.copy(playbackSpeed = speed) }
+        controlQuranAudioUseCase?.setSpeed(speed)
     }
 
-    fun saveLastReadAyah(surahName: String, ayahNumber: Int) {
-        if (isCompleted) return
+    fun saveLastReadAyah(surahName: String = "", ayahNumber: Int) {
+        if (isCompleted || isFromBookmark) return
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val resolvedSurahName = if (surahName.isNotBlank()) surahName else com.hazrat.ui.common.SurahNameProvider.getSurahName(currentSurahNumber)
                 val formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
                 saveRecentSurahUseCase(
-                    surahNumber = surahNumber,
-                    surahName = surahName,
+                    surahNumber = currentSurahNumber,
+                    surahName = resolvedSurahName,
                     ayahNumber = ayahNumber,
                     formattedDate = formattedDate
                 )
                 dataStorePreference?.saveQuranLastRead(
-                    surahNumber = surahNumber,
+                    surahNumber = currentSurahNumber,
                     ayahNumber = ayahNumber
                 )
             } catch (_: Exception) {}
@@ -184,6 +215,16 @@ class AyahViewModel(
     }
 
     fun onSurahCompleted() {
+        if (isCompleted) return
         isCompleted = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                deleteRecentSurahUseCase(currentSurahNumber)
+                dataStorePreference?.saveQuranLastRead(
+                    surahNumber = 0,
+                    ayahNumber = 0
+                )
+            } catch (_: Exception) {}
+        }
     }
 }

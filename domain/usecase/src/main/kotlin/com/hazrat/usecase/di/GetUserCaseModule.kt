@@ -18,9 +18,11 @@ import com.hazrat.usecase.prayer.UnLogPrayerUseCase
 import com.hazrat.usecase.quran.ControlQuranAudioUseCase
 import com.hazrat.usecase.quran.DeleteRecentSurahUseCase
 import com.hazrat.usecase.quran.GetAllSurahListUseCase
+import com.hazrat.usecase.quran.GetBookmarkedAyahsUseCase
 import com.hazrat.usecase.quran.GetRecentSurahsUseCase
 import com.hazrat.usecase.quran.GetSurahAyahsUseCase
 import com.hazrat.usecase.quran.SaveRecentSurahUseCase
+import com.hazrat.usecase.quran.ToggleAyahBookmarkUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.time.Clock
@@ -58,4 +60,6 @@ fun getUserCaseModule(): Module = module {
     single { SaveRecentSurahUseCase(quranRepository = get()) }
     single { DeleteRecentSurahUseCase(quranRepository = get()) }
     single { ControlQuranAudioUseCase(audioPlaybackRepository = get()) }
+    single { ToggleAyahBookmarkUseCase(quranRepository = get()) }
+    single { GetBookmarkedAyahsUseCase(quranRepository = get()) }
 }

@@ -10,18 +10,23 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -41,18 +47,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hazrat.alQuran.ui.component.AyahActionBottomSheet
+import com.hazrat.alQuran.ui.component.AyahContextMenu
 import com.hazrat.alQuran.ui.component.FloatingAudioController
 import com.hazrat.alQuran.ui.surah.SurahScreenData
+import com.hazrat.ui.R
 import com.hazrat.ui.common.BackIcon
+import com.hazrat.ui.common.SurahSvgImage
 import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -89,6 +100,27 @@ fun AyahScreen(
         mutableStateOf(surahScreenData.targetAyahNumber)
     }
 
+    val pagerState = rememberPagerState(
+        initialPage = (surahScreenData.number - 1).coerceIn(0, 113),
+        pageCount = { 114 }
+    )
+
+    // rememberUpdatedState so long-running coroutines always see the latest values
+    val currentAyahState by rememberUpdatedState(ayahState)
+    val currentOnAyahScrolled by rememberUpdatedState(onAyahScrolled)
+    val currentOnSurahCompleted by rememberUpdatedState(onSurahCompleted)
+
+    // Smooth auto-page scroll when playing Surah changes (Juz auto-advance across Surahs)
+    LaunchedEffect(ayahState.playingSurahNumber) {
+        val playingSurah = ayahState.playingSurahNumber
+        if (playingSurah != null && playingSurah in 1..114) {
+            val targetPage = playingSurah - 1
+            if (pagerState.currentPage != targetPage) {
+                pagerState.animateScrollToPage(targetPage)
+            }
+        }
+    }
+
     // Always reset to visible when a new audio recitation starts
     LaunchedEffect(ayahState.playingAyahNumber) {
         if (ayahState.playingAyahNumber != null) {
@@ -96,13 +128,16 @@ fun AyahScreen(
         }
     }
 
-    // Scroll to targetAyahNumber on launch
+    // Scroll to targetAyahNumber ONCE on initial launch when ayahs are first loaded
+    var hasInitialScrolled by rememberSaveable(surahScreenData.targetAyahNumber) { mutableStateOf(false) }
+
     LaunchedEffect(ayahState.ayahs) {
-        if (ayahState.ayahs.isNotEmpty()) {
+        if (!hasInitialScrolled && ayahState.ayahs.isNotEmpty()) {
+            hasInitialScrolled = true
             val targetIndex = surahScreenData.targetAyahNumber - 1
             val scrollToIndex = (targetIndex + headerCount).coerceIn(0, ayahState.ayahs.size - 1 + headerCount)
             if (scrollToIndex > 0) {
-                listState.animateScrollToItem(scrollToIndex)
+                listState.scrollToItem(scrollToIndex)
             }
         }
     }
@@ -121,44 +156,41 @@ fun AyahScreen(
         }
     }
 
-    // Scroll direction detection: Hide when scrolling down list (reading downwards), Show when scrolling back up
+    // Detect user scrolling to hide controller
     LaunchedEffect(listState) {
-        var previousIndex = listState.firstVisibleItemIndex
-        var previousOffset = listState.firstVisibleItemScrollOffset
-
-        snapshotFlow {
-            Pair(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset)
-        }.collect { (currentIndex, currentOffset) ->
-            if (currentIndex > previousIndex) {
-                isControllerVisible = false
-            } else if (currentIndex < previousIndex) {
-                isControllerVisible = true
-            } else {
-                val delta = currentOffset - previousOffset
-                if (delta > 20) {
+        snapshotFlow { listState.isScrollInProgress }
+            .distinctUntilChanged()
+            .collect { isScrolling ->
+                if (isScrolling) {
+                    hasScrolled = true
                     isControllerVisible = false
-                } else if (delta < -20) {
-                    isControllerVisible = true
                 }
             }
-            previousIndex = currentIndex
-            previousOffset = currentOffset
+    }
+
+    // Auto-reappear controller when user stops scrolling
+    LaunchedEffect(hasScrolled) {
+        if (hasScrolled) {
+            snapshotFlow { listState.isScrollInProgress }
+                .distinctUntilChanged()
+                .collect { isScrolling ->
+                    if (!isScrolling) {
+                        delay(600.milliseconds)
+                        isControllerVisible = true
+                    }
+                }
         }
     }
 
-    // Smart scroll tracking
-    LaunchedEffect(ayahState.ayahs, listState) {
-        if (ayahState.ayahs.isNotEmpty()) {
-            snapshotFlow { listState.layoutInfo }
-                .distinctUntilChanged()
-                .collect { layoutInfo ->
-                    val visibleItems = layoutInfo.visibleItemsInfo
-                    if (visibleItems.isEmpty()) return@collect
+    // Track active viewed Ayah on scroll — uses rememberUpdatedState to avoid stale closures
+    LaunchedEffect(listState) {
+        snapshotFlow { Pair(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset) }
+            .collect {
+                val ayahs = currentAyahState.ayahs
+                val layoutInfo = listState.layoutInfo
+                val visibleItems = layoutInfo.visibleItemsInfo
+                if (visibleItems.isNotEmpty() && ayahs.isNotEmpty()) {
                     val viewportEnd = layoutInfo.viewportEndOffset
-
-                    if (listState.firstVisibleItemScrollOffset > 0 || listState.firstVisibleItemIndex > 0) {
-                        hasScrolled = true
-                    }
 
                     val mostVisible = visibleItems.maxByOrNull { item ->
                         val itemTop = item.offset.coerceAtLeast(0)
@@ -167,47 +199,31 @@ fun AyahScreen(
                     }
 
                     val rawIndex = mostVisible?.index ?: return@collect
-                    val ayahIdx = (rawIndex - headerCount).coerceIn(0, ayahState.ayahs.lastIndex)
-                    val currentAyahNum = ayahState.ayahs[ayahIdx].ayahNumber
+                    val ayahIdx = (rawIndex - headerCount).coerceIn(0, ayahs.lastIndex)
+                    val currentAyahNum = ayahs[ayahIdx].ayahNumber
                     currentViewedAyah = currentAyahNum
-                    onAyahScrolled(currentAyahNum)
+                    currentOnAyahScrolled(currentAyahNum)
                 }
+            }
+    }
+
+    // Detect surah completion: when user stays on the last ayah for 2 seconds, remove from recent
+    LaunchedEffect(currentViewedAyah, ayahState.ayahs) {
+        if (ayahState.ayahs.isNotEmpty() && currentViewedAyah == ayahState.ayahs.last().ayahNumber) {
+            delay(2000.milliseconds)
+            currentOnSurahCompleted()
         }
     }
 
+    // Notify ViewModel when user swipes to a new Surah page
+    LaunchedEffect(pagerState.currentPage) {
+        val targetSurahNum = pagerState.currentPage + 1
+        onEvent(AyahUiEvent.OnSurahPageChanged(targetSurahNum))
+    }
 
-
-    val sheetState = rememberModalBottomSheetState()
-
-    // Modal Bottom Sheet (Play & Share ONLY)
-    if (ayahState.selectedAyahForMenu != null) {
-        AyahActionBottomSheet(
-            sheetState = sheetState,
-            surahName = surahScreenData.name,
-            ayah = ayahState.selectedAyahForMenu,
-            onDismissRequest = { onEvent(AyahUiEvent.OnDismissMenu) },
-            onPlayClick = {
-                onEvent(AyahUiEvent.OnPlayAyah(ayahState.selectedAyahForMenu.ayahNumber))
-            },
-            onShareClick = {
-                val ayah = ayahState.selectedAyahForMenu
-                val shareText = """
-                    ${ayah.arabicText}
-
-                    ${ayah.transliteration}
-
-                    ${ayah.englishTranslation}
-
-                    - [${surahScreenData.name}, Aya ${ayah.surahNumber}:${ayah.ayahNumber}]
-                """.trimIndent()
-
-                val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, shareText)
-                }
-                context.startActivity(Intent.createChooser(shareIntent, "Share Ayah"))
-            }
-        )
+    val currentSurahNum = pagerState.currentPage + 1
+    val currentSurahName = remember(currentSurahNum) {
+        com.hazrat.ui.common.SurahNameProvider.getSurahName(currentSurahNum)
     }
 
     Scaffold(
@@ -220,13 +236,13 @@ fun AyahScreen(
                         verticalArrangement = Arrangement.spacedBy(dimens.space4)
                     ) {
                         Text(
-                            text = surahScreenData.name,
+                            text = currentSurahName,
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
-                            text = "${surahScreenData.meaning} • ${surahScreenData.totalAyah} verses",
+                            text = "Surah $currentSurahNum • ${if (ayahState.ayahs.isNotEmpty()) ayahState.ayahs.size else surahScreenData.totalAyah} verses",
                             style = MaterialTheme.typography.bodySmall,
                             color = customColors.secondaryText
                         )
@@ -234,6 +250,15 @@ fun AyahScreen(
                 },
                 navigationIcon = {
                     BackIcon(onBackClick = onBackClick)
+                },
+                actions = {
+                    SurahSvgImage(
+                        surahNumber = currentSurahNum,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .height(dimens.space32)
+                            .padding(end = dimens.space16)
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
@@ -244,22 +269,28 @@ fun AyahScreen(
         contentWindowInsets = WindowInsets()
     ) { paddingValues ->
 
-        Box(
+        HorizontalPager(
+            state = pagerState,
+            reverseLayout = true,
             modifier = modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-        ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
+        ) { page ->
+            val pageSurahNumber = page + 1
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                if (page == pagerState.currentPage) {
+                    LazyColumn(
+                        state = listState,
+                    modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = dimens.space20),
                 verticalArrangement = Arrangement.spacedBy(dimens.space12)
             ) {
                 // Bismillah header
-                item(key = "bismillah") {
-                    val surahNumber = surahScreenData.number
-                    if (surahNumber != 1 && surahNumber != 9) {
+                item(key = "bismillah_$pageSurahNumber") {
+                    if (pageSurahNumber != 1 && pageSurahNumber != 9) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
@@ -286,10 +317,10 @@ fun AyahScreen(
                 items(ayahState.ayahs, key = { it.id }) { ayah ->
                     val isCurrentPlaying = (ayah.surahNumber == ayahState.playingSurahNumber) && (ayah.ayahNumber == ayahState.playingAyahNumber)
 
-                    val cardBg = when {
-                        isCurrentPlaying && isDarkMode -> Color(0xFF143330)
-                        isCurrentPlaying && !isDarkMode -> Color(0xFFE5EDE6)
-                        else -> Color.Transparent
+                    val cardBg = if (isCurrentPlaying) {
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+                    } else {
+                        Color.Transparent
                     }
 
                     val playingTextColor = defaultTextColor
@@ -303,6 +334,32 @@ fun AyahScreen(
                             .clickable { onEvent(AyahUiEvent.OnAyahClick(ayah)) }
                             .padding(dimens.space12)
                     ) {
+                        if (ayahState.selectedAyahForMenu?.id == ayah.id) {
+                            AyahContextMenu(
+                                expanded = true,
+                                ayah = ayah,
+                                onDismissRequest = { onEvent(AyahUiEvent.OnDismissMenu) },
+                                onPlaySurahClick = { onEvent(AyahUiEvent.OnPlaySurahFrom(ayah.ayahNumber)) },
+                                onPlayJuzClick = { onEvent(AyahUiEvent.OnPlayJuzFrom(ayah.ayahNumber)) },
+                                onRepeatAyahClick = { onEvent(AyahUiEvent.OnRepeatAyah(ayah.ayahNumber)) },
+                                onBookmarkClick = { onEvent(AyahUiEvent.OnToggleBookmark(ayah)) },
+                                onCopyClick = {
+                                    val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                    val clip = android.content.ClipData.newPlainText("Ayah Text", "${ayah.arabicText}\n\n${ayah.transliteration}\n\n${ayah.englishTranslation}")
+                                    clipboard.setPrimaryClip(clip)
+                                    android.widget.Toast.makeText(context, "Copied Ayah", android.widget.Toast.LENGTH_SHORT).show()
+                                },
+                                onShareClick = {
+                                    val shareText = "${ayah.arabicText}\n\n${ayah.transliteration}\n\n${ayah.englishTranslation}\n\n- [${surahScreenData.name}, Aya ${ayah.surahNumber}:${ayah.ayahNumber}]"
+                                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                        type = "text/plain"
+                                        putExtra(Intent.EXTRA_TEXT, shareText)
+                                    }
+                                    context.startActivity(Intent.createChooser(shareIntent, "Share Ayah"))
+                                }
+                            )
+                        }
+
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(dimens.space12)
@@ -321,17 +378,30 @@ fun AyahScreen(
                                     )
                                     .padding(horizontal = dimens.space12, vertical = dimens.space4)
                             ) {
-                                Text(
-                                    text = "Aya ${ayah.surahNumber}:${ayah.ayahNumber}",
-                                    style = MaterialTheme.typography.labelMedium.copy(
-                                        color = when {
-                                            isCurrentPlaying && isDarkMode -> Color.White
-                                            isCurrentPlaying && !isDarkMode -> Color(0xFF00332C)
-                                            isDarkMode -> MaterialTheme.colorScheme.onBackground
-                                            else -> MaterialTheme.colorScheme.onPrimaryContainer
-                                        }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+                                ) {
+                                    Text(
+                                        text = "Aya ${ayah.surahNumber}:${ayah.ayahNumber}",
+                                        style = MaterialTheme.typography.labelMedium.copy(
+                                            color = when {
+                                                isCurrentPlaying && isDarkMode -> Color.White
+                                                isCurrentPlaying && !isDarkMode -> Color(0xFF00332C)
+                                                isDarkMode -> MaterialTheme.colorScheme.onBackground
+                                                else -> MaterialTheme.colorScheme.onPrimaryContainer
+                                            }
+                                        )
                                     )
-                                )
+                                    if (ayah.isBookmarked) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.star),
+                                            contentDescription = "Bookmarked",
+                                            tint = Color(0xFFFFB800),
+                                            modifier = Modifier.size(dimens.iconXs)
+                                        )
+                                    }
+                                }
                             }
 
                             // Arabic Text — Tajweed colored
@@ -376,14 +446,16 @@ fun AyahScreen(
                                 )
                             )
 
-                            // Translation
+                            // Translation (Bengali / English) - Crisp typography
                             Text(
                                 text = ayah.englishTranslation,
                                 modifier = Modifier.fillMaxWidth(),
                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight = FontWeight.SemiBold,
+                                    fontWeight = FontWeight.Medium,
                                     color = playingTextColor,
-                                    textAlign = TextAlign.End
+                                    textAlign = TextAlign.End,
+                                    fontSize = 16.sp,
+                                    lineHeight = 26.sp
                                 )
                             )
 
@@ -399,6 +471,7 @@ fun AyahScreen(
                     Spacer(modifier = Modifier.height(dimens.space64))
                 }
             }
+        }
 
             // Floating Media Controller with Scroll Hide/Show animation
             val showController = ayahState.ayahs.isNotEmpty()
@@ -409,23 +482,23 @@ fun AyahScreen(
                     exit = slideOutVertically(targetOffsetY = { it }),
                     modifier = Modifier.align(Alignment.BottomCenter)
                 ) {
-                    val isServiceActiveForThisSurah = ayahState.playingSurahNumber == surahScreenData.number && ayahState.playingAyahNumber != null
+                    val isServiceActive = ayahState.playingAyahNumber != null
 
-                    val activeSurahName = if (isServiceActiveForThisSurah) {
+                    val activeSurahName = if (ayahState.playingSurahNumber != null) {
                         com.hazrat.ui.common.SurahNameProvider.getSurahName(ayahState.playingSurahNumber)
                     } else {
-                        surahScreenData.name
+                        currentSurahName
                     }
 
-                    val displayAyahNumber = if (isServiceActiveForThisSurah) {
+                    val displayAyahNumber = if (ayahState.playingAyahNumber != null) {
                         ayahState.playingAyahNumber
                     } else {
                         currentViewedAyah
                     }
 
-                    val isPlaying = if (isServiceActiveForThisSurah) ayahState.isPlaying else false
-                    val isDownloading = if (isServiceActiveForThisSurah) ayahState.isDownloading else false
-                    val downloadProgress = if (isServiceActiveForThisSurah) ayahState.downloadProgress else 0f
+                    val isPlaying = if (isServiceActive) ayahState.isPlaying else false
+                    val isDownloading = if (isServiceActive) ayahState.isDownloading else false
+                    val downloadProgress = if (isServiceActive) ayahState.downloadProgress else 0f
 
                     FloatingAudioController(
                         surahName = activeSurahName,
@@ -435,7 +508,7 @@ fun AyahScreen(
                         downloadProgress = downloadProgress,
                         playbackSpeed = ayahState.playbackSpeed,
                         onPlayPauseClick = {
-                            if (isServiceActiveForThisSurah) {
+                            if (isServiceActive) {
                                 if (ayahState.isPlaying) onEvent(AyahUiEvent.OnPauseAudio)
                                 else onEvent(AyahUiEvent.OnResumeAudio)
                             } else {
@@ -443,7 +516,7 @@ fun AyahScreen(
                             }
                         },
                         onPreviousClick = {
-                            if (isServiceActiveForThisSurah) {
+                            if (isServiceActive) {
                                 onEvent(AyahUiEvent.OnPlayPreviousAyah)
                             } else {
                                 if (displayAyahNumber > 1) {
@@ -452,7 +525,7 @@ fun AyahScreen(
                             }
                         },
                         onNextClick = {
-                            if (isServiceActiveForThisSurah) {
+                            if (isServiceActive) {
                                 onEvent(AyahUiEvent.OnPlayNextAyah)
                             } else {
                                 if (displayAyahNumber < ayahState.ayahs.size) {
@@ -469,4 +542,5 @@ fun AyahScreen(
             }
         }
     }
+}
 }

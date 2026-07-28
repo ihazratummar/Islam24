@@ -3,19 +3,17 @@ package com.hazrat.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import org.koin.core.component.KoinComponent
 
 /**
  * Receiver responsible for rescheduling all alarms when system state changes
  * (Timezone change, Time set, App update, exact alarm permission changed, etc.)
+ * NOTE: Does NOT implement KoinComponent to avoid triggering Firebase/datatransport
+ * initialization from broadcast receivers.
  */
-class RescheduleReceiver : BroadcastReceiver(), KoinComponent {
+class RescheduleReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action ?: return
-        Log.d("RescheduleReceiver", "Received action: $action. Enqueueing Prayer & Zakat reschedule workers.")
-
         PrayerRescheduleWorker.enqueue(context)
         ZakatRescheduleWorker.enqueue(context)
     }
