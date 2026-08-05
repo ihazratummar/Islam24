@@ -10,3 +10,10 @@ sealed interface SupportUiEvent {
     data class PurchaseCurrentSelection(val activity: Activity) : SupportUiEvent
     data object RestorePurchases : SupportUiEvent
 }
+
+
+sealed interface SupportEffect {
+    data class Error(val message: String) : SupportEffect
+    data class Success(val message: String) : SupportEffect
+    data object NavigateBack: SupportEffect
+}

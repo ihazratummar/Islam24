@@ -1,15 +1,11 @@
 package com.hazrat.auth.ui.appSetting
 
 import android.app.Activity
-import com.hazrat.model.Languages
 
 /**
  * @author Hazrat Ummar Shaikh
  */
 sealed interface AppSettingEvent {
-
-    data object ClickLanguageDialog : AppSettingEvent
-    data class SelectLanguage(val language: Languages) : AppSettingEvent
 
     data object ToggleTheme : AppSettingEvent
     data object ToggleMasterNotification : AppSettingEvent
@@ -21,4 +17,11 @@ sealed interface AppSettingEvent {
     data class RateUs(val activity: Activity) : AppSettingEvent
     data object OpenRatingDialog : AppSettingEvent
     data object GoToRate : AppSettingEvent
+
+    data object LogOut : AppSettingEvent
+}
+
+
+sealed interface ProfileEffect {
+    data class Error(val error: String) : ProfileEffect
 }

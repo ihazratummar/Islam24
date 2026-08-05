@@ -16,16 +16,28 @@ android {
         buildConfig = true
     }
 
+    val localProperties = Properties()
+    val localPropertiesFile = File(rootDir, "local.properties")
+    if (localPropertiesFile.exists() && localPropertiesFile.isFile){
+        localPropertiesFile.inputStream().use {
+            localProperties.load(it)
+        }
+    }
+
     defaultConfig {
         minSdk = 26
 
-        val properties = Properties()
-        val localPropertiesFile = project.rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            properties.load(localPropertiesFile.inputStream())
-        }
-        val apiKey = properties.getProperty("REVENUECAT_API_KEY")?.replace("\"", "") ?: ""
-        buildConfigField("String", "REVENUECAT_API_KEY", "\"$apiKey\"")
+        buildConfigField(
+            "String",
+            "REVENUECAT_API_KEY",
+            localProperties.getProperty("REVENUECAT_API_KEY")
+        )
+
+        buildConfigField(
+            "String",
+            "GOOGLE_SIGN_WEB_SDK_CLIENT",
+            localProperties.getProperty("GOOGLE_SIGN_WEB_SDK_CLIENT")
+        )
     }
 
     compileOptions {
@@ -44,6 +56,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:remote"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
 
     implementation(project(":domain:repository"))
 
@@ -59,8 +72,7 @@ dependencies {
 
     implementation(libs.koin.compose)
 
-    /*
-    FireBase
-     */
-    platform(libs.firebase.bom)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 }

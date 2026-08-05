@@ -1,5 +1,8 @@
 package com.hazrat.utils
 
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -138,4 +141,17 @@ object DateUtil {
             .atZone(zoneId)
             .toLocalDate()
     }
+
+
+    fun kotlinx.datetime.Instant.toReadableLocale() : String {
+        val localDateTime = toLocalDateTime(TimeZone.currentSystemDefault())
+
+        val formatter = DateTimeFormatter.ofPattern(
+            "dd MMM yyyy, hh:mm a",
+            Locale.getDefault()
+        )
+
+        return formatter.format(localDateTime.toJavaLocalDateTime())
+    }
+
 }

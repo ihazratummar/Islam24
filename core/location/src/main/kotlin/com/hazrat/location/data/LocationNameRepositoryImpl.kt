@@ -76,30 +76,21 @@ class LocationNameRepositoryImpl(
 
     private suspend fun fetchAndCacheLocationInfo(location: Location) : LocationDetailsEntity {
         return try {
-            val response = locationNameApi.getLocationName(
+            val locationDto = locationNameApi.getLocationName(
                 key = LOCATION_IQ_API_KEY,
                 lat = location.latitude,
                 lon = location.longitude,
                 format = "json"
             )
 
-            if (response.isSuccessful) {
-                val name = response.body()?.toLocationNameFinder().orEmpty()
-                val entity = LocationDetailsEntity(
-                    locationName = name,
-                    latitude = location.latitude,
-                    longitude = location.longitude
-                )
-                saveLocation(locationDetailsEntity = entity)
-                entity
-            } else {
-                Timber.tag(TAG).e("API Error: ${response.code()}")
-                getCachedLocationInfo() ?: LocationDetailsEntity(
-                    locationName = "Unknown",
-                    latitude = location.latitude,
-                    longitude = location.longitude
-                )
-            }
+            val name = locationDto.toLocationNameFinder()
+            val entity = LocationDetailsEntity(
+                locationName = name,
+                latitude = location.latitude,
+                longitude = location.longitude
+            )
+            saveLocation(locationDetailsEntity = entity)
+            entity
         } catch (e: Exception) {
             Timber.tag(TAG).e(e, "Failed to fetch name from API")
             getCachedLocationInfo() ?: LocationDetailsEntity(

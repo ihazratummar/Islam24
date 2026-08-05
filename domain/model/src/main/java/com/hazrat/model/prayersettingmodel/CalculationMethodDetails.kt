@@ -1,6 +1,5 @@
 package com.hazrat.model.prayersettingmodel
 
-import android.R
 import kotlinx.serialization.Serializable
 
 @Serializable

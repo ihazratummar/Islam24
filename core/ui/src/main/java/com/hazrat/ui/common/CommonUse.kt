@@ -65,7 +65,6 @@ import androidx.compose.ui.window.DialogProperties
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
-import com.hazrat.model.Languages
 import com.hazrat.ui.R
 import com.hazrat.ui.shimmerEffect
 import com.hazrat.ui.theme.NeutralVariant50
@@ -424,12 +423,7 @@ fun SpringToggle(
     }
 }
 
-fun Languages.toDisplayName() : String {
-    return when(this){
-        Languages.ENGLISH -> "English"
-        Languages.BENGALI -> "Bengali"
-    }
-}
+
 
 @Composable
 fun Modifier.customClick(

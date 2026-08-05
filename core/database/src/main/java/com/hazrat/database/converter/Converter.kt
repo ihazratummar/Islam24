@@ -1,8 +1,9 @@
 package com.hazrat.database.converter
 
 import androidx.room.TypeConverter
-import kotlinx.serialization.encodeToString
+import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
+import java.util.UUID
 
 /**
  * @author hazratummar

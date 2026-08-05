@@ -1,16 +1,18 @@
 package com.hazrat.datastore
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 /**
+ * Encrypted Storage for Auth Tokens with Reactive Flow support.
  * @author hazratummar
- * Created on 05/08/26
  */
-
 @Suppress("DEPRECATION")
 class TokenStorage(context: Context) {
 
@@ -29,7 +31,7 @@ class TokenStorage(context: Context) {
     fun saveTokens(accessToken: String, refreshToken: String) {
         sharedPreferences.edit {
             putString("access_token", accessToken)
-                .putString("refreshToken", refreshToken)
+                .putString("refresh_token", refreshToken)
         }
     }
 
@@ -42,6 +44,32 @@ class TokenStorage(context: Context) {
     }
 
     fun clearToken() {
-        sharedPreferences.edit { clear() }
+        sharedPreferences.edit {
+            remove("access_token")
+            remove("refresh_token")
+            clear()
+        }
+    }
+
+    /**
+     * Reactive Flow emitting true when a valid refresh_token exists, and false when cleared.
+     */
+    val isLoggedIn: Flow<Boolean> = callbackFlow {
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+            if (key == "refresh_token" || key == "access_token" || key == null) {
+                trySend(!prefs.getString("refresh_token", null).isNullOrBlank())
+            }
+        }
+
+        // Emit initial value on subscription
+        trySend(!sharedPreferences.getString("refresh_token", null).isNullOrBlank())
+
+        // Register listener
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+
+        // Unregister when collection ends to avoid memory leaks
+        awaitClose {
+            sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
+        }
     }
 }

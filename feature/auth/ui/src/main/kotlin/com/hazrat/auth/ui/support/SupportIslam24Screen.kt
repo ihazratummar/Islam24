@@ -31,9 +31,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +52,9 @@ import com.hazrat.ui.R
 import com.hazrat.ui.common.BasicTopBar
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.toCurrencySymbol
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collect
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -58,10 +65,37 @@ import java.util.Locale
 fun SupportIslam24Screen(
     viewModel: SupportViewModel,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    supportEffect: SharedFlow<SupportEffect>?,
+    uiState: SupportUiState
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarState = remember { SnackbarHostState() }
+    val userSupportStats = uiState.userSupportViewModel
+
+    LaunchedEffect(Unit) {
+        supportEffect?.collect { effect ->
+            when (effect) {
+                is SupportEffect.Error -> {
+                    snackbarState.showSnackbar(
+                        message = effect.message
+                    )
+                }
+
+                SupportEffect.NavigateBack -> {
+                    onBackClick()
+                }
+
+                is SupportEffect.Success -> {
+                    snackbarState.showSnackbar(
+                        message = effect.message,
+                        withDismissAction = true
+                    )
+                }
+            }
+        }
+    }
+
 
     val faqList = listOf(
         FaqItem(R.string.support_faq_q1, R.string.support_faq_a1),
@@ -73,6 +107,7 @@ fun SupportIslam24Screen(
     )
 
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarState) },
         topBar = {
             BasicTopBar(
                 topBarTitle = stringResource(R.string.support_title),
@@ -171,8 +206,8 @@ fun SupportIslam24Screen(
             // Metrics Summary Container
             item {
                 SupportMetricsCard(
-                    supportersCount = uiState.supportersCount,
-                    formattedSupportedTotal = uiState.formattedSupportedTotal
+                    supportersCount = userSupportStats?.totalSupporter ?: 0,
+                    formattedSupportedTotal = "${userSupportStats?.localCurrency?.toCurrencySymbol()}${userSupportStats?.totalContributionLocal}"
                 )
             }
 
@@ -230,15 +265,22 @@ fun SupportIslam24Screen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(dimens.space8)
                 ) {
-                    val isActionable = (uiState.selectedTab == SupportTab.ONE_TIME && uiState.selectedTipTier != null) ||
-                            (uiState.selectedTab == SupportTab.MONTHLY && uiState.selectedSubscriptionTier != null)
+                    val isActionable =
+                        (uiState.selectedTab == SupportTab.ONE_TIME && uiState.selectedTipTier != null) ||
+                                (uiState.selectedTab == SupportTab.MONTHLY && uiState.selectedSubscriptionTier != null)
 
                     val selectedPriceText = if (uiState.selectedTab == SupportTab.ONE_TIME) {
                         val tier = uiState.selectedTipTier
                         val nativePkg = uiState.nativePackages.find { pkg ->
                             pkg.productId.equals(tier?.productId, ignoreCase = true) ||
-                                    pkg.packageId.equals(tier?.name?.lowercase(), ignoreCase = true) ||
-                                    pkg.productId.contains(tier?.productId.orEmpty(), ignoreCase = true)
+                                    pkg.packageId.equals(
+                                        tier?.name?.lowercase(),
+                                        ignoreCase = true
+                                    ) ||
+                                    pkg.productId.contains(
+                                        tier?.productId.orEmpty(),
+                                        ignoreCase = true
+                                    )
                         } ?: uiState.nativePackages.getOrNull(tier?.ordinal ?: 0)
                         nativePkg?.formattedPrice ?: tier?.defaultPriceText.orEmpty()
                     } else {
@@ -246,14 +288,21 @@ fun SupportIslam24Screen(
                         val nativePkg = uiState.nativePackages.find { pkg ->
                             pkg.productId.equals(tier?.productId, ignoreCase = true) ||
                                     pkg.packageId.equals(tier?.productId, ignoreCase = true) ||
-                                    pkg.productId.contains(tier?.productId.orEmpty(), ignoreCase = true)
+                                    pkg.productId.contains(
+                                        tier?.productId.orEmpty(),
+                                        ignoreCase = true
+                                    )
                         } ?: uiState.nativePackages.getOrNull(tier?.ordinal ?: 0)
                         nativePkg?.formattedPrice ?: tier?.defaultPriceText.orEmpty()
                     }
 
                     val buttonText = when {
                         !isActionable -> stringResource(R.string.support_cta_choose)
-                        uiState.selectedTab == SupportTab.ONE_TIME -> stringResource(R.string.support_cta_tip, selectedPriceText)
+                        uiState.selectedTab == SupportTab.ONE_TIME -> stringResource(
+                            R.string.support_cta_tip,
+                            selectedPriceText
+                        )
+
                         else -> stringResource(R.string.support_cta_subscribe, selectedPriceText)
                     }
 
@@ -267,7 +316,9 @@ fun SupportIslam24Screen(
                         shape = RoundedCornerShape(dimens.cornerLg),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                                alpha = 0.5f
+                            )
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -611,7 +662,9 @@ private fun TipTierCard(
             .clip(RoundedCornerShape(dimens.cornerLg))
             .border(
                 width = if (isSelected) dimens.divider * 2 else dimens.divider,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
+                    alpha = 0.1f
+                ),
                 shape = RoundedCornerShape(dimens.cornerLg)
             )
             .clickable { onClick() },
@@ -716,7 +769,9 @@ private fun SubscriptionTierCard(
             .clip(RoundedCornerShape(dimens.cornerLg))
             .border(
                 width = if (isSelected) dimens.divider * 2 else dimens.divider,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
+                    alpha = 0.1f
+                ),
                 shape = RoundedCornerShape(dimens.cornerLg)
             )
             .clickable { onClick() },
@@ -820,7 +875,10 @@ private fun SubscriptionTierCard(
                     )
                     Spacer(modifier = Modifier.height(dimens.space8))
                     Text(
-                        text = stringResource(R.string.support_sub_billing_disclaimer, displayPrice),
+                        text = stringResource(
+                            R.string.support_sub_billing_disclaimer,
+                            displayPrice
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                         color = customColors.secondaryText.copy(alpha = 0.8f)
                     )

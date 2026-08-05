@@ -2,6 +2,7 @@ package com.hazrat.auth.ui.support
 
 import androidx.compose.runtime.Immutable
 import com.hazrat.domain.repository.NativeSupportPackage
+import com.hazrat.model.profile.SupporterStatusModel
 
 enum class SupportTab {
     ONE_TIME,
@@ -49,8 +50,8 @@ data class SupportUiState(
     val nativePackages: List<NativeSupportPackage> = emptyList(),
     val totalSupportedUSD: Double = 0.0,
     val formattedSupportedTotal: String = "$0.00",
-    val supportersCount: Int = 0,
     val isOffline: Boolean = false,
     val isPurchasing: Boolean = false,
-    val expandedFaqIndex: Int? = null
+    val expandedFaqIndex: Int? = null,
+    val userSupportViewModel: SupporterStatusModel? = null
 )

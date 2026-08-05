@@ -1,6 +1,7 @@
 package com.hazrat.auth.ui.di
 
-import com.hazrat.auth.ui.appSetting.AppSettingViewModel
+import com.hazrat.auth.ui.appSetting.ProfileViewModel
+import com.hazrat.auth.ui.login.LoginViewModel
 import com.hazrat.auth.ui.support.SupportViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
@@ -12,20 +13,32 @@ import org.koin.dsl.module
  */
 fun getAuthUiModule(): Module = module {
     viewModel {
-        AppSettingViewModel(
+        ProfileViewModel(
             context = get(),
-            dataStorePreference = get(),
             appDataStore = get(),
             userDataStore = get(),
             prayerLogRepository = getOrNull(),
-            quranRepository = getOrNull()
+            quranRepository = getOrNull(),
+            logoutUseCase = get(),
+            getProfileDataUseCase = get(),
+            isLoggedInUseCase = get()
         )
     }
 
     viewModel {
         SupportViewModel(
             billingRepository = getOrNull(),
-            connectivityObserver = getOrNull()
+            connectivityObserver = getOrNull(),
+            listenToSupportTickerUseCase = get(),
+            getSupporterStatusUseCase = get(),
+            syncSupporterStatusUseCase = getOrNull()
+        )
+    }
+
+    viewModel {
+        LoginViewModel(
+            googleSignInUseCase = get(),
+
         )
     }
 }

@@ -28,6 +28,9 @@ class BillingRepositoryImpl(
             userDataStore.totalSupportedAmountUSD
         ) { customerInfo, localTotalUSD ->
             val isMonthly = customerInfo.entitlements["monthly_supporter"]?.isActive == true
+            // Save to DataStore automatically whenever RevenueCat status updates
+            userDataStore.setIsSubscribed(isMonthly)
+
             CustomerSupportInfo(
                 totalSupportedUSD = localTotalUSD,
                 isMonthlySupporter = isMonthly,
@@ -107,6 +110,8 @@ class BillingRepositoryImpl(
             userDataStore.addSupportedAmountUSD(amountUSD)
 
             val isMonthly = customerInfo.entitlements["monthly_supporter"]?.isActive == true
+            userDataStore.setIsSubscribed(isMonthly)
+
             Result.success(
                 CustomerSupportInfo(
                     totalSupportedUSD = amountUSD,
@@ -124,6 +129,7 @@ class BillingRepositoryImpl(
         return try {
             val customerInfo = revenueCatBillingDataSource.restorePurchases()
             val isMonthly = customerInfo.entitlements["monthly_supporter"]?.isActive == true
+            userDataStore.setIsSubscribed(isMonthly)
 
             val totalFromTransactions = customerInfo.nonSubscriptionTransactions.size * 2.99
             if (totalFromTransactions > 0.0) {

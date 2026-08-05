@@ -1,13 +1,19 @@
 package com.hazrat.auth.data.di
 
+import androidx.credentials.CredentialManager
 import com.hazrat.auth.data.billing.BillingRepositoryImpl
 import com.hazrat.auth.data.billing.RevenueCatBillingDataSource
+import com.hazrat.auth.data.repository.AuthRepositoryImpl
+import com.hazrat.auth.data.repository.ProfileRepositoryImpl
+import com.hazrat.domain.repository.AuthRepository
 import com.hazrat.domain.repository.BillingRepository
+import com.hazrat.domain.repository.ProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
+import org.koin.core.scope.get
 import org.koin.dsl.module
 
 /**
@@ -31,6 +37,28 @@ fun getAuthDataModule(): Module = module {
         BillingRepositoryImpl(
             revenueCatBillingDataSource = get(),
             userDataStore = get()
+        )
+    }
+
+    single { CredentialManager.create(androidContext()) }
+    single<AuthRepository> {
+        AuthRepositoryImpl(
+            context = androidContext(),
+            credentialManager = get(),
+            authApiCall = get(),
+            tokenStorage = get(),
+            profileApi = get(),
+            profileRepository = get(),
+            userSupportStatusDao = get()
+        )
+    }
+
+    single<ProfileRepository> {
+        ProfileRepositoryImpl(
+            dao = get(),
+            webSocketApi = get(),
+            profileApi = get(),
+            userSupportStatusDao = get()
         )
     }
 }

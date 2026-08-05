@@ -20,8 +20,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         this.targetSdk = 37
-        versionCode = 109
-        versionName = "4.1.0"
+        versionCode = 110
+        versionName = "4.1.1-Beta1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -152,7 +152,6 @@ dependencies {
 
     //Kotlinx Serialization
     implementation (libs.kotlinx.serialization.json)
-    implementation (libs.retrofit2.kotlinx.serialization.converter)
 
     //Compose Foundation
     implementation (libs.androidx.foundation)

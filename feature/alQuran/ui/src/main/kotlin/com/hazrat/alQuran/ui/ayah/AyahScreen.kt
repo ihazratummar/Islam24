@@ -241,7 +241,7 @@ fun AyahScreen(
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 if (surahScreenData.isFromKhatam && source == NestedScrollSource.UserInput) {
                     val totalAyahs = ayahState.ayahs.size
-                    val isAtLastAyah = totalAyahs > 0 && currentViewedAyah >= totalAyahs
+                    val isAtLastAyah = totalAyahs in 1..currentViewedAyah
                     // Block RIGHT swipe (swiping right towards next Surah) until user reaches last Ayah
                     if (!isAtLastAyah && available.x > 0f) {
                         return available // Consume scroll delta to block right swipe to next Surah
@@ -355,7 +355,6 @@ fun AyahScreen(
                         Color.Transparent
                     }
 
-                    val playingTextColor = defaultTextColor
                     val playingSubTextColor = customColors.secondaryText
 
                     Box(
@@ -439,7 +438,7 @@ fun AyahScreen(
                             // Arabic Text — Tajweed colored
                             if (ayah.tajweedText.isNotBlank()) {
                                 val annotatedAyah = remember(ayah.tajweedText, isCurrentPlaying, isDarkMode) {
-                                    parseTajweedHtml(ayah.tajweedText, playingTextColor)
+                                    parseTajweedHtml(ayah.tajweedText, defaultTextColor)
                                 }
                                 Text(
                                     text = annotatedAyah,
@@ -459,7 +458,7 @@ fun AyahScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontFamily = ScheherazadeFontFamily,
-                                        color = playingTextColor,
+                                        color = defaultTextColor,
                                         textDirection = TextDirection.Rtl,
                                         fontFeatureSettings = "cv62",
                                         fontSize = 30.sp,
@@ -484,7 +483,7 @@ fun AyahScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Medium,
-                                    color = playingTextColor,
+                                    color = defaultTextColor,
                                     textAlign = TextAlign.End,
                                     fontSize = 16.sp,
                                     lineHeight = 26.sp
@@ -493,7 +492,7 @@ fun AyahScreen(
 
                             HorizontalDivider(
                                 modifier = Modifier.padding(top = dimens.space12),
-                                color = playingTextColor.copy(alpha = 0.12f)
+                                color = defaultTextColor.copy(alpha = 0.12f)
                             )
                         }
                     }

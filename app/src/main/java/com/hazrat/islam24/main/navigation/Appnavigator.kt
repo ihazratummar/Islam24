@@ -220,7 +220,7 @@ fun AppNavigator(
 
             composable<MainRoute.QuranScreenRoute>(
                 deepLinks = listOf(navDeepLink {
-                    uriPattern = "https://islam24.hazratdev.top/quran-screen"
+                    uriPattern = "https://islam24.app/quran-screen"
                 })
             ) {
 

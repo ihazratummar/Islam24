@@ -14,4 +14,6 @@ interface AuthRepository {
 
     suspend fun logout() : Boolean
 
+    suspend fun clearLocalSession()
+
 }

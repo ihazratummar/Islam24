@@ -26,14 +26,18 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -46,6 +50,7 @@ import com.hazrat.ui.R
 import com.hazrat.ui.common.IconWithBackground
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import kotlinx.coroutines.flow.SharedFlow
 
 /**
  * Login Screen matching exact user mockup using TopAppBar & LazyColumn.
@@ -55,11 +60,39 @@ import com.hazrat.ui.theme.dimens
 @Composable
 fun LoginScreen(
     onBackClick: () -> Unit,
-    onGoogleSignInClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
-    onPrivacyClick: () -> Unit = {}
+    onPrivacyClick: () -> Unit = {},
+    effect: SharedFlow<LoginEffect>?,
+    event: (LoginEvent) -> Unit
+
 ) {
+    val context = LocalContext.current
+    val snackbarState = SnackbarHostState()
+
+    LaunchedEffect(Unit) {
+        effect?.collect { effect ->
+            when (effect) {
+                is LoginEffect.Error -> {
+                    snackbarState.showSnackbar(
+                        message = effect.message
+                    )
+                }
+
+                LoginEffect.NavigateBack -> {
+                    onBackClick()
+                }
+
+                is LoginEffect.Success -> {
+                    snackbarState.showSnackbar(
+                        message = effect.message
+                    )
+                }
+            }
+        }
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarState) },
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
@@ -171,7 +204,9 @@ fun LoginScreen(
 
                     // Continue with Google Button
                     Button(
-                        onClick = onGoogleSignInClick,
+                        onClick = {
+                            event(LoginEvent.GoogleSignInClick(context))
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(dimens.compInput)
@@ -255,11 +290,19 @@ fun LoginScreen(
                             textAlign = TextAlign.Center
                         ),
                         onClick = { offset ->
-                            annotatedString.getStringAnnotations(tag = "TERMS", start = offset, end = offset)
+                            annotatedString.getStringAnnotations(
+                                tag = "TERMS",
+                                start = offset,
+                                end = offset
+                            )
                                 .firstOrNull()?.let {
                                     onTermsClick()
                                 }
-                            annotatedString.getStringAnnotations(tag = "PRIVACY", start = offset, end = offset)
+                            annotatedString.getStringAnnotations(
+                                tag = "PRIVACY",
+                                start = offset,
+                                end = offset
+                            )
                                 .firstOrNull()?.let {
                                     onPrivacyClick()
                                 }

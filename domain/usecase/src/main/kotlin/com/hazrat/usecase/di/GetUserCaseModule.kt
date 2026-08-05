@@ -4,9 +4,23 @@ import com.hazrat.usecase.GetIslamicEventsUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetNextFridayTime
 import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
+import com.hazrat.usecase.profile.GetProfileDataUseCase
+import com.hazrat.usecase.profile.GetSupporterStatusUseCase
+import com.hazrat.usecase.profile.GoogleSignInUseCase
+import com.hazrat.usecase.profile.IsLoggedInUseCase
+import com.hazrat.usecase.profile.IsSubscribedUseCase
+import com.hazrat.usecase.profile.SignOutUseCase
+import com.hazrat.usecase.profile.SyncSupporterStatusUseCase
 import com.hazrat.usecase.dua.GetDuaCategoryUseCase
 import com.hazrat.usecase.dua.GetDuaItemListUseCase
 import com.hazrat.usecase.dua.SearchAndGetDuaCategoriesUseCase
+import com.hazrat.usecase.khatam.EndKhatamPlanUseCase
+import com.hazrat.usecase.khatam.GetActiveKhatamPlanUseCase
+import com.hazrat.usecase.khatam.GetKhatamHistoryUseCase
+import com.hazrat.usecase.khatam.ResetKhatamPlanUseCase
+import com.hazrat.usecase.khatam.StartKhatamPlanUseCase
+import com.hazrat.usecase.khatam.UpdateKhatamProgressUseCase
+import com.hazrat.usecase.khatam.UpdateKhatamTargetDateUseCase
 import com.hazrat.usecase.prayer.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.prayer.GetPrayerNotificationStateUseCase
 import com.hazrat.usecase.prayer.GetPrayerTimeWindowForDaysUseCase
@@ -15,6 +29,7 @@ import com.hazrat.usecase.prayer.LogPrayerUseCase
 import com.hazrat.usecase.prayer.PrayerNotificationEnabledUseCase
 import com.hazrat.usecase.prayer.TogglePrayerUseCase
 import com.hazrat.usecase.prayer.UnLogPrayerUseCase
+import com.hazrat.usecase.profile.ListenToSupportTickerUseCase
 import com.hazrat.usecase.quran.ControlQuranAudioUseCase
 import com.hazrat.usecase.quran.DeleteRecentSurahUseCase
 import com.hazrat.usecase.quran.GetAllSurahListUseCase
@@ -63,11 +78,24 @@ fun getUserCaseModule(): Module = module {
     single { ToggleAyahBookmarkUseCase(quranRepository = get()) }
     single { GetBookmarkedAyahsUseCase(quranRepository = get()) }
 
-    single { com.hazrat.usecase.khatam.GetActiveKhatamPlanUseCase(repository = get()) }
-    single { com.hazrat.usecase.khatam.GetKhatamHistoryUseCase(repository = get()) }
-    single { com.hazrat.usecase.khatam.StartKhatamPlanUseCase(repository = get()) }
-    single { com.hazrat.usecase.khatam.UpdateKhatamProgressUseCase(repository = get()) }
-    single { com.hazrat.usecase.khatam.UpdateKhatamTargetDateUseCase(repository = get()) }
-    single { com.hazrat.usecase.khatam.ResetKhatamPlanUseCase(repository = get()) }
-    single { com.hazrat.usecase.khatam.EndKhatamPlanUseCase(repository = get()) }
+    single { GetActiveKhatamPlanUseCase(repository = get()) }
+    single { GetKhatamHistoryUseCase(repository = get()) }
+    single { StartKhatamPlanUseCase(repository = get()) }
+    single { UpdateKhatamProgressUseCase(repository = get()) }
+    single { UpdateKhatamTargetDateUseCase(repository = get()) }
+    single { ResetKhatamPlanUseCase(repository = get()) }
+    single { EndKhatamPlanUseCase(repository = get()) }
+
+    // Auth
+    single { GoogleSignInUseCase(get()) }
+    single { SignOutUseCase(authRepository = get(), profileRepository = get()) }
+    single { IsLoggedInUseCase(get()) }
+    single { IsSubscribedUseCase(userDataStore = get()) }
+    single { GetProfileDataUseCase(get()) }
+    single { GetSupporterStatusUseCase(profileRepository = get()) }
+    single { SyncSupporterStatusUseCase(profileRepository = get()) }
+
+    single { ListenToSupportTickerUseCase(get()) }
+
+
 }

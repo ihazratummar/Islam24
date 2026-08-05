@@ -1,36 +1,40 @@
-//PrayerTimeApi.kt
-
 package com.hazrat.remote.api
-import com.hazrat.remote.dto.NewPrayerTimeDto
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
 
+import com.hazrat.remote.dto.NewPrayerTimeDto
+import com.hazrat.utils.Constants.PRAYER_BASE_URL
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 
 /**
  * Interface representing the API service for retrieving prayer times.
- * This interface defines methods for fetching prayer times from an external API.
  */
-
 interface PrayerTimeApi {
-
-    /**
-     * Retrieves prayer times for a specific year and month from the API.
-     *
-     * @param year The year for which prayer times are requested.
-     * @param latitude The latitude coordinate of the location.
-     * @param longitude The longitude coordinate of the location.
-     * @param method The calculation method for prayer times.
-     * @param school The calculation school for prayer times.
-     * @return ApiResponse containing the prayer times data.
-     */
-
-    @GET("{year}")
     suspend fun newPrayerTimesRequest(
-        @Path("year") year: Int,
-        @Query("latitude") latitude: String,
-        @Query("longitude") longitude: String,
-        @Query("method") method: Int,
-        @Query("school") school: Int
+        year: Int,
+        latitude: String,
+        longitude: String,
+        method: Int,
+        school: Int
     ): NewPrayerTimeDto
+}
+
+class PrayerTimeApiImpl(
+    private val client: HttpClient
+) : PrayerTimeApi {
+    override suspend fun newPrayerTimesRequest(
+        year: Int,
+        latitude: String,
+        longitude: String,
+        method: Int,
+        school: Int
+    ): NewPrayerTimeDto {
+        return client.get("$PRAYER_BASE_URL$year") {
+            parameter("latitude", latitude)
+            parameter("longitude", longitude)
+            parameter("method", method)
+            parameter("school", school)
+        }.body()
+    }
 }

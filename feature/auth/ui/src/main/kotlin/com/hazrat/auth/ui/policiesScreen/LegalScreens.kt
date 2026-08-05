@@ -23,7 +23,7 @@ import com.hazrat.ui.theme.dimens
 fun LegalScreens(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    url: String = "https://islam24.hazratdev.top/privacy-policy",
+    url: String = "https://islam24.app/privacy-policy",
     title: String
 ) {
 

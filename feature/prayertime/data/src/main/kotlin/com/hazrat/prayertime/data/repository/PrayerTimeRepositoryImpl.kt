@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withTimeoutOrNull
-import retrofit2.HttpException
+import io.ktor.client.plugins.ResponseException
 import timber.log.Timber
 import java.io.IOException
 
@@ -354,9 +354,9 @@ class PrayerTimeRepositoryImpl(
 
         } catch (e: CancellationException) {
             throw e
-        } catch (e: HttpException) {
-            Timber.tag(TAG).e("HTTP error fetching $year: ${e.code()} ${e.message()}")
-            Result.Error(PrayerTimeError.ErrorMessage(("Server error (${e.code()}) while fetching prayer times.")))
+        } catch (e: ResponseException) {
+            Timber.tag(TAG).e("HTTP error fetching $year: ${e.response.status.value} ${e.message}")
+            Result.Error(PrayerTimeError.ErrorMessage(("Server error (${e.response.status.value}) while fetching prayer times.")))
         } catch (e: IOException) {
             Timber.tag(TAG).e("Network IO error for $year: ${e.message}")
             Result.Error(PrayerTimeError.ErrorMessage(("Network error — please check your connection.")))

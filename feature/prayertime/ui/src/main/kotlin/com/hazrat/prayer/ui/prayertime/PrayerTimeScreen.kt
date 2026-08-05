@@ -53,6 +53,8 @@ import com.hazrat.prayer.ui.component.PrayerTimeCard
 import com.hazrat.prayer.ui.notification.NotificationState
 import com.hazrat.ui.R
 import com.hazrat.ui.common.IconWithBackground
+import com.hazrat.ui.common.IslamicLoadingBar
+import com.hazrat.ui.common.IslamicPullToRefresh
 import com.hazrat.ui.common.PrayerType
 import com.hazrat.ui.common.rememberPrayerState
 import com.hazrat.ui.theme.customColors
@@ -176,18 +178,14 @@ fun PrayerTimeScreen(
             )
 
             AnimatedVisibility(visible = prayerTimeUiState.isFetchingNextYear) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primary
+                IslamicLoadingBar(
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         },
         contentWindowInsets = WindowInsets()
     ) { paddingValues ->
-        val pullToRefreshState = rememberPullToRefreshState()
-
-        PullToRefreshBox(
-            state = pullToRefreshState,
+            IslamicPullToRefresh(
             onRefresh = {
                 if (isPermissionGranted(context, PermissionTypes.LOCATION)) {
                     event(PrayerEvent.RefreshPrayer)
@@ -198,7 +196,8 @@ fun PrayerTimeScreen(
             isRefreshing = prayerTimeUiState.isRefreshing,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+
         ) {
             HorizontalPager(
                 state = pagerState,

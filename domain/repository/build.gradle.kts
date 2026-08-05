@@ -44,6 +44,7 @@ dependencies {
 
     implementation(project(":core:utils"))
     implementation(project(":core:database"))
+    implementation(project(":core:remote"))
     api(project(":domain:model"))
 
     implementation(libs.androidx.core.ktx)

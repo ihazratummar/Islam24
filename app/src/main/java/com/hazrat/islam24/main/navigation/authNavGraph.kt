@@ -11,7 +11,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.hazrat.auth.ui.appSetting.AppSettingScreen
-import com.hazrat.auth.ui.appSetting.AppSettingViewModel
+import com.hazrat.auth.ui.appSetting.ProfileViewModel
+import com.hazrat.auth.ui.login.LoginScreen
+import com.hazrat.auth.ui.login.LoginViewModel
 import com.hazrat.auth.ui.policiesScreen.PoliciesScreen
 import com.hazrat.auth.ui.policiesScreen.LegalScreens
 import com.hazrat.auth.ui.support.SupportIslam24Screen
@@ -31,12 +33,12 @@ fun NavGraphBuilder.authNavGraph(
     navigation<Auth>(startDestination = MainRoute.ProfileScreen) {
 
         composable<MainRoute.ProfileScreen> {
-            val appSettingViewModel = koinViewModel<AppSettingViewModel>()
+            val appSettingViewModel = koinViewModel<ProfileViewModel>()
             val appSettingEvent = appSettingViewModel::onAppSettingEvent
             val appSettingState by appSettingViewModel.appSettingState.collectAsState()
             AppSettingScreen(
                 appSettingEvent = appSettingEvent,
-                appSettingState = appSettingState,
+                state = appSettingState,
                 isHapticFeedback = isHapticFeedback,
                 onPolicyClick = {
                     navController.navigate(PoliciesScreenRoute)
@@ -49,22 +51,35 @@ fun NavGraphBuilder.authNavGraph(
                 },
                 onAuthClick = {
                     navController.navigate(Login)
-                }
+                },
+                effect = appSettingViewModel.effect
             )
         }
 
         composable<Login> {
-            com.hazrat.auth.ui.login.LoginScreen(
+
+            val viewModel = koinViewModel<LoginViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            LoginScreen(
                 onBackClick = { navController.popBackStack() },
-                onGoogleSignInClick = {
-                    // Google sign-in click handler
-                },
                 onTermsClick = {
-                    navController.navigate(LegalScreenRoute(link = "https://islam24.hazratdev.top/terms", title = "Terms of Service"))
+                    navController.navigate(
+                        LegalScreenRoute(
+                            link = "https://islam24.app/terms",
+                            title = "Terms of Service"
+                        )
+                    )
                 },
                 onPrivacyClick = {
-                    navController.navigate(LegalScreenRoute(link = "https://islam24.hazratdev.top/privacy-policy", title = "Privacy Policy"))
-                }
+                    navController.navigate(
+                        LegalScreenRoute(
+                            link = "https://islam24.app/privacy-policy",
+                            title = "Privacy Policy"
+                        )
+                    )
+                },
+                effect = viewModel.effect,
+                event = viewModel::event
             )
         }
 
@@ -88,9 +103,12 @@ fun NavGraphBuilder.authNavGraph(
 
         composable<SupportIslam24Route> {
             val viewModel = koinViewModel<SupportViewModel>()
+            val state by viewModel.uiState.collectAsStateWithLifecycle()
             SupportIslam24Screen(
                 viewModel = viewModel,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                supportEffect = viewModel.effect,
+                uiState = state
             )
         }
     }
@@ -102,8 +120,6 @@ data object Auth
 @Serializable
 data object Login
 
-@Serializable
-data object SignUp
 
 @Serializable
 data object ForgettingPassword

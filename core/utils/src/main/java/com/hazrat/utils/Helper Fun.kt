@@ -19,6 +19,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.hazrat.utils.Constants.INTERNALSTORAGEPICTUREFOLDER
 import com.hazrat.utils.Constants.PROFILE_PICTURE
 import java.io.File
+import java.util.Currency
 import java.util.Locale
 
 fun drawableToBitmap(context: Context, drawableId: Int): Bitmap {
@@ -107,4 +108,9 @@ fun isMp3FileValid(filePath: String): Boolean {
         Log.e("FileCheck", "Error checking MP3 file: ${e.message}", e)
         false
     }
+}
+
+
+fun String.toCurrencySymbol(): String {
+    return Currency.getInstance(this).symbol
 }

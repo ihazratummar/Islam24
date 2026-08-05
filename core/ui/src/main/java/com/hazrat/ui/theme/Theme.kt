@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+
 private val LightColorScheme = lightColorScheme(
 
     // Brand
@@ -80,6 +80,7 @@ private val LightColorScheme = lightColorScheme(
 
     scrim = Neutral0
 )
+
 private val DarkColorScheme = darkColorScheme(
 
     // Brand
@@ -145,15 +146,12 @@ private val DarkColorScheme = darkColorScheme(
     scrim = Neutral0
 )
 
-/**
- * CompositionLocal used to provide [Dimens] throughout the hierarchy.
- */
-
-
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun Islam24Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    isLoggedIn: Boolean = false,
+    isSubscribed: Boolean = false,
     activity: Activity? = LocalActivity.current,
     content: @Composable () -> Unit
 ) {
@@ -173,9 +171,7 @@ fun Islam24Theme(
     }
 
     // Custom design tokens (Gradients, specialized colors)
-    val customColors = remember(darkTheme) {
-        if (darkTheme) DarkCustomColors else LightCustomColors
-    }
+    val customColors = if (darkTheme) DarkCustomColors else LightCustomColors
 
     // System bars icon color management (works with enableEdgeToEdge in MainActivity)
     if (!view.isInEditMode && activity != null) {
@@ -189,7 +185,9 @@ fun Islam24Theme(
 
     CompositionLocalProvider(
         LocalAppDimens provides appDimens,
-        LocalCustomColors provides customColors
+        LocalCustomColors provides customColors,
+        LocalLoggedInState provides isLoggedIn,
+        LocalSubscribedState provides isSubscribed
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -202,14 +200,31 @@ fun Islam24Theme(
 val LocalAppDimens = compositionLocalOf {
     CompactDimens
 }
+
 val LocalCustomColors = compositionLocalOf {
     CustomColors()
 }
 
-val dimens
+val LocalLoggedInState = compositionLocalOf {
+    false
+}
+
+val LocalSubscribedState = compositionLocalOf {
+    false
+}
+
+val dimens: Dimens
     @Composable
     get() = LocalAppDimens.current
 
 val customColors: CustomColors
     @Composable
     get() = LocalCustomColors.current
+
+val isUserLoggedIn: Boolean
+    @Composable
+    get() = LocalLoggedInState.current
+
+val isUserSubscribed: Boolean
+    @Composable
+    get() = LocalSubscribedState.current

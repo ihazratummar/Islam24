@@ -19,23 +19,10 @@ object Constants {
     const val LOCATION_IQ_BASE_URL = "https://us1.locationiq.com/v1/"
     const val LOCATION_IQ_API_KEY = BuildConfig.LOCATION_IQ_API_KEY
 
-    /** Base URL for retrieving Gregorian to Hijri conversion data */
-    const val GTH_BASE_URL = "https://api.aladhan.com/"
-
-    /** Base URL for retrieving Hijri calendar data */
-    const val HIJRI_CALENDAR_URL = "https://api.aladhan.com/"
-
-
-    const val NISAB_DATABASE_NAME = "nisab_db"
-    const val KEY_SORT_BY = "sort_type"
-
 
     /**Profile and Settings Constants */
     const val INTERNALSTORAGEPICTUREFOLDER = "profile_picture"
     const val PROFILE_PICTURE = "profile_picture"
-
-    /** Quran Api Base  Url  */
-    const val QURAN_AR_BASE_URL = "https://raw.githubusercontent.com/ihazratummar/AlQuran/refs/heads/main/"
 
 
 
@@ -47,28 +34,5 @@ object Constants {
     const val DOWNLOADED_AZAN_FOLDER = "azans"
     const val SELECTED_ATHANS_SUB_FOLDER_NAME = "Selected Athan"
 
-
-    /*
-    Islam 24 Backend
-     */
-
-    const val RENDER_BASE_URL = "https://islam24-backend.onrender.com/"
-    const val ISLAM24_BACKEND_BASE_URL = "https://islam24.hazratdev.top/"
-
-
-    /*
-    Firebase Constants
-     */
-
-    const val USER_COLLECTION = "user"
-    const val ZAKAT_COLLECTION = "zakat"
-
-    // ********************//
-
-    const val  REQUEST_CODE_SCHEDULE_EXACT_ALARM = 100
-
-
-
-    const val GOOGLE_CLOUD_BASE_URL = "https://www.googleapis.com/youtube/v3/"
 
 }

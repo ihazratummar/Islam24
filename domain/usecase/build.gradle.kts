@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:location"))
     implementation(project(":core:database"))
+    implementation(project(":core:datastore"))
 
     api(project(":domain:model"))
     api(project(":domain:repository"))

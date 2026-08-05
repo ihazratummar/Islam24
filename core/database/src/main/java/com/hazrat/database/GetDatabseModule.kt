@@ -4,18 +4,16 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.hazrat.database.dao.AllahNameDao
-import com.hazrat.database.dao.AthkarDao
 import com.hazrat.database.dao.DuaDao
-import com.hazrat.database.dao.GregorianToHijriDao
-import com.hazrat.database.dao.HijriCalendarDao
 import com.hazrat.database.dao.LocationNameDao
 import com.hazrat.database.dao.PrayerLogDao
 import com.hazrat.database.dao.PrayerTimeDao
 import com.hazrat.database.dao.KhatamDao
 import com.hazrat.database.dao.QuranDao
+import com.hazrat.database.dao.UserDao
+import com.hazrat.database.dao.UserSupportStatusDao
 import com.hazrat.database.dao.ZakatDao
-import com.hazrat.database.database.AthkarDatabase
-import com.hazrat.database.database.CalendarDatabase
+import com.hazrat.database.database.AppDatabase
 import com.hazrat.database.database.DuaDatabase
 import com.hazrat.database.database.LocationDatabase
 import com.hazrat.database.database.NamesDataBase
@@ -46,30 +44,6 @@ fun getDatabaseModule(): Module = module {
     }
     single<AllahNameDao> { get<NamesDataBase>().nameDao() }
 
-    // Athkar Database
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            AthkarDatabase::class.java,
-            "athkar_database"
-        )
-            .fallbackToDestructiveMigration(dropAllTables = false)
-            .build()
-    }
-    single<AthkarDao> { get<AthkarDatabase>().athkarDao() }
-
-    // Calendar Database
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            CalendarDatabase::class.java,
-            "app_database"
-        )
-            .fallbackToDestructiveMigration(dropAllTables = false)
-            .build()
-    }
-    single<HijriCalendarDao> { get<CalendarDatabase>().hijriCalendarDao() }
-    single<GregorianToHijriDao> { get<CalendarDatabase>().gregorianToHijriDao() }
 
     // Location Database
     single {
@@ -81,6 +55,19 @@ fun getDatabaseModule(): Module = module {
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
+
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            AppDatabase::class.java,
+            "app_database"
+        )
+            .fallbackToDestructiveMigration(dropAllTables = false)
+            .build()
+    }
+
+    single<UserSupportStatusDao> { get<AppDatabase>().userSupportStatusDao() }
+    single<UserDao> { get<AppDatabase>().userDao() }
 
     single<LocationNameDao> { get<LocationDatabase>().locationNameDao() }
 
@@ -95,7 +82,7 @@ fun getDatabaseModule(): Module = module {
             .build()
     }
     single<PrayerTimeDao> { get<PrayerDatabase>().prayerTimeDao() }
-    single <PrayerLogDao>{ get<PrayerDatabase>().prayerLogDao() }
+    single<PrayerLogDao> { get<PrayerDatabase>().prayerLogDao() }
 
     // Zakat Database
     single {
@@ -236,7 +223,13 @@ fun getDatabaseModule(): Module = module {
             "quran_db"
         )
             .createFromAsset("databases/quran_prepopulated.db")
-            .addMigrations(MIGRATION_0_4, MIGRATION_1_4, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+            .addMigrations(
+                MIGRATION_0_4,
+                MIGRATION_1_4,
+                MIGRATION_2_3,
+                MIGRATION_3_4,
+                MIGRATION_4_5
+            )
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
@@ -255,7 +248,7 @@ fun getDatabaseModule(): Module = module {
             .build()
     }
 
-    single <DuaDao>{ get<DuaDatabase>().duaDao() }
+    single<DuaDao> { get<DuaDatabase>().duaDao() }
 
     // Tasbih Database
     single {

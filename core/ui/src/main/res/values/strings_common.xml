@@ -36,4 +36,8 @@
     <string name="login_terms_of_service">Terms of Service</string>
     <string name="login_and"> and </string>
     <string name="login_privacy_policy">Privacy Policy</string>
+
+    <!-- Islamic Loading Screen -->
+    <string name="loading_please_wait">Please wait…</string>
+    <string name="loading_preparing">Preparing your experience</string>
 </resources>

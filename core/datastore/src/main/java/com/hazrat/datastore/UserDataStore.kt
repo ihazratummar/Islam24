@@ -82,9 +82,20 @@ class UserDataStore(
         private val PrayerJuristicMethodKey = intPreferencesKey(PRAYER_JURISTIC_METHOD)
         private val MasterNotificationEnabledKey = booleanPreferencesKey("MASTER_NOTIFICATION_ENABLED")
         private val TotalSupportedAmountUSDKey = androidx.datastore.preferences.core.doublePreferencesKey("TOTAL_SUPPORTED_AMOUNT_USD")
+        private val IsSubscribedKey = booleanPreferencesKey("IS_SUBSCRIBED")
         private val LastKnownLatitudeKey = androidx.datastore.preferences.core.doublePreferencesKey("LAST_KNOWN_LATITUDE")
         private val LastKnownLongitudeKey = androidx.datastore.preferences.core.doublePreferencesKey("LAST_KNOWN_LONGITUDE")
 
+    }
+
+    val isSubscribed: Flow<Boolean> = userDataStore.data.map { pref ->
+        pref[IsSubscribedKey] ?: false
+    }
+
+    suspend fun setIsSubscribed(isSubscribed: Boolean) {
+        userDataStore.edit { pref ->
+            pref[IsSubscribedKey] = isSubscribed
+        }
     }
 
     suspend fun setMasterNotificationEnabled(enabled: Boolean) {

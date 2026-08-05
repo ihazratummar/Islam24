@@ -49,23 +49,22 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
+    testImplementation(libs.ktor.client.mock)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
 
     implementation (libs.koin.compose)
 
-    //Retrofit
-    api (libs.retrofit)
-
     //Kotlinx Serialization
     implementation (libs.kotlinx.serialization.json)
-    implementation (libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.logging.interceptor)
 
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.android)
+    api(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.wbsocket)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.auth)
+
+    implementation (libs.kotlinx.datetime)
 }

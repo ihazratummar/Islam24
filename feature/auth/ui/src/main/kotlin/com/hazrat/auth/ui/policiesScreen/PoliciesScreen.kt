@@ -56,21 +56,21 @@ fun PoliciesScreen(
                 leadingIcon = R.drawable.privacy_policy,
                 tabName = "Privacy Policy",
                 onClick = {
-                    onPolicyClick("https://islam24.hazratdev.top/privacy-policy", "Privacy Policy")
+                    onPolicyClick("https://islam24.app/privacy-policy", "Privacy Policy")
                 }
             ),
             PoliciesTabs(
                 leadingIcon = R.drawable.privacy_policy,
                 tabName = "Terms of Service",
                 onClick = {
-                    onPolicyClick("https://islam24.hazratdev.top/terms-of-service", "Terms of Service")
+                    onPolicyClick("https://islam24.app/terms-of-service", "Terms of Service")
                 }
             ),
             PoliciesTabs(
                 leadingIcon = R.drawable.privacy_policy,
                 tabName = "Acknowledgement",
                 onClick = {
-                    onPolicyClick("https://islam24.hazratdev.top/acknowledgements", "Acknowledgement")
+                    onPolicyClick("https://islam24.app/acknowledgements", "Acknowledgement")
                 }
             )
         )

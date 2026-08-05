@@ -2,11 +2,6 @@ package com.hazrat.datastore
 
 import android.content.Context
 import androidx.core.content.edit
-import com.hazrat.model.DateType
-import com.hazrat.model.Languages
-import com.hazrat.model.al_quran_model.RecentReadSurah
-import com.hazrat.utils.Constants.KEY_SORT_BY
-import org.json.JSONArray
 import org.json.JSONObject
 
 class DataStorePreference(
@@ -27,9 +22,6 @@ class DataStorePreference(
         private const val DAILY_DUA_CAT = "daily_dua_cat"
         private const val DAILY_DUA_ID = "daily_dua_id"
 
-        private const val RECENT_READS_KEY = "quran_recent_reads"
-        private const val KEY_LANGUAGE = "language"
-
         private const val DAILY_ATHKAR_DATE = "daily_athkar_date"
         private const val DAILY_ATHKAR_COUNTS = "daily_athkar_counts"
     }
@@ -42,64 +34,6 @@ class DataStorePreference(
         }
     }
 
-    fun getQuranLastRead(): Pair<Int?, Int?> {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val surahNumber = if (pref.contains(LAST_READ_SURAH)) pref.getInt(LAST_READ_SURAH, 0) else null
-        val ayahNumber = if (pref.contains(LAST_READ_AYAH)) pref.getInt(LAST_READ_AYAH, 0) else null
-        return Pair(surahNumber, ayahNumber)
-    }
-
-    fun saveRecentSurahRead(surahNumber: Int, surahName: String, ayahNumber: Int, formattedDate: String) {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val existingList = getRecentSurahReads().toMutableList()
-
-        existingList.removeAll { it.surahNumber == surahNumber }
-        existingList.add(0, RecentReadSurah(surahNumber, surahName, ayahNumber, formattedDate))
-
-        val trimmed = existingList.take(10)
-        val jsonArray = JSONArray()
-        trimmed.forEach { item ->
-            val obj = JSONObject().apply {
-                put("surahNumber", item.surahNumber)
-                put("surahName", item.surahName)
-                put("ayahNumber", item.ayahNumber)
-                put("formattedDate", item.formattedDate)
-                put("timestamp", item.timestamp)
-            }
-            jsonArray.put(obj)
-        }
-
-        pref.edit {
-            putString(RECENT_READS_KEY, jsonArray.toString())
-        }
-    }
-
-    fun getRecentSurahReads(): List<RecentReadSurah> {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val jsonStr = pref.getString(RECENT_READS_KEY, null)
-        if (jsonStr.isNullOrEmpty()) {
-            return emptyList()
-        }
-        return try {
-            val array = JSONArray(jsonStr)
-            val list = mutableListOf<RecentReadSurah>()
-            for (i in 0 until array.length()) {
-                val obj = array.getJSONObject(i)
-                list.add(
-                    RecentReadSurah(
-                        surahNumber = obj.getInt("surahNumber"),
-                        surahName = obj.getString("surahName"),
-                        ayahNumber = obj.getInt("ayahNumber"),
-                        formattedDate = obj.optString("formattedDate", "Today"),
-                        timestamp = obj.optLong("timestamp", System.currentTimeMillis())
-                    )
-                )
-            }
-            list
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
 
     fun saveDailyVerse(dateString: String, surahNumber: Int, ayahNumber: Int) {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -141,28 +75,7 @@ class DataStorePreference(
         return null
     }
 
-    fun setLanguage(language: Languages) {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        pref.edit { putString(KEY_LANGUAGE, language.name) }
-    }
 
-    fun getLanguage(): Languages {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val language =
-            pref.getString(KEY_LANGUAGE, Languages.ENGLISH.name) ?: Languages.ENGLISH.name
-        return Languages.valueOf(language)
-    }
-
-    fun setSortType(sortType: DateType) {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        pref.edit { putString(KEY_SORT_BY, sortType.name) }
-    }
-
-    fun getSortType(): DateType {
-        val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val sortType = pref.getString(KEY_SORT_BY, DateType.DATE_DESC.name)
-        return DateType.valueOf(sortType!!)
-    }
 
     fun saveDailyAthkarCounts(todayDateString: String, counts: Map<Int, Int>) {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)

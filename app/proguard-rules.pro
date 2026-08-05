@@ -74,15 +74,18 @@
 
 
 
-# Retrofit
--keep class retrofit2.** { *; }
+# Ktor & Networking
+-keep class io.ktor.** { *; }
+-dontwarn io.ktor.**
+-dontwarn java.lang.management.**
+-dontwarn java.lang.management.ManagementFactory
+-dontwarn java.lang.management.RuntimeMXBean
+-dontwarn org.slf4j.**
+-dontwarn io.netty.**
 -keep class okhttp3.** { *; }
--keep class com.squareup.moshi.** { *; }
--keep class com.google.gson.** { *; }
--dontwarn retrofit2.**
 -dontwarn okhttp3.**
--dontwarn com.squareup.moshi.**
--dontwarn com.google.gson.**
+-keep class com.hazrat.remote.dto.** { *; }
+-keepclassmembers class com.hazrat.remote.dto.** { *; }
 
 
 # Room

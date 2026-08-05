@@ -31,8 +31,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import coil.compose.AsyncImage
 import coil.imageLoader
-import com.hazrat.model.Languages
-import com.hazrat.ui.R
 import com.hazrat.ui.common.IconWithBackground
 import com.hazrat.ui.common.SpringToggle
 import com.hazrat.ui.common.customClick

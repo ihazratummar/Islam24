@@ -13,6 +13,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 import com.hazrat.downloader.AudioDownloadState
 import com.hazrat.downloader.AudioDownloader
+import com.hazrat.ui.common.SurahNameProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -257,8 +258,8 @@ class QuranAudioService : Service() {
                     )
                 } else if (currentState.surahNumber < 114) {
                     val nextSurah = currentState.surahNumber + 1
-                    val nextSurahName = com.hazrat.ui.common.SurahNameProvider.getSurahName(nextSurah)
-                    val nextSurahTotalAyahs = com.hazrat.ui.common.SurahNameProvider.getSurahTotalAyahs(nextSurah)
+                    val nextSurahName = SurahNameProvider.getSurahName(nextSurah)
+                    val nextSurahTotalAyahs = SurahNameProvider.getSurahTotalAyahs(nextSurah)
                     startAudioForAyah(
                         surahName = nextSurahName,
                         surahNumber = nextSurah,
@@ -375,7 +376,7 @@ class QuranAudioService : Service() {
         val displaySurahName = if (surahName.isNotBlank() && !surahName.startsWith("Surah")) {
             surahName
         } else {
-            com.hazrat.ui.common.SurahNameProvider.getSurahName(surahNum)
+            SurahNameProvider.getSurahName(surahNum)
         }
 
         // Explicit intent with extras — reliable with singleTask launch mode

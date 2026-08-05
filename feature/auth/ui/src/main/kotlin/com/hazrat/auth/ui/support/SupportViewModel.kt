@@ -5,11 +5,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.domain.repository.BillingRepository
 import com.hazrat.domain.repository.NativeSupportPackage
+import com.hazrat.model.profile.SupporterTickerModel
+import com.hazrat.usecase.profile.ListenToSupportTickerUseCase
 import com.hazrat.utils.network.ConnectivityObserver
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -18,18 +24,60 @@ import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
 
+import com.hazrat.usecase.profile.GetSupporterStatusUseCase
+import com.hazrat.usecase.profile.SyncSupporterStatusUseCase
+import com.hazrat.utils.toCurrencySymbol
+
 class SupportViewModel(
     private val billingRepository: BillingRepository? = null,
-    private val connectivityObserver: ConnectivityObserver? = null
+    private val connectivityObserver: ConnectivityObserver? = null,
+    private val listenToSupportTickerUseCase: ListenToSupportTickerUseCase,
+    private val getSupporterStatusUseCase: GetSupporterStatusUseCase,
+    private val syncSupporterStatusUseCase: SyncSupporterStatusUseCase? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SupportUiState())
     val uiState: StateFlow<SupportUiState> = _uiState.asStateFlow()
 
+    private val _effect = MutableSharedFlow<SupportEffect>()
+    val effect: SharedFlow<SupportEffect> = _effect.asSharedFlow()
+
+    private val _liveTicket = MutableStateFlow<SupporterTickerModel?>(null)
+    val liveTicket: StateFlow<SupporterTickerModel?> = _liveTicket.asStateFlow()
+
     init {
         observeConnectivity()
         observeCustomerSupportInfo()
+        observeSupporterStatus()
+        loadUserSubStatsFromDb()
         loadNativeOfferings()
+
+        viewModelScope.launch {
+            listenToSupportTickerUseCase().collectLatest { ticker ->
+                _liveTicket.value = ticker
+                val type = if (ticker.type == "TIP") "Tip" else "Sub"
+                _effect.emit(SupportEffect.Success("${ticker.donorName} $type ${ticker.currency?.toCurrencySymbol()}${ticker.amount}"))
+            }
+        }
+    }
+
+
+    private fun loadUserSubStatsFromDb(){
+        viewModelScope.launch {
+            getSupporterStatusUseCase.invoke().collectLatest { statusModel ->
+                _uiState.update {
+                    it.copy(
+                        userSupportViewModel = statusModel
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeSupporterStatus() {
+        viewModelScope.launch {
+            syncSupporterStatusUseCase?.invoke()
+        }
     }
 
     private fun observeConnectivity() {
@@ -50,7 +98,6 @@ class SupportViewModel(
     private fun observeCustomerSupportInfo() {
         billingRepository?.observeCustomerSupportInfo()
             ?.onEach { info ->
-                val realSupportersCount = if (info.totalSupportedUSD > 0.0) 1 else 0
                 val formattedTotal = formatRegionalCurrency(
                     amountUSD = info.totalSupportedUSD,
                     nativePackages = _uiState.value.nativePackages
@@ -60,7 +107,6 @@ class SupportViewModel(
                     currentState.copy(
                         totalSupportedUSD = info.totalSupportedUSD,
                         formattedSupportedTotal = formattedTotal,
-                        supportersCount = realSupportersCount
                     )
                 }
             }
@@ -87,7 +133,10 @@ class SupportViewModel(
         }
     }
 
-    private fun formatRegionalCurrency(amountUSD: Double, nativePackages: List<NativeSupportPackage>): String {
+    private fun formatRegionalCurrency(
+        amountUSD: Double,
+        nativePackages: List<NativeSupportPackage>
+    ): String {
         return try {
             val currencyCode = nativePackages.firstOrNull()?.currencyCode
             val formatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
@@ -118,37 +167,49 @@ class SupportViewModel(
                 _uiState.update { currentState ->
                     currentState.copy(
                         selectedTab = event.tab,
-                        selectedTipTier = if (event.tab == SupportTab.ONE_TIME) (currentState.selectedTipTier ?: TipTier.SMALL) else null,
-                        selectedSubscriptionTier = if (event.tab == SupportTab.MONTHLY) (currentState.selectedSubscriptionTier ?: SubscriptionTier.SUPPORTER) else null
+                        selectedTipTier = if (event.tab == SupportTab.ONE_TIME) (currentState.selectedTipTier
+                            ?: TipTier.SMALL) else null,
+                        selectedSubscriptionTier = if (event.tab == SupportTab.MONTHLY) (currentState.selectedSubscriptionTier
+                            ?: SubscriptionTier.SUPPORTER) else null
                     )
                 }
             }
+
             is SupportUiEvent.SelectTipTier -> {
                 _uiState.update { it.copy(selectedTipTier = event.tier) }
             }
+
             is SupportUiEvent.SelectSubscriptionTier -> {
                 _uiState.update { it.copy(selectedSubscriptionTier = event.tier) }
             }
+
             is SupportUiEvent.ToggleFaq -> {
                 _uiState.update { currentState ->
-                    val newIndex = if (currentState.expandedFaqIndex == event.index) null else event.index
+                    val newIndex =
+                        if (currentState.expandedFaqIndex == event.index) null else event.index
                     currentState.copy(expandedFaqIndex = newIndex)
                 }
             }
+
             is SupportUiEvent.PurchaseCurrentSelection -> {
                 if (_uiState.value.isOffline) {
-                    Toast.makeText(event.activity, "Please connect to internet to complete purchase", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        event.activity,
+                        "Please connect to internet to complete purchase",
+                        Toast.LENGTH_LONG
+                    ).show()
                     return
                 }
 
                 val currentTab = _uiState.value.selectedTab
                 viewModelScope.launch {
                     _uiState.update { it.copy(isPurchasing = true) }
-                    
+
                     val targetProductId = if (currentTab == SupportTab.ONE_TIME) {
                         (_uiState.value.selectedTipTier ?: TipTier.SMALL).productId
                     } else {
-                        (_uiState.value.selectedSubscriptionTier ?: SubscriptionTier.SUPPORTER).productId
+                        (_uiState.value.selectedSubscriptionTier
+                            ?: SubscriptionTier.SUPPORTER).productId
                     }
 
                     // Find authentic native package by productId, packageId, or fallback to ordinal match
@@ -156,7 +217,8 @@ class SupportViewModel(
                     val targetOrdinal = if (currentTab == SupportTab.ONE_TIME) {
                         (_uiState.value.selectedTipTier ?: TipTier.SMALL).ordinal
                     } else {
-                        (_uiState.value.selectedSubscriptionTier ?: SubscriptionTier.SUPPORTER).ordinal
+                        (_uiState.value.selectedSubscriptionTier
+                            ?: SubscriptionTier.SUPPORTER).ordinal
                     }
 
                     val authenticPackage = packages.find { pkg ->
@@ -183,7 +245,8 @@ class SupportViewModel(
                             currencyCode = "USD"
                         )
                     } else {
-                        val tier = _uiState.value.selectedSubscriptionTier ?: SubscriptionTier.SUPPORTER
+                        val tier =
+                            _uiState.value.selectedSubscriptionTier ?: SubscriptionTier.SUPPORTER
                         val amountMicros = when (tier) {
                             SubscriptionTier.SUPPORTER -> 2_990_000L
                             SubscriptionTier.GUARDIAN -> 4_990_000L
@@ -199,15 +262,25 @@ class SupportViewModel(
                     }
 
                     if (billingRepository == null) {
-                        Toast.makeText(event.activity, "Billing service not initialized", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            event.activity,
+                            "Billing service not initialized",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
-                        val result = billingRepository.purchasePackage(event.activity, nativePackage)
+                        val result =
+                            billingRepository.purchasePackage(event.activity, nativePackage)
                         result.onSuccess {
-                            Toast.makeText(event.activity, "JazakAllah Khair for your support!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                event.activity,
+                                "JazakAllah Khair for your support!",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }.onFailure { error ->
                             val msg = error.message.orEmpty()
                             if (!msg.contains("cancelled", ignoreCase = true)) {
-                                Toast.makeText(event.activity, "Support: $msg", Toast.LENGTH_LONG).show()
+                                Toast.makeText(event.activity, "Support: $msg", Toast.LENGTH_LONG)
+                                    .show()
                             }
                         }
                     }
@@ -215,6 +288,7 @@ class SupportViewModel(
                     _uiState.update { it.copy(isPurchasing = false) }
                 }
             }
+
             SupportUiEvent.RestorePurchases -> {
                 viewModelScope.launch {
                     billingRepository?.restorePurchases()

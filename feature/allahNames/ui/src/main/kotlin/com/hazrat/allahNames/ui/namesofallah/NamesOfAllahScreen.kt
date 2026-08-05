@@ -47,6 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.allahNames.model.namesofallah.NameOfAllahData
 import com.hazrat.ui.R
 import com.hazrat.ui.common.BackIcon
+import com.hazrat.ui.common.IslamicLoadingScreen
 import com.hazrat.ui.common.OfflineCard
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
@@ -111,111 +112,114 @@ fun NamesOfAllahScreen(
         containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
+        if (nameEntity.isEmpty()){
+            IslamicLoadingScreen(subtitle = "Loading names.....")
+        }else{
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(horizontal = dimens.space16)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(dimens.space16)
+            ) {
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(horizontal = dimens.space16)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(dimens.space16)
-        ) {
+                // Search Bar Input
+                item {
+                    SearchBarInput(
+                        query = searchQuery,
+                        onQueryChange = viewModel::onSearchQueryChange
+                    )
+                }
 
-            // Search Bar Input
-            item {
-                SearchBarInput(
-                    query = searchQuery,
-                    onQueryChange = viewModel::onSearchQueryChange
-                )
-            }
+                // Featured Hero Name Banner (Daily Random Name)
+                item {
+                    HeroNameBannerCard(
+                        featuredName = featuredName,
+                        isFavorite = favoriteNames.contains(featuredName.number),
+                        onFavoriteToggle = { viewModel.toggleFavorite(featuredName.number) }
+                    )
+                }
 
-            // Featured Hero Name Banner (Daily Random Name)
-            item {
-                HeroNameBannerCard(
-                    featuredName = featuredName,
-                    isFavorite = favoriteNames.contains(featuredName.number),
-                    onFavoriteToggle = { viewModel.toggleFavorite(featuredName.number) }
-                )
-            }
+                // Tabs Row: All & Favorites (Learned tab completely removed)
+                item {
+                    TabFilterRow(
+                        selectedTab = selectedTab,
+                        onTabSelected = viewModel::onTabSelected
+                    )
+                }
 
-            // Tabs Row: All & Favorites (Learned tab completely removed)
-            item {
-                TabFilterRow(
-                    selectedTab = selectedTab,
-                    onTabSelected = viewModel::onTabSelected
-                )
-            }
-
-            // 2-Column Name Cards Grid
-            if (displayedNames.isNotEmpty()) {
-                val chunkedNames = displayedNames.chunked(2)
-                items(chunkedNames) { rowItems ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(dimens.space12)
-                    ) {
-                        rowItems.forEach { data ->
-                            NameCardItem(
-                                name = data,
-                                isFavorite = favoriteNames.contains(data.number),
-                                onFavoriteToggle = { viewModel.toggleFavorite(data.number) },
-                                modifier = Modifier.weight(1f)
-                            )
+                // 2-Column Name Cards Grid
+                if (displayedNames.isNotEmpty()) {
+                    val chunkedNames = displayedNames.chunked(2)
+                    items(chunkedNames) { rowItems ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+                        ) {
+                            rowItems.forEach { data ->
+                                NameCardItem(
+                                    name = data,
+                                    isFavorite = favoriteNames.contains(data.number),
+                                    onFavoriteToggle = { viewModel.toggleFavorite(data.number) },
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                            if (rowItems.size == 1) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
                         }
-                        if (rowItems.size == 1) {
-                            Spacer(modifier = Modifier.weight(1f))
+                    }
+                } else {
+                    item {
+                        if (nameEntity.isEmpty()) {
+                            OfflineCard()
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(dimens.space32),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "No names found",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = customColors.secondaryText
+                                )
+                            }
                         }
                     }
                 }
-            } else {
+
                 item {
-                    if (nameEntity.isEmpty()) {
-                        OfflineCard()
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(dimens.space32),
-                            contentAlignment = Alignment.Center
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = dimens.space16)
+                            .clickable { onSupportClick?.invoke() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(dimens.space4)
                         ) {
                             Text(
-                                text = "No names found",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = customColors.secondaryText
+                                text = "Free forever — support the mission",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = customColors.secondaryText.copy(alpha = 0.8f)
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.chevron_right),
+                                contentDescription = null,
+                                tint = customColors.secondaryText.copy(alpha = 0.8f),
+                                modifier = Modifier.size(dimens.iconXs)
                             )
                         }
                     }
                 }
-            }
 
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = dimens.space16)
-                        .clickable { onSupportClick?.invoke() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(dimens.space4)
-                    ) {
-                        Text(
-                            text = "Free forever — support the mission",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = customColors.secondaryText.copy(alpha = 0.8f)
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.chevron_right),
-                            contentDescription = null,
-                            tint = customColors.secondaryText.copy(alpha = 0.8f),
-                            modifier = Modifier.size(dimens.iconXs)
-                        )
-                    }
+                item {
+                    Spacer(modifier = Modifier.height(dimens.space32))
                 }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(dimens.space32))
             }
         }
     }

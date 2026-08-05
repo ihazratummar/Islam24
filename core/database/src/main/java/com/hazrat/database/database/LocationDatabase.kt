@@ -4,7 +4,6 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.hazrat.database.dao.LocationNameDao
 import com.hazrat.database.entity.LocationDetailsEntity
-import com.hazrat.database.entity.LocationEntity
 
 
 @Database(entities = [LocationDetailsEntity::class], version = 7, exportSchema = false)

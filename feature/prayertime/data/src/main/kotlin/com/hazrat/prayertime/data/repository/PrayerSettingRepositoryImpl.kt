@@ -5,7 +5,6 @@ import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.PrayerSettingRepository
 import com.hazrat.model.Prayer
 import com.hazrat.model.PrayerNotificationSettings
-import com.hazrat.ui.common.PrayerType
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -34,16 +33,5 @@ class PrayerSettingRepositoryImpl(
 
     override fun getNotificationEnable(): Flow<PrayerNotificationSettings> {
         return userDataStore.notificationSettingsFlow
-    }
-}
-
-fun PrayerType.toPrayerName() : Prayer {
-    return when(this){
-        PrayerType.FAJR -> Prayer.FAJR
-        PrayerType.DHUHR ->  Prayer.DHUHR
-        PrayerType.ASR ->  Prayer.ASR
-        PrayerType.MAGHRIB ->  Prayer.MAGHRIB
-        PrayerType.ISHA -> Prayer.ISHA
-        else -> Prayer.FAJR
     }
 }

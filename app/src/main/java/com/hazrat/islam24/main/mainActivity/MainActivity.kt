@@ -1,6 +1,5 @@
 package com.hazrat.islam24.main.mainActivity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,18 +8,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
-import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.common.ChangelogDialog
 import com.hazrat.islam24.main.navigation.NavigationCommandBus
 import com.hazrat.islam24.main.navigation.NavigationTarget
 import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.UpdateManager
-import com.hazrat.model.Languages
 import com.hazrat.notification.NotificationChannels
 import com.hazrat.notification.PrayerRescheduleWorker
 import com.hazrat.ui.common.rememberImageLoader
@@ -53,7 +48,7 @@ class MainActivity : AppCompatActivity() {
      */
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         // Enable edge-to-edge display with explicit transparent status and navigation bars
         enableEdgeToEdge(
@@ -68,19 +63,16 @@ class MainActivity : AppCompatActivity() {
         )
 
         mainViewModel = getViewModel()
+
+        // Hold splash screen until isLoggedIn & isSubscribed state finish loading from DataStore
+        splashScreen.setKeepOnScreenCondition {
+            mainViewModel.isLoggedIn.value == null || mainViewModel.isSubscribed.value == null
+        }
+
         notificationHelper.createNotificationChannels()
 
         // Enterprise-grade: Ensure alarms are correctly scheduled on every app launch
        PrayerRescheduleWorker.enqueue(this)
-
-        val pref = getSharedPreferences("app_setting", Context.MODE_PRIVATE)
-        val language = pref.getString("language", Languages.ENGLISH.name) ?: Languages.ENGLISH.name
-        val langCode = try {
-            Languages.valueOf(language).code
-        } catch (e: Exception) {
-            "en"
-        }
-       AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(langCode))
 
         // Handle notification deep link on cold start
         handleNavigationIntent(intent)
@@ -89,9 +81,13 @@ class MainActivity : AppCompatActivity() {
             val isDarkModeEnabled by mainViewModel.isDarkMode.collectAsStateWithLifecycle()
             val isHapticFeedback by mainViewModel.isHapticFeedback.collectAsStateWithLifecycle()
             val showChangelog by mainViewModel.showChangelog.collectAsStateWithLifecycle()
+            val isLoggedInState by mainViewModel.isLoggedIn.collectAsStateWithLifecycle()
+            val isSubscribedState by mainViewModel.isSubscribed.collectAsStateWithLifecycle()
 
             Islam24Theme(
-                darkTheme = isDarkModeEnabled
+                darkTheme = isDarkModeEnabled,
+                isLoggedIn = isLoggedInState ?: false,
+                isSubscribed = isSubscribedState ?: false
             ) {
                 rememberImageLoader(this)
                 NavGraph(
