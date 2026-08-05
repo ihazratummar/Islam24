@@ -1,12 +1,11 @@
 package com.hazrat.remote.di
 
 import com.hazrat.remote.api.AthkarApiCall
-import com.hazrat.remote.api.GoogleCloudConsoleApi
 import com.hazrat.remote.api.Islam24BackendApi
 import com.hazrat.remote.api.LocationNameApi
 import com.hazrat.remote.api.NamesApi
 import com.hazrat.remote.api.PrayerTimeApi
-import com.hazrat.remote.api.QuranApi
+import com.hazrat.remote.clients.KtorClient
 import com.hazrat.utils.Constants.ATHKAR_BASE_URL_NAME
 import com.hazrat.utils.Constants.BASE_URL_NAME
 import com.hazrat.utils.Constants.GOOGLE_CLOUD_BASE_URL
@@ -160,13 +159,14 @@ fun getRemoteModule(): Module = module {
     // API:
 
     single<AthkarApiCall> {get<Retrofit>(named(ATHKAR_RETROFIT)).create(AthkarApiCall::class.java) }
-    single <GoogleCloudConsoleApi>{ get<Retrofit>(named(GOOGLE_RETROFIT)).create(GoogleCloudConsoleApi::class.java) }
     single <LocationNameApi>{ get<Retrofit>(named(LOCATION_RETROFIT)).create(LocationNameApi::class.java) }
     single <NamesApi>{ get<Retrofit>(named(ALLAH_NAMES_RETROFIT)).create(NamesApi::class.java) }
     single <PrayerTimeApi>{ get<Retrofit>(named(PRAYER_RETROFIT)).create(PrayerTimeApi::class.java) }
-    single <QuranApi>{ get<Retrofit>(named(QURAN_RETROFIT)).create(QuranApi::class.java) }
     single <Islam24BackendApi>{ get<Retrofit>(named(ISLAM24_RETROFIT)).create(Islam24BackendApi::class.java) }
 
+    // Ktor
+
+    single { KtorClient.createHttpClient(tokenStorage = get()) }
 
 
 }

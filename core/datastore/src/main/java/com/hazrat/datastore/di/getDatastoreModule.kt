@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
 import com.hazrat.datastore.AppDataStore
 import com.hazrat.datastore.DataStorePreference
+import com.hazrat.datastore.TokenStorage
 import com.hazrat.datastore.UserDataStore
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -31,5 +33,7 @@ fun getDatastoreModule () : Module = module {
     single { UserDataStore(userDataStore = get(qualifier = named(USER_DATA_SORE))) }
 
     single { DataStorePreference(context = get()) }
+
+    single { TokenStorage(androidContext()) }
 
 }

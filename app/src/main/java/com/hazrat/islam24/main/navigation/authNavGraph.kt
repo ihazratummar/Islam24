@@ -46,6 +46,24 @@ fun NavGraphBuilder.authNavGraph(
                 },
                 onSupportClick = {
                     navController.navigate(SupportIslam24Route)
+                },
+                onAuthClick = {
+                    navController.navigate(Login)
+                }
+            )
+        }
+
+        composable<Login> {
+            com.hazrat.auth.ui.login.LoginScreen(
+                onBackClick = { navController.popBackStack() },
+                onGoogleSignInClick = {
+                    // Google sign-in click handler
+                },
+                onTermsClick = {
+                    navController.navigate(LegalScreenRoute(link = "https://islam24.hazratdev.top/terms", title = "Terms of Service"))
+                },
+                onPrivacyClick = {
+                    navController.navigate(LegalScreenRoute(link = "https://islam24.hazratdev.top/privacy-policy", title = "Privacy Policy"))
                 }
             )
         }

@@ -227,7 +227,7 @@ fun AppSettingScreen(
                             shape = RoundedCornerShape(dimens.cornerXl)
                         )
                         .clickable {
-                            android.widget.Toast.makeText(context, "Coming Soon!", android.widget.Toast.LENGTH_SHORT).show()
+                            onAuthClick()
                         },
                     shape = RoundedCornerShape(dimens.cornerXl),
                     colors = CardDefaults.cardColors(

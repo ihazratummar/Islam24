@@ -29,4 +29,11 @@
     <string name="athkar_evening">Evening Azkar</string>
     <string name="athkar_reset_all">Reset All</string>
     <string name="athkar_completed">completed</string>
+    <string name="login_welcome_back">Welcome Back</string>
+    <string name="login_subtitle">Sign in to sync your prayers, bookmarks, and spiritual journey across all your devices</string>
+    <string name="login_continue_with_google">Continue with Google</string>
+    <string name="login_agree_terms_prefix">By signing in, you agree to our </string>
+    <string name="login_terms_of_service">Terms of Service</string>
+    <string name="login_and"> and </string>
+    <string name="login_privacy_policy">Privacy Policy</string>
 </resources>
