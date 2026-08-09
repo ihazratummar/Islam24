@@ -1,3 +1,11 @@
+## [4.2.0] - 2026-08-09
+- **Support Islam 24**: Support the app with voluntary Sadaqah in your local currency. 100% free with zero ads forever!
+- **Live Supporter Ticker**: See real-time community support updates right on the screen.
+- **Khatam Quran Tracker**: Easily set goals (7 to 180 days) and track your full Quran reading journey.
+- **Faster Account Switch**: Log in or switch accounts smoothly without restarting the app.
+- **Performance & Fixes**: Smoother screens, connection improvements, and overall bug fixes.
+
+
 ## [4.1.0] - 2026-07-28
 
 ### What's New
