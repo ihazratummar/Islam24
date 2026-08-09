@@ -42,7 +42,7 @@ private val LightColorScheme = lightColorScheme(
     onTertiaryContainer = Tertiary30,
 
     // Error
-    error = Error40,
+    error = Error50,
     onError = Neutral99,
 
     errorContainer = Error95,

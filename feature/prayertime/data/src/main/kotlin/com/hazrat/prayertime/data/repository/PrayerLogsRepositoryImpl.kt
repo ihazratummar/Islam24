@@ -29,7 +29,6 @@ class PrayerLogsRepositoryImpl(
 
     override suspend fun logPrayer(date: LocalDate, prayer: Prayer) =
         withContext(Dispatchers.IO) {
-
             val entity = prayerLogMapper.toEntity(date = date, prayer = prayer)
             prayerLogDao.upsertLog(entity = entity)
         }

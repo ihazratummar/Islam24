@@ -56,18 +56,34 @@ fun getDatabaseModule(): Module = module {
             .build()
     }
 
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `supporter_ticker` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`donorName` TEXT NOT NULL, " +
+                    "`type` TEXT NOT NULL, " +
+                    "`amount` REAL, " +
+                    "`currency` TEXT, " +
+                    "`timestamp` INTEGER NOT NULL)"
+        )
+    }
+}
+
     single {
         Room.databaseBuilder(
             androidContext(),
             AppDatabase::class.java,
             "app_database"
         )
+            .addMigrations(MIGRATION_5_6)
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
 
     single<UserSupportStatusDao> { get<AppDatabase>().userSupportStatusDao() }
     single<UserDao> { get<AppDatabase>().userDao() }
+    single<com.hazrat.database.dao.SupporterTickerDao> { get<AppDatabase>().supporterTickerDao() }
 
     single<LocationNameDao> { get<LocationDatabase>().locationNameDao() }
 

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.domain.repository.BillingRepository
 import com.hazrat.domain.repository.NativeSupportPackage
-import com.hazrat.model.profile.SupporterTickerModel
 import com.hazrat.usecase.profile.ListenToSupportTickerUseCase
 import com.hazrat.utils.network.ConnectivityObserver
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,16 +23,20 @@ import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
 
+import com.hazrat.model.profile.SupporterTickerModel
+import com.hazrat.usecase.profile.GetRecentTickersUseCase
 import com.hazrat.usecase.profile.GetSupporterStatusUseCase
+import com.hazrat.usecase.profile.SaveTickerUseCase
 import com.hazrat.usecase.profile.SyncSupporterStatusUseCase
-import com.hazrat.utils.toCurrencySymbol
 
 class SupportViewModel(
     private val billingRepository: BillingRepository? = null,
     private val connectivityObserver: ConnectivityObserver? = null,
     private val listenToSupportTickerUseCase: ListenToSupportTickerUseCase,
+    private val getRecentTickersUseCase: GetRecentTickersUseCase,
     private val getSupporterStatusUseCase: GetSupporterStatusUseCase,
-    private val syncSupporterStatusUseCase: SyncSupporterStatusUseCase? = null
+    private val syncSupporterStatusUseCase: SyncSupporterStatusUseCase? = null,
+    private val saveTickerUseCase: SaveTickerUseCase? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SupportUiState())
@@ -41,9 +44,6 @@ class SupportViewModel(
 
     private val _effect = MutableSharedFlow<SupportEffect>()
     val effect: SharedFlow<SupportEffect> = _effect.asSharedFlow()
-
-    private val _liveTicket = MutableStateFlow<SupporterTickerModel?>(null)
-    val liveTicket: StateFlow<SupporterTickerModel?> = _liveTicket.asStateFlow()
 
     init {
         observeConnectivity()
@@ -54,9 +54,13 @@ class SupportViewModel(
 
         viewModelScope.launch {
             listenToSupportTickerUseCase().collectLatest { ticker ->
-                _liveTicket.value = ticker
-                val type = if (ticker.type == "TIP") "Tip" else "Sub"
-                _effect.emit(SupportEffect.Success("${ticker.donorName} $type ${ticker.currency?.toCurrencySymbol()}${ticker.amount}"))
+                _uiState.update { it.copy(liveTicket = ticker) }
+            }
+        }
+
+        viewModelScope.launch {
+            getRecentTickersUseCase().collectLatest { tickers ->
+                _uiState.update { it.copy(recentTickers = tickers) }
             }
         }
     }
@@ -67,7 +71,7 @@ class SupportViewModel(
             getSupporterStatusUseCase.invoke().collectLatest { statusModel ->
                 _uiState.update {
                     it.copy(
-                        userSupportViewModel = statusModel
+                        userSupportModel = statusModel
                     )
                 }
             }
@@ -271,11 +275,33 @@ class SupportViewModel(
                         val result =
                             billingRepository.purchasePackage(event.activity, nativePackage)
                         result.onSuccess {
-                            Toast.makeText(
-                                event.activity,
-                                "JazakAllah Khair for your support!",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            val isSubscription = currentTab == SupportTab.MONTHLY
+                            val donorName = "You (Supporter)"
+
+                            val newTicker = SupporterTickerModel(
+                                eventId = System.currentTimeMillis().toString(),
+                                donorName = donorName,
+                                type = if (isSubscription) "SUBSCRIPTION" else "TIP",
+                                amount = nativePackage.rawPriceMicros / 1_000_000.0,
+                                currency = nativePackage.currencyCode
+                            )
+
+                            // Save to Room database so it immediately updates recent tickers carousel
+                            saveTickerUseCase?.invoke(newTicker)
+
+                            _uiState.update { currentState ->
+                                if (isSubscription) {
+                                    currentState.copy(
+                                        showSubscriptionSuccessDialog = true,
+                                        liveTicket = newTicker
+                                    )
+                                } else {
+                                    currentState.copy(
+                                        showTipSuccessDialog = true,
+                                        liveTicket = newTicker
+                                    )
+                                }
+                            }
                         }.onFailure { error ->
                             val msg = error.message.orEmpty()
                             if (!msg.contains("cancelled", ignoreCase = true)) {
@@ -291,8 +317,47 @@ class SupportViewModel(
 
             SupportUiEvent.RestorePurchases -> {
                 viewModelScope.launch {
-                    billingRepository?.restorePurchases()
+                    _uiState.update { it.copy(isPurchasing = true) }
+                    val result = billingRepository?.restorePurchases()
+                    _uiState.update { it.copy(isPurchasing = false) }
+
+                    if (result != null) {
+                        result.onSuccess { info ->
+                            val hasPurchases = info.isMonthlySupporter || info.totalSupportedUSD > 0.0 || info.activeSubscriptionId != null
+                            val message = if (hasPurchases) {
+                                if (info.isMonthlySupporter) "Purchases restored successfully! Monthly Patron active."
+                                else "Purchases restored successfully!"
+                            } else {
+                                "No active purchases or subscriptions found to restore."
+                            }
+
+                            if (hasPurchases) {
+                                _effect.emit(SupportEffect.Success(message))
+                            } else {
+                                _effect.emit(SupportEffect.Error(message))
+                            }
+                        }.onFailure { error ->
+                            val msg = error.message ?: "Failed to restore purchases"
+                            _effect.emit(SupportEffect.Error(msg))
+                        }
+                    } else {
+                        _effect.emit(SupportEffect.Error("Billing service unavailable"))
+                    }
                 }
+            }
+
+            SupportUiEvent.DismissSuccessDialog -> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        showSubscriptionSuccessDialog = false,
+                        showTipSuccessDialog = false
+                    )
+                }
+            }
+
+            SupportUiEvent.Refresh -> {
+                loadNativeOfferings()
+                loadUserSubStatsFromDb()
             }
         }
     }

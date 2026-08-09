@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
-import org.koin.core.scope.get
 import org.koin.dsl.module
 
 /**
@@ -43,13 +42,11 @@ fun getAuthDataModule(): Module = module {
     single { CredentialManager.create(androidContext()) }
     single<AuthRepository> {
         AuthRepositoryImpl(
-            context = androidContext(),
             credentialManager = get(),
             authApiCall = get(),
             tokenStorage = get(),
             profileApi = get(),
-            profileRepository = get(),
-            userSupportStatusDao = get()
+            profileRepository = get()
         )
     }
 
@@ -58,7 +55,8 @@ fun getAuthDataModule(): Module = module {
             dao = get(),
             webSocketApi = get(),
             profileApi = get(),
-            userSupportStatusDao = get()
+            userSupportStatusDao = get(),
+            supporterTickerDao = get()
         )
     }
 }

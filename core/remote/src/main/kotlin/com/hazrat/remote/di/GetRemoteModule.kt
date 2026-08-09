@@ -43,5 +43,5 @@ fun getRemoteModule(): Module = module {
 
     single <AuthApiCall>{ AuthApiImple(httpClient = get(named(CUSTOM_BACKEND))) }
     single <ProfileApi>{ ProfileApiImpl(httpClient = get(named(CUSTOM_BACKEND))) }
-    single <SupporterWebSocketApi>{ SupporterWebSocketApiImpl(httpClient = get(named(CUSTOM_BACKEND))) }
+    single <SupporterWebSocketApi>{ SupporterWebSocketApiImpl() }
 }

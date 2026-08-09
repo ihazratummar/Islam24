@@ -105,10 +105,10 @@ fun NavGraphBuilder.authNavGraph(
             val viewModel = koinViewModel<SupportViewModel>()
             val state by viewModel.uiState.collectAsStateWithLifecycle()
             SupportIslam24Screen(
-                viewModel = viewModel,
                 onBackClick = { navController.popBackStack() },
                 supportEffect = viewModel.effect,
-                uiState = state
+                uiState = state,
+                onEvent = viewModel::onEvent
             )
         }
     }

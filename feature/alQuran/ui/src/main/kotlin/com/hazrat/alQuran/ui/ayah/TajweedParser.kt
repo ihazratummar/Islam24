@@ -85,13 +85,79 @@ private val TAJWEED_BRACKET_REGEX =
     """\[([a-z])(?::?\d*)\[([^\]]*)\]""".toRegex()
 
 /**
- * Strips U+06DF (Small High Rounded Zero) and converts sukun to comma-sukun.
+ * Strips Tatweel (U+0640), Small High Rounded Zero (U+06DF), and converts sukun for Uthmani scripts.
+ * Works with uthamnic_new.otf font.
  */
 fun String.cleanUthmanic(): String {
     return this
+        .replace("\u0640", "")       // Remove Tatweel (kashida U+0640)
+        .replace("\u25CC", "")       // Remove Dotted Circle (U+25CC)
         .replace("\u06DF", "")       // Remove Small High Rounded Zero
         .replace('\u0652', '\u06e1') // Convert standard round sukun to comma sukun
         .replace("\uFEFF", "")       // Remove BOM
+}
+
+/**
+ * Transforms Madani Uthmani Rasm into authentic IndoPak orthography:
+ * 1. Converts Alef Wasla (U+0671 ٱ) -> Plain Alef (U+0627 ا)
+ * 2. Converts Medina Head-of-Khah Sukun (U+06E1 ۡ) -> Round Sukun/Jazm (U+0652 ْ)
+ * 3. Converts Dagger Alef (U+0670 ٰ) to Full Alef (U+0627 ا) for IndoPak Rasm words:
+ *    - صِرَٰطَ -> صِرَاطَ
+ *    - مَٰلِكِ -> مَالِكِ
+ *    - كِتَٰبُ -> كِتَابُ
+ *    - عَالَمِينَ -> عَالَمِينَ
+ * 4. Removes small floating symbols (U+06E5 ۥ, U+06E6 ۦ, U+06DF ۟, U+06E0 ۠, U+FEFF, U+0640)
+ */
+fun String.cleanIndoPak(): String {
+    var text = this
+        .replace('\u0671', '\u0627') // Alef Wasla (ٱ) -> Plain Alef (ا)
+        .replace('\u06E1', '\u0652') // Medina sukun (ۡ) -> Round Sukun (ْ)
+        .replace("\u0640", "")       // Tatweel
+        .replace("\u06DF", "")       // Small High Rounded Zero
+        .replace("\u06E0", "")       // Small High Upright Rectangular Zero
+        .replace("\u06E5", "")       // Small High Waw
+        .replace("\u06E6", "")       // Small High Yeh
+        .replace("\uFEFF", "")       // BOM
+
+    // Protect words that keep Dagger Alef in IndoPak orthography
+    val protectedRahman = "__RAHMAN__"
+    val protectedAllah = "__ALLAH__"
+    val protectedIlah = "__ILAH__"
+
+    text = text
+        .replace("الرَّحْمَٰنِ", protectedRahman)
+        .replace("الرَّحْمٰنِ", protectedRahman)
+        .replace("اللَّٰهِ", protectedAllah)
+        .replace("اللّٰهِ", protectedAllah)
+        .replace("إِلَٰهَ", protectedIlah)
+        .replace("إِلٰهَ", protectedIlah)
+
+    // Convert Dagger Alef to Full Alef for IndoPak script (e.g. صِرَاطَ, مَالِكِ, الْكِتَابُ, عَالَمِينَ)
+    text = text.replace("""([ابتثجحخدذرزسشصضطظعغفقكلمنهوي])\u064E?\u0670""".toRegex(), "$1َا")
+
+    // Restore protected words with authentic IndoPak Dagger Alef
+    text = text
+        .replace(protectedRahman, "الرَّحْمٰنِ")
+        .replace(protectedAllah, "اللّٰهِ")
+        .replace(protectedIlah, "إِلٰهَ")
+
+    return text
+}
+
+/**
+ * Formats Quranic text for specific font orthographies.
+ */
+fun String.formatForFont(fontType: String): String {
+    return if (fontType == "INDOPAK") this.cleanIndoPak() else this.cleanUthmanic()
+}
+
+/**
+ * Strips all tajweed bracket markup [x:12[text]] and returns clean text.
+ */
+fun String.stripTajweedMarkup(): String {
+    return TAJWEED_BRACKET_REGEX.replace(this) { match ->
+        match.groupValues[2]
+    }
 }
 
 /**
@@ -99,13 +165,21 @@ fun String.cleanUthmanic(): String {
  * with colored spans for each tajweed rule.
  *
  * Input:  "بِسْمِ [h:1[ٱ]للَّهِ"
- * Output: AnnotatedString with gray color on "ٱ"
+ * Output: AnnotatedString with gray color on "ٱ" or "ا" based on fontType.
+ * If enableTajweedColor is false, returns plain uncolored text formatted for fontType.
  */
 fun parseTajweedHtml(
     input: String,
-    defaultColor: Color
+    defaultColor: Color,
+    fontType: String = "SCHEHERAZADE",
+    enableTajweedColor: Boolean = true
 ): AnnotatedString {
     if (input.isBlank()) return AnnotatedString("")
+
+    if (!enableTajweedColor) {
+        val plainCleanText = input.stripTajweedMarkup().formatForFont(fontType)
+        return AnnotatedString(plainCleanText)
+    }
 
     data class Segment(val text: String, val color: Color)
 
@@ -115,7 +189,7 @@ fun parseTajweedHtml(
     TAJWEED_BRACKET_REGEX.findAll(input).forEach { match ->
         // Plain text before this tajweed bracket
         if (match.range.first > lastIndex) {
-            val plainText = input.substring(lastIndex, match.range.first).cleanUthmanic()
+            val plainText = input.substring(lastIndex, match.range.first).formatForFont(fontType)
             if (plainText.isNotEmpty()) {
                 segments.add(Segment(plainText, defaultColor))
             }
@@ -123,7 +197,7 @@ fun parseTajweedHtml(
 
         // Tajweed-colored text
         val identifier = match.groupValues[1]
-        val content = match.groupValues[2].cleanUthmanic()
+        val content = match.groupValues[2].formatForFont(fontType)
         val color = TajweedColors.getColor(identifier) ?: defaultColor
 
         if (content.isNotEmpty()) {
@@ -135,7 +209,7 @@ fun parseTajweedHtml(
 
     // Remaining plain text after the last tajweed bracket
     if (lastIndex < input.length) {
-        val remaining = input.substring(lastIndex).cleanUthmanic()
+        val remaining = input.substring(lastIndex).formatForFont(fontType)
         if (remaining.isNotEmpty()) {
             segments.add(Segment(remaining, defaultColor))
         }

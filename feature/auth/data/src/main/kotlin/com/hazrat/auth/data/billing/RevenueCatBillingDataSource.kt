@@ -80,6 +80,21 @@ class RevenueCatBillingDataSource(
     }
 
     /**
+     * Explicitly refreshes customer info from RevenueCat / Google Play.
+     */
+    fun refreshCustomerInfo() {
+        if (!Purchases.isConfigured) return
+        Purchases.sharedInstance.getCustomerInfo(object : ReceiveCustomerInfoCallback {
+            override fun onReceived(customerInfo: CustomerInfo) {
+                Log.d(TAG, "Customer info refreshed. Active subscriptions: ${customerInfo.activeSubscriptions}")
+            }
+            override fun onError(error: PurchasesError) {
+                Log.e(TAG, "Error refreshing customer info: ${error.message}")
+            }
+        })
+    }
+
+    /**
      * Fetches current offerings from RevenueCat & Google Play Store.
      */
     suspend fun getOfferings(): Offerings = suspendCancellableCoroutine { continuation ->

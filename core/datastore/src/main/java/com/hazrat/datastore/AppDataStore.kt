@@ -6,6 +6,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -15,7 +17,7 @@ import kotlinx.coroutines.flow.map
  * Created on 22-01-2025
  */
 
-class AppDataStore (
+class AppDataStore(
     private val appDataStore: DataStore<Preferences>
 ) {
 
@@ -25,6 +27,9 @@ class AppDataStore (
         const val HAPTIC_CONST = "HAPTIC_KEY"
         const val LAST_SEEN_VERSION_CONST = "LAST_SEEN_VERSION_KEY"
         const val TASBIH_TARGET_CONST = "TASBIH_TARGET_KEY"
+        const val QURAN_FONT_CONST = "QURAN_FONT_KEY"
+        const val QURAN_FONT_SIZE_CONST = "QURAN_FONT_SIZE_KEY"
+        const val QURAN_SHOW_TRANSLATION_CONST = "QURAN_SHOW_TRANSLATION_KEY"
 
         /*
        ******************--------------------------*************************
@@ -32,8 +37,11 @@ class AppDataStore (
         //Theme
         val themeKey = booleanPreferencesKey(THEME_CONST)
         val hapticKey = booleanPreferencesKey(HAPTIC_CONST)
-        val lastSeenVersionKey = androidx.datastore.preferences.core.intPreferencesKey(LAST_SEEN_VERSION_CONST)
-        val tasbihTargetKey = androidx.datastore.preferences.core.intPreferencesKey(TASBIH_TARGET_CONST)
+        val lastSeenVersionKey = intPreferencesKey(LAST_SEEN_VERSION_CONST)
+        val tasbihTargetKey = intPreferencesKey(TASBIH_TARGET_CONST)
+        val quranFontKey = stringPreferencesKey(QURAN_FONT_CONST)
+        val quranFontSizeKey = intPreferencesKey(QURAN_FONT_SIZE_CONST)
+        val quranShowTranslationKey = booleanPreferencesKey(QURAN_SHOW_TRANSLATION_CONST)
     }
 
     private val systemTheme =
@@ -52,7 +60,7 @@ class AppDataStore (
         }
 
     suspend fun enableDarkTheme(enable: Boolean) {
-        appDataStore.edit {preference ->
+        appDataStore.edit { preference ->
             preference[DataStoreKeys.themeKey] = enable
         }
     }
@@ -68,7 +76,7 @@ class AppDataStore (
     }
 
     suspend fun enableHaptic(enable: Boolean) {
-        appDataStore.edit {preference ->
+        appDataStore.edit { preference ->
             preference[DataStoreKeys.hapticKey] = enable
         }
     }
@@ -105,5 +113,33 @@ class AppDataStore (
         preference[DataStoreKeys.tasbihTargetKey] ?: 33
     }
 
+    suspend fun saveQuranFont(fontName: String) {
+        appDataStore.edit { preference ->
+            preference[DataStoreKeys.quranFontKey] = fontName
+        }
+    }
 
+    val quranFont: Flow<String> = appDataStore.data.map { preference ->
+        preference[DataStoreKeys.quranFontKey] ?: "SCHEHERAZADE"
+    }
+
+    suspend fun saveQuranFontSize(size: Int) {
+        appDataStore.edit { preference ->
+            preference[DataStoreKeys.quranFontSizeKey] = size
+        }
+    }
+
+    val quranFontSize: Flow<Int> = appDataStore.data.map { preference ->
+        preference[DataStoreKeys.quranFontSizeKey] ?: 30
+    }
+
+    suspend fun saveQuranShowTranslation(show: Boolean) {
+        appDataStore.edit { preference ->
+            preference[DataStoreKeys.quranShowTranslationKey] = show
+        }
+    }
+
+    val quranShowTranslation: Flow<Boolean> = appDataStore.data.map { preference ->
+        preference[DataStoreKeys.quranShowTranslationKey] ?: true
+    }
 }

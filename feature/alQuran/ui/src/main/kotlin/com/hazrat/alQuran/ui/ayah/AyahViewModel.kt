@@ -32,6 +32,7 @@ class AyahViewModel(
     private val saveRecentSurahUseCase: SaveRecentSurahUseCase,
     private val deleteRecentSurahUseCase: DeleteRecentSurahUseCase,
     private val dataStorePreference: DataStorePreference? = null,
+    private val appDataStore: com.hazrat.datastore.AppDataStore? = null,
     private val controlQuranAudioUseCase: ControlQuranAudioUseCase? = null,
     private val toggleAyahBookmarkUseCase: com.hazrat.usecase.quran.ToggleAyahBookmarkUseCase? = null,
     private val updateKhatamProgressUseCase: com.hazrat.usecase.khatam.UpdateKhatamProgressUseCase? = null
@@ -47,6 +48,26 @@ class AyahViewModel(
     init {
         loadAyah(surahNumber)
         observeBackgroundAudioService()
+        observeQuranPreferences()
+    }
+
+    private fun observeQuranPreferences() {
+        val prefs = appDataStore ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            prefs.quranFont.collectLatest { font ->
+                _state.update { it.copy(selectedFont = font) }
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            prefs.quranFontSize.collectLatest { size ->
+                _state.update { it.copy(fontSize = size) }
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            prefs.quranShowTranslation.collectLatest { show ->
+                _state.update { it.copy(showTranslation = show) }
+            }
+        }
     }
 
     private fun loadAyah(targetSurahNumber: Int = currentSurahNumber) {
@@ -114,6 +135,45 @@ class AyahViewModel(
             is AyahUiEvent.OnPlayPreviousAyah -> playPreviousAyah()
             is AyahUiEvent.OnSpeedChange -> setPlaybackSpeed(event.speed)
             is AyahUiEvent.OnSurahPageChanged -> loadAyah(event.surahNumber)
+            is AyahUiEvent.OnToggleSettingsMenu -> {
+                _state.update { it.copy(isSettingsMenuOpen = !it.isSettingsMenuOpen) }
+            }
+            is AyahUiEvent.OnFontSelected -> setQuranFont(event.fontName)
+            is AyahUiEvent.OnFontSizeChanged -> setQuranFontSize(event.size)
+            is AyahUiEvent.OnToggleTranslation -> setQuranShowTranslation(event.show)
+        }
+    }
+
+    private fun setQuranFont(fontName: String) {
+        // 1. Instant real-time UI update (0ms lag)
+        _state.update { it.copy(selectedFont = fontName) }
+        // 2. Asynchronous DataStore save
+        appDataStore?.let { prefs ->
+            viewModelScope.launch(Dispatchers.IO) {
+                prefs.saveQuranFont(fontName)
+            }
+        }
+    }
+
+    private fun setQuranFontSize(size: Int) {
+        // 1. Instant real-time UI update (0ms lag)
+        _state.update { it.copy(fontSize = size) }
+        // 2. Asynchronous DataStore save
+        appDataStore?.let { prefs ->
+            viewModelScope.launch(Dispatchers.IO) {
+                prefs.saveQuranFontSize(size)
+            }
+        }
+    }
+
+    private fun setQuranShowTranslation(show: Boolean) {
+        // 1. Instant real-time UI update (0ms lag)
+        _state.update { it.copy(showTranslation = show) }
+        // 2. Asynchronous DataStore save
+        appDataStore?.let { prefs ->
+            viewModelScope.launch(Dispatchers.IO) {
+                prefs.saveQuranShowTranslation(show)
+            }
         }
     }
 

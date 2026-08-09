@@ -22,7 +22,7 @@ val WarningContainer = Color(0xFFFEF3C7)
 val Info = Primary60
 val InfoContainer = Primary95
 
-val Danger = Error40
+val Danger = Error50
 val DangerContainer = Error95
 
 

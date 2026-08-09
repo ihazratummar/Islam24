@@ -23,11 +23,15 @@ class BillingRepositoryImpl(
     private val cachedRcPackages = mutableMapOf<String, Package>()
 
     override fun observeCustomerSupportInfo(): Flow<CustomerSupportInfo> {
+        revenueCatBillingDataSource.refreshCustomerInfo()
         return combine(
             revenueCatBillingDataSource.observeCustomerInfo(),
             userDataStore.totalSupportedAmountUSD
         ) { customerInfo, localTotalUSD ->
-            val isMonthly = customerInfo.entitlements["monthly_supporter"]?.isActive == true
+            val isMonthly = customerInfo.entitlements["monthly_supporter"]?.isActive == true ||
+                    customerInfo.entitlements.active.isNotEmpty() ||
+                    customerInfo.activeSubscriptions.isNotEmpty()
+
             // Save to DataStore automatically whenever RevenueCat status updates
             userDataStore.setIsSubscribed(isMonthly)
 
@@ -35,6 +39,7 @@ class BillingRepositoryImpl(
                 totalSupportedUSD = localTotalUSD,
                 isMonthlySupporter = isMonthly,
                 activeSubscriptionId = customerInfo.entitlements["monthly_supporter"]?.productIdentifier
+                    ?: customerInfo.activeSubscriptions.firstOrNull()
             )
         }
     }
@@ -129,18 +134,26 @@ class BillingRepositoryImpl(
         return try {
             val customerInfo = revenueCatBillingDataSource.restorePurchases()
             val isMonthly = customerInfo.entitlements["monthly_supporter"]?.isActive == true
+                    || customerInfo.entitlements.active.isNotEmpty()
+                    || customerInfo.activeSubscriptions.isNotEmpty()
+
             userDataStore.setIsSubscribed(isMonthly)
 
-            val totalFromTransactions = customerInfo.nonSubscriptionTransactions.size * 2.99
+            val totalFromTransactions = (customerInfo.nonSubscriptionTransactions.size * 2.99)
+                .coerceAtLeast(if (isMonthly) 9.99 else 0.0)
+
             if (totalFromTransactions > 0.0) {
                 userDataStore.setTotalSupportedAmountUSD(totalFromTransactions)
             }
+
+            val activeSubId = customerInfo.entitlements["monthly_supporter"]?.productIdentifier
+                ?: customerInfo.activeSubscriptions.firstOrNull()
 
             Result.success(
                 CustomerSupportInfo(
                     totalSupportedUSD = totalFromTransactions,
                     isMonthlySupporter = isMonthly,
-                    activeSubscriptionId = customerInfo.entitlements["monthly_supporter"]?.productIdentifier
+                    activeSubscriptionId = activeSubId
                 )
             )
         } catch (e: Exception) {

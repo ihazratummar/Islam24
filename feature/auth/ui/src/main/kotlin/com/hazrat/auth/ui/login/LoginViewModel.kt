@@ -19,40 +19,49 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.AuthError
+
 /**
  * @author hazratummar
  * Created on 06/08/26
  */
-
 class LoginViewModel(
     private val googleSignInUseCase: GoogleSignInUseCase,
-
 ) : ViewModel() {
-
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
 
-
     private val _effect = MutableSharedFlow<LoginEffect>()
     val effect: SharedFlow<LoginEffect> = _effect.asSharedFlow()
-
 
     fun event(event: LoginEvent) {
         when (event) {
             is LoginEvent.GoogleSignInClick -> {
-                _state.update { it.copy(isLoading = true) }
                 viewModelScope.launch {
-                    val isLogin = googleSignInUseCase(context = event.context)
-                    if (isLogin) {
-                        _effect.emit(LoginEffect.NavigateBack)
-                    } else {
-                        _effect.emit(LoginEffect.Error("Failed to login"))
+                    _state.update { it.copy(isLoading = true) }
+                    try {
+                        when (val result = googleSignInUseCase(context = event.context)) {
+                            is Result.Success -> {
+                                _effect.emit(LoginEffect.NavigateBack)
+                            }
+                            is Result.Error -> {
+                                val errorMessage = when (result.error) {
+                                    AuthError.NO_INTERNET -> "No internet connection. Please check your network."
+                                    AuthError.INVALID_CREDENTIALS -> "Invalid credentials. Please try again."
+                                    else -> "Failed to login. Please try again."
+                                }
+                                _effect.emit(LoginEffect.Error(errorMessage))
+                            }
+                        }
+                    } catch (e: Exception) {
+                        _effect.emit(LoginEffect.Error(e.message ?: "An unexpected error occurred"))
+                    } finally {
+                        _state.update { it.copy(isLoading = false) }
                     }
-                    _state.update { it.copy(isLoading = false) }
                 }
             }
         }
     }
-
 }

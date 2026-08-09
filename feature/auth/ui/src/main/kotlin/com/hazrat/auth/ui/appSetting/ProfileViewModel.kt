@@ -15,6 +15,8 @@ import com.hazrat.domain.repository.QuranRepository
 import com.hazrat.usecase.profile.GetProfileDataUseCase
 import com.hazrat.usecase.profile.IsLoggedInUseCase
 import com.hazrat.usecase.profile.SignOutUseCase
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.AuthError
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -103,6 +105,15 @@ class ProfileViewModel(
         }
 
         loadUser()
+        loginState()
+    }
+
+    private fun loginState(){
+        viewModelScope.launch {
+            isLoggedInUseCase().collectLatest { login->
+                _state.update { it.copy(isLoggedIn = login) }
+            }
+        }
     }
 
     fun loadUser() {
@@ -205,11 +216,24 @@ class ProfileViewModel(
             AppSettingEvent.LogOut -> {
                 viewModelScope.launch {
                     _state.update { it.copy(isLoading = true) }
-                    val logout = logoutUseCase.invoke()
-                    if (!logout){
-                        _effect.emit(ProfileEffect.Error("Failed to Logout"))
+                    try {
+                        when (val result = logoutUseCase()) {
+                            is Result.Success -> {
+                                // Successful logout updates login status which resets navigation
+                            }
+                            is Result.Error -> {
+                                val errorMessage = when (result.error) {
+                                    AuthError.NO_INTERNET -> "No internet connection. Local session cleared."
+                                    else -> "Logout failed on server, local session cleared."
+                                }
+                                _effect.emit(ProfileEffect.Error(errorMessage))
+                            }
+                        }
+                    } catch (e: Exception) {
+                        _effect.emit(ProfileEffect.Error(e.message ?: "An unexpected error occurred during logout"))
+                    } finally {
+                        _state.update { it.copy(isLoading = false) }
                     }
-                    _state.update { it.copy(isLoading = false) }
                 }
             }
         }

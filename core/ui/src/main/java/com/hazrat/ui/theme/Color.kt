@@ -176,7 +176,7 @@ val DarkCustomColors = CustomColors(
     ishaGradient = IshaGradient,
     logoBackground = Color(0xFF113736),
     homeCardGradient = listOf(Color(0xFF0C4F52), Color(0xFF0F5B5B), Color(0xFF1F6359)),
-    secondCardColor = Color(0xFF142428),
+    secondCardColor = Color(0xFF0e1c1f),
     ayahScreenBackground = Color(0xFF272727)
 )
 

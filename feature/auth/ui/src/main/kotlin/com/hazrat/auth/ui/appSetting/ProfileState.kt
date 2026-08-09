@@ -4,6 +4,7 @@ import com.hazrat.model.profile.UserModel
 
 data class ProfileState(
     val isLoading: Boolean = false,
+    val isLoggedIn: Boolean = false,
     val isHapticFeedbackEnabled: Boolean = false,
     val toggleTheme: Boolean = false,
     val isRatingDialogOpen: Boolean = false,

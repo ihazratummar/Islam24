@@ -35,14 +35,9 @@ val ScheherazadeFontFamily = FontFamily(
 )
 val UthmanicHafs = FontFamily(Font(R.font.uthman_hafs, FontWeight.Normal))
 val UthmanicNew = FontFamily(Font(R.font.uthamnic_new, FontWeight.Normal))
-val KitabFont = FontFamily(Font(R.font.kitab, FontWeight.Normal))
+val IndoPakFontFamily = FontFamily(Font(R.font.indopak, FontWeight.Normal))
 
 
-val NotoNaskhFontFamily = FontFamily(
-    Font(R.font.noto_naskh_arabic_regular, FontWeight.Normal),
-    Font(R.font.noto_naskh_arabic_medium, FontWeight.Medium),
-    Font(R.font.noto_naskh_arabic_bold, FontWeight.Bold)
-)
 
 // Material 3 Typography Mapping from DESIGN_SPEC.md
 val CompactTypography = Typography(

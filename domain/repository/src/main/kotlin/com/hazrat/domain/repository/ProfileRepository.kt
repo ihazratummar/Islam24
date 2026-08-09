@@ -6,6 +6,9 @@ import com.hazrat.model.profile.SupporterTickerModel
 import com.hazrat.model.profile.UserModel
 import kotlinx.coroutines.flow.Flow
 
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.AppError
+
 /**
  * Clean Domain Repository interface for User Profile & Support status.
  * @author Hazrat Ummar Shaikh
@@ -18,7 +21,11 @@ interface ProfileRepository {
 
     fun listenToSupporterUpdate(): Flow<SupporterTickerModel>
 
-    suspend fun insertSupporterStatus()
+    fun getRecentTickers(): Flow<List<SupporterTickerModel>>
+
+    suspend fun saveTicker(ticker: SupporterTickerModel)
+
+    suspend fun insertSupporterStatus(): Result<Unit, AppError>
 
     fun getSupporterStatus(): Flow<SupporterStatusModel?>
 

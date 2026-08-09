@@ -1,13 +1,8 @@
 package com.hazrat.auth.ui.support
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -37,7 +31,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,55 +43,83 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.material3.TextButton
+import com.hazrat.auth.ui.support.components.ActiveSubscriberCard
+import com.hazrat.auth.ui.support.components.FaqAccordionRow
+import com.hazrat.auth.ui.support.components.OfflineWarningBanner
+import com.hazrat.auth.ui.support.components.RecentSupportersSection
+import com.hazrat.auth.ui.support.components.SubscriptionTierCard
+import com.hazrat.auth.ui.support.components.SupportLiveTickerOverlay
+import com.hazrat.auth.ui.support.components.SupportMetricsCard
+import com.hazrat.auth.ui.support.components.SupportSuccessDialog
+import com.hazrat.auth.ui.support.components.SupportTabSelector
+import com.hazrat.auth.ui.support.components.TipTierCard
+import com.hazrat.model.profile.SupporterTickerModel
 import com.hazrat.ui.R
 import com.hazrat.ui.common.BasicTopBar
+import com.hazrat.ui.common.IslamicLoadingOverlay
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
-import com.hazrat.utils.toCurrencySymbol
+import com.hazrat.ui.theme.isUserSubscribed
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.collect
-import java.text.NumberFormat
-import java.util.Locale
+import java.text.SimpleDateFormat
+import java.util.Date
+import kotlin.time.Duration.Companion.milliseconds
+import androidx.compose.ui.platform.LocalLocale
+import androidx.core.net.toUri
 
 /**
- * Support Islam 24 Screen — Pure Voluntary Sadaqah & Tipping Engine.
+ * Clean, modular Support Islam 24 screen composable.
+ * @author Hazrat Ummar Shaikh
  */
+
 @Composable
 fun SupportIslam24Screen(
-    viewModel: SupportViewModel,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    supportEffect: SharedFlow<SupportEffect>?,
-    uiState: SupportUiState
+    onBackClick: () -> Unit,
+    uiState: SupportUiState,
+    onEvent: (SupportUiEvent) -> Unit,
+    supportEffect: SharedFlow<SupportEffect>? = null
 ) {
     val context = LocalContext.current
     val snackbarState = remember { SnackbarHostState() }
-    val userSupportStats = uiState.userSupportViewModel
+    val isSubscribed = isUserSubscribed
+
+    var visibleTicker by remember { mutableStateOf<SupporterTickerModel?>(null) }
+    val liveTicket = uiState.liveTicket
+
+    LaunchedEffect(liveTicket) {
+        if (liveTicket != null) {
+            visibleTicker = liveTicket
+            delay(4000.milliseconds)
+            visibleTicker = null
+        }
+    }
+
+    LaunchedEffect(isSubscribed) {
+        if (isSubscribed) {
+            onEvent(SupportUiEvent.SelectTab(SupportTab.ONE_TIME))
+        }
+    }
 
     LaunchedEffect(Unit) {
         supportEffect?.collect { effect ->
             when (effect) {
                 is SupportEffect.Error -> {
-                    snackbarState.showSnackbar(
-                        message = effect.message
-                    )
-                }
-
-                SupportEffect.NavigateBack -> {
-                    onBackClick()
+                    snackbarState.showSnackbar(effect.message)
                 }
 
                 is SupportEffect.Success -> {
-                    snackbarState.showSnackbar(
-                        message = effect.message,
-                        withDismissAction = true
-                    )
+                    snackbarState.showSnackbar(effect.message)
+                }
+
+                is SupportEffect.NavigateBack -> {
+                    onBackClick()
                 }
             }
         }
     }
-
 
     val faqList = listOf(
         FaqItem(R.string.support_faq_q1, R.string.support_faq_a1),
@@ -106,869 +130,410 @@ fun SupportIslam24Screen(
         FaqItem(R.string.support_faq_q6, R.string.support_faq_a6)
     )
 
+    val headerTitle = if (isSubscribed) "You're Part of the Family" else stringResource(R.string.support_every_feature_free)
+    val headerSubtitle = if (isSubscribed) "Your monthly gift keeps Islam 24 alive for the entire Ummah. Every prayer, every dhikr — you are part of it." else stringResource(R.string.support_subtitle)
+    val headerTagline = if (isSubscribed) "May Allah multiply your reward in both worlds." else stringResource(R.string.support_sadaqah_tagline)
+
+    val activeSubPackage = uiState.nativePackages.find { pkg ->
+        SubscriptionTier.entries.any { tier ->
+            pkg.productId.contains(tier.productId, ignoreCase = true) ||
+                    pkg.packageId.contains(tier.productId, ignoreCase = true)
+        }
+    }
+    val activeSubscriberDisplayPrice = activeSubPackage?.formattedPrice?.let { "$it/month" } ?: "$9.99/month"
+
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarState) },
         topBar = {
             BasicTopBar(
                 topBarTitle = stringResource(R.string.support_title),
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                actions = {
+                    TextButton(
+                        onClick = { onEvent(SupportUiEvent.RestorePurchases) }
+                    ) {
+                        Text(
+                            text = "Restore",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
             )
         },
         containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(horizontal = dimens.space16, vertical = dimens.space12),
-            verticalArrangement = Arrangement.spacedBy(dimens.space16)
-        ) {
-            // Offline Connection Warning Banner
-            if (uiState.isOffline) {
-                item {
-                    OfflineWarningBanner()
-                }
-            }
-
-            // Header Emblem & Inspirational Tagline
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(dimens.space12)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(dimens.iconXl * 1.8f)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.heart),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(dimens.iconLg)
-                        )
-                    }
-
-                    Text(
-                        text = stringResource(R.string.support_every_feature_free),
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(dimens.space8)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .width(dimens.space32)
-                                .height(dimens.divider)
-                                .background(customColors.secondaryText.copy(alpha = 0.3f))
-                        )
-                        Text(
-                            text = "◆",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Box(
-                            modifier = Modifier
-                                .width(dimens.space32)
-                                .height(dimens.divider)
-                                .background(customColors.secondaryText.copy(alpha = 0.3f))
-                        )
-                    }
-
-                    Text(
-                        text = stringResource(R.string.support_subtitle),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = customColors.secondaryText,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = dimens.space16)
-                    )
-
-                    Text(
-                        text = stringResource(R.string.support_sadaqah_tagline),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = customColors.secondaryText.copy(alpha = 0.8f),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = dimens.space16)
-                    )
-                }
-            }
-
-            // Metrics Summary Container
-            item {
-                SupportMetricsCard(
-                    supportersCount = userSupportStats?.totalSupporter ?: 0,
-                    formattedSupportedTotal = "${userSupportStats?.localCurrency?.toCurrencySymbol()}${userSupportStats?.totalContributionLocal}"
-                )
-            }
-
-            // Tab Selector (One-Time Tip vs Monthly Support)
-            item {
-                SupportTabSelector(
-                    selectedTab = uiState.selectedTab,
-                    onTabSelected = { viewModel.onEvent(SupportUiEvent.SelectTab(it)) }
-                )
-            }
-
-            // Tier Options List
-            if (uiState.selectedTab == SupportTab.ONE_TIME) {
-                itemsIndexed(items = TipTier.entries) { index, tier ->
-                    val nativePkg = uiState.nativePackages.find { pkg ->
-                        pkg.productId.equals(tier.productId, ignoreCase = true) ||
-                                pkg.packageId.equals(tier.name.lowercase(), ignoreCase = true) ||
-                                pkg.productId.contains(tier.productId, ignoreCase = true) ||
-                                tier.productId.contains(pkg.productId, ignoreCase = true)
-                    } ?: uiState.nativePackages.getOrNull(index)
-
-                    val displayPrice = nativePkg?.formattedPrice ?: tier.defaultPriceText
-
-                    TipTierCard(
-                        tier = tier,
-                        displayPrice = displayPrice,
-                        isSelected = uiState.selectedTipTier == tier,
-                        onClick = { viewModel.onEvent(SupportUiEvent.SelectTipTier(tier)) }
-                    )
-                }
-            } else {
-                itemsIndexed(items = SubscriptionTier.entries) { index, tier ->
-                    val nativePkg = uiState.nativePackages.find { pkg ->
-                        pkg.productId.equals(tier.productId, ignoreCase = true) ||
-                                pkg.packageId.equals(tier.productId, ignoreCase = true) ||
-                                pkg.productId.contains(tier.productId, ignoreCase = true) ||
-                                tier.productId.contains(pkg.productId, ignoreCase = true)
-                    } ?: uiState.nativePackages.getOrNull(index)
-
-                    val displayPrice = nativePkg?.formattedPrice ?: tier.defaultPriceText
-
-                    SubscriptionTierCard(
-                        tier = tier,
-                        displayPrice = displayPrice,
-                        isSelected = uiState.selectedSubscriptionTier == tier,
-                        onClick = { viewModel.onEvent(SupportUiEvent.SelectSubscriptionTier(tier)) }
-                    )
-                }
-            }
-
-            // Action CTA Button & Payment Security Disclaimer
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(dimens.space8)
-                ) {
-                    val isActionable =
-                        (uiState.selectedTab == SupportTab.ONE_TIME && uiState.selectedTipTier != null) ||
-                                (uiState.selectedTab == SupportTab.MONTHLY && uiState.selectedSubscriptionTier != null)
-
-                    val selectedPriceText = if (uiState.selectedTab == SupportTab.ONE_TIME) {
-                        val tier = uiState.selectedTipTier
-                        val nativePkg = uiState.nativePackages.find { pkg ->
-                            pkg.productId.equals(tier?.productId, ignoreCase = true) ||
-                                    pkg.packageId.equals(
-                                        tier?.name?.lowercase(),
-                                        ignoreCase = true
-                                    ) ||
-                                    pkg.productId.contains(
-                                        tier?.productId.orEmpty(),
-                                        ignoreCase = true
-                                    )
-                        } ?: uiState.nativePackages.getOrNull(tier?.ordinal ?: 0)
-                        nativePkg?.formattedPrice ?: tier?.defaultPriceText.orEmpty()
-                    } else {
-                        val tier = uiState.selectedSubscriptionTier
-                        val nativePkg = uiState.nativePackages.find { pkg ->
-                            pkg.productId.equals(tier?.productId, ignoreCase = true) ||
-                                    pkg.packageId.equals(tier?.productId, ignoreCase = true) ||
-                                    pkg.productId.contains(
-                                        tier?.productId.orEmpty(),
-                                        ignoreCase = true
-                                    )
-                        } ?: uiState.nativePackages.getOrNull(tier?.ordinal ?: 0)
-                        nativePkg?.formattedPrice ?: tier?.defaultPriceText.orEmpty()
-                    }
-
-                    val buttonText = when {
-                        !isActionable -> stringResource(R.string.support_cta_choose)
-                        uiState.selectedTab == SupportTab.ONE_TIME -> stringResource(
-                            R.string.support_cta_tip,
-                            selectedPriceText
-                        )
-
-                        else -> stringResource(R.string.support_cta_subscribe, selectedPriceText)
-                    }
-
-                    Button(
-                        onClick = {
-                            if (isActionable && context is android.app.Activity) {
-                                viewModel.onEvent(SupportUiEvent.PurchaseCurrentSelection(context))
-                            }
-                        },
-                        enabled = isActionable && !uiState.isPurchasing && !uiState.isOffline,
-                        shape = RoundedCornerShape(dimens.cornerLg),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                                alpha = 0.5f
-                            )
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(dimens.compButton)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(dimens.space8)
-                        ) {
-                            if (isActionable) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.heart),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(dimens.iconSm),
-                                    tint = Color.Unspecified
-                                )
-                            }
-                            Text(
-                                text = buttonText,
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-                    }
-
-                    Text(
-                        text = stringResource(R.string.support_secure_payment),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = customColors.secondaryText.copy(alpha = 0.7f),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-
-            // Gift Disclaimer Card (Islam 24 is 100% free)
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(dimens.cornerLg),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimens.space16),
-                        verticalAlignment = Alignment.Top,
-                        horizontalArrangement = Arrangement.spacedBy(dimens.space12)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.allah),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(dimens.iconMd)
-                                .padding(top = dimens.space2)
-                        )
-
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(dimens.space4)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.support_disclaimer_title),
-                                style = MaterialTheme.typography.titleSmall.copy(
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                            Text(
-                                text = stringResource(R.string.support_disclaimer_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = customColors.secondaryText
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Common Questions FAQ Accordion
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(dimens.space12)
-                ) {
-                    Text(
-                        text = stringResource(R.string.support_faq_title),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(top = dimens.space8)
-                    )
-
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(dimens.cornerLg),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-                        )
-                    ) {
-                        Column {
-                            faqList.forEachIndexed { index, faq ->
-                                FaqAccordionRow(
-                                    faq = faq,
-                                    isExpanded = uiState.expandedFaqIndex == index,
-                                    onToggle = { viewModel.onEvent(SupportUiEvent.ToggleFaq(index)) },
-                                    showDivider = index < faqList.lastIndex
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(dimens.space32))
-            }
-        }
-    }
-}
-
-/**
- * Appealing Offline Warning Banner.
- */
-@Composable
-private fun OfflineWarningBanner(
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(dimens.cornerLg),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.35f)
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimens.space16),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+        IslamicLoadingOverlay(
+            isLoading = uiState.isPurchasing,
+            loadingText = "Processing Support..."
         ) {
             Box(
                 modifier = Modifier
-                    .size(dimens.iconLg)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.error.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(innerPadding)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.alert),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(dimens.iconSm)
-                )
-            }
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(dimens.space2)
-            ) {
-                Text(
-                    text = stringResource(R.string.support_offline_title),
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MaterialTheme.colorScheme.onErrorContainer
-                )
-                Text(
-                    text = stringResource(R.string.support_offline_desc),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.85f)
-                )
-            }
-        }
-    }
-}
-
-/**
- * Metrics summary box showing Supporters count, Total supported amount, and Ad-Free indicator.
- */
-@Suppress("NonObservableLocale")
-@Composable
-private fun SupportMetricsCard(
-    supportersCount: Int,
-    formattedSupportedTotal: String,
-    modifier: Modifier = Modifier
-) {
-    val locale = androidx.compose.ui.platform.LocalConfiguration.current.locales[0]
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(dimens.cornerLg),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = dimens.space16, horizontal = dimens.space8),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            MetricColumn(
-                value = String.format(locale, "%,d", supportersCount),
-                label = stringResource(R.string.support_supporters_count),
-                modifier = Modifier.weight(1f)
-            )
-
-            Box(
-                modifier = Modifier
-                    .width(dimens.divider)
-                    .height(dimens.space32)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-            )
-
-            MetricColumn(
-                value = formattedSupportedTotal,
-                label = stringResource(R.string.support_you_supported),
-                modifier = Modifier.weight(1f)
-            )
-
-            Box(
-                modifier = Modifier
-                    .width(dimens.divider)
-                    .height(dimens.space32)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-            )
-
-            MetricColumn(
-                value = "100%",
-                label = stringResource(R.string.support_ad_free),
-                modifier = Modifier.weight(1f)
-            )
-        }
-    }
-}
-
-@Composable
-private fun MetricColumn(
-    value: String,
-    label: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(dimens.space2)
-    ) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = customColors.secondaryText
-        )
-    }
-}
-
-/**
- * Tab Selector Pill Row (One-Time Tip vs Monthly Support).
- */
-@Composable
-private fun SupportTabSelector(
-    selectedTab: SupportTab,
-    onTabSelected: (SupportTab) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(dimens.cornerLg))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
-            .padding(dimens.space4),
-        horizontalArrangement = Arrangement.spacedBy(dimens.space4)
-    ) {
-        TabPill(
-            text = stringResource(R.string.support_one_time_tip),
-            isSelected = selectedTab == SupportTab.ONE_TIME,
-            onClick = { onTabSelected(SupportTab.ONE_TIME) },
-            modifier = Modifier.weight(1f)
-        )
-        TabPill(
-            text = stringResource(R.string.support_monthly_support),
-            isSelected = selectedTab == SupportTab.MONTHLY,
-            onClick = { onTabSelected(SupportTab.MONTHLY) },
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
-
-@Composable
-private fun TabPill(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(dimens.cornerMd))
-            .background(
-                if (isSelected) MaterialTheme.colorScheme.primary
-                else Color.Transparent
-            )
-            .clickable { onClick() }
-            .padding(vertical = dimens.space12),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-            ),
-            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
-
-/**
- * One-Time Tip Tier Card.
- */
-@Composable
-private fun TipTierCard(
-    tier: TipTier,
-    displayPrice: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(dimens.cornerLg))
-            .border(
-                width = if (isSelected) dimens.divider * 2 else dimens.divider,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
-                    alpha = 0.1f
-                ),
-                shape = RoundedCornerShape(dimens.cornerLg)
-            )
-            .clickable { onClick() },
-        shape = RoundedCornerShape(dimens.cornerLg),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)
-            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimens.space16),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimens.space12)
-        ) {
-            // Icon Square Box
-            TierIconBox(iconRes = tier.iconRes)
-
-            // Title, Badge, and Description
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(dimens.space2)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(dimens.space8)
-                ) {
-                    Text(
-                        text = stringResource(tier.titleRes),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-
-                    tier.badgeRes?.let { badgeRes ->
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(dimens.cornerFull))
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                                .padding(horizontal = dimens.space8, vertical = dimens.space2)
-                        ) {
-                            Text(
-                                text = stringResource(badgeRes),
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                color = MaterialTheme.colorScheme.primary,
-                                maxLines = 1,
-                                softWrap = false
-                            )
-                        }
-                    }
-                }
-
-                Text(
-                    text = stringResource(tier.descRes),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = customColors.secondaryText
-                )
-            }
-
-            // Price Column
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(dimens.space2)
-            ) {
-                Text(
-                    text = displayPrice,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Text(
-                    text = "one-time",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = customColors.secondaryText.copy(alpha = 0.7f)
-                )
-            }
-        }
-    }
-}
-
-/**
- * Monthly Subscription Tier Card.
- */
-@Composable
-private fun SubscriptionTierCard(
-    tier: SubscriptionTier,
-    displayPrice: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(dimens.cornerLg))
-            .border(
-                width = if (isSelected) dimens.divider * 2 else dimens.divider,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(
-                    alpha = 0.1f
-                ),
-                shape = RoundedCornerShape(dimens.cornerLg)
-            )
-            .clickable { onClick() },
-        shape = RoundedCornerShape(dimens.cornerLg),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)
-            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimens.space16),
-            verticalArrangement = Arrangement.spacedBy(dimens.space12)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(dimens.space12)
-            ) {
-                // Icon Square Box
-                TierIconBox(iconRes = tier.iconRes)
-
-                // Title, Badge, and Description
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(dimens.space2)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = dimens.space16, vertical = dimens.space12),
+                        verticalArrangement = Arrangement.spacedBy(dimens.space16)
                     ) {
-                        Text(
-                            text = stringResource(tier.titleRes),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.weight(1f, fill = false)
-                        )
+                        // Active Subscriber Banner
+                        if (isSubscribed) {
+                            item {
+                                ActiveSubscriberCard(
+                                    displayPrice = activeSubscriberDisplayPrice,
+                                    memberSinceDate = SimpleDateFormat("MMMM d, yyyy", LocalLocale.current.platformLocale).format(Date()),
+                                    onCancelClick = {
+                                        val playStoreUrl = "https://play.google.com/store/account/subscriptions?package=${context.packageName}"
+                                        try {
+                                            val intent = Intent(Intent.ACTION_VIEW,
+                                                playStoreUrl.toUri()).apply {
+                                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                            }
+                                            context.startActivity(intent)
+                                        } catch (e: Exception) {
+                                            val fallbackUrl = "https://play.google.com/store/account/subscriptions"
+                                            val intent = Intent(Intent.ACTION_VIEW,
+                                                fallbackUrl.toUri()).apply {
+                                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                            }
+                                            context.startActivity(intent)
+                                        }
+                                    }
+                                )
+                            }
+                        }
 
-                        tier.badgeRes?.let { badgeRes ->
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(dimens.cornerFull))
-                                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
-                                    .padding(horizontal = dimens.space8, vertical = dimens.space2)
+                        // Offline Connection Warning Banner
+                        if (uiState.isOffline) {
+                            item {
+                                OfflineWarningBanner()
+                            }
+                        }
+
+                        // Header Section: Title & Subtitle Card
+                        item {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(dimens.space8)
                             ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(dimens.iconXl * 1.5f)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.heart),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(dimens.iconLg)
+                                    )
+                                }
+
                                 Text(
-                                    text = stringResource(badgeRes),
-                                    style = MaterialTheme.typography.labelSmall.copy(
+                                    text = headerTitle,
+                                    style = MaterialTheme.typography.headlineMedium.copy(
                                         fontWeight = FontWeight.Bold
                                     ),
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Text(
+                                    text = headerSubtitle,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = customColors.secondaryText,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(horizontal = dimens.space8)
+                                )
+
+                                Text(
+                                    text = headerTagline,
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
                                     color = MaterialTheme.colorScheme.primary,
-                                    maxLines = 1,
-                                    softWrap = false
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(top = dimens.space4)
                                 )
                             }
                         }
+
+                        // Metrics Box: Supporters Count, Total Supported, Ad-Free
+                        item {
+                            SupportMetricsCard(
+                                supportersCount = uiState.userSupportModel?.totalSupporter ?: 0,
+                                formattedSupportedTotal = "${uiState.userSupportModel?.totalContributionLocal ?: uiState.formattedSupportedTotal}"
+                            )
+                        }
+
+                        // Tab Selector Pill: One-Time Tip vs Monthly Support (Hidden for Active Subscribers)
+                        item {
+                            SupportTabSelector(
+                                selectedTab = uiState.selectedTab,
+                                onTabSelected = { onEvent(SupportUiEvent.SelectTab(it)) },
+                                isSupporter = isSubscribed
+                            )
+                        }
+
+                        // Options List (One-Time Tip Tiers OR Monthly Subscription Tiers)
+                        if (uiState.selectedTab == SupportTab.ONE_TIME) {
+                            itemsIndexed(
+                                items = TipTier.entries,
+                                key = { _, tier -> tier.name }
+                            ) { index, tier ->
+                                val matchedPkg = uiState.nativePackages.find { pkg ->
+                                    pkg.productId.contains(tier.productId, ignoreCase = true) ||
+                                            pkg.packageId.contains(tier.productId, ignoreCase = true) ||
+                                            tier.productId.contains(pkg.productId, ignoreCase = true)
+                                } ?: uiState.nativePackages.getOrNull(index)
+                                val formattedPrice = matchedPkg?.formattedPrice ?: tier.defaultPriceText
+
+                                TipTierCard(
+                                    tier = tier,
+                                    displayPrice = formattedPrice,
+                                    isSelected = uiState.selectedTipTier == tier,
+                                    onClick = { onEvent(SupportUiEvent.SelectTipTier(tier)) }
+                                )
+                            }
+                        } else {
+                            itemsIndexed(
+                                items = SubscriptionTier.entries,
+                                key = { _, tier -> tier.name }
+                            ) { index, tier ->
+                                val matchedPkg = uiState.nativePackages.find { pkg ->
+                                    pkg.productId.contains(tier.productId, ignoreCase = true) ||
+                                            pkg.packageId.contains(tier.productId, ignoreCase = true) ||
+                                            tier.productId.contains(pkg.productId, ignoreCase = true)
+                                } ?: uiState.nativePackages.getOrNull(index)
+                                val formattedPrice = matchedPkg?.formattedPrice ?: tier.defaultPriceText
+
+                                SubscriptionTierCard(
+                                    tier = tier,
+                                    displayPrice = formattedPrice,
+                                    isSelected = uiState.selectedSubscriptionTier == tier,
+                                    onClick = { onEvent(SupportUiEvent.SelectSubscriptionTier(tier)) }
+                                )
+                            }
+                        }
+
+                        // Primary Action Button (Support / Tip Now)
+                        if (!isSubscribed) {
+                            item {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(dimens.space8)
+                                ) {
+                                    val buttonText = if (uiState.selectedTab == SupportTab.ONE_TIME) {
+                                        val tierTitle = uiState.selectedTipTier?.let { stringResource(it.titleRes) } ?: "Tip"
+                                        val price = uiState.selectedTipTier?.let { tier ->
+                                            val index = TipTier.entries.indexOf(tier)
+                                            val matchedPkg = uiState.nativePackages.find { pkg ->
+                                                pkg.productId.contains(tier.productId, ignoreCase = true) ||
+                                                        pkg.packageId.contains(tier.productId, ignoreCase = true) ||
+                                                        tier.productId.contains(pkg.productId, ignoreCase = true)
+                                            } ?: uiState.nativePackages.getOrNull(index)
+                                            matchedPkg?.formattedPrice ?: tier.defaultPriceText
+                                        } ?: "$0"
+                                        "Send $tierTitle · $price"
+                                    } else {
+                                        val price = uiState.selectedSubscriptionTier?.let { tier ->
+                                            val index = SubscriptionTier.entries.indexOf(tier)
+                                            val matchedPkg = uiState.nativePackages.find { pkg ->
+                                                pkg.productId.contains(tier.productId, ignoreCase = true) ||
+                                                        pkg.packageId.contains(tier.productId, ignoreCase = true) ||
+                                                        tier.productId.contains(pkg.productId, ignoreCase = true)
+                                            } ?: uiState.nativePackages.getOrNull(index)
+                                            matchedPkg?.formattedPrice ?: tier.defaultPriceText
+                                        } ?: "$0"
+                                        "Become Monthly Patron · $price/mo"
+                                    }
+
+                                    val isActionable = if (uiState.selectedTab == SupportTab.ONE_TIME) {
+                                        uiState.selectedTipTier != null
+                                    } else {
+                                        uiState.selectedSubscriptionTier != null
+                                    }
+
+                                    Button(
+                                        onClick = {
+                                            val activity = context as? android.app.Activity
+                                            if (activity != null) {
+                                                onEvent(SupportUiEvent.PurchaseCurrentSelection(activity))
+                                            } else {
+                                                Toast.makeText(context, "Unable to launch purchase flow", Toast.LENGTH_SHORT).show()
+                                            }
+                                        },
+                                        enabled = isActionable && !uiState.isPurchasing,
+                                        shape = RoundedCornerShape(dimens.cornerLg),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.primary
+                                        ),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(dimens.compButton)
+                                    ) {
+                                        Text(
+                                            text = buttonText,
+                                            style = MaterialTheme.typography.titleMedium.copy(
+                                                fontWeight = FontWeight.Bold
+                                            ),
+                                            color = Color.White
+                                        )
+                                    }
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.password),
+                                            contentDescription = null,
+                                            tint = customColors.secondaryText,
+                                            modifier = Modifier.size(dimens.iconXs)
+                                        )
+                                        Spacer(modifier = Modifier.size(dimens.space4))
+                                        Text(
+                                            text = stringResource(R.string.support_secure_payment),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = customColors.secondaryText
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        // Independent Developer Note Card
+                        item {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(dimens.cornerLg),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(dimens.space16),
+                                    verticalAlignment = Alignment.Top,
+                                    horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(dimens.iconLg)
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.profile),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(dimens.iconSm)
+                                        )
+                                    }
+
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(dimens.space4)
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.support_disclaimer_title),
+                                            style = MaterialTheme.typography.titleSmall.copy(
+                                                fontWeight = FontWeight.Bold
+                                            ),
+                                            color = MaterialTheme.colorScheme.onBackground
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.support_disclaimer_desc),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = customColors.secondaryText
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        // Recent Community Supporters (Top 10 cached tickers)
+                        if (uiState.recentTickers.isNotEmpty()) {
+                            item {
+                                RecentSupportersSection(recentTickers = uiState.recentTickers)
+                            }
+                        }
+
+                        // Common Questions FAQ Accordion
+                        item {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(dimens.space12)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.support_faq_title),
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier.padding(top = dimens.space8)
+                                )
+
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(dimens.cornerLg),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                                    )
+                                ) {
+                                    Column {
+                                        faqList.forEachIndexed { index, faq ->
+                                            FaqAccordionRow(
+                                                faq = faq,
+                                                isExpanded = uiState.expandedFaqIndex == index,
+                                                onToggle = { onEvent(SupportUiEvent.ToggleFaq(index)) },
+                                                showDivider = index < faqList.lastIndex
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        item {
+                            Spacer(modifier = Modifier.height(dimens.space32))
+                        }
                     }
 
-                    Text(
-                        text = stringResource(tier.descRes),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = customColors.secondaryText
+                    // Real-Time Supporter Live Ticker Overlay at bottom
+                    SupportLiveTickerOverlay(
+                        visibleTicker = visibleTicker,
+                        modifier = Modifier.align(Alignment.BottomCenter)
                     )
                 }
 
-                // Price Column
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(dimens.space2)
-                ) {
-                    Text(
-                        text = displayPrice,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Text(
-                        text = "/ month",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = customColors.secondaryText.copy(alpha = 0.7f)
-                    )
-                }
+            // Custom Success Dialog Overlays
+            if (uiState.showSubscriptionSuccessDialog) {
+                SupportSuccessDialog(
+                    title = "JazakAllah Khair!",
+                    description = "You are now a Monthly Patron. Your monthly gift sustains Islam 24 for the entire Ummah.",
+                    subtext = "May Allah accept it from you.",
+                    onDismiss = { onEvent(SupportUiEvent.DismissSuccessDialog) }
+                )
             }
 
-            AnimatedVisibility(
-                visible = isSelected,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            ) {
-                Column {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(dimens.divider)
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-                    )
-                    Spacer(modifier = Modifier.height(dimens.space8))
-                    Text(
-                        text = stringResource(
-                            R.string.support_sub_billing_disclaimer,
-                            displayPrice
-                        ),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = customColors.secondaryText.copy(alpha = 0.8f)
-                    )
-                }
+            if (uiState.showTipSuccessDialog) {
+                SupportSuccessDialog(
+                    title = "JazakAllah Khair!",
+                    description = "Thank you for your small tip. Your gift helps keep Islam 24 free for everyone.",
+                    subtext = "May Allah accept it from you.",
+                    onDismiss = { onEvent(SupportUiEvent.DismissSuccessDialog) }
+                )
             }
-        }
-    }
-}
-
-@Composable
-private fun TierIconBox(
-    iconRes: Int,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .size(dimens.iconXl)
-            .clip(RoundedCornerShape(dimens.cornerMd))
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(dimens.iconMd)
-        )
-    }
-}
-
-@Composable
-private fun FaqAccordionRow(
-    faq: FaqItem,
-    isExpanded: Boolean,
-    onToggle: () -> Unit,
-    showDivider: Boolean,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onToggle() }
-                .padding(dimens.space16),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(faq.questionRes),
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.SemiBold
-                ),
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f)
-            )
-
-            Icon(
-                painter = painterResource(
-                    id = if (isExpanded) R.drawable.arrowup else R.drawable.down_arrow
-                ),
-                contentDescription = null,
-                tint = customColors.secondaryText,
-                modifier = Modifier.size(dimens.iconSm)
-            )
-        }
-
-        AnimatedVisibility(
-            visible = isExpanded,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
-        ) {
-            Text(
-                text = stringResource(faq.answerRes),
-                style = MaterialTheme.typography.bodySmall,
-                color = customColors.secondaryText,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = dimens.space16, end = dimens.space16, bottom = dimens.space16)
-            )
-        }
-
-        if (showDivider) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(dimens.divider)
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
-            )
         }
     }
 }

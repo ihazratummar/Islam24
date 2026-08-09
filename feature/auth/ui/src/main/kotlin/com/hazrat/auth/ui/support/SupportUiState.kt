@@ -3,6 +3,7 @@ package com.hazrat.auth.ui.support
 import androidx.compose.runtime.Immutable
 import com.hazrat.domain.repository.NativeSupportPackage
 import com.hazrat.model.profile.SupporterStatusModel
+import com.hazrat.model.profile.SupporterTickerModel
 
 enum class SupportTab {
     ONE_TIME,
@@ -53,5 +54,9 @@ data class SupportUiState(
     val isOffline: Boolean = false,
     val isPurchasing: Boolean = false,
     val expandedFaqIndex: Int? = null,
-    val userSupportViewModel: SupporterStatusModel? = null
+    val userSupportModel: SupporterStatusModel? = null,
+    val showSubscriptionSuccessDialog: Boolean = false,
+    val showTipSuccessDialog: Boolean = false,
+    val liveTicket: SupporterTickerModel? = null,
+    val recentTickers: List<SupporterTickerModel> = emptyList()
 )

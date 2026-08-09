@@ -22,7 +22,11 @@ data class AyahState(
     val downloadProgress: Float = 0f,
     val playbackSpeed: Float = 1.0f,
     val playbackMode: AudioPlaybackMode = AudioPlaybackMode.PLAY_SURAH,
-    val audioErrorMessage: String? = null
+    val audioErrorMessage: String? = null,
+    val selectedFont: String = "SCHEHERAZADE",
+    val fontSize: Int = 30,
+    val showTranslation: Boolean = true,
+    val isSettingsMenuOpen: Boolean = false
 )
 
 enum class AudioPlaybackMode {
@@ -46,4 +50,8 @@ sealed interface AyahUiEvent {
     data object OnPlayPreviousAyah : AyahUiEvent
     data class OnSpeedChange(val speed: Float) : AyahUiEvent
     data class OnSurahPageChanged(val surahNumber: Int) : AyahUiEvent
+    data object OnToggleSettingsMenu : AyahUiEvent
+    data class OnFontSelected(val fontName: String) : AyahUiEvent
+    data class OnFontSizeChanged(val size: Int) : AyahUiEvent
+    data class OnToggleTranslation(val show: Boolean) : AyahUiEvent
 }

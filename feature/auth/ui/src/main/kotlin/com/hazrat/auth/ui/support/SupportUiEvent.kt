@@ -9,6 +9,8 @@ sealed interface SupportUiEvent {
     data class ToggleFaq(val index: Int) : SupportUiEvent
     data class PurchaseCurrentSelection(val activity: Activity) : SupportUiEvent
     data object RestorePurchases : SupportUiEvent
+    data object DismissSuccessDialog : SupportUiEvent
+    data object Refresh : SupportUiEvent
 }
 
 

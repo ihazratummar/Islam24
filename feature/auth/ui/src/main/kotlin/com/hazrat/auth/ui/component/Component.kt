@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -117,7 +116,9 @@ fun SettingItemCard(
     settingText: String,
     onClick: () -> Unit = {},
     label: String? = null,
-    trailingIcon: Int
+    trailingIcon: Int? = null,
+    textColor: Color = MaterialTheme.colorScheme.onBackground,
+    iconColor : Color =  customColors.iconColor
 ) {
     Row(
         modifier = modifier
@@ -125,14 +126,15 @@ fun SettingItemCard(
                 vertical = dimens.space8,
                 horizontal = dimens.space12
             )
-            .fillMaxWidth().customClick(onClick),
+            .fillMaxWidth()
+            .customClick(onClick),
         horizontalArrangement = Arrangement.spacedBy(dimens.space8),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconWithBackground(
             icon = leadingIcon,
-            iconColor = customColors.iconColor,
-            containerColor = customColors.iconColor.copy(0.05f)
+            iconColor = iconColor,
+            containerColor = iconColor.copy(0.05f)
         )
         Column(
             modifier = Modifier.weight(1f),
@@ -142,7 +144,7 @@ fun SettingItemCard(
             Text(
                 text = settingText,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = textColor
                 )
             )
             label?.let { text ->
@@ -154,13 +156,14 @@ fun SettingItemCard(
                 )
             }
         }
-
-        IconWithBackground(
-            icon = trailingIcon,
-            iconColor = customColors.progressbarMute,
-            containerColor = Color.Transparent,
-            onClick = onClick
-        )
+        trailingIcon?.let {
+            IconWithBackground(
+                icon = trailingIcon,
+                iconColor = customColors.progressbarMute,
+                containerColor = Color.Transparent,
+                onClick = onClick
+            )
+        }
     }
 }
 
@@ -202,7 +205,6 @@ fun CustomTextField(
 
 @Composable
 fun ZoomedProfileImage(
-    modifier: Modifier = Modifier,
     isVisible: Boolean,
     imageUri: String?,
     context: Context
@@ -220,16 +222,12 @@ fun ZoomedProfileImage(
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut()
         ) {
-            Card(
-                modifier = modifier.padding(dimens.space20)
-            ) {
-                AsyncImage(
-                    modifier = Modifier.fillMaxWidth(),
-                    model = imageUri,
-                    contentDescription = null,
-                    imageLoader = context.imageLoader
-                )
-            }
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = imageUri,
+                contentDescription = null,
+                imageLoader = context.imageLoader
+            )
         }
     }
 }

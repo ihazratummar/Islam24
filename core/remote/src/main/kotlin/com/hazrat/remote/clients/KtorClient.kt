@@ -23,13 +23,39 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
 
+import okhttp3.Protocol
+
 object KtorClient {
 
-    private val BASE_URL = "http://192.168.0.122:8080/api/v1/"
-//    private val PROD_BASE_URL = "https://api.islam24.app/api/v1/"
+    // Toggle between local and prod in this single location:
+    // const val BASE_URL = "http://192.168.0.122:8080/api/v1/"
+    const val BASE_URL = "https://api.islam24.app/api/v1/"
+
+    val WS_BASE_URL: String
+        get() = BASE_URL
+            .replace("https://", "wss://")
+            .replace("http://", "ws://")
+
+    val ORIGIN_URL: String
+        get() {
+            return try {
+                val uri = java.net.URI(BASE_URL)
+                val portSuffix = if (uri.port != -1) ":${uri.port}" else ""
+                "${uri.scheme}://${uri.host}$portSuffix"
+            } catch (e: Exception) {
+                "https://api.islam24.app"
+            }
+        }
 
     fun createPublicHttpClient(): HttpClient {
+        val okHttpClient = okhttp3.OkHttpClient.Builder()
+            .protocols(listOf(Protocol.HTTP_1_1))
+            .build()
+
         return HttpClient(OkHttp) {
+            engine {
+                preconfigured = okHttpClient
+            }
             install(ContentNegotiation) {
                 json(
                     json = Json {
@@ -40,11 +66,30 @@ object KtorClient {
                     contentType = ContentType.Any
                 )
             }
+            install(WebSockets) {
+                pingInterval = 15_000.seconds
+            }
+            defaultRequest {
+                url.takeFrom(BASE_URL)
+            }
         }
     }
 
     fun createHttpClient(tokenStorage: TokenStorage) : HttpClient {
         return HttpClient(OkHttp) {
+            engine {
+                addInterceptor { chain ->
+                    val requestBuilder = chain.request().newBuilder()
+                    val token = tokenStorage.getAccessToken()
+                    if (!token.isNullOrBlank()) {
+                        requestBuilder.header("Authorization", "Bearer $token")
+                    } else {
+                        requestBuilder.removeHeader("Authorization")
+                    }
+                    chain.proceed(requestBuilder.build())
+                }
+            }
+
             install(ContentNegotiation){
                 json(
                     Json{
@@ -99,7 +144,7 @@ object KtorClient {
                                 install(ContentNegotiation){json(Json { ignoreUnknownKeys = true })}
                             }
 
-                            val response = refreshClient.post("$BASE_URL/auth/refresh"){
+                            val response = refreshClient.post("${BASE_URL}auth/refresh"){
                                 contentType(ContentType.Application.Json)
                                 setBody(RefreshTokenRequest(refreshToken = refreshToken))
                             }

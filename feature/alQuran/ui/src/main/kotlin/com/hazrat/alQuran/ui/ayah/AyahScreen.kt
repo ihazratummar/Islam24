@@ -1,37 +1,23 @@
 package com.hazrat.alQuran.ui.ayah
 
-import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,25 +29,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.sp
-import com.hazrat.alQuran.ui.component.AyahContextMenu
+import com.hazrat.alQuran.ui.component.AyahItemCard
+import com.hazrat.alQuran.ui.component.AyahTopAppBar
 import com.hazrat.alQuran.ui.component.FloatingAudioController
+import com.hazrat.alQuran.ui.component.rememberFontRenderConfig
 import com.hazrat.alQuran.ui.surah.SurahScreenData
-import com.hazrat.ui.R
-import com.hazrat.ui.common.BackIcon
-import com.hazrat.ui.common.SurahSvgImage
-import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import kotlinx.coroutines.delay
@@ -69,13 +47,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Pure Presentational Ayah Reading Screen.
- * Displays Ayah text, Tajweed color coding, and synchronized media controls.
- * Navigating away via Back button or minimizing app preserves background recitation in QuranAudioService.
+ * Clean, Presentational Ayah Reading Screen.
+ * Composes isolated sub-components (AyahTopAppBar, AyahItemCard, FloatingAudioController, rememberFontRenderConfig).
  *
  * @author hazratummar
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AyahScreen(
     modifier: Modifier = Modifier,
@@ -86,15 +62,12 @@ fun AyahScreen(
     onSurahCompleted: () -> Unit = {},
     onEvent: (AyahUiEvent) -> Unit = {}
 ) {
-    val context = LocalContext.current
     val defaultTextColor = MaterialTheme.colorScheme.onBackground
-    val isDarkMode = isSystemInDarkTheme()
     val scaffoldBg = customColors.ayahScreenBackground
 
     val headerCount = 1
     val listState = rememberLazyListState()
     var hasScrolled by rememberSaveable { mutableStateOf(false) }
-
     var isControllerVisible by remember { mutableStateOf(true) }
 
     var currentViewedAyah by remember(surahScreenData.targetAyahNumber) {
@@ -106,12 +79,11 @@ fun AyahScreen(
         pageCount = { 114 }
     )
 
-    // rememberUpdatedState so long-running coroutines always see the latest values
     val currentAyahState by rememberUpdatedState(ayahState)
     val currentOnAyahScrolled by rememberUpdatedState(onAyahScrolled)
     val currentOnSurahCompleted by rememberUpdatedState(onSurahCompleted)
 
-    // Smooth auto-page scroll when playing Surah changes (Juz auto-advance across Surahs)
+    // Auto-scroll pager when playing Surah changes
     LaunchedEffect(ayahState.playingSurahNumber) {
         val playingSurah = ayahState.playingSurahNumber
         if (playingSurah != null && playingSurah in 1..114) {
@@ -122,16 +94,15 @@ fun AyahScreen(
         }
     }
 
-    // Always reset to visible when a new audio recitation starts
+    // Reset media controller visibility when new audio starts
     LaunchedEffect(ayahState.playingAyahNumber) {
         if (ayahState.playingAyahNumber != null) {
             isControllerVisible = true
         }
     }
 
-    // Scroll to targetAyahNumber ONCE on initial launch when ayahs are first loaded
+    // Scroll to initial targetAyahNumber ONCE
     var hasInitialScrolled by rememberSaveable(surahScreenData.targetAyahNumber) { mutableStateOf(false) }
-
     LaunchedEffect(ayahState.ayahs) {
         if (!hasInitialScrolled && ayahState.ayahs.isNotEmpty()) {
             hasInitialScrolled = true
@@ -143,7 +114,7 @@ fun AyahScreen(
         }
     }
 
-    // Smooth Auto-Scroll when current playing Ayah changes (background service auto-advance)
+    // Auto-scroll LazyColumn when current playing Ayah changes
     LaunchedEffect(ayahState.playingAyahNumber) {
         val playingAyah = ayahState.playingAyahNumber
         if (playingAyah != null && ayahState.ayahs.isNotEmpty()) {
@@ -157,7 +128,7 @@ fun AyahScreen(
         }
     }
 
-    // Detect user scrolling to hide controller
+    // Scroll progress detection for media controller visibility
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }
             .distinctUntilChanged()
@@ -169,7 +140,7 @@ fun AyahScreen(
             }
     }
 
-    // Auto-reappear controller when user stops scrolling
+    // Reappear media controller on scroll pause
     LaunchedEffect(hasScrolled) {
         if (hasScrolled) {
             snapshotFlow { listState.isScrollInProgress }
@@ -183,7 +154,7 @@ fun AyahScreen(
         }
     }
 
-    // Track active viewed Ayah on scroll — updates UI instantly
+    // Track active viewed Ayah on scroll
     LaunchedEffect(listState) {
         snapshotFlow { Pair(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset) }
             .collect {
@@ -192,7 +163,6 @@ fun AyahScreen(
                 val visibleItems = layoutInfo.visibleItemsInfo
                 if (visibleItems.isNotEmpty() && ayahs.isNotEmpty()) {
                     val viewportEnd = layoutInfo.viewportEndOffset
-
                     val mostVisible = visibleItems.maxByOrNull { item ->
                         val itemTop = item.offset.coerceAtLeast(0)
                         val itemBottom = (item.offset + item.size).coerceAtMost(viewportEnd)
@@ -201,20 +171,18 @@ fun AyahScreen(
 
                     val rawIndex = mostVisible?.index ?: return@collect
                     val ayahIdx = (rawIndex - headerCount).coerceIn(0, ayahs.lastIndex)
-                    val currentAyahNum = ayahs[ayahIdx].ayahNumber
-                    currentViewedAyah = currentAyahNum
+                    currentViewedAyah = ayahs[ayahIdx].ayahNumber
                 }
             }
     }
 
-    // Dwell-Time Debounce (600ms): Only save position when user actually pauses/dwells on an Ayah.
-    // Prevents accidental fast-scrolls or peeking ahead from overwriting last read position.
+    // Dwell-Time Debounce (600ms) for last read position saving
     LaunchedEffect(currentViewedAyah) {
         delay(600.milliseconds)
         currentOnAyahScrolled(currentViewedAyah)
     }
 
-    // Detect surah completion: when user stays on the last ayah for 2 seconds, remove from recent
+    // Surah completion detector
     LaunchedEffect(currentViewedAyah, ayahState.ayahs) {
         if (ayahState.ayahs.isNotEmpty() && currentViewedAyah == ayahState.ayahs.last().ayahNumber) {
             delay(2000.milliseconds)
@@ -222,29 +190,25 @@ fun AyahScreen(
         }
     }
 
-    // Initial page index
+    // Notify ViewModel when user swipes page
     val initialPageIndex = remember { (surahScreenData.number - 1).coerceIn(0, 113) }
-
-    // Notify ViewModel when user swipes to a new Surah page and reset scroll position to 0
     LaunchedEffect(pagerState.currentPage) {
         val targetSurahNum = pagerState.currentPage + 1
         onEvent(AyahUiEvent.OnSurahPageChanged(targetSurahNum))
-        
         if (pagerState.currentPage != initialPageIndex || hasInitialScrolled) {
             listState.scrollToItem(0)
         }
     }
 
-    // Nested scroll connection to block forward swipe in Khatam mode unless user reaches the last Ayah
+    // Khatam mode nested scroll connection
     val khatamNestedScrollConnection = remember(surahScreenData.isFromKhatam, currentViewedAyah, ayahState.ayahs) {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 if (surahScreenData.isFromKhatam && source == NestedScrollSource.UserInput) {
                     val totalAyahs = ayahState.ayahs.size
-                    val isAtLastAyah = totalAyahs in 1..currentViewedAyah
-                    // Block RIGHT swipe (swiping right towards next Surah) until user reaches last Ayah
+                    val isAtLastAyah = totalAyahs > 0 && currentViewedAyah >= totalAyahs
                     if (!isAtLastAyah && available.x > 0f) {
-                        return available // Consume scroll delta to block right swipe to next Surah
+                        return available
                     }
                 }
                 return Offset.Zero
@@ -257,49 +221,24 @@ fun AyahScreen(
         com.hazrat.ui.common.SurahNameProvider.getSurahName(currentSurahNum)
     }
 
+    // Isolated per-font rendering configuration
+    val fontConfig = rememberFontRenderConfig(ayahState.selectedFont)
+    val currentFontSize = ayahState.fontSize.sp
+    val currentLineHeight = (ayahState.fontSize * fontConfig.lineMultiplier).sp
+
     Scaffold(
         containerColor = scaffoldBg,
         topBar = {
-            TopAppBar(
-                title = {
-                    Column(
-                        modifier = Modifier,
-                        verticalArrangement = Arrangement.spacedBy(dimens.space4)
-                    ) {
-                        Text(
-                            text = currentSurahName,
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text = "Surah $currentSurahNum • ${if (ayahState.ayahs.isNotEmpty()) ayahState.ayahs.size else surahScreenData.totalAyah} verses",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = customColors.secondaryText
-                        )
-                    }
-                },
-                navigationIcon = {
-                    BackIcon(onBackClick = onBackClick)
-                },
-                actions = {
-                    SurahSvgImage(
-                        surahNumber = currentSurahNum,
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier
-                            .height(dimens.space32)
-                            .padding(end = dimens.space16)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                windowInsets = WindowInsets(top = dimens.space20)
+            AyahTopAppBar(
+                surahName = currentSurahName,
+                surahNumber = currentSurahNum,
+                totalAyahsCount = if (ayahState.ayahs.isNotEmpty()) ayahState.ayahs.size else surahScreenData.totalAyah,
+                ayahState = ayahState,
+                onBackClick = onBackClick,
+                onEvent = onEvent
             )
-        },
-        contentWindowInsets = WindowInsets()
+        }
     ) { paddingValues ->
-
         HorizontalPager(
             state = pagerState,
             reverseLayout = true,
@@ -315,263 +254,121 @@ fun AyahScreen(
                 if (page == pagerState.currentPage) {
                     LazyColumn(
                         state = listState,
-                    modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = dimens.space20),
-                verticalArrangement = Arrangement.spacedBy(dimens.space12)
-            ) {
-                // Bismillah header
-                item(key = "bismillah_$pageSurahNumber") {
-                    if (pageSurahNumber != 1 && pageSurahNumber != 9) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            val tajweedBismillah = "بِسْمِ [h:1[ٱ]للَّهِ [h:2[ٱ][l[ل]رَّحْمَ[n[ـٰ]نِ [h:3[ٱ][l[ل]رَّح[p[ِي]مِ"
-                            val bismillahAnnotated = remember {
-                                parseTajweedHtml(tajweedBismillah, defaultTextColor)
-                            }
-                            Text(
-                                text = bismillahAnnotated,
-                                modifier = Modifier.padding(vertical = dimens.space32),
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontFamily = ScheherazadeFontFamily,
-                                    textDirection = TextDirection.Rtl,
-                                    fontFeatureSettings = "cv62",
-                                    fontSize = 32.sp
-                                )
-                            )
-                        }
-                    }
-                }
-
-                // Ayah items
-                items(ayahState.ayahs, key = { it.id }) { ayah ->
-                    val isCurrentPlaying = (ayah.surahNumber == ayahState.playingSurahNumber) && (ayah.ayahNumber == ayahState.playingAyahNumber)
-
-                    val cardBg = if (isCurrentPlaying) {
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
-                    } else {
-                        Color.Transparent
-                    }
-
-                    val playingSubTextColor = customColors.secondaryText
-
-                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(dimens.cornerXl))
-                            .background(cardBg)
-                            .clickable { onEvent(AyahUiEvent.OnAyahClick(ayah)) }
-                            .padding(dimens.space12)
+                            .fillMaxSize()
+                            .padding(horizontal = dimens.space20),
+                        verticalArrangement = Arrangement.spacedBy(dimens.space12)
                     ) {
-                        if (ayahState.selectedAyahForMenu?.id == ayah.id) {
-                            AyahContextMenu(
-                                expanded = true,
-                                ayah = ayah,
-                                onDismissRequest = { onEvent(AyahUiEvent.OnDismissMenu) },
-                                onPlaySurahClick = { onEvent(AyahUiEvent.OnPlaySurahFrom(ayah.ayahNumber)) },
-                                onPlayJuzClick = { onEvent(AyahUiEvent.OnPlayJuzFrom(ayah.ayahNumber)) },
-                                onRepeatAyahClick = { onEvent(AyahUiEvent.OnRepeatAyah(ayah.ayahNumber)) },
-                                onBookmarkClick = { onEvent(AyahUiEvent.OnToggleBookmark(ayah)) },
-                                onCopyClick = {
-                                    val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                                    val clip = android.content.ClipData.newPlainText("Ayah Text", "${ayah.arabicText}\n\n${ayah.transliteration}\n\n${ayah.englishTranslation}")
-                                    clipboard.setPrimaryClip(clip)
-                                    android.widget.Toast.makeText(context, "Copied Ayah", android.widget.Toast.LENGTH_SHORT).show()
-                                },
-                                onShareClick = {
-                                    val shareText = "${ayah.arabicText}\n\n${ayah.transliteration}\n\n${ayah.englishTranslation}\n\n- [${surahScreenData.name}, Aya ${ayah.surahNumber}:${ayah.ayahNumber}]"
-                                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                        type = "text/plain"
-                                        putExtra(Intent.EXTRA_TEXT, shareText)
-                                    }
-                                    context.startActivity(Intent.createChooser(shareIntent, "Share Ayah"))
-                                }
-                            )
-                        }
-
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(dimens.space12)
-                        ) {
-                            // Aya Pill Badge
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(50))
-                                    .background(
-                                        when {
-                                            isCurrentPlaying && isDarkMode -> Color(0xFF1B5E57)
-                                            isCurrentPlaying && !isDarkMode -> Color(0xFFCDE2D5)
-                                            isDarkMode -> MaterialTheme.colorScheme.outlineVariant
-                                            else -> MaterialTheme.colorScheme.primaryContainer
-                                        }
-                                    )
-                                    .padding(horizontal = dimens.space12, vertical = dimens.space4)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+                        // Bismillah header
+                        item(key = "bismillah_$pageSurahNumber") {
+                            if (pageSurahNumber != 1 && pageSurahNumber != 9) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
-                                        text = "Aya ${ayah.surahNumber}:${ayah.ayahNumber}",
-                                        style = MaterialTheme.typography.labelMedium.copy(
-                                            color = when {
-                                                isCurrentPlaying && isDarkMode -> Color.White
-                                                isCurrentPlaying && !isDarkMode -> Color(0xFF00332C)
-                                                isDarkMode -> MaterialTheme.colorScheme.onBackground
-                                                else -> MaterialTheme.colorScheme.onPrimaryContainer
-                                            }
-                                        )
-                                    )
-                                    if (ayah.isBookmarked) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.star),
-                                            contentDescription = "Bookmarked",
-                                            tint = Color(0xFFFFB800),
-                                            modifier = Modifier.size(dimens.iconXs)
+                                    val tajweedBismillah = "بِسْمِ [h:1[ٱ]للَّهِ [h:2[ٱ][l[ل]رَّحْمَ[n[ـٰ]نِ [h:3[ٱ][l[ل]رَّح[p[ِي]مِ"
+                                    val bismillahAnnotated = remember(ayahState.selectedFont) {
+                                        parseTajweedHtml(
+                                            input = tajweedBismillah,
+                                            defaultColor = defaultTextColor,
+                                            fontType = ayahState.selectedFont,
+                                            enableTajweedColor = fontConfig.enableTajweedColors
                                         )
                                     }
+                                    Text(
+                                        text = bismillahAnnotated,
+                                        modifier = Modifier.padding(vertical = dimens.space32),
+                                        style = MaterialTheme.typography.titleMedium.copy(
+                                            fontFamily = fontConfig.fontFamily,
+                                            textDirection = TextDirection.Rtl,
+                                            fontFeatureSettings = fontConfig.fontFeatureSettings,
+                                            fontSize = currentFontSize,
+                                            lineHeight = currentLineHeight,
+                                            letterSpacing = fontConfig.letterSpacing
+                                        )
+                                    )
                                 }
                             }
+                        }
 
-                            // Arabic Text — Tajweed colored
-                            if (ayah.tajweedText.isNotBlank()) {
-                                val annotatedAyah = remember(ayah.tajweedText, isCurrentPlaying, isDarkMode) {
-                                    parseTajweedHtml(ayah.tajweedText, defaultTextColor)
-                                }
-                                Text(
-                                    text = annotatedAyah,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontFamily = ScheherazadeFontFamily,
-                                        textDirection = TextDirection.Rtl,
-                                        fontFeatureSettings = "cv62",
-                                        fontSize = 30.sp,
-                                        lineHeight = 60.sp
-                                    )
-                                )
-                            } else {
-                                val plainText = ayah.arabicText.cleanUthmanic()
-                                Text(
-                                    text = plainText,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontFamily = ScheherazadeFontFamily,
-                                        color = defaultTextColor,
-                                        textDirection = TextDirection.Rtl,
-                                        fontFeatureSettings = "cv62",
-                                        fontSize = 30.sp,
-                                        lineHeight = 60.sp
-                                    )
-                                )
-                            }
-
-                            // Transliteration
-                            Text(
-                                text = ayah.transliteration,
-                                modifier = Modifier.fillMaxWidth(),
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    color = playingSubTextColor,
-                                    textAlign = TextAlign.End
-                                )
+                        // Ayah items rendered via modular AyahItemCard
+                        items(ayahState.ayahs, key = { it.id }) { ayah ->
+                            AyahItemCard(
+                                ayah = ayah,
+                                surahName = currentSurahName,
+                                ayahState = ayahState,
+                                fontConfig = fontConfig,
+                                currentFontSize = currentFontSize,
+                                currentLineHeight = currentLineHeight,
+                                onEvent = onEvent
                             )
+                        }
 
-                            // Translation (Bengali / English) - Crisp typography
-                            Text(
-                                text = ayah.englishTranslation,
-                                modifier = Modifier.fillMaxWidth(),
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight = FontWeight.Medium,
-                                    color = defaultTextColor,
-                                    textAlign = TextAlign.End,
-                                    fontSize = 16.sp,
-                                    lineHeight = 26.sp
-                                )
-                            )
-
-                            HorizontalDivider(
-                                modifier = Modifier.padding(top = dimens.space12),
-                                color = defaultTextColor.copy(alpha = 0.12f)
-                            )
+                        item {
+                            Spacer(modifier = Modifier.height(dimens.space64))
                         }
                     }
                 }
 
-                item {
-                    Spacer(modifier = Modifier.height(dimens.space64))
-                }
-            }
-        }
-
-            // Floating Media Controller with Scroll Hide/Show animation
-            val showController = ayahState.ayahs.isNotEmpty()
-            if (showController) {
-                AnimatedVisibility(
-                    visible = isControllerVisible,
-                    enter = slideInVertically(initialOffsetY = { it }),
-                    exit = slideOutVertically(targetOffsetY = { it }),
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ) {
-                    val isServiceActive = ayahState.playingAyahNumber != null
-
-                    val activeSurahName = if (ayahState.playingSurahNumber != null) {
-                        com.hazrat.ui.common.SurahNameProvider.getSurahName(ayahState.playingSurahNumber)
-                    } else {
-                        currentSurahName
-                    }
-
-                    val displayAyahNumber = if (ayahState.playingAyahNumber != null) {
-                        ayahState.playingAyahNumber
-                    } else {
-                        currentViewedAyah
-                    }
-
-                    val isPlaying = if (isServiceActive) ayahState.isPlaying else false
-                    val isDownloading = if (isServiceActive) ayahState.isDownloading else false
-                    val downloadProgress = if (isServiceActive) ayahState.downloadProgress else 0f
-
-                    FloatingAudioController(
-                        surahName = activeSurahName,
-                        ayahNumber = displayAyahNumber,
-                        isPlaying = isPlaying,
-                        isDownloading = isDownloading,
-                        downloadProgress = downloadProgress,
-                        playbackSpeed = ayahState.playbackSpeed,
-                        onPlayPauseClick = {
-                            if (isServiceActive) {
-                                if (ayahState.isPlaying) onEvent(AyahUiEvent.OnPauseAudio)
-                                else onEvent(AyahUiEvent.OnResumeAudio)
-                            } else {
-                                onEvent(AyahUiEvent.OnPlayAyah(displayAyahNumber))
-                            }
-                        },
-                        onPreviousClick = {
-                            if (isServiceActive) {
-                                onEvent(AyahUiEvent.OnPlayPreviousAyah)
-                            } else {
-                                if (displayAyahNumber > 1) {
-                                    onEvent(AyahUiEvent.OnPlayAyah(displayAyahNumber - 1))
-                                }
-                            }
-                        },
-                        onNextClick = {
-                            if (isServiceActive) {
-                                onEvent(AyahUiEvent.OnPlayNextAyah)
-                            } else {
-                                if (displayAyahNumber < ayahState.ayahs.size) {
-                                    onEvent(AyahUiEvent.OnPlayAyah(displayAyahNumber + 1))
-                                }
-                            }
-                        },
-                        onSpeedChange = { speed -> onEvent(AyahUiEvent.OnSpeedChange(speed)) },
-                        onCloseClick = {
-                            onEvent(AyahUiEvent.OnStopAudio)
+                // Floating Media Controller
+                val showController = ayahState.ayahs.isNotEmpty()
+                if (showController) {
+                    AnimatedVisibility(
+                        visible = isControllerVisible,
+                        enter = slideInVertically(initialOffsetY = { it }),
+                        exit = slideOutVertically(targetOffsetY = { it }),
+                        modifier = Modifier.align(Alignment.BottomCenter)
+                    ) {
+                        val isServiceActive = ayahState.playingAyahNumber != null
+                        val activeSurahName = if (ayahState.playingSurahNumber != null) {
+                            com.hazrat.ui.common.SurahNameProvider.getSurahName(ayahState.playingSurahNumber)
+                        } else {
+                            currentSurahName
                         }
-                    )
+                        val displayAyahNumber = ayahState.playingAyahNumber ?: currentViewedAyah
+                        val isPlaying = if (isServiceActive) ayahState.isPlaying else false
+                        val isDownloading = if (isServiceActive) ayahState.isDownloading else false
+                        val downloadProgress = if (isServiceActive) ayahState.downloadProgress else 0f
+
+                        FloatingAudioController(
+                            surahName = activeSurahName,
+                            ayahNumber = displayAyahNumber,
+                            isPlaying = isPlaying,
+                            isDownloading = isDownloading,
+                            downloadProgress = downloadProgress,
+                            playbackSpeed = ayahState.playbackSpeed,
+                            onPlayPauseClick = {
+                                if (isServiceActive) {
+                                    if (ayahState.isPlaying) onEvent(AyahUiEvent.OnPauseAudio)
+                                    else onEvent(AyahUiEvent.OnResumeAudio)
+                                } else {
+                                    onEvent(AyahUiEvent.OnPlayAyah(displayAyahNumber))
+                                }
+                            },
+                            onPreviousClick = {
+                                if (isServiceActive) {
+                                    onEvent(AyahUiEvent.OnPlayPreviousAyah)
+                                } else {
+                                    if (displayAyahNumber > 1) {
+                                        onEvent(AyahUiEvent.OnPlayAyah(displayAyahNumber - 1))
+                                    }
+                                }
+                            },
+                            onNextClick = {
+                                if (isServiceActive) {
+                                    onEvent(AyahUiEvent.OnPlayNextAyah)
+                                } else {
+                                    if (displayAyahNumber < ayahState.ayahs.size) {
+                                        onEvent(AyahUiEvent.OnPlayAyah(displayAyahNumber + 1))
+                                    }
+                                }
+                            },
+                            onSpeedChange = { speed -> onEvent(AyahUiEvent.OnSpeedChange(speed)) },
+                            onCloseClick = { onEvent(AyahUiEvent.OnStopAudio) }
+                        )
+                    }
                 }
             }
         }
     }
-}
 }

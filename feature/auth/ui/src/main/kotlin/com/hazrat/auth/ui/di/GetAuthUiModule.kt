@@ -30,8 +30,10 @@ fun getAuthUiModule(): Module = module {
             billingRepository = getOrNull(),
             connectivityObserver = getOrNull(),
             listenToSupportTickerUseCase = get(),
+            getRecentTickersUseCase = get(),
             getSupporterStatusUseCase = get(),
-            syncSupporterStatusUseCase = getOrNull()
+            syncSupporterStatusUseCase = getOrNull(),
+            saveTickerUseCase = getOrNull()
         )
     }
 

@@ -1,9 +1,11 @@
 package com.hazrat.auth.ui.appSetting
 
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,10 +47,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.AsyncImage
 import com.hazrat.auth.ui.component.AppMetaDataSettings
 import com.hazrat.auth.ui.component.SettingItemCard
 import com.hazrat.auth.ui.component.ToggleSettingData
 import com.hazrat.auth.ui.component.ToggleSettings
+import com.hazrat.auth.ui.component.ZoomedProfileImage
 import com.hazrat.auth.ui.profileScreen.component.RatingBottomSheet
 import com.hazrat.ui.R
 import com.hazrat.ui.common.AppSection
@@ -238,20 +242,20 @@ fun AppSettingScreen(
             // Top Guest Profile Hero Card & Metrics (Exact Mockup Match)
             item {
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(dimens.cornerXl))
-                        .border(
-                            width = dimens.divider,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                            shape = RoundedCornerShape(dimens.cornerXl)
-                        )
-                        .clickable {
+                    onClick = {
+                        if (!state.isLoggedIn) {
                             onAuthClick()
-                        },
+                        }
+                    },
+                    interactionSource = remember { MutableInteractionSource() },
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     shape = RoundedCornerShape(dimens.cornerXl),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        containerColor = customColors.secondCardColor
+                    ),
+                    border = BorderStroke(
+                        width = dimens.divider, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                     )
                 ) {
                     Column(
@@ -281,12 +285,20 @@ fun AppSettingScreen(
                                         ),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.splash_logo),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(dimens.iconXl),
-                                        tint = MaterialTheme.colorScheme.onSurface
-                                    )
+                                    if (isUserLoggedIn) {
+                                        ZoomedProfileImage(
+                                            imageUri = state.userModel?.picture,
+                                            context = context,
+                                            isVisible = true
+                                        )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(R.drawable.splash_logo),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(dimens.iconXl),
+                                            tint = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
                                 }
 
                                 Box(
@@ -372,7 +384,10 @@ fun AppSettingScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = customColors.secondCardColor
+                        ),
+                        border = BorderStroke(
+                            width = dimens.divider, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                         )
                     ) {
                         toggleSettingsTab.forEachIndexed { index, toggles ->
@@ -388,7 +403,7 @@ fun AppSettingScreen(
                                     onClick = toggles.onClick
                                 )
                                 if (index != toggleSettingsTab.size - 1)
-                                    HorizontalDivider()
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                             }
                         }
                     }
@@ -403,7 +418,10 @@ fun AppSettingScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = customColors.secondCardColor
+                        ),
+                        border = BorderStroke(
+                            width = dimens.divider, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                         )
                     ) {
                         appMetaSettings.forEachIndexed { index, appSettings ->
@@ -419,7 +437,7 @@ fun AppSettingScreen(
                                     onClick = appSettings.onClick,
                                 )
                                 if (index != appMetaSettings.size - 1)
-                                    HorizontalDivider()
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                             }
                         }
                     }
@@ -434,7 +452,10 @@ fun AppSettingScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = customColors.secondCardColor
+                        ),
+                        border = BorderStroke(
+                            width = dimens.divider, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                         )
                     ) {
                         SettingItemCard(
@@ -443,6 +464,32 @@ fun AppSettingScreen(
                             trailingIcon = R.drawable.arrowright,
                             onClick = onPolicyClick,
                         )
+                    }
+                }
+            }
+
+            if (state.isLoggedIn){
+                item {
+                    AppSection(
+                        sectionTitle = "ACCOUNT"
+                    ) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = customColors.secondCardColor
+                            ),
+                            border = BorderStroke(
+                                width = dimens.divider, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                            )
+                        ) {
+                            SettingItemCard(
+                                leadingIcon = R.drawable.logout,
+                                settingText = "Sign Out",
+                                onClick = { appSettingEvent(AppSettingEvent.LogOut) },
+                                textColor = MaterialTheme.colorScheme.error,
+                                iconColor = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
                 }
             }
@@ -467,7 +514,7 @@ fun AppSettingScreen(
                         )
                     )
                     Text(
-                        text = "Made with love for the Ummah",
+                        text = "Made with love ❤️ for the Ummah",
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = customColors.secondaryText.copy(alpha = 0.7f)
                         )
@@ -476,23 +523,11 @@ fun AppSettingScreen(
             }
 
             item {
-                if (isUserLoggedIn) {
-                    Button(
-                        onClick = { appSettingEvent(AppSettingEvent.LogOut) }
-                    ) {
-                        Text(
-                            text = "LogOut"
-                        )
-                    }
-                }
-            }
-
-            item {
                 Spacer(Modifier.height(dimens.space64))
             }
         }
 
-        if (state.isLoading){
+        if (state.isLoading) {
             IslamicLoadingScreen(subtitle = "Signing out...")
         }
 

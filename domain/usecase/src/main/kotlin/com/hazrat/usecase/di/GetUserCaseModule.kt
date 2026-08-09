@@ -5,6 +5,7 @@ import com.hazrat.usecase.GetLocationNameUseCase
 import com.hazrat.usecase.GetNextFridayTime
 import com.hazrat.usecase.GetUpcomingMainIslamicEventUseCase
 import com.hazrat.usecase.profile.GetProfileDataUseCase
+import com.hazrat.usecase.profile.GetRecentTickersUseCase
 import com.hazrat.usecase.profile.GetSupporterStatusUseCase
 import com.hazrat.usecase.profile.GoogleSignInUseCase
 import com.hazrat.usecase.profile.IsLoggedInUseCase
@@ -96,6 +97,8 @@ fun getUserCaseModule(): Module = module {
     single { SyncSupporterStatusUseCase(profileRepository = get()) }
 
     single { ListenToSupportTickerUseCase(get()) }
+    single { GetRecentTickersUseCase(get()) }
+    single { com.hazrat.usecase.profile.SaveTickerUseCase(get()) }
 
 
 }

@@ -43,6 +43,7 @@ fun getAlQuranUiModule(): Module = module {
             saveRecentSurahUseCase = get(),
             deleteRecentSurahUseCase = get(),
             dataStorePreference = get(),
+            appDataStore = getOrNull(),
             controlQuranAudioUseCase = getOrNull<ControlQuranAudioUseCase>(),
             toggleAyahBookmarkUseCase = get(),
             updateKhatamProgressUseCase = getOrNull<UpdateKhatamProgressUseCase>()

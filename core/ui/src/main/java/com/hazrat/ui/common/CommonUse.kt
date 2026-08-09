@@ -370,6 +370,7 @@ fun AppSection(
         verticalArrangement = Arrangement.spacedBy(dimens.space12),
         horizontalAlignment = Alignment.Start
     ) {
+
         Text(
             text = sectionTitle,
             style = MaterialTheme.typography.titleMedium.copy(

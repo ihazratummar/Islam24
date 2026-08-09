@@ -19,11 +19,14 @@ import com.hazrat.ui.theme.customColors
  */
 
 
+import androidx.compose.foundation.layout.RowScope
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicTopBar(
     topBarTitle: String = "",
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
 
     TopAppBar(
@@ -33,6 +36,7 @@ fun BasicTopBar(
         navigationIcon = {
             BackIcon(onBackClick = onBackClick)
         },
+        actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
     )
 }

@@ -71,6 +71,34 @@ fun LiveCommunityTickerPayload.toModel(): SupporterTickerModel {
     )
 }
 
+fun LiveCommunityTickerPayload.toEntity(): com.hazrat.database.entity.profile.SupporterTickerEntity {
+    return com.hazrat.database.entity.profile.SupporterTickerEntity(
+        donorName = donorName,
+        type = type,
+        amount = amount,
+        currency = currency
+    )
+}
+
+fun SupporterTickerModel.toEntity(): com.hazrat.database.entity.profile.SupporterTickerEntity {
+    return com.hazrat.database.entity.profile.SupporterTickerEntity(
+        donorName = donorName,
+        type = type,
+        amount = amount,
+        currency = currency
+    )
+}
+
+fun com.hazrat.database.entity.profile.SupporterTickerEntity.toModel(): SupporterTickerModel {
+    return SupporterTickerModel(
+        eventId = id.toString(),
+        donorName = donorName,
+        type = type,
+        amount = amount,
+        currency = currency
+    )
+}
+
 fun UserSupportStatusEntity.toModel(): SupporterStatusModel {
     return SupporterStatusModel(
         isSupporter = isSupporter,

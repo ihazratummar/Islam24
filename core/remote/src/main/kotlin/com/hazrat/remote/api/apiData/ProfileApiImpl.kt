@@ -30,12 +30,12 @@ class ProfileApiImpl(
             return if (response.status.value == 200) {
                 response.body<UserDto>()
             } else {
-                Log.e(TAG, "Failed to the profile ${response.status} ${response.request.url}")
+                Log.e(TAG, "Failed to get profile ${response.status} ${response.request.url}")
                 null
             }
 
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to the profile ${e.message}")
+            Log.e(TAG, "Failed to get profile ${e.message}")
             return null
         }
     }

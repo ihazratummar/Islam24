@@ -11,8 +11,6 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.hazrat.auth.data.BuildConfig
 import com.hazrat.auth.data.mapper.toEntity
-import com.hazrat.auth.data.mapper.toModel
-import com.hazrat.database.dao.UserSupportStatusDao
 import com.hazrat.datastore.TokenStorage
 import com.hazrat.domain.repository.AuthRepository
 import com.hazrat.domain.repository.ProfileRepository
@@ -21,31 +19,32 @@ import com.hazrat.remote.api.profile.ProfileApi
 import com.hazrat.remote.dto.auth.GoogleLoginRequest
 import com.hazrat.remote.dto.auth.LogoutRequest
 import com.revenuecat.purchases.Purchases
-import kotlin.contracts.contract
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.AuthError
 
 /**
+ * Production Industry-Grade Authentication Repository Implementation.
+ * Encapsulates Google Sign-In via Credential Manager, secure token storage, and remote/credential logout.
+ *
  * @author hazratummar
- * Created on 05/08/26
  */
-
 class AuthRepositoryImpl(
-    private val context: Context,
     private val credentialManager: CredentialManager,
     private val authApiCall: AuthApiCall,
     private val tokenStorage: TokenStorage,
     private val profileApi: ProfileApi,
-    private val profileRepository: ProfileRepository,
-    private val userSupportStatusDao: UserSupportStatusDao
+    private val profileRepository: ProfileRepository
 ) : AuthRepository {
 
-    override suspend fun googleCredentialSignIn(context: Context): Boolean {
-        return try {
+    override suspend fun googleCredentialSignIn(context: Context): Result<Unit, AuthError> = withContext(Dispatchers.IO) {
+        try {
             val response = buildCredentialResponse(context = context)
             handleSignIn(result = response)
         } catch (e: Exception) {
-            Log.e("AuthImpl", "Google Sign IN failed")
-            false
+            Log.e("AuthImpl", "Google Sign IN failed: $e")
+            Result.Error(AuthError.UNKNOWN_ERROR)
         }
     }
 
@@ -54,13 +53,14 @@ class AuthRepositoryImpl(
             .addCredentialOption(
                 GetGoogleIdOption.Builder()
                     .setFilterByAuthorizedAccounts(false)
+                    .setAutoSelectEnabled(false) // Force Google Account Picker to appear so user can switch accounts!
                     .setServerClientId(BuildConfig.GOOGLE_SIGN_WEB_SDK_CLIENT)
                     .build()
             ).build()
         return credentialManager.getCredential(context = context, request = request)
     }
 
-    private suspend fun handleSignIn(result: GetCredentialResponse): Boolean {
+    private suspend fun handleSignIn(result: GetCredentialResponse): Result<Unit, AuthError> {
         val credential = result.credential
         if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             try {
@@ -89,41 +89,43 @@ class AuthRepositoryImpl(
                             Log.e("AuthImpl", "RevenueCat logIn failed: $e")
                         }
                     }
-                    return true
+                    return Result.Success(Unit)
                 } else {
                     Log.e("AuthImpl", "Server Rejected token")
-                    return false
+                    return Result.Error(AuthError.INVALID_CREDENTIALS)
                 }
             } catch (e: Exception) {
                 Log.e("AuthImpl", "Server Error sending token: $e")
-                return false
+                return Result.Error(AuthError.NO_INTERNET)
             }
         } else {
             Log.e(
                 "AuthImpl",
                 "Credential was not a Google ID Token: ${credential.javaClass.simpleName}"
             )
-            return false
+            return Result.Error(AuthError.INVALID_CREDENTIALS)
         }
     }
 
-    override suspend fun logout(): Boolean {
-        val refreshToken = tokenStorage.getRefreshToken() ?: return false
-        val serverLogoutSuccessful = try {
-            authApiCall.logout(request = LogoutRequest(refreshToken = refreshToken))
-        } catch (e: Exception) {
-            Log.e("AuthImpl", "Failed to logout $e")
-            false
+    override suspend fun logout(): Result<Unit, AuthError> = withContext(Dispatchers.IO) {
+        val refreshToken = tokenStorage.getRefreshToken()
+        var serverSuccess = false
+        if (refreshToken != null) {
+            try {
+                serverSuccess = authApiCall.logout(request = LogoutRequest(refreshToken = refreshToken))
+            } catch (e: Exception) {
+                Log.e("AuthImpl", "Server logout failed: $e")
+            }
         }
-        if (!serverLogoutSuccessful) {
-            return false
-        }
+
+        // ALWAYS clear Google Credential Manager state so device forgets previous account selection
         try {
             credentialManager.clearCredentialState(ClearCredentialStateRequest())
         } catch (e: Exception) {
             Log.e("AuthImpl", "Failed to clear credential manager state: $e")
         }
 
+        // ALWAYS log out RevenueCat user session
         if (Purchases.isConfigured) {
             try {
                 Purchases.sharedInstance.logOut()
@@ -131,10 +133,20 @@ class AuthRepositoryImpl(
                 Log.e("AuthImpl", "RevenueCat logOut failed: $e")
             }
         }
-        return true
+
+        if (serverSuccess) {
+            Result.Success(Unit)
+        } else {
+            Result.Error(AuthError.UNKNOWN_ERROR)
+        }
     }
 
-    override suspend fun clearLocalSession() {
+    override suspend fun clearLocalSession(): Unit = withContext(Dispatchers.IO) {
         tokenStorage.clearToken()
+        try {
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+        } catch (e: Exception) {
+            Log.e("AuthImpl", "Failed to clear credential state in clearLocalSession: $e")
+        }
     }
 }
