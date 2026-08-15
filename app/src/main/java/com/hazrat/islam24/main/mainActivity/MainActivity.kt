@@ -72,8 +72,6 @@ class MainActivity : AppCompatActivity() {
         notificationHelper.createNotificationChannels()
 
         // Enterprise-grade: Ensure alarms are correctly scheduled on every app launch
-       PrayerRescheduleWorker.enqueue(this)
-
         // Handle notification deep link on cold start
         handleNavigationIntent(intent)
 

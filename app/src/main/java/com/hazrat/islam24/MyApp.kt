@@ -10,8 +10,12 @@ import coil.util.DebugLogger
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.hazrat.domain.repository.AppSyncScheduler
 import com.hazrat.islam24.di.initKoin
+import com.hazrat.islam24.sync.SyncScheduler
 import com.hazrat.notification.PrayerJanitorWorker
+import org.koin.android.ext.android.inject
+import org.koin.core.component.KoinComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -26,6 +30,9 @@ class MyApp: Application() , ImageLoaderFactory {
             Timber.plant(Timber.DebugTree())
         }
         schedulePrayerJanitor()
+        val appSync: AppSyncScheduler by inject()
+        appSync.scheduleImmediateSync()
+        appSync.schedulePeriodicSync()
     }
 
     private fun schedulePrayerJanitor() {

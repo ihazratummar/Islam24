@@ -21,6 +21,7 @@ include(":app")
 
 include(":core:ui")
 include(":core:utils")
+include(":core:data")
 include(":core:sensor")
 include(":core:remote")
 include(":core:location")

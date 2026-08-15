@@ -9,6 +9,13 @@ data class DuaCategoryModel(
     val title: String
 )
 
+@Stable
+data class DuaChapterWithCountModel(
+    val id: Int,
+    val title: String,
+    val audioUrl: String? = null,
+    val duaCount: Int = 0
+)
 
 @Stable
 data class DuaItemModel(
@@ -18,6 +25,17 @@ data class DuaItemModel(
     val translation: String,
     val transliteration: String = "",
     val reference: String,
-    val repeatCount: Int
+    val repeatCount: Int,
+    val audioUrl: String? = null,
+    val isBookmarked: Boolean = false
+)
+
+@Stable
+data class RecentReadDua(
+    val chapterId: Int,
+    val title: String,
+    val duaCount: Int,
+    val formattedDate: String,
+    val timestamp: Long = System.currentTimeMillis()
 )
 

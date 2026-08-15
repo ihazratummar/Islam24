@@ -4,22 +4,17 @@ import android.location.Location
 import com.hazrat.database.dao.LocationNameDao
 import com.hazrat.database.entity.LocationDetailsEntity
 import com.hazrat.domain.repository.LocationNameRepository
-import com.hazrat.domain.repository.PrayerTimeRepository
+import com.hazrat.domain.repository.prayer.PrayerTimeRepository
 import com.hazrat.location.data.mapper.toLocationNameFinder
-import com.hazrat.location.model.LocationConfigs
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
 import com.hazrat.remote.api.LocationNameApi
 import com.hazrat.utils.Constants.LOCATION_IQ_API_KEY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 class LocationNameRepositoryImpl(

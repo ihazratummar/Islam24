@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.domain.repository.PrayerTimeRepository
+import com.hazrat.domain.repository.prayer.PrayerTimeRepository
 import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.Prayer
 import com.hazrat.notification.PrayerAlarmScheduler
@@ -20,10 +20,10 @@ import com.hazrat.notification.PrayerRescheduleWorker
 import com.hazrat.prayer.ui.notification.NotificationState
 import com.hazrat.usecase.prayer.GetDailyPrayerStatusUseCase
 import com.hazrat.usecase.GetLocationNameUseCase
-import com.hazrat.usecase.prayer.GetPrayerNotificationStateUseCase
 import com.hazrat.usecase.prayer.GetPrayerTimeWindowForDaysUseCase
 import com.hazrat.usecase.prayer.PrayerNotificationEnabledUseCase
 import com.hazrat.usecase.prayer.TogglePrayerUseCase
+import com.hazrat.usecase.prayer.UserPrayerSettingUseCase
 import com.hazrat.utils.HijriDateUtils
 import com.hazrat.utils.result.Result
 import kotlinx.coroutines.Dispatchers
@@ -58,8 +58,8 @@ class PrayerTimeViewModel(
     private val togglePrayerUseCase: TogglePrayerUseCase,
     private val clock: Clock = Clock.systemDefaultZone(),
     private val prayerNotificationEnabledUseCase: PrayerNotificationEnabledUseCase,
-    private val getPrayerNotificationStateUseCase: GetPrayerNotificationStateUseCase,
-    private val getPrayerTimeWindowForDaysUseCase: GetPrayerTimeWindowForDaysUseCase
+    private val getPrayerTimeWindowForDaysUseCase: GetPrayerTimeWindowForDaysUseCase,
+    private val getPrayerSettingUseCase: UserPrayerSettingUseCase
 ) : ViewModel() {
 
     companion object {
@@ -99,14 +99,10 @@ class PrayerTimeViewModel(
 
     val notificationState = combine(
         _notificationState,
-        getPrayerNotificationStateUseCase.invoke()
-    ) { state, notificationState ->
+        getPrayerSettingUseCase.invoke()
+    ) { state, prayerSettingModel ->
         state.copy(
-            isFajrNotification = notificationState.fajr,
-            isDhuhrNotification = notificationState.dhuhr,
-            isAsrNotification = notificationState.asr,
-            isMaghribNotification = notificationState.maghrib,
-            isIshaNotification = notificationState.isha
+            userPrayerSettingModel = prayerSettingModel
         )
     }.stateIn(viewModelScope, started = SharingStarted.WhileSubscribed(5000), NotificationState())
 

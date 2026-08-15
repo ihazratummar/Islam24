@@ -11,9 +11,11 @@ import com.hazrat.remote.api.PrayerTimeApi
 import com.hazrat.remote.api.PrayerTimeApiImpl
 import com.hazrat.remote.api.apiData.ProfileApiImpl
 import com.hazrat.remote.api.apiData.SupporterWebSocketApiImpl
+import com.hazrat.remote.api.apiData.SyncApiImpl
 import com.hazrat.remote.api.auth.AuthApiImple
 import com.hazrat.remote.api.profile.ProfileApi
 import com.hazrat.remote.api.profile.SupporterWebSocketApi
+import com.hazrat.remote.api.sync.SyncApi
 import com.hazrat.remote.clients.KtorClient
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -43,5 +45,8 @@ fun getRemoteModule(): Module = module {
 
     single <AuthApiCall>{ AuthApiImple(httpClient = get(named(CUSTOM_BACKEND))) }
     single <ProfileApi>{ ProfileApiImpl(httpClient = get(named(CUSTOM_BACKEND))) }
+    single <SyncApi>{ SyncApiImpl(httpClient = get(named(CUSTOM_BACKEND))) }
+
     single <SupporterWebSocketApi>{ SupporterWebSocketApiImpl() }
+
 }

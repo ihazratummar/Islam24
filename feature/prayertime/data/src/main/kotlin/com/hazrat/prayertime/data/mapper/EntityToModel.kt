@@ -1,6 +1,8 @@
 package com.hazrat.prayertime.data.mapper
 
-import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.database.entity.prayer.PrayerTimeEntity
+import com.hazrat.database.entity.prayer.UserPrayerSettingEntity
+import com.hazrat.model.PrayerNotificationSettings
 import com.hazrat.model.PrayerTimeModel
 
 
@@ -53,10 +55,4 @@ fun PrayerTimeEntity.toModel(): PrayerTimeModel {
         latitude = latitude,
         longitude = longitude
     )
-}
-
-fun List<PrayerTimeEntity>.toPrayerModelList(): List<PrayerTimeModel> {
-    return this.map {
-        it.toModel()
-    }
 }

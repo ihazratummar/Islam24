@@ -3,10 +3,13 @@ package com.hazrat.prayer.ui.setting
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.datastore.UserDataStore
-import com.hazrat.domain.repository.PrayerTimeRepository
 import com.hazrat.notification.PrayerRescheduleWorker
+import com.hazrat.usecase.prayer.RefreshPrayerTimeUseCase
+import com.hazrat.usecase.prayer.UpdateCalculationMethodUseCase
+import com.hazrat.usecase.prayer.UpdateJuristicMethodUseCase
+import com.hazrat.usecase.prayer.UserPrayerSettingUseCase
 import com.hazrat.utils.network.ConnectivityObserver
+import com.hazrat.utils.result.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -18,20 +21,20 @@ import kotlinx.coroutines.launch
 
 class PrayerSettingViewModel (
     private val application: Application,
-    private val prayerTimeRepository: PrayerTimeRepository,
     private val connectivityObserver: ConnectivityObserver,
-    private val userDataStore: UserDataStore
+    private val updateJuristicMethodUseCase: UpdateJuristicMethodUseCase,
+    private val updateCalculationMethodUseCase: UpdateCalculationMethodUseCase,
+    private val refreshPrayerTimeUseCase: RefreshPrayerTimeUseCase,
+    private val userPrayerSettingUseCase: UserPrayerSettingUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PrayerSettingState())
     val state = combine(
         _state,
-        userDataStore.getPrayerCalculationMethod,
-        userDataStore.getPrayerJuristicMethod
-    ){state, calculationMethod, juristicMethod ->
+        userPrayerSettingUseCase.invoke(),
+    ){state, prayerSettingModel ->
         state.copy(
-            juristic = juristicMethod,
-            calculationMethod = calculationMethod
+            userPrayerSettingModel = prayerSettingModel
         )
     }.stateIn(
         scope = viewModelScope,
@@ -47,12 +50,15 @@ class PrayerSettingViewModel (
                     _state.update { it.copy(isRefresh = true) }
                     val networkStatus = connectivityObserver.observer().first()
                     if (networkStatus == ConnectivityObserver.Status.Available) {
-                        val result = userDataStore.saveSetPrayerCalculationMethod(calculationMethod = event.value)
-                        if (result){
-                            prayerTimeRepository.refreshPrayerTimes()
-                            _state.update { it.copy(isRefresh = false) }
-                        }else{
-                            _state.update { it.copy(isRefresh = false) }
+                        val result = updateCalculationMethodUseCase.invoke(method = event.value)
+                        when(result){
+                            is Result.Error -> {
+                                _state.update { it.copy(isRefresh = false) }
+                            }
+                            is Result.Success -> {
+                                refreshPrayerTimeUseCase.invoke()
+                                _state.update { it.copy(isRefresh = false) }
+                            }
                         }
                         PrayerRescheduleWorker.enqueue(application)
                     } else {
@@ -67,13 +73,17 @@ class PrayerSettingViewModel (
                     val networkStatus = connectivityObserver.observer().first()
                     if (networkStatus == ConnectivityObserver.Status.Available) {
 
-                        val result = userDataStore.savePrayerJuristicMethod(method = event.value)
-                        if (result){
-                            prayerTimeRepository.refreshPrayerTimes()
-                            _state.update { it.copy(isRefresh = false) }
-                        }else{
-                            _state.update { it.copy(isRefresh = false) }
+                        val result = updateJuristicMethodUseCase.invoke(method = event.value)
+                        when(result){
+                            is Result.Success -> {
+                                refreshPrayerTimeUseCase.invoke()
+                                _state.update { it.copy(isRefresh = false) }
+                            }
+                            is Result.Error -> {
+                                _state.update { it.copy(isRefresh = false) }
+                            }
                         }
+                        _state.update { it.copy(isRefresh = false) }
                         PrayerRescheduleWorker.enqueue(application)
                     } else {
                         _state.update { it.copy(isRefresh = false) }

@@ -67,4 +67,6 @@ dependencies {
 
     implementation (libs.ummalqura)
 
+    implementation (libs.kotlinx.datetime)
+
 }

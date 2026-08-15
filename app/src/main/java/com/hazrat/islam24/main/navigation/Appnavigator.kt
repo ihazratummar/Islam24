@@ -48,10 +48,15 @@ import com.hazrat.allahNames.ui.namesofallah.NamesOfAllahScreen
 import com.hazrat.allahNames.ui.namesofallah.NamesViewmodel
 import com.hazrat.athkar.ui.azkar.AthkarScreen
 import com.hazrat.athkar.ui.azkar.AthkarViewModel
+import com.hazrat.athkar.ui.dua.category.DuaBookmarksScreen
+import com.hazrat.athkar.ui.dua.category.DuaCategoryDetailScreen
+import com.hazrat.athkar.ui.dua.category.DuaRecentsScreen
 import com.hazrat.athkar.ui.dua.category.DuaScreen
 import com.hazrat.athkar.ui.dua.category.DuaViewModel
+import com.hazrat.athkar.ui.dua.category.HisnulMuslimCategoryGridScreen
 import com.hazrat.athkar.ui.dua.dua_details.DuaItemScreen
 import com.hazrat.athkar.ui.dua.dua_details.DuaItemViewModel
+import com.hazrat.model.HisnulMuslimCategory
 import com.hazrat.calendar.CalendarScreen
 import com.hazrat.home.ui.HomeScreen
 import com.hazrat.home.ui.HomeViewModel
@@ -374,10 +379,87 @@ fun AppNavigator(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    onDuaClick = { categoryId ->
-                        navController.navigate(HomeRoutes.DuaItemRoute(categoryId = categoryId))
+                    onDuaClick = { chapterId ->
+                        navController.navigate(HomeRoutes.DuaItemRoute(categoryId = chapterId))
+                    },
+                    onCategoryClick = { category ->
+                        navController.navigate(HomeRoutes.DuaCategoryDetailRoute(categoryId = category.id))
+                    },
+                    onHisnulMuslimClick = {
+                        navController.navigate(HomeRoutes.HisnulMuslimGridRoute)
+                    },
+                    onBookmarksClick = {
+                        navController.navigate(HomeRoutes.DuaBookmarksRoute)
+                    },
+                    onRecentsClick = {
+                        navController.navigate(HomeRoutes.DuaRecentsRoute)
+                    },
+                    onTasbihClick = {
+                        navController.navigate(HomeRoutes.TasbihRoute)
                     },
                     event = viewModel::event
+                )
+            }
+
+            composable<HomeRoutes.HisnulMuslimGridRoute> {
+                HisnulMuslimCategoryGridScreen(
+                    onCategoryClick = { category ->
+                        navController.navigate(HomeRoutes.DuaCategoryDetailRoute(categoryId = category.id))
+                    },
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable<HomeRoutes.DuaCategoryDetailRoute> { navBackStack ->
+                val categoryId = navBackStack.toRoute<HomeRoutes.DuaCategoryDetailRoute>().categoryId
+                val category = HisnulMuslimCategory.fromId(categoryId)
+                val viewModel: DuaViewModel = koinViewModel()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                DuaCategoryDetailScreen(
+                    category = category,
+                    duaCategoryState = state,
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onChapterClick = { chapterId ->
+                        navController.navigate(HomeRoutes.DuaItemRoute(categoryId = chapterId))
+                    },
+                    onLoadCategory = { cat ->
+                        viewModel.loadChaptersForCategory(cat)
+                    }
+                )
+            }
+
+            composable<HomeRoutes.DuaBookmarksRoute> {
+                val viewModel: DuaViewModel = koinViewModel()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                DuaBookmarksScreen(
+                    duaCategoryState = state,
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onDuaClick = { chapterId ->
+                        navController.navigate(HomeRoutes.DuaItemRoute(categoryId = chapterId))
+                    }
+                )
+            }
+
+            composable<HomeRoutes.DuaRecentsRoute> {
+                val viewModel: DuaViewModel = koinViewModel()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                DuaRecentsScreen(
+                    duaCategoryState = state,
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onDuaClick = { chapterId ->
+                        navController.navigate(HomeRoutes.DuaItemRoute(categoryId = chapterId))
+                    },
+                    onDeleteRecent = { chapterId ->
+                        viewModel.event(com.hazrat.athkar.ui.dua.category.DuaCategoryEvent.DeleteRecent(chapterId))
+                    }
                 )
             }
 
@@ -394,7 +476,8 @@ fun AppNavigator(
                     state = state,
                     onBackClick = {
                         navController.popBackStack()
-                    }
+                    },
+                    event = viewModel::event
                 )
 
             }

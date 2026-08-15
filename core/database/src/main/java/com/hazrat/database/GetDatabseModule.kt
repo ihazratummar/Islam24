@@ -6,13 +6,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.hazrat.database.dao.AllahNameDao
 import com.hazrat.database.dao.DuaDao
 import com.hazrat.database.dao.LocationNameDao
-import com.hazrat.database.dao.PrayerLogDao
-import com.hazrat.database.dao.PrayerTimeDao
+import com.hazrat.database.dao.prayer.PrayerLogDao
+import com.hazrat.database.dao.prayer.PrayerTimeDao
 import com.hazrat.database.dao.KhatamDao
 import com.hazrat.database.dao.QuranDao
 import com.hazrat.database.dao.UserDao
 import com.hazrat.database.dao.UserSupportStatusDao
 import com.hazrat.database.dao.ZakatDao
+import com.hazrat.database.dao.prayer.PrayerSettingDao
 import com.hazrat.database.database.AppDatabase
 import com.hazrat.database.database.DuaDatabase
 import com.hazrat.database.database.LocationDatabase
@@ -99,6 +100,7 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
     }
     single<PrayerTimeDao> { get<PrayerDatabase>().prayerTimeDao() }
     single<PrayerLogDao> { get<PrayerDatabase>().prayerLogDao() }
+    single<PrayerSettingDao> { get<PrayerDatabase>().prayerSettingDao() }
 
     // Zakat Database
     single {
@@ -252,6 +254,46 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
     single<QuranDao> { get<QuranDatabase>().quranDao() }
     single<KhatamDao> { get<QuranDatabase>().khatamDao() }
 
+val MIGRATION_0_2_DUA = object : Migration(0, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `recent_dua` (
+                `chapterId` INTEGER NOT NULL,
+                `title` TEXT NOT NULL,
+                `duaCount` INTEGER NOT NULL,
+                `formattedDate` TEXT NOT NULL,
+                `timestamp` INTEGER NOT NULL,
+                PRIMARY KEY(`chapterId`)
+            )
+            """.trimIndent()
+        )
+    }
+}
+
+val MIGRATION_0_1_DUA = object : Migration(0, 1) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // No schema changes between 0 and 1
+    }
+}
+
+val MIGRATION_1_2_DUA = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `recent_dua` (
+                `chapterId` INTEGER NOT NULL,
+                `title` TEXT NOT NULL,
+                `duaCount` INTEGER NOT NULL,
+                `formattedDate` TEXT NOT NULL,
+                `timestamp` INTEGER NOT NULL,
+                PRIMARY KEY(`chapterId`)
+            )
+            """.trimIndent()
+        )
+    }
+}
+
     // Dua Hisnul Muslim Database
     single {
         Room.databaseBuilder(
@@ -260,7 +302,8 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
             "dua_db"
         )
             .createFromAsset("databases/hisnul_muslim.db")
-            .fallbackToDestructiveMigration(dropAllTables = true)
+            .addMigrations(MIGRATION_0_1_DUA, MIGRATION_1_2_DUA, MIGRATION_0_2_DUA)
+            .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
 

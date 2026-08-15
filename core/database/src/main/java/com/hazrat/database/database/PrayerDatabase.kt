@@ -4,17 +4,25 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.hazrat.database.converter.Converter
-import com.hazrat.database.dao.PrayerLogDao
-import com.hazrat.database.dao.PrayerTimeDao
-import com.hazrat.database.entity.PrayerLogEntity
-import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.database.converter.DatabaseConverters
+import com.hazrat.database.converter.NotificationSettingsConverter
+import com.hazrat.database.dao.prayer.PrayerLogDao
+import com.hazrat.database.dao.prayer.PrayerSettingDao
+import com.hazrat.database.dao.prayer.PrayerTimeDao
+import com.hazrat.database.entity.prayer.PrayerLogEntity
+import com.hazrat.database.entity.prayer.PrayerTimeEntity
+import com.hazrat.database.entity.prayer.UserPrayerSettingEntity
 
 @Database(
-    entities = [PrayerTimeEntity::class, PrayerLogEntity::class],
-    version = 31,
+    entities = [PrayerTimeEntity::class, PrayerLogEntity::class, UserPrayerSettingEntity::class],
+    version = 32,
     exportSchema = false
 )
-@TypeConverters(Converter::class)
+@TypeConverters(
+    Converter::class,
+    NotificationSettingsConverter::class,
+    DatabaseConverters::class
+)
 abstract class PrayerDatabase : RoomDatabase() {
 
     /**
@@ -25,4 +33,6 @@ abstract class PrayerDatabase : RoomDatabase() {
     abstract fun prayerTimeDao(): PrayerTimeDao
 
     abstract fun prayerLogDao () : PrayerLogDao
+
+    abstract fun prayerSettingDao(): PrayerSettingDao
 }

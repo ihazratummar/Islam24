@@ -177,7 +177,7 @@ private fun PullCrescentAnimation(distanceFraction: Float) {
 // ═══════════════════════════════════════════════════════════
 
 @Composable
-private fun RefreshingCrescentAnimation() {
+fun RefreshingCrescentAnimation() {
     val infiniteTransition = rememberInfiniteTransition(label = "crescentRefresh")
 
     val ringRotation by infiniteTransition.animateFloat(

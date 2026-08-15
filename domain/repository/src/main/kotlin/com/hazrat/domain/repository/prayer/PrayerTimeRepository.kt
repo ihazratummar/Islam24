@@ -1,7 +1,6 @@
-package com.hazrat.domain.repository
+package com.hazrat.domain.repository.prayer
 
-import com.hazrat.database.dao.PrayerLocation
-import com.hazrat.database.entity.LocationDetailsEntity
+import com.hazrat.database.dao.prayer.PrayerLocation
 import com.hazrat.model.IslamicEventsInfoModel
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.model.PrayerTimeModel

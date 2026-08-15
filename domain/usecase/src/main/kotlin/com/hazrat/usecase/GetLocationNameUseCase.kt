@@ -3,7 +3,7 @@ package com.hazrat.usecase
 import android.location.Location
 import com.hazrat.database.entity.LocationDetailsEntity
 import com.hazrat.domain.repository.LocationNameRepository
-import com.hazrat.domain.repository.PrayerTimeRepository
+import com.hazrat.domain.repository.prayer.PrayerTimeRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest

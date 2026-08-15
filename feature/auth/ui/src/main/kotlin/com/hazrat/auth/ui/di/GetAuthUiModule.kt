@@ -40,7 +40,7 @@ fun getAuthUiModule(): Module = module {
     viewModel {
         LoginViewModel(
             googleSignInUseCase = get(),
-
+            syncDataUseCase = get(),
         )
     }
 }

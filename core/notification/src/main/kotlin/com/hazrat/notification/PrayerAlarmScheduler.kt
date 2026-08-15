@@ -12,14 +12,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import com.hazrat.datastore.UserDataStore
+import com.hazrat.database.dao.prayer.PrayerSettingDao
 import com.hazrat.model.Prayer
-import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 
 class PrayerAlarmScheduler(
     private val context: Context,
-    private val userDataStore: UserDataStore
+    private val prayerSettingDao: PrayerSettingDao
 ) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -95,9 +94,14 @@ class PrayerAlarmScheduler(
         }
     }
 
-    fun setPrayerAlarm(prayerName: Prayer, prayerTime: Long, preAlertMinutes: Int? = null) {
-        val offset = preAlertMinutes ?: runBlocking {
-            userDataStore.getPrayerPreAlertOffsetSync(prayerName)
+    suspend fun setPrayerAlarm(prayerName: Prayer, prayerTime: Long, preAlertMinutes: Int? = null) {
+        val prayerSetting =  prayerSettingDao.getSettings()
+        val offset = preAlertMinutes ?: when(prayerName){
+            Prayer.FAJR -> prayerSetting?.notificationSettingsJson?.fajr?.offsetMinutes ?: 0
+            Prayer.DHUHR -> prayerSetting?.notificationSettingsJson?.dhuhr?.offsetMinutes ?: 0
+            Prayer.ASR -> prayerSetting?.notificationSettingsJson?.asr?.offsetMinutes ?: 0
+            Prayer.MAGHRIB -> prayerSetting?.notificationSettingsJson?.maghrib?.offsetMinutes ?: 0
+            Prayer.ISHA -> prayerSetting?.notificationSettingsJson?.isha?.offsetMinutes ?: 0
         }
         val adjustedTime = prayerTime - (offset * 60 * 1000L)
         setAlarm(

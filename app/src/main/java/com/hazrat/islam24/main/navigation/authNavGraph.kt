@@ -57,11 +57,12 @@ fun NavGraphBuilder.authNavGraph(
         }
 
         composable<Login> {
-
             val viewModel = koinViewModel<LoginViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
             LoginScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    navController.popBackStack()
+                },
                 onTermsClick = {
                     navController.navigate(
                         LegalScreenRoute(

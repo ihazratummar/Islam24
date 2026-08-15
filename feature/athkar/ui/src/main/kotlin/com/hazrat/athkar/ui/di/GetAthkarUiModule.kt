@@ -8,12 +8,10 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-
 /**
  * @author hazratummar
  * Created on 25/01/26
  */
-
 fun getAthkarUiModule(): Module = module {
     viewModelOf(::AthkarViewModel)
     viewModelOf(::DuaViewModel)
@@ -22,6 +20,9 @@ fun getAthkarUiModule(): Module = module {
         DuaItemViewModel(
             duaCategoryId = params.get(),
             getDuaItemListUseCase = get(),
+            saveRecentDuaUseCase = get(),
+            getAllChaptersUseCase = get(),
+            toggleDuaBookmarkUseCase = get()
         )
     }
 }

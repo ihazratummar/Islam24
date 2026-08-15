@@ -1,6 +1,6 @@
 package com.hazrat.usecase.prayer
 
-import com.hazrat.domain.repository.PrayerLogRepository
+import com.hazrat.domain.repository.prayer.PrayerLogRepository
 import com.hazrat.model.DailyPrayerStatus
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate

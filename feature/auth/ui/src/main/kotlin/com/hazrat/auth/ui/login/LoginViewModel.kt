@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.hazrat.model.profile.SupporterTickerModel
 import com.hazrat.usecase.profile.GoogleSignInUseCase
 import com.hazrat.usecase.profile.ListenToSupportTickerUseCase
+import com.hazrat.usecase.profile.SyncDataUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ import com.hazrat.utils.result.error.AuthError
  */
 class LoginViewModel(
     private val googleSignInUseCase: GoogleSignInUseCase,
+    private val syncDataUseCase: SyncDataUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -45,6 +47,7 @@ class LoginViewModel(
                         when (val result = googleSignInUseCase(context = event.context)) {
                             is Result.Success -> {
                                 _effect.emit(LoginEffect.NavigateBack)
+                                syncDataUseCase.invoke()
                             }
                             is Result.Error -> {
                                 val errorMessage = when (result.error) {

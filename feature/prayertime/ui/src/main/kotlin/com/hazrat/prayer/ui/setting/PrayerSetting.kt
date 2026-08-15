@@ -1,6 +1,5 @@
 package com.hazrat.prayer.ui.setting
 
-import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,11 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -21,7 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,11 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.model.prayersettingmodel.JuristicMethod
 import com.hazrat.model.prayersettingmodel.prayerMethods
 import com.hazrat.ui.R
 import com.hazrat.ui.common.BackIcon
+import com.hazrat.ui.common.RefreshingCrescentAnimation
 import com.hazrat.ui.common.TopAppBarTitle
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
@@ -67,14 +67,6 @@ fun PrayerSetting(
         contentWindowInsets = WindowInsets()
     ) { paddingValues ->
 
-        if (state.isRefresh) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth(),
-            )
-        }
-
-
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
@@ -100,7 +92,7 @@ fun PrayerSetting(
                     )
                 ) {
                     prayerMethods.forEachIndexed { index, methodDetails ->
-                        val isSelected = state.calculationMethod == methodDetails.method
+                        val isSelected = state.userPrayerSettingModel?.calculationMethod == methodDetails.method
                         val lastIndex = index == prayerMethods.size - 1
                         Row(
                             modifier = Modifier
@@ -187,7 +179,7 @@ fun PrayerSetting(
                     )
                 ) {
                     JuristicMethod.entries.forEachIndexed { index, juristicDetails ->
-                        val isSelected = state.juristic == juristicDetails.index
+                        val isSelected = state.userPrayerSettingModel?.juristicMethod == juristicDetails.index
                         val lastIndex = index == JuristicMethod.entries.size - 1
                         Row(
                             modifier = Modifier
@@ -254,48 +246,19 @@ fun PrayerSetting(
                 }
             }
         }
+
+        if (state.isRefresh) {
+            Box(
+                modifier = Modifier.padding(top = dimens.space20).fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ){
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(dimens.iconLg).size(dimens.avatarXl)
+                ){
+                    RefreshingCrescentAnimation()
+                }
+            }
+        }
     }
-
-
-//    Box(modifier = Modifier.fillMaxSize()) {
-//        Column(
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            val calculationMethod = prayerMethods[state.calculationMethod]
-//            PrayerSettingCard(
-//                text = stringResource(R.string.calculation_method),
-//                methodID = calculationMethod.name,
-//                method = "${calculationMethod.farjAngle}°/${calculationMethod.ishaAngle}° ● ${calculationMethod.region}",
-//                onClick = {
-//                    event(PrayerSettingEvent.OpenCalculationDialog)
-//                }
-//            )
-//            PrayerSettingCard(
-//                text = stringResource(R.string.juristic_method),
-//                methodID = JuristicMethod.entries[state.juristic].name,
-//                method = null,
-//                onClick = {
-//                    event(PrayerSettingEvent.OpenJuristicDialog)
-//                }
-//            )
-//        }
-//        if (state.isCalculationDialogOpen) {
-//            PrayerCalculationDialog(
-//                onMethodSelected = { method ->
-//                    event(PrayerSettingEvent.CalculationChanged(method.method))
-//                },
-//                onDismiss = { event(PrayerSettingEvent.OpenCalculationDialog) }
-//            )
-//        }
-//        if (state.isJuristicDialogOpen) {
-//            JuristicSelectionDialog(
-//                onJuristicSelected = { juristic ->
-//                    event(PrayerSettingEvent.JuristicChanged(juristic.number))
-//                },
-//                onDismiss = { event(PrayerSettingEvent.OpenJuristicDialog) }
-//            )
-//        }
-//
-//    }
-
 }

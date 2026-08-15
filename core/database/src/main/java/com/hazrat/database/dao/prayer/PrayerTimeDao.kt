@@ -1,4 +1,4 @@
-package com.hazrat.database.dao
+package com.hazrat.database.dao.prayer
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,9 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.database.entity.prayer.PrayerTimeEntity
 import com.hazrat.database.entity.HolidayInfoEntity
-import com.hazrat.database.entity.LocationDetailsEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

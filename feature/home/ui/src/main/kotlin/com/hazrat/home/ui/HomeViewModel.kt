@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.database.dao.DuaDao
-import com.hazrat.database.dao.PrayerLogDao
+import com.hazrat.database.dao.prayer.PrayerLogDao
 import com.hazrat.database.dao.QuranDao
 import com.hazrat.datastore.DataStorePreference
 import com.hazrat.model.DailyPrayerStatus

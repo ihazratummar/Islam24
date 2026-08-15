@@ -7,9 +7,14 @@ import com.hazrat.datastore.UserDataStore
 import com.hazrat.model.Prayer
 import com.hazrat.notification.PrayerAlarmScheduler
 import com.hazrat.notification.PrayerRescheduleWorker
+import com.hazrat.usecase.prayer.PrayerNotificationEnabledUseCase
+import com.hazrat.usecase.prayer.UpdatePrayerAudioUseCase
+import com.hazrat.usecase.prayer.UpdatePrayerOffsetMinuteUseCase
+import com.hazrat.usecase.prayer.UserPrayerSettingUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -31,23 +36,20 @@ sealed interface PrayerNotificationEvent {
 class PrayerNotificationViewModel(
     private val application: Application,
     private val userDataStore: UserDataStore,
-    private val prayerAlarmScheduler: PrayerAlarmScheduler
+    private val prayerAlarmScheduler: PrayerAlarmScheduler,
+    private val userPrayerSettingUseCase: UserPrayerSettingUseCase,
+    private val prayerNotificationEnabledUseCase: PrayerNotificationEnabledUseCase,
+    private val updatePrayerAudioUseCase: UpdatePrayerAudioUseCase,
+    private val updatePrayerOffsetMinuteUseCase: UpdatePrayerOffsetMinuteUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PrayerNotificationState())
 
     val uiState: StateFlow<PrayerNotificationState> = combine(
         _uiState,
-        userDataStore.notificationSettingsFlow
-    ) { state, notificationSettings ->
-        val enabledMap = mapOf(
-            Prayer.FAJR to notificationSettings.fajr,
-            Prayer.DHUHR to notificationSettings.dhuhr,
-            Prayer.ASR to notificationSettings.asr,
-            Prayer.MAGHRIB to notificationSettings.maghrib,
-            Prayer.ISHA to notificationSettings.isha
-        )
-        state.copy(enabledPrayers = enabledMap)
+        userPrayerSettingUseCase.invoke()
+    ) { state, prayerSettings ->
+        state.copy(userPrayerSettingModel = prayerSettings)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -60,28 +62,8 @@ class PrayerNotificationViewModel(
 
     private fun loadPreferences() {
         viewModelScope.launch {
-            Prayer.entries.forEach { prayer ->
-                launch {
-                    userDataStore.getPrayerPreAlertOffset(prayer).collect { offset ->
-                        _uiState.update { s ->
-                            s.copy(preAlertOffsets = s.preAlertOffsets + (prayer to offset))
-                        }
-                    }
-                }
-                launch {
-                    userDataStore.getPrayerVibrationEnabled(prayer).collect { vibration ->
-                        _uiState.update { s ->
-                            s.copy(vibrationStates = s.vibrationStates + (prayer to vibration))
-                        }
-                    }
-                }
-                launch {
-                    userDataStore.getPrayerAzanSound(prayer).collect { sound ->
-                        _uiState.update { s ->
-                            s.copy(azanSounds = s.azanSounds + (prayer to sound))
-                        }
-                    }
-                }
+            userPrayerSettingUseCase.invoke().collectLatest { prayerSettingModel ->
+                _uiState.update { it.copy(userPrayerSettingModel = prayerSettingModel) }
             }
         }
     }
@@ -91,15 +73,16 @@ class PrayerNotificationViewModel(
             is PrayerNotificationEvent.ToggleMaster -> {
                 viewModelScope.launch {
                     Prayer.entries.forEach { prayer ->
-                        userDataStore.setPrayerNotificationEnabled(prayer, event.enable)
+                        prayerNotificationEnabledUseCase(prayer = prayer, enabled = event.enable)
                     }
+
                     triggerDynamicAlarmReschedule()
                 }
             }
 
             is PrayerNotificationEvent.TogglePrayer -> {
                 viewModelScope.launch {
-                    userDataStore.setPrayerNotificationEnabled(event.prayer, event.enabled)
+                    prayerNotificationEnabledUseCase(prayer = event.prayer, enabled = event.enabled)
                     if (!event.enabled) {
                         // Collapse accordion if notification turned off!
                         _uiState.update { s ->
@@ -121,20 +104,14 @@ class PrayerNotificationViewModel(
 
             is PrayerNotificationEvent.SetPreAlertOffset -> {
                 viewModelScope.launch {
-                    userDataStore.setPrayerPreAlertOffset(event.prayer, event.minutes)
-                    _uiState.update { s ->
-                        s.copy(preAlertOffsets = s.preAlertOffsets + (event.prayer to event.minutes))
-                    }
+                    updatePrayerOffsetMinuteUseCase(prayer = event.prayer, offset = event.minutes)
                     triggerDynamicAlarmReschedule()
                 }
             }
 
             is PrayerNotificationEvent.SetAzanSound -> {
                 viewModelScope.launch {
-                    userDataStore.setPrayerAzanSound(event.prayer, event.soundName)
-                    _uiState.update { s ->
-                        s.copy(azanSounds = s.azanSounds + (event.prayer to event.soundName))
-                    }
+                    updatePrayerAudioUseCase(prayer = event.prayer, audio = event.soundName)
                 }
             }
 

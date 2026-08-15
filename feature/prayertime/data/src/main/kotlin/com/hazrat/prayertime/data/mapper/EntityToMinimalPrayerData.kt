@@ -1,6 +1,6 @@
 package com.hazrat.prayertime.data.mapper
 
-import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.database.entity.prayer.PrayerTimeEntity
 import com.hazrat.model.MinimalPrayerData
 
 

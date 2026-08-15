@@ -1,6 +1,6 @@
 package com.hazrat.usecase.prayer
 
-import com.hazrat.domain.repository.PrayerSettingRepository
+import com.hazrat.domain.repository.prayer.PrayerSettingRepository
 import com.hazrat.model.Prayer
 
 

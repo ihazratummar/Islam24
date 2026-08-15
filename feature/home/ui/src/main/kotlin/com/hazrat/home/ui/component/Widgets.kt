@@ -173,6 +173,18 @@ sealed class HomeRoutes {
     data object DuaRoute : HomeRoutes()
 
     @Serializable
+    data object HisnulMuslimGridRoute : HomeRoutes()
+
+    @Serializable
+    data class DuaCategoryDetailRoute(val categoryId: String) : HomeRoutes()
+
+    @Serializable
+    data object DuaBookmarksRoute : HomeRoutes()
+
+    @Serializable
+    data object DuaRecentsRoute : HomeRoutes()
+
+    @Serializable
     data class DuaItemRoute(val categoryId: Int) : HomeRoutes()
 
     @Serializable

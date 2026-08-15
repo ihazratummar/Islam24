@@ -1,6 +1,6 @@
 package com.hazrat.usecase.prayer
 
-import com.hazrat.domain.repository.PrayerTimeRepository
+import com.hazrat.domain.repository.prayer.PrayerTimeRepository
 import com.hazrat.model.MinimalPrayerData
 import com.hazrat.utils.HijriDateUtils
 import com.hazrat.utils.result.Result

@@ -10,14 +10,13 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.hazrat.datastore.AppDataStore
 import com.hazrat.datastore.UserDataStore
-import com.hazrat.domain.repository.PrayerLogRepository
+import com.hazrat.domain.repository.prayer.PrayerLogRepository
 import com.hazrat.domain.repository.QuranRepository
 import com.hazrat.usecase.profile.GetProfileDataUseCase
 import com.hazrat.usecase.profile.IsLoggedInUseCase
 import com.hazrat.usecase.profile.SignOutUseCase
 import com.hazrat.utils.result.Result
 import com.hazrat.utils.result.error.AuthError
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,7 +28,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * @author Hazrat Ummar Shaikh

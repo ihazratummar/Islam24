@@ -3,12 +3,12 @@ package com.hazrat.prayertime.data.repository
 import android.content.Context
 import androidx.annotation.WorkerThread
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
-import com.hazrat.database.dao.PrayerLocation
-import com.hazrat.database.dao.PrayerTimeDao
-import com.hazrat.database.entity.LocationDetailsEntity
-import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.database.dao.prayer.PrayerLocation
+import com.hazrat.database.dao.prayer.PrayerSettingDao
+import com.hazrat.database.dao.prayer.PrayerTimeDao
+import com.hazrat.database.entity.prayer.PrayerTimeEntity
 import com.hazrat.datastore.UserDataStore
-import com.hazrat.domain.repository.PrayerTimeRepository
+import com.hazrat.domain.repository.prayer.PrayerTimeRepository
 import com.hazrat.location.model.LocationResult
 import com.hazrat.location.repository.LocationRepository
 import com.hazrat.model.EventType
@@ -18,7 +18,6 @@ import com.hazrat.model.PrayerTimeModel
 import com.hazrat.prayertime.data.mapper.toEntityList
 import com.hazrat.prayertime.data.mapper.toEventType
 import com.hazrat.prayertime.data.mapper.toMinimalPrayerData
-import com.hazrat.prayertime.data.mapper.toPrayerModelList
 import com.hazrat.remote.api.PrayerTimeApi
 import com.hazrat.ui.R
 import com.hazrat.utils.DateUtil
@@ -31,16 +30,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.withTimeoutOrNull
 import io.ktor.client.plugins.ResponseException
 import timber.log.Timber
 import java.io.IOException
@@ -66,7 +61,8 @@ class PrayerTimeRepositoryImpl(
     private val context: Context,
     private val connectivityObserver: ConnectivityObserver,
     private val dispatchers: DispatcherProvider,  // Injected — never hardcode Dispatchers.IO,
-    private val userDataStore: UserDataStore
+    private val userDataStore: UserDataStore,
+    private val prayerSettingDao: PrayerSettingDao
 ) : PrayerTimeRepository {
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -335,17 +331,15 @@ class PrayerTimeRepositoryImpl(
             // ── Location — immutable val, never silent fallback ──────────────
             val coordinateResult = resolveCoordinates()
 
-            // ── Settings snapshot ────────────────────────────────────────────
-            val method = userDataStore.getPrayerCalculationMethod()
-            val school = userDataStore.getPrayerJuristicMethod()
+            val prayerSetting = prayerSettingDao.getSettings()
 
             // ── API call ─────────────────────────────────────────────────────
             val apiResponse = api.newPrayerTimesRequest(
                 year = year,
                 latitude = coordinateResult.latitude.toString(),
                 longitude = coordinateResult.longitude.toString(),
-                method = method,
-                school = school,
+                calculationMethod = prayerSetting?.calculationMethod ?:1,
+                juristicMethod = prayerSetting?.juristicMethod ?:0,
             )
 
             val entities = apiResponse.data.values.flatten().toEntityList()

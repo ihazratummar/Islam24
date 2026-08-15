@@ -20,8 +20,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         this.targetSdk = 37
-        versionCode = 114
-        versionName = "4.2.0"
+        versionCode = 116
+        versionName = "4.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -78,6 +78,7 @@ kotlin {
 dependencies {
 
     implementation(project(":core:ui"))
+    implementation(project(":core:data"))
     implementation(project(":core:utils"))
     implementation(project(":core:sensor"))
     implementation(project(":core:remote"))

@@ -13,6 +13,7 @@ import com.hazrat.database.getDatabaseModule
 import com.hazrat.datastore.di.getDatastoreModule
 import com.hazrat.downloader.di.getDownloadModule
 import com.hazrat.home.ui.di.getHomeUiModule
+import com.hazrat.islam24.core.data.di.getDataModule
 import com.hazrat.location.di.getLocationModule
 import com.hazrat.notification.di.getNotificationModule
 import com.hazrat.prayer.ui.di.getPrayerUiModule
@@ -36,6 +37,7 @@ fun initKoin(app: Application) {
         workManagerFactory()
         modules(
             getAppModule(),
+            getDataModule(),
             getUtilsModule(),
             getDatastoreModule(),
             getDatabaseModule(),

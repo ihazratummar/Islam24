@@ -1,6 +1,6 @@
 package com.hazrat.usecase
 
-import com.hazrat.domain.repository.PrayerTimeRepository
+import com.hazrat.domain.repository.prayer.PrayerTimeRepository
 import com.hazrat.model.IslamicEventsInfoModel
 import kotlinx.coroutines.flow.Flow
 

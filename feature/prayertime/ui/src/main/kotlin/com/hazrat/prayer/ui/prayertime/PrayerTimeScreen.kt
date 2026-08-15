@@ -364,7 +364,7 @@ fun PrayerTimeScreen(
                     // Notifications Settings Card
                     item {
                         NotificationSettingCard(
-                            totalNotificationOn = notificationState.notificationCount(),
+                            totalNotificationOn = notificationState.notificationCount,
                             onClick = onManageNotificationsClick
                         )
                     }

@@ -30,7 +30,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -50,7 +49,6 @@ import com.hazrat.prayer.ui.notification.component.AzanSoundBottomSheet
 import com.hazrat.prayer.ui.notification.component.PreAlertBottomSheet
 import com.hazrat.ui.R
 import com.hazrat.ui.common.BackIcon
-import com.hazrat.ui.common.IconWithBackground
 import com.hazrat.ui.common.IslamicGridBackground
 import com.hazrat.ui.common.PrayerType
 import com.hazrat.ui.theme.customColors
@@ -116,7 +114,7 @@ fun PrayerNotificationScreen(
 
                 // 5 Accordion Prayer Cards (Fajr, Dhuhr, Asr, Maghrib, Isha)
                 items(Prayer.entries) { prayer ->
-                    val isEnabled = state.enabledPrayers[prayer] ?: false
+                    val isEnabled = state.enabledPrayers[prayer]
                     val isExpanded = state.expandedPrayers.contains(prayer)
                     val preAlertOffset = state.preAlertOffsets[prayer] ?: 0
                     val reciterName = state.azanSounds[prayer] ?: "System Default"
@@ -131,9 +129,8 @@ fun PrayerNotificationScreen(
                     }
 
                     PrayerNotificationAccordionCard(
-                        prayer = prayer,
                         prayerType = prayerType,
-                        isEnabled = isEnabled,
+                        isEnabled = isEnabled!!,
                         isExpanded = isExpanded,
                         preAlertOffset = preAlertOffset,
                         reciterName = reciterName,
@@ -298,7 +295,6 @@ private fun MasterNotificationCard(
  */
 @Composable
 private fun PrayerNotificationAccordionCard(
-    prayer: Prayer,
     prayerType: PrayerType,
     isEnabled: Boolean,
     isExpanded: Boolean,

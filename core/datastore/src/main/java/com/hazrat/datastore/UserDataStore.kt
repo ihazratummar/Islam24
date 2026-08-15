@@ -28,20 +28,12 @@ class UserDataStore(
     ----------------
      */
 
-    private fun notificationEnabledKey(prayerName: Prayer) =
-        booleanPreferencesKey("${prayerName.key}_notification_enabled")
-
-    private fun notificationTypeKey(prayerName: Prayer) =
-        stringPreferencesKey("${prayerName.key}_notification_type")
-
     private fun preAlertOffsetKey(prayerName: Prayer) =
         intPreferencesKey("${prayerName.key}_pre_alert_offset")
 
     private fun vibrationEnabledKey(prayerName: Prayer) =
         booleanPreferencesKey("${prayerName.key}_vibration_enabled")
 
-    private fun azanSoundKey(prayerName: Prayer) =
-        stringPreferencesKey("${prayerName.key}_azan_sound")
 
 
     companion object {
@@ -53,17 +45,8 @@ class UserDataStore(
         const val MAGHRIB = "Maghrib"
         const val ISHA = "Isha"
 
-        const val SELECTED_FAJR_NOTIFICATION = "SELECTED_FAJR_NOTIFICATION"
-        const val SELECTED_DHUHR_NOTIFICATION = "SELECTED_DHUHR_NOTIFICATION"
-        const val SELECTED_ASR_NOTIFICATION = "SELECTED_ASR_NOTIFICATION"
-        const val SELECTED_MAGHRIB_NOTIFICATION = "SELECTED_MAGHRIB_NOTIFICATION"
-        const val SELECTED_ISHA_NOTIFICATION = "SELECTED_ISHA_NOTIFICATION"
-
 
         const val SELECTED_QIBLA_COMPASS = "SELECTED_QIBLA_COMPASS"
-
-        const val PRAYER_CALCULATION_METHOD = "PRAYER_CALCULATION_METHOD"
-        const val PRAYER_JURISTIC_METHOD = "PRAYER_JURISTIC_METHOD"
 
         /*
         ******************--------------------------*************************
@@ -77,9 +60,6 @@ class UserDataStore(
 
         // ---------------//
         private val SELECTED_QIBLA_COMPASS_KEY = intPreferencesKey(SELECTED_QIBLA_COMPASS)
-
-        private val PrayerCalculationMethodKey = intPreferencesKey(PRAYER_CALCULATION_METHOD)
-        private val PrayerJuristicMethodKey = intPreferencesKey(PRAYER_JURISTIC_METHOD)
         private val MasterNotificationEnabledKey = booleanPreferencesKey("MASTER_NOTIFICATION_ENABLED")
         private val TotalSupportedAmountUSDKey = androidx.datastore.preferences.core.doublePreferencesKey("TOTAL_SUPPORTED_AMOUNT_USD")
         private val IsSubscribedKey = booleanPreferencesKey("IS_SUBSCRIBED")
@@ -126,43 +106,6 @@ class UserDataStore(
     }
 
 
-    /*
-    -------------------
-    NOTIFICATION ENABLE
-    -------------------
-     */
-
-    suspend fun setPrayerNotificationEnabled(prayerName: Prayer, enabled: Boolean) {
-        val key = notificationEnabledKey(prayerName = prayerName)
-        userDataStore.edit { pref ->
-            pref[key] = enabled
-            Log.d("DataStore", "${prayerName.key} $enabled")
-        }
-    }
-
-    suspend fun isPrayerNotificationEnabled(
-        prayerName: Prayer
-    ): Boolean {
-
-        val key = notificationEnabledKey(prayerName)
-
-        return userDataStore.data.first()[key] ?: false
-    }
-
-
-
-    val notificationSettingsFlow: Flow<PrayerNotificationSettings> =
-        userDataStore.data.map { pref ->
-            PrayerNotificationSettings(
-                fajr = pref[notificationEnabledKey(prayerName = Prayer.FAJR)] ?: false,
-                dhuhr = pref[notificationEnabledKey(prayerName = Prayer.DHUHR)] ?: false,
-                asr = pref[notificationEnabledKey(prayerName = Prayer.ASR)] ?: false,
-                maghrib = pref[notificationEnabledKey(prayerName = Prayer.MAGHRIB)] ?: false,
-                isha = pref[notificationEnabledKey(prayerName = Prayer.ISHA)] ?: false,
-            )
-        }
-
-
     suspend fun clearSelectedCompassId() {
         val key = SELECTED_QIBLA_COMPASS_KEY
         userDataStore.edit { pref ->
@@ -181,23 +124,6 @@ class UserDataStore(
         pref[SELECTED_QIBLA_COMPASS_KEY] ?: 1
     }
 
-
-    suspend fun savePrayerNotificationType(
-        prayerName: Prayer,
-        notificationType: NotificationType
-    ) {
-        val key = when (prayerName) {
-            Prayer.FAJR -> FAJR_KEY
-            Prayer.DHUHR -> DHUHR_KEY
-            Prayer.ASR -> ASR_KEY
-            Prayer.MAGHRIB -> MAGHRIB_KEY
-            Prayer.ISHA ->ISHA_KEY
-        }
-        userDataStore.edit { pref ->
-            pref[key] = notificationType.name
-        }
-    }
-
     fun getPrayerNotificationType(prayerName: Prayer): Flow<NotificationType> {
         val key = when (prayerName) {
             Prayer.FAJR -> FAJR_KEY
@@ -213,72 +139,12 @@ class UserDataStore(
     }
 
 
-
-    suspend fun saveSetPrayerCalculationMethod(calculationMethod: Int): Boolean {
-        return try {
-            userDataStore.edit { preferences ->
-                preferences[PrayerCalculationMethodKey] = calculationMethod
-            }
-            true
-        } catch (_: Exception) {
-            false
-        }
-    }
-
-    val getPrayerCalculationMethod: Flow<Int> =
-        userDataStore.data.map { preferences ->
-            preferences[PrayerCalculationMethodKey] ?: 1
-        }
-
-    suspend fun getPrayerCalculationMethod(): Int {
-        return userDataStore.data.first()[PrayerCalculationMethodKey] ?: 1
-    }
-
-
-    suspend fun savePrayerJuristicMethod(method: Int): Boolean {
-        return try {
-            userDataStore.edit { preferences ->
-                preferences[PrayerJuristicMethodKey] = method
-            }
-            true
-        } catch (_: Exception) {
-            false
-        }
-    }
-
-    suspend fun getPrayerJuristicMethod(): Int {
-        return userDataStore.data.first()[PrayerJuristicMethodKey] ?: 0
-    }
-
-    val getPrayerJuristicMethod: Flow<Int> =
-        userDataStore.data.map { preferences ->
-            preferences[PrayerJuristicMethodKey] ?: 0
-        }
-
     /*
     -------------------------------------------
     PRE-ALERT OFFSET, VIBRATION & AZAN SOUND
     -------------------------------------------
      */
 
-    suspend fun setPrayerPreAlertOffset(prayerName: Prayer, minutes: Int) {
-        val key = preAlertOffsetKey(prayerName)
-        userDataStore.edit { pref ->
-            pref[key] = minutes
-        }
-    }
-
-    fun getPrayerPreAlertOffset(prayerName: Prayer): Flow<Int> {
-        val key = preAlertOffsetKey(prayerName)
-        return userDataStore.data.map { pref ->
-            pref[key] ?: 0
-        }
-    }
-
-    suspend fun getPrayerPreAlertOffsetSync(prayerName: Prayer): Int {
-        val key = preAlertOffsetKey(prayerName)
-        return userDataStore.data.first()[key] ?: 0
-    }
 
     suspend fun setPrayerVibrationEnabled(prayerName: Prayer, enabled: Boolean) {
         val key = vibrationEnabledKey(prayerName)
@@ -287,27 +153,10 @@ class UserDataStore(
         }
     }
 
-    fun getPrayerVibrationEnabled(prayerName: Prayer): Flow<Boolean> {
-        val key = vibrationEnabledKey(prayerName)
-        return userDataStore.data.map { pref ->
-            pref[key] ?: true
-        }
-    }
 
-    suspend fun setPrayerAzanSound(prayerName: Prayer, soundName: String) {
-        val key = azanSoundKey(prayerName)
-        userDataStore.edit { pref ->
-            pref[key] = soundName
-        }
-    }
-
-    fun getPrayerAzanSound(prayerName: Prayer): Flow<String> {
-        val key = azanSoundKey(prayerName)
-        return userDataStore.data.map { pref ->
-            pref[key] ?: "System Default"
-        }
-    }
-
+    /**
+     * Location states
+     */
     suspend fun saveLastKnownLocation(latitude: Double, longitude: Double) {
         userDataStore.edit { pref ->
             pref[LastKnownLatitudeKey] = latitude

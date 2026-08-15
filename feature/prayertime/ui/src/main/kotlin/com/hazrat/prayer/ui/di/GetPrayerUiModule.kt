@@ -26,17 +26,19 @@ fun getPrayerUiModule(): Module = module {
             togglePrayerUseCase = get(),
             clock = get(),
             prayerNotificationEnabledUseCase = get(),
-            getPrayerNotificationStateUseCase = get(),
             getPrayerTimeWindowForDaysUseCase = get(),
+            getPrayerSettingUseCase = get(),
         )
     }
 
     viewModel {
         PrayerSettingViewModel(
             application = androidApplication(),
-            prayerTimeRepository = get(),
             connectivityObserver = get(),
-            userDataStore = get()
+            updateJuristicMethodUseCase = get(),
+            updateCalculationMethodUseCase = get(),
+            refreshPrayerTimeUseCase = get(),
+            userPrayerSettingUseCase = get()
         )
     }
 
@@ -44,7 +46,11 @@ fun getPrayerUiModule(): Module = module {
         PrayerNotificationViewModel(
             application = androidApplication(),
             userDataStore = get(),
-            prayerAlarmScheduler = get()
+            prayerAlarmScheduler = get(),
+            userPrayerSettingUseCase = get(),
+            prayerNotificationEnabledUseCase = get(),
+            updatePrayerAudioUseCase = get(),
+            updatePrayerOffsetMinuteUseCase = get()
         )
     }
 }

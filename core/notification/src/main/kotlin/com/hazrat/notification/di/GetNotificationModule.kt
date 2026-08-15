@@ -20,7 +20,7 @@ import org.koin.dsl.module
 
 fun getNotificationModule(): Module = module {
     single<NotificationManagerCompat> { NotificationManagerCompat.from(get()) }
-    single { PrayerAlarmScheduler(context = get(), userDataStore = get()) }
+    single { PrayerAlarmScheduler(context = get(), prayerSettingDao = get()) }
     single { ZakatAlarmScheduler(context = get()) }
     single { NotificationChannels(context = get()) }
     single { MediaPlayerHelper(context = get()) }

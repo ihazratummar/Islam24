@@ -15,8 +15,8 @@ interface PrayerTimeApi {
         year: Int,
         latitude: String,
         longitude: String,
-        method: Int,
-        school: Int
+        calculationMethod: Int,
+        juristicMethod: Int
     ): NewPrayerTimeDto
 }
 
@@ -27,14 +27,14 @@ class PrayerTimeApiImpl(
         year: Int,
         latitude: String,
         longitude: String,
-        method: Int,
-        school: Int
+        calculationMethod: Int,
+        juristicMethod: Int
     ): NewPrayerTimeDto {
         return client.get("$PRAYER_BASE_URL$year") {
             parameter("latitude", latitude)
             parameter("longitude", longitude)
-            parameter("method", method)
-            parameter("school", school)
+            parameter("method", calculationMethod)
+            parameter("school", juristicMethod)
         }.body()
     }
 }

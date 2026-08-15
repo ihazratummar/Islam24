@@ -28,4 +28,12 @@ class DatabaseConverters {
     fun toInstant(value: String?): Instant? =
         value?.let(Instant::parse)
 
+    @TypeConverter
+    fun fromLocalDate(date: kotlinx.datetime.LocalDate?): String? =
+        date?.toString()
+
+    @TypeConverter
+    fun toLocalDate(value: String?): kotlinx.datetime.LocalDate? =
+        value?.let { kotlinx.datetime.LocalDate.parse(it) }
+
 }

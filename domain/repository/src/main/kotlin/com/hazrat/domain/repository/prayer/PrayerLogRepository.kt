@@ -1,4 +1,4 @@
-package com.hazrat.domain.repository
+package com.hazrat.domain.repository.prayer
 
 import com.hazrat.model.DailyPrayerStatus
 import com.hazrat.model.Prayer
@@ -26,4 +26,6 @@ interface PrayerLogRepository {
     fun observePrayerStreak(): Flow<Int>
 
     suspend fun computeStreakInfo(today: LocalDate): PrayerStreakInfo
+
+    suspend fun clearData()
 }

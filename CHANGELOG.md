@@ -1,3 +1,11 @@
+## [4.3.0] - 2026-08-15
+- **Hisnul Muslim & Dua Hub**: 11 curated Dua categories with authentic citations and custom Islamic banners.
+- **Dua Share Card Creator**: Export and share branded gradient Dua cards directly to WhatsApp, Instagram & Facebook Stories.
+- **Interactive Dua Actions**: Tap-anchored context menu with Bookmark, Copy, and Share options.
+- **Royal Digital Tasbih**: 13 authentic Sunnah Dhikr presets with a 33-bead luminous radial dial and tactile tap haptics.
+- **Official Arabic Calligraphy**: Applied crystal-clear Scheherazade Uthmani typography across Duas and Tasbih.
+- **Reliability & Performance**: Fixed recent items persistence across app restarts, enhanced prayer settings, and refined theme contrast.
+
 ## [4.2.0] - 2026-08-09
 - **Support Islam 24**: Support the app with voluntary Sadaqah in your local currency. 100% free with zero ads forever!
 - **Live Supporter Ticker**: See real-time community support updates right on the screen.

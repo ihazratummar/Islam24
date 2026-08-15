@@ -60,4 +60,6 @@ dependencies {
     implementation(libs.koin.compose)
 
     implementation(libs.androidx.security.crypto)
+
+    implementation(libs.kotlinx.datetime)
 }

@@ -1,4 +1,4 @@
-package com.hazrat.database.entity
+package com.hazrat.database.entity.prayer
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

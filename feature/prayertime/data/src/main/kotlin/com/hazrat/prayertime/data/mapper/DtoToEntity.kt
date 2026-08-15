@@ -1,6 +1,6 @@
 package com.hazrat.prayertime.data.mapper
 
-import com.hazrat.database.entity.PrayerTimeEntity
+import com.hazrat.database.entity.prayer.PrayerTimeEntity
 import com.hazrat.remote.dto.DailyDataDto
 import com.hazrat.utils.DateUtil
 import com.hazrat.utils.DateUtil.timeStringToLong

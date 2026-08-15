@@ -28,7 +28,7 @@ import okhttp3.Protocol
 object KtorClient {
 
     // Toggle between local and prod in this single location:
-    // const val BASE_URL = "http://192.168.0.122:8080/api/v1/"
+//     const val BASE_URL = "http://192.168.0.122:8080/api/v1/"
     const val BASE_URL = "https://api.islam24.app/api/v1/"
 
     val WS_BASE_URL: String
