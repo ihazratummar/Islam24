@@ -1,18 +1,14 @@
 package com.hazrat.alQuran.data.mapper
 
-
-import com.hazrat.database.entity.quran.AyahEntity
+import com.hazrat.database.entity.quran.AyahWithBookmarkEntity
 import com.hazrat.database.entity.quran.SurahEntity
-import com.hazrat.model.al_quran_model.AyahModel
-import com.hazrat.model.al_quran_model.SurahModel
-
+import com.hazrat.model.quran.AyahModel
+import com.hazrat.model.quran.SurahModel
 
 /**
  * @author hazratummar
  * Created on 27/01/26
  */
-
-
 
 fun SurahEntity.toModel() : SurahModel {
     return SurahModel(
@@ -25,13 +21,11 @@ fun SurahEntity.toModel() : SurahModel {
     )
 }
 
-
 fun List<SurahEntity>.toModelList() : List<SurahModel> {
     return this.map { it.toModel() }
 }
 
-
-fun AyahEntity.toAyahModel() : AyahModel {
+fun AyahWithBookmarkEntity.toModel(): AyahModel {
     return AyahModel(
         id = this.id,
         surahNumber = this.surahNumber,
@@ -45,6 +39,7 @@ fun AyahEntity.toAyahModel() : AyahModel {
     )
 }
 
-fun List<AyahEntity>.toAyahModelList() : List<AyahModel> {
-    return this.map { it.toAyahModel() }
+fun List<AyahWithBookmarkEntity>.toAyahModelList(): List<AyahModel> {
+    return this.map { it.toModel() }
 }
+

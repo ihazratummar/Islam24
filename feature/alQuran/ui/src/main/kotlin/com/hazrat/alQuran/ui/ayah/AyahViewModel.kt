@@ -3,7 +3,7 @@ package com.hazrat.alQuran.ui.ayah
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.datastore.DataStorePreference
-import com.hazrat.model.al_quran_model.AyahModel
+import com.hazrat.model.quran.AyahModel
 import com.hazrat.usecase.quran.ControlQuranAudioUseCase
 import com.hazrat.usecase.quran.DeleteRecentSurahUseCase
 import com.hazrat.usecase.quran.GetSurahAyahsUseCase

@@ -2,16 +2,17 @@ package com.hazrat.alQuran.data.repository
 
 import com.hazrat.alQuran.data.mapper.toAyahModelList
 import com.hazrat.alQuran.data.mapper.toModelList
-import com.hazrat.database.dao.QuranDao
+import com.hazrat.database.dao.quran.QuranDao
+import com.hazrat.database.entity.quran.QuranBookmarkEntity
 import com.hazrat.database.entity.quran.RecentSurahEntity
-import com.hazrat.domain.repository.QuranRepository
-import com.hazrat.model.al_quran_model.AyahModel
-import com.hazrat.model.al_quran_model.RecentReadSurah
-import com.hazrat.model.al_quran_model.SurahModel
+import com.hazrat.domain.repository.quran.QuranRepository
+import com.hazrat.model.quran.AyahModel
+import com.hazrat.model.quran.RecentReadSurah
+import com.hazrat.model.quran.SurahModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import java.util.UUID
 
 /**
  * @author Hazrat Ummar Shaikh
@@ -67,20 +68,42 @@ class QuranRepositoryImpl(
     }
 
     override suspend fun deleteRecentSurah(surahNumber: Int) {
-        quranDao.deleteRecentSurah(surahNumber)
+        quranDao.softDeleteRecentSurah(surahNumber = surahNumber)
     }
 
     override fun observeTotalBookmarkedAyahs(): Flow<Int> {
         return quranDao.getTotalBookmarkedAyahsCount()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun getBookmarkedAyahs(): Flow<List<AyahModel>> {
-        return quranDao.getBookmarkedAyahs().map { entities ->
-            entities.toAyahModelList()
-        }
+        return quranDao.getBookmarkedAyahs()
+            .mapLatest { it.toAyahModelList() }
     }
 
     override suspend fun toggleBookmark(surahNumber: Int, ayahNumber: Int, isBookmarked: Boolean) {
-        quranDao.updateBookmarkState(surahNumber, ayahNumber, isBookmarked)
+        val existing = quranDao.getBookmark(surahNumber = surahNumber, ayahNumber = ayahNumber)
+        if (existing != null) {
+            quranDao.upsertBookmark(
+                bookmark = existing.copy(
+                    isDeleted = !isBookmarked,
+                    isSynced = false,
+                    updatedAt = System.currentTimeMillis()
+                )
+            )
+        } else if (isBookmarked) {
+            val globalAyah = quranDao.getGlobalAyahNumber(surahNumber = surahNumber, ayahNumber = ayahNumber) ?: 0
+            quranDao.upsertBookmark(
+                QuranBookmarkEntity(
+                    id = UUID.randomUUID().toString(),
+                    surahNumber = surahNumber,
+                    ayahNumber = ayahNumber,
+                    globalAyahNumber = globalAyah,
+                    isDeleted = false,
+                    isSynced = false,
+                    updatedAt = System.currentTimeMillis()
+                )
+            )
+        }
     }
 }

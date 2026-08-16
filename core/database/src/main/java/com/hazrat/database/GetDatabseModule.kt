@@ -8,8 +8,8 @@ import com.hazrat.database.dao.DuaDao
 import com.hazrat.database.dao.LocationNameDao
 import com.hazrat.database.dao.prayer.PrayerLogDao
 import com.hazrat.database.dao.prayer.PrayerTimeDao
-import com.hazrat.database.dao.KhatamDao
-import com.hazrat.database.dao.QuranDao
+import com.hazrat.database.dao.quran.KhatamDao
+import com.hazrat.database.dao.quran.QuranDao
 import com.hazrat.database.dao.UserDao
 import com.hazrat.database.dao.UserSupportStatusDao
 import com.hazrat.database.dao.ZakatDao
@@ -21,6 +21,8 @@ import com.hazrat.database.database.NamesDataBase
 import com.hazrat.database.database.PrayerDatabase
 import com.hazrat.database.database.QuranDatabase
 import com.hazrat.database.database.ZakatDatabase
+import com.hazrat.database.migration.QURAN_KHATAM_MIGRATION_4_5
+import com.hazrat.database.migration.QURAN_SURAH_MIGRATION_5_6
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -210,29 +212,9 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
         }
     }
 
-    // Migration v4 -> v5: add khatam_plan table
-    val MIGRATION_4_5 = object : Migration(4, 5) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL(
-                """
-                CREATE TABLE IF NOT EXISTS `khatam_plan` (
-                    `id` TEXT NOT NULL,
-                    `title` TEXT NOT NULL,
-                    `startDateTimestamp` INTEGER NOT NULL,
-                    `targetEndDateTimestamp` INTEGER NOT NULL,
-                    `lastReadSurahNumber` INTEGER NOT NULL,
-                    `lastReadAyahNumber` INTEGER NOT NULL,
-                    `lastReadGlobalAyahNumber` INTEGER NOT NULL,
-                    `completedAyahsCount` INTEGER NOT NULL,
-                    `status` TEXT NOT NULL,
-                    `completedTimestamp` INTEGER,
-                    `updatedTimestamp` INTEGER NOT NULL,
-                    PRIMARY KEY(`id`)
-                )
-                """.trimIndent()
-            )
-        }
-    }
+
+
+
 
     single {
         Room.databaseBuilder(
@@ -246,7 +228,8 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
                 MIGRATION_1_4,
                 MIGRATION_2_3,
                 MIGRATION_3_4,
-                MIGRATION_4_5
+                QURAN_KHATAM_MIGRATION_4_5,
+                QURAN_SURAH_MIGRATION_5_6
             )
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()

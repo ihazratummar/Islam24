@@ -1,8 +1,8 @@
-package com.hazrat.domain.repository
+package com.hazrat.domain.repository.quran
 
-import com.hazrat.model.al_quran_model.AyahModel
-import com.hazrat.model.al_quran_model.RecentReadSurah
-import com.hazrat.model.al_quran_model.SurahModel
+import com.hazrat.model.quran.AyahModel
+import com.hazrat.model.quran.RecentReadSurah
+import com.hazrat.model.quran.SurahModel
 import kotlinx.coroutines.flow.Flow
 
 /**

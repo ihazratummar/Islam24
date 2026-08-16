@@ -11,7 +11,7 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.hazrat.datastore.AppDataStore
 import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.prayer.PrayerLogRepository
-import com.hazrat.domain.repository.QuranRepository
+import com.hazrat.domain.repository.quran.QuranRepository
 import com.hazrat.usecase.profile.GetProfileDataUseCase
 import com.hazrat.usecase.profile.IsLoggedInUseCase
 import com.hazrat.usecase.profile.SignOutUseCase

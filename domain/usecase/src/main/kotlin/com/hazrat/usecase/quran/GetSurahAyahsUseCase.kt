@@ -1,7 +1,7 @@
 package com.hazrat.usecase.quran
 
-import com.hazrat.domain.repository.QuranRepository
-import com.hazrat.model.al_quran_model.AyahModel
+import com.hazrat.domain.repository.quran.QuranRepository
+import com.hazrat.model.quran.AyahModel
 import kotlinx.coroutines.flow.Flow
 
 class GetSurahAyahsUseCase(

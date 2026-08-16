@@ -1,7 +1,7 @@
 package com.hazrat.usecase.quran
 
-import com.hazrat.domain.repository.QuranRepository
-import com.hazrat.model.al_quran_model.RecentReadSurah
+import com.hazrat.domain.repository.quran.QuranRepository
+import com.hazrat.model.quran.RecentReadSurah
 import kotlinx.coroutines.flow.Flow
 
 class GetRecentSurahsUseCase(

@@ -2,8 +2,8 @@ package com.hazrat.alQuran.data.di
 
 import com.hazrat.alQuran.data.repository.KhatamRepositoryImpl
 import com.hazrat.alQuran.data.repository.QuranRepositoryImpl
-import com.hazrat.domain.repository.KhatamRepository
-import com.hazrat.domain.repository.QuranRepository
+import com.hazrat.domain.repository.quran.KhatamRepository
+import com.hazrat.domain.repository.quran.QuranRepository
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

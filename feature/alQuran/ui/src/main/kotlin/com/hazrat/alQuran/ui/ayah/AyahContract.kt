@@ -1,8 +1,8 @@
 package com.hazrat.alQuran.ui.ayah
 
 import androidx.compose.runtime.Stable
-import com.hazrat.model.al_quran_model.AyahModel
-import com.hazrat.model.al_quran_model.SurahModel
+import com.hazrat.model.quran.AyahModel
+import com.hazrat.model.quran.SurahModel
 
 /**
  * Ayah Reading Screen Contract & Sealed UI Event.

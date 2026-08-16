@@ -1,4 +1,4 @@
-package com.hazrat.model.al_quran_model
+package com.hazrat.model.quran
 
 data class SurahModel(
     val surahNumber: Int,

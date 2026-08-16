@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,7 +65,7 @@ import com.hazrat.utils.IslamicCalendarUtils
 fun HomeScreen(
     navigateToPrayerTime: () -> Unit,
     onWidgetClick: (HomePageNavIcons) -> Unit,
-    onRecentReadClick: (com.hazrat.model.al_quran_model.RecentReadSurah) -> Unit,
+    onRecentReadClick: (com.hazrat.model.quran.RecentReadSurah) -> Unit,
     homeState: HomeState,
     refreshLocation: () -> Unit,
     dailyPrayerStatus: DailyPrayerStatus?,

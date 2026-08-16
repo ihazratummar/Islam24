@@ -25,8 +25,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -60,7 +58,6 @@ import com.hazrat.ui.R
 import com.hazrat.ui.common.PulsingLiveDot
 import com.hazrat.ui.common.rememberPrayerState
 import com.hazrat.ui.theme.IslamicTypography
-import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.usecase.UpcomingIslamicEvent
@@ -1342,8 +1339,8 @@ fun HomeScreenEventCard(
 
 @Composable
 fun HomeRecentsSection(
-    recentReads: List<com.hazrat.model.al_quran_model.RecentReadSurah>,
-    onRecentReadClick: (com.hazrat.model.al_quran_model.RecentReadSurah) -> Unit,
+    recentReads: List<com.hazrat.model.quran.RecentReadSurah>,
+    onRecentReadClick: (com.hazrat.model.quran.RecentReadSurah) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (recentReads.isEmpty()) return
@@ -1383,7 +1380,7 @@ fun HomeRecentsSection(
 
 @Composable
 private fun HomeRecentSurahCard(
-    recent: com.hazrat.model.al_quran_model.RecentReadSurah,
+    recent: com.hazrat.model.quran.RecentReadSurah,
     onClick: () -> Unit
 ) {
     Column(

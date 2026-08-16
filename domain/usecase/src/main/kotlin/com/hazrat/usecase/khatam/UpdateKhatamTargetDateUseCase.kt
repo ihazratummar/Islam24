@@ -1,6 +1,6 @@
 package com.hazrat.usecase.khatam
 
-import com.hazrat.domain.repository.KhatamRepository
+import com.hazrat.domain.repository.quran.KhatamRepository
 
 class UpdateKhatamTargetDateUseCase(
     private val repository: KhatamRepository

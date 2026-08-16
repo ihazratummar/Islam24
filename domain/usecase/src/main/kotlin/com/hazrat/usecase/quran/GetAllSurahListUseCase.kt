@@ -1,7 +1,7 @@
 package com.hazrat.usecase.quran
 
-import com.hazrat.domain.repository.QuranRepository
-import com.hazrat.model.al_quran_model.SurahModel
+import com.hazrat.domain.repository.quran.QuranRepository
+import com.hazrat.model.quran.SurahModel
 import kotlinx.coroutines.flow.Flow
 
 class GetAllSurahListUseCase(

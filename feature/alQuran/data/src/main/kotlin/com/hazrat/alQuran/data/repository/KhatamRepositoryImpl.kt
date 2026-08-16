@@ -1,10 +1,10 @@
 package com.hazrat.alQuran.data.repository
 
-import com.hazrat.database.dao.KhatamDao
+import com.hazrat.database.dao.quran.KhatamDao
 import com.hazrat.database.entity.quran.KhatamPlanEntity
-import com.hazrat.domain.repository.KhatamRepository
-import com.hazrat.model.KhatamPlanModel
-import com.hazrat.model.KhatamStatus
+import com.hazrat.domain.repository.quran.KhatamRepository
+import com.hazrat.model.quran.KhatamPlanModel
+import com.hazrat.model.quran.KhatamStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -42,7 +42,8 @@ class KhatamRepositoryImpl(
             completedAyahsCount = 0,
             status = "IN_PROGRESS",
             completedTimestamp = null,
-            updatedTimestamp = System.currentTimeMillis()
+            updatedTimestamp = System.currentTimeMillis(),
+            isSynced = false
         )
         khatamDao.insertOrUpdateKhatamPlan(newPlan)
     }
@@ -67,7 +68,8 @@ class KhatamRepositoryImpl(
             completedAyahsCount = newCompletedCount,
             status = newStatus,
             completedTimestamp = completedTimestamp,
-            updatedTimestamp = System.currentTimeMillis()
+            updatedTimestamp = System.currentTimeMillis(),
+            isSynced = false
         )
         khatamDao.insertOrUpdateKhatamPlan(updatedEntity)
     }
@@ -77,7 +79,8 @@ class KhatamRepositoryImpl(
         val target = history.find { it.id == planId } ?: return
         val updated = target.copy(
             targetEndDateTimestamp = newTargetDateTimestamp,
-            updatedTimestamp = System.currentTimeMillis()
+            updatedTimestamp = System.currentTimeMillis(),
+            isSynced = false
         )
         khatamDao.insertOrUpdateKhatamPlan(updated)
     }
@@ -92,7 +95,8 @@ class KhatamRepositoryImpl(
             completedAyahsCount = 0,
             status = "IN_PROGRESS",
             completedTimestamp = null,
-            updatedTimestamp = System.currentTimeMillis()
+            updatedTimestamp = System.currentTimeMillis(),
+            isSynced = false
         )
         khatamDao.insertOrUpdateKhatamPlan(updated)
     }
@@ -118,7 +122,7 @@ class KhatamRepositoryImpl(
             completedAyahsCount = this.completedAyahsCount,
             status = parsedStatus,
             completedTimestamp = this.completedTimestamp,
-            updatedTimestamp = this.updatedTimestamp
+            updatedTimestamp = this.updatedTimestamp,
         )
     }
 }

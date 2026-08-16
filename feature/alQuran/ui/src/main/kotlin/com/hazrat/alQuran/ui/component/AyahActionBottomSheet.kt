@@ -23,7 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.model.al_quran_model.AyahModel
+import com.hazrat.model.quran.AyahModel
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 

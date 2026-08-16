@@ -1,6 +1,6 @@
 package com.hazrat.usecase.quran
 
-import com.hazrat.domain.repository.QuranRepository
+import com.hazrat.domain.repository.quran.QuranRepository
 
 /**
  * UseCase to delete a completed surah from recent reads.

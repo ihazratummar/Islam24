@@ -39,6 +39,6 @@ data class HomeState(
     val dailyVerse: DailyVerseData = DailyVerseData(),
     val dailyDua: DailyDuaData = DailyDuaData(),
     val weeklyPrayerStats: WeeklyPrayerStats = WeeklyPrayerStats(),
-    val recentReads: List<com.hazrat.model.al_quran_model.RecentReadSurah> = emptyList(),
-    val surahs: List<com.hazrat.model.al_quran_model.SurahModel> = emptyList()
+    val recentReads: List<com.hazrat.model.quran.RecentReadSurah> = emptyList(),
+    val surahs: List<com.hazrat.model.quran.SurahModel> = emptyList()
 )

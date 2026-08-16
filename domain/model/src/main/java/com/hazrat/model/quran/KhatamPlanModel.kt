@@ -1,4 +1,4 @@
-package com.hazrat.model
+package com.hazrat.model.quran
 
 enum class KhatamStatus {
     IN_PROGRESS,

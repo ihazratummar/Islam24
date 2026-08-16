@@ -1,6 +1,6 @@
 package com.hazrat.usecase.quran
 
-import com.hazrat.domain.repository.QuranRepository
+import com.hazrat.domain.repository.quran.QuranRepository
 
 class SaveRecentSurahUseCase(
     private val quranRepository: QuranRepository

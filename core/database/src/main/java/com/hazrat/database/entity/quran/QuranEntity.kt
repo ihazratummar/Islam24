@@ -26,7 +26,6 @@ data class AyahEntity(
     val arabicText: String,
     val englishTranslation: String,
     val transliteration: String,
-    val isBookmarked: Boolean = false,
     val tajweedText: String = ""
 )
 
@@ -36,5 +35,7 @@ data class RecentSurahEntity(
     val surahName: String,
     val ayahNumber: Int,
     val formattedDate: String,
+    val isSynced: Boolean = false,
+    val isDeleted: Boolean = false,
     val timestamp: Long = System.currentTimeMillis()
 )

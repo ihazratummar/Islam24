@@ -21,5 +21,7 @@ data class KhatamPlanEntity(
     val completedAyahsCount: Int = 0,
     val status: String = "IN_PROGRESS", // IN_PROGRESS, COMPLETED, EXPIRED, ENDED
     val completedTimestamp: Long? = null,
+    val isSynced: Boolean = false,
+    val isDeleted: Boolean = false,
     val updatedTimestamp: Long = System.currentTimeMillis()
 )

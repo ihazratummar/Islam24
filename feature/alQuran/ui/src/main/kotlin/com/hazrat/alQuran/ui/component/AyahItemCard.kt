@@ -37,7 +37,7 @@ import com.hazrat.alQuran.ui.ayah.AyahState
 import com.hazrat.alQuran.ui.ayah.AyahUiEvent
 import com.hazrat.alQuran.ui.ayah.formatForFont
 import com.hazrat.alQuran.ui.ayah.parseTajweedHtml
-import com.hazrat.model.al_quran_model.AyahModel
+import com.hazrat.model.quran.AyahModel
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens

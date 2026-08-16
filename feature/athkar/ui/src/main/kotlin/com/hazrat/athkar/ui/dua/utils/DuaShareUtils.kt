@@ -1,5 +1,6 @@
 package com.hazrat.athkar.ui.dua.utils
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -34,88 +35,68 @@ object DuaShareUtils {
         }
     }
 
-    private fun isPackageInstalled(context: Context, packageName: String): Boolean {
-        return try {
-            context.packageManager.getPackageInfo(packageName, 0)
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     fun shareToWhatsApp(context: Context, text: String) {
-        val whatsappPkg = when {
-            isPackageInstalled(context, "com.whatsapp") -> "com.whatsapp"
-            isPackageInstalled(context, "com.whatsapp.w4b") -> "com.whatsapp.w4b"
-            else -> null
-        }
-
-        if (whatsappPkg != null) {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                setPackage(whatsappPkg)
-                putExtra(Intent.EXTRA_TEXT, text)
-            }
+        val targets = listOf("com.whatsapp", "com.whatsapp.w4b")
+        for (pkg in targets) {
             try {
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    setPackage(pkg)
+                    putExtra(Intent.EXTRA_TEXT, text)
+                }
                 context.startActivity(intent)
-            } catch (e: Exception) {
-                shareText(context, text)
+                return
+            } catch (_: ActivityNotFoundException) {
+                // Try next package
+            } catch (_: Exception) {
             }
-        } else {
-            Toast.makeText(context, "WhatsApp is not installed", Toast.LENGTH_SHORT).show()
-            shareText(context, text)
         }
+        // Fallback to system share chooser if direct WhatsApp package wasn't reached
+        shareText(context, text)
     }
 
     fun shareToInstagram(context: Context, text: String) {
-        if (isPackageInstalled(context, "com.instagram.android")) {
+        try {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 setPackage("com.instagram.android")
                 putExtra(Intent.EXTRA_TEXT, text)
             }
-            try {
-                context.startActivity(intent)
-            } catch (e: Exception) {
-                shareText(context, text)
-            }
-        } else {
-            Toast.makeText(context, "Instagram is not installed", Toast.LENGTH_SHORT).show()
+            context.startActivity(intent)
+        } catch (_: ActivityNotFoundException) {
+            shareText(context, text)
+        } catch (_: Exception) {
             shareText(context, text)
         }
     }
 
     fun shareToFacebook(context: Context, text: String) {
-        val fbPkg = when {
-            isPackageInstalled(context, "com.facebook.katana") -> "com.facebook.katana"
-            isPackageInstalled(context, "com.facebook.lite") -> "com.facebook.lite"
-            else -> null
-        }
-        if (fbPkg != null) {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                setPackage(fbPkg)
-                putExtra(Intent.EXTRA_TEXT, text)
-            }
+        val fbTargets = listOf("com.facebook.katana", "com.facebook.lite", "com.facebook.orca")
+        for (pkg in fbTargets) {
             try {
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    setPackage(pkg)
+                    putExtra(Intent.EXTRA_TEXT, text)
+                }
                 context.startActivity(intent)
-            } catch (e: Exception) {
-                shareText(context, text)
+                return
+            } catch (_: ActivityNotFoundException) {
+                // Try next
+            } catch (_: Exception) {
             }
-        } else {
-            Toast.makeText(context, "Facebook is not installed", Toast.LENGTH_SHORT).show()
-            shareText(context, text)
         }
+        shareText(context, text)
     }
 
     fun shareToMessages(context: Context, text: String) {
-        val sendIntent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse("sms:")
-            putExtra("sms_body", text)
-        }
         try {
+            val sendIntent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("sms:")
+                putExtra("sms_body", text)
+            }
             context.startActivity(sendIntent)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             shareText(context, text, "com.google.android.apps.messaging")
         }
     }
@@ -134,12 +115,16 @@ object DuaShareUtils {
             } else {
                 context.startActivity(Intent.createChooser(sendIntent, "Share Dua"))
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             val fallbackIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, text)
             }
-            context.startActivity(Intent.createChooser(fallbackIntent, "Share Dua"))
+            try {
+                context.startActivity(Intent.createChooser(fallbackIntent, "Share Dua"))
+            } catch (_: Exception) {
+                Toast.makeText(context, "No app available to share", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

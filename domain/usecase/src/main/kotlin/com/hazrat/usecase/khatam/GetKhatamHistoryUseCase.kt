@@ -1,7 +1,7 @@
 package com.hazrat.usecase.khatam
 
-import com.hazrat.domain.repository.KhatamRepository
-import com.hazrat.model.KhatamPlanModel
+import com.hazrat.domain.repository.quran.KhatamRepository
+import com.hazrat.model.quran.KhatamPlanModel
 import kotlinx.coroutines.flow.Flow
 
 class GetKhatamHistoryUseCase(

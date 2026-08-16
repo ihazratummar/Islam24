@@ -18,7 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.hazrat.model.al_quran_model.SurahModel
+import com.hazrat.alQuran.ui.surah.JuzSurahSegment
+import com.hazrat.model.quran.SurahModel
 import com.hazrat.ui.common.SurahSvgImage
 import com.hazrat.ui.theme.dimens
 
@@ -87,6 +88,79 @@ fun SurahCard(
                 )
                 Text(
                     text = surah.nameEnglish,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Juz Segment Card matching SurahCard aesthetics with SVG Calligraphy and Ayah range.
+ *
+ * @author hazratummar
+ */
+@Composable
+fun JuzSegmentCard(
+    modifier: Modifier = Modifier,
+    segment: JuzSurahSegment,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(dimens.cornerXl),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.08f)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimens.space16, vertical = dimens.space12),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Left: Surah Number & Calligraphy Image together
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimens.space16)
+            ) {
+                Text(
+                    text = segment.surahNumber.toString(),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.width(dimens.space24)
+                )
+
+                // Calligraphy SVG - Prominent & Large matching SurahCard
+                SurahSvgImage(
+                    surahNumber = segment.surahNumber,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .height(dimens.space40)
+                        .width(dimens.avatarXl)
+                )
+            }
+
+            // Right: Transliterated Name & Ayah Range (Right aligned)
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(dimens.space2)
+            ) {
+                Text(
+                    text = segment.surahNameEnglish,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = "Aya ${segment.startAyah}-${segment.endAyah}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )

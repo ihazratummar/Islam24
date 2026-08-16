@@ -97,7 +97,7 @@ fun ToggleSettings(
             Text(
                 text = statusText,
                 style = MaterialTheme.typography.labelSmall.copy(
-                    color = MutedTextColor
+                    color = customColors.secondaryText
                 )
             )
         }
@@ -151,7 +151,7 @@ fun SettingItemCard(
                 Text(
                     text = text,
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = MutedTextColor
+                        color = customColors.secondaryText
                     )
                 )
             }

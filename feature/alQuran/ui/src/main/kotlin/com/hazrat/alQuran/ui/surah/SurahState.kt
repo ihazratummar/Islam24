@@ -1,9 +1,9 @@
 package com.hazrat.alQuran.ui.surah
 
-import com.hazrat.model.KhatamPlanModel
-import com.hazrat.model.al_quran_model.AyahModel
-import com.hazrat.model.al_quran_model.RecentReadSurah
-import com.hazrat.model.al_quran_model.SurahModel
+import com.hazrat.model.quran.KhatamPlanModel
+import com.hazrat.model.quran.AyahModel
+import com.hazrat.model.quran.RecentReadSurah
+import com.hazrat.model.quran.SurahModel
 
 enum class QuranTab {
     READ,

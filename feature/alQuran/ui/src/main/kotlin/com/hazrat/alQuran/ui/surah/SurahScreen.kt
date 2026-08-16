@@ -31,7 +31,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,9 +58,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.sp
+import com.hazrat.alQuran.ui.component.JuzSegmentCard
 import com.hazrat.alQuran.ui.component.SurahCard
-import com.hazrat.model.al_quran_model.RecentReadSurah
-import com.hazrat.model.al_quran_model.SurahModel
+import com.hazrat.model.quran.RecentReadSurah
+import com.hazrat.model.quran.SurahModel
 import com.hazrat.ui.R
 import com.hazrat.ui.common.DateFormatter
 import com.hazrat.ui.common.IslamicGridBackground
@@ -184,7 +184,9 @@ fun QuranScreen(
                                     Text(
                                         text = "Search Surah name or number...",
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.6f
+                                        )
                                     )
                                 }
                                 BasicTextField(
@@ -220,7 +222,8 @@ fun QuranScreen(
                     QuranTab.KHATAM to "Khatam",
                     QuranTab.BOOKMARK to "Bookmark"
                 )
-                val selectedTabIndex = tabs.indexOfFirst { it.first == surahState.selectedTab }.coerceAtLeast(0)
+                val selectedTabIndex =
+                    tabs.indexOfFirst { it.first == surahState.selectedTab }.coerceAtLeast(0)
 
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
@@ -264,7 +267,8 @@ fun QuranScreen(
                         // 2. Resume Reading Hero Card (when recent reads exist)
                         val latestRecent = surahState.recentReads.firstOrNull()
                         if (latestRecent != null) {
-                            val matchedSurah = surahState.quranData.find { it.surahNumber == latestRecent.surahNumber }
+                            val matchedSurah =
+                                surahState.quranData.find { it.surahNumber == latestRecent.surahNumber }
                             item {
                                 Spacer(modifier = Modifier.height(dimens.space12))
                                 ResumeReadingHeroCard(
@@ -273,7 +277,8 @@ fun QuranScreen(
                                     onClick = {
                                         onSurahClick(
                                             SurahScreenData(
-                                                name = matchedSurah?.nameTransliterated ?: recentTitle(latestRecent, matchedSurah),
+                                                name = matchedSurah?.nameTransliterated
+                                                    ?: recentTitle(latestRecent, matchedSurah),
                                                 totalAyah = matchedSurah?.totalAyahs ?: 0,
                                                 meaning = matchedSurah?.nameEnglish ?: "",
                                                 number = latestRecent.surahNumber,
@@ -303,7 +308,9 @@ fun QuranScreen(
                                         Text(
                                             text = "ⓘ",
                                             style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                                alpha = 0.6f
+                                            )
                                         )
                                     }
 
@@ -311,16 +318,23 @@ fun QuranScreen(
                                         horizontalArrangement = Arrangement.spacedBy(dimens.space12)
                                     ) {
                                         items(surahState.recentReads) { recent ->
-                                            val matchedSurah = surahState.quranData.find { it.surahNumber == recent.surahNumber }
+                                            val matchedSurah =
+                                                surahState.quranData.find { it.surahNumber == recent.surahNumber }
                                             RecentSurahCard(
                                                 recent = recent,
                                                 matchedSurah = matchedSurah,
                                                 onClick = {
                                                     onSurahClick(
                                                         SurahScreenData(
-                                                            name = matchedSurah?.nameTransliterated ?: recentTitle(recent, matchedSurah),
-                                                            totalAyah = matchedSurah?.totalAyahs ?: 0,
-                                                            meaning = matchedSurah?.nameEnglish ?: "",
+                                                            name = matchedSurah?.nameTransliterated
+                                                                ?: recentTitle(
+                                                                    recent,
+                                                                    matchedSurah
+                                                                ),
+                                                            totalAyah = matchedSurah?.totalAyahs
+                                                                ?: 0,
+                                                            meaning = matchedSurah?.nameEnglish
+                                                                ?: "",
                                                             number = recent.surahNumber,
                                                             targetAyahNumber = recent.ayahNumber
                                                         )
@@ -336,7 +350,9 @@ fun QuranScreen(
                         // 4. View Switcher Header (Sura list | View: Sura ∨) with Icon
                         item {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .padding(top = dimens.space12)
+                                    .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -359,7 +375,10 @@ fun QuranScreen(
                                                 shape = RoundedCornerShape(dimens.cornerFull)
                                             )
                                             .clickable { isViewModeDropdownExpanded = true }
-                                            .padding(horizontal = dimens.space16, vertical = dimens.space8)
+                                            .padding(
+                                                horizontal = dimens.space16,
+                                                vertical = dimens.space8
+                                            )
                                     ) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Icon(
@@ -464,7 +483,10 @@ fun QuranScreen(
                             // Juz List View Mode
                             items(surahState.juzList) { juz ->
                                 Column(
-                                    verticalArrangement = Arrangement.spacedBy(dimens.space12)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = dimens.space4),
+                                    verticalArrangement = Arrangement.spacedBy(dimens.space8)
                                 ) {
                                     Text(
                                         text = "Juz ${juz.juzNumber}",
@@ -472,73 +494,31 @@ fun QuranScreen(
                                             fontWeight = FontWeight.Bold
                                         ),
                                         color = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.padding(vertical = dimens.space4)
+                                        modifier = Modifier.padding(
+                                            horizontal = dimens.space4,
+                                            vertical = dimens.space4
+                                        )
                                     )
 
-                                    Card(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        shape = RoundedCornerShape(dimens.cornerXl),
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                        )
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(dimens.space16),
-                                            verticalArrangement = Arrangement.spacedBy(dimens.space12)
-                                        ) {
-                                            juz.segments.forEachIndexed { segIdx, seg ->
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .clickable {
-                                                            val matchedSurah = surahState.quranData.find { it.surahNumber == seg.surahNumber }
-                                                            onSurahClick(
-                                                                SurahScreenData(
-                                                                    name = matchedSurah?.nameTransliterated ?: seg.surahNameEnglish,
-                                                                    totalAyah = matchedSurah?.totalAyahs ?: 0,
-                                                                    meaning = matchedSurah?.nameEnglish ?: seg.surahNameEnglish,
-                                                                    number = seg.surahNumber,
-                                                                    targetAyahNumber = seg.startAyah
-                                                                )
-                                                            )
-                                                        }
-                                                        .padding(vertical = dimens.space8),
-                                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                                        Text(
-                                                            text = seg.surahNameArabic,
-                                                            fontFamily = ScheherazadeFontFamily,
-                                                            style = MaterialTheme.typography.headlineSmall.copy(
-                                                                fontWeight = FontWeight.Bold
-                                                            ),
-                                                            color = MaterialTheme.colorScheme.onSurface
-                                                        )
-                                                        Spacer(modifier = Modifier.width(dimens.space16))
-                                                        Column {
-                                                            Text(
-                                                                text = seg.surahNameEnglish,
-                                                                style = MaterialTheme.typography.titleSmall.copy(
-                                                                    fontWeight = FontWeight.Bold
-                                                                ),
-                                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                            )
-                                                            Text(
-                                                                text = "Aya ${seg.startAyah}-${seg.endAyah}",
-                                                                style = MaterialTheme.typography.bodySmall,
-                                                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                                if (segIdx < juz.segments.size - 1) {
-                                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                                                }
+                                    juz.segments.forEach { seg ->
+                                        JuzSegmentCard(
+                                            segment = seg,
+                                            onClick = {
+                                                val matchedSurah =
+                                                    surahState.quranData.find { it.surahNumber == seg.surahNumber }
+                                                onSurahClick(
+                                                    SurahScreenData(
+                                                        name = matchedSurah?.nameTransliterated
+                                                            ?: seg.surahNameEnglish,
+                                                        totalAyah = matchedSurah?.totalAyahs ?: 0,
+                                                        meaning = matchedSurah?.nameEnglish
+                                                            ?: seg.surahNameEnglish,
+                                                        number = seg.surahNumber,
+                                                        targetAyahNumber = seg.startAyah
+                                                    )
+                                                )
                                             }
-                                        }
+                                        )
                                     }
                                 }
                             }
@@ -554,7 +534,8 @@ fun QuranScreen(
                         khatamHistory = surahState.khatamHistory,
                         onStartNewPlanClick = onStartNewKhatamClick,
                         onContinueReadingClick = { surahNum, ayahNum ->
-                            val surahModel = surahState.quranData.find { it.surahNumber == surahNum }
+                            val surahModel =
+                                surahState.quranData.find { it.surahNumber == surahNum }
                             onSurahClick(
                                 SurahScreenData(
                                     name = surahModel?.nameEnglish ?: "Al-Fatihah",
@@ -629,8 +610,10 @@ fun QuranScreen(
                             }
 
                             surahState.bookmarkedAyahsGrouped.forEach { (surahNum, ayahs) ->
-                                val matchedSurah = surahState.quranData.find { it.surahNumber == surahNum }
-                                val surahName = matchedSurah?.nameTransliterated ?: "Surah $surahNum"
+                                val matchedSurah =
+                                    surahState.quranData.find { it.surahNumber == surahNum }
+                                val surahName =
+                                    matchedSurah?.nameTransliterated ?: "Surah $surahNum"
                                 val surahMeaning = matchedSurah?.nameEnglish ?: ""
                                 val totalAyahs = matchedSurah?.totalAyahs ?: 0
 
@@ -639,13 +622,18 @@ fun QuranScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         shape = RoundedCornerShape(dimens.cornerXl),
                                         colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+                                            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(
+                                                alpha = 0.35f
+                                            )
                                         )
                                     ) {
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .padding(horizontal = dimens.space16, vertical = dimens.space12),
+                                                .padding(
+                                                    horizontal = dimens.space16,
+                                                    vertical = dimens.space12
+                                                ),
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
@@ -711,7 +699,9 @@ fun QuranScreen(
                                             },
                                         shape = RoundedCornerShape(dimens.cornerLg),
                                         colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                                                alpha = 0.5f
+                                            )
                                         )
                                     ) {
                                         Column(
@@ -729,11 +719,16 @@ fun QuranScreen(
                                                     modifier = Modifier
                                                         .clip(RoundedCornerShape(50))
                                                         .background(MaterialTheme.colorScheme.primaryContainer)
-                                                        .padding(horizontal = dimens.space12, vertical = dimens.space4)
+                                                        .padding(
+                                                            horizontal = dimens.space12,
+                                                            vertical = dimens.space4
+                                                        )
                                                 ) {
                                                     Row(
                                                         verticalAlignment = Alignment.CenterVertically,
-                                                        horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+                                                        horizontalArrangement = Arrangement.spacedBy(
+                                                            dimens.space4
+                                                        )
                                                     ) {
                                                         Text(
                                                             text = "Aya ${ayah.surahNumber}:${ayah.ayahNumber}",

@@ -1,6 +1,6 @@
-package com.hazrat.domain.repository
+package com.hazrat.domain.repository.quran
 
-import com.hazrat.model.KhatamPlanModel
+import com.hazrat.model.quran.KhatamPlanModel
 import kotlinx.coroutines.flow.Flow
 
 interface KhatamRepository {
