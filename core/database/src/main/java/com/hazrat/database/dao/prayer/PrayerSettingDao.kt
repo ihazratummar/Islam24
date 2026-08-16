@@ -103,6 +103,7 @@ interface PrayerSettingDao {
     """)
     suspend fun updateNotificationSettings(settings: NotificationSettingsMapEntity, updatedAt: Instant)
 
-
+    @Query("DELETE FROM user_prayer_settings")
+    suspend fun clearUserSetting()
 
 }

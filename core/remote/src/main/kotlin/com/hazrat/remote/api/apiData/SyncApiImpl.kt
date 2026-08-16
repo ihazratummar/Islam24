@@ -29,6 +29,7 @@ class SyncApiImpl(
                 setBody(request)
             }
             if (response.status.value in 200..299){
+                Log.d("SyncApiImpl", "Data from backend ${response.body<SyncResponseDto>()}")
                 response.body<SyncResponseDto>()
             }else{
                 Log.e("SyncApiImpl", "Sync failed with ${response.status}")

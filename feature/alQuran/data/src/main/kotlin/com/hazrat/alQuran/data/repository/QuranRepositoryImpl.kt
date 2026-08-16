@@ -106,4 +106,12 @@ class QuranRepositoryImpl(
             )
         }
     }
+
+
+    override suspend fun cleanLocalQuranData() {
+        quranDao.hardDeleteAllBookmark()
+        quranDao.deleteAllRecentSurah()
+    }
+
+
 }

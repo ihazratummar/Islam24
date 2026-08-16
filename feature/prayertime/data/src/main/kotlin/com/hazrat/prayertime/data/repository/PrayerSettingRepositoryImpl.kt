@@ -3,10 +3,8 @@ package com.hazrat.prayertime.data.repository
 import com.hazrat.database.converter.NotificationSettingsMapEntity
 import com.hazrat.database.dao.prayer.PrayerSettingDao
 import com.hazrat.database.entity.prayer.UserPrayerSettingEntity
-import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.prayer.PrayerSettingRepository
 import com.hazrat.model.Prayer
-import com.hazrat.model.PrayerNotificationSettings
 import com.hazrat.model.prayersettingmodel.UserPrayerSettingModel
 import com.hazrat.prayertime.data.mapper.toModel
 import com.hazrat.utils.result.Result
@@ -21,7 +19,6 @@ import kotlin.time.Clock
  * @author Hazrat Ummar Shaikh
  */
 class PrayerSettingRepositoryImpl(
-    private val userDataStore: UserDataStore,
     private val prayerSettingDao: PrayerSettingDao
 ) : PrayerSettingRepository {
 
@@ -125,5 +122,9 @@ class PrayerSettingRepositoryImpl(
             Prayer.ISHA -> currentMap.copy(isha = currentMap.isha.copy(offsetMinutes = offset))
         }
         prayerSettingDao.updateNotificationSettings(settings = updatedMap, updatedAt = updatedAt)
+    }
+
+    override suspend fun clearUserSetting() {
+        prayerSettingDao.clearUserSetting()
     }
 }

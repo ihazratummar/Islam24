@@ -1,27 +1,19 @@
 package com.hazrat.auth.ui.login
 
-import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hazrat.model.profile.SupporterTickerModel
 import com.hazrat.usecase.profile.GoogleSignInUseCase
-import com.hazrat.usecase.profile.ListenToSupportTickerUseCase
 import com.hazrat.usecase.profile.SyncDataUseCase
-import kotlinx.coroutines.delay
+import com.hazrat.utils.result.Result
+import com.hazrat.utils.result.error.AuthError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
-
-
-import com.hazrat.utils.result.Result
-import com.hazrat.utils.result.error.AuthError
 
 /**
  * @author hazratummar
@@ -46,8 +38,10 @@ class LoginViewModel(
                     try {
                         when (val result = googleSignInUseCase(context = event.context)) {
                             is Result.Success -> {
+                                // 1. Await full data sync & recovery directly so Room is populated
+                                syncDataUseCase()
+                                // 2. Navigate back to app
                                 _effect.emit(LoginEffect.NavigateBack)
-                                syncDataUseCase.invoke()
                             }
                             is Result.Error -> {
                                 val errorMessage = when (result.error) {

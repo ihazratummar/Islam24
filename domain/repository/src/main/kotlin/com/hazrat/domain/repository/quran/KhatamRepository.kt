@@ -11,4 +11,6 @@ interface KhatamRepository {
     suspend fun updateKhatamTargetDate(planId: String, newTargetDateTimestamp: Long)
     suspend fun resetKhatamPlan(planId: String)
     suspend fun endKhatamPlan(planId: String)
+
+    suspend fun clearLocalQuranKhatam()
 }

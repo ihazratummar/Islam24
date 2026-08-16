@@ -27,4 +27,6 @@ interface QuranRepository {
     fun getBookmarkedAyahs(): Flow<List<AyahModel>>
 
     suspend fun toggleBookmark(surahNumber: Int, ayahNumber: Int, isBookmarked: Boolean)
+
+    suspend fun cleanLocalQuranData()
 }

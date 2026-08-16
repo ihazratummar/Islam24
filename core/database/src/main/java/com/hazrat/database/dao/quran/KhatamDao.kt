@@ -36,4 +36,7 @@ interface KhatamDao {
 
     @Query("DELETE FROM khatam_plan WHERE id IN (:ids)")
     suspend fun deleteKhatamPlan(ids: List<String>)
+
+    @Query("DELETE FROM khatam_plan")
+    suspend fun deleteAllPlans()
 }

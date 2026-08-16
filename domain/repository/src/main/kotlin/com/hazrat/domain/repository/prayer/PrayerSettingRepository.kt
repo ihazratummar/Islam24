@@ -44,4 +44,6 @@ interface PrayerSettingRepository {
         offset: Int,
         updatedAt: Instant = Clock.System.now()
     )
+
+    suspend fun clearUserSetting()
 }

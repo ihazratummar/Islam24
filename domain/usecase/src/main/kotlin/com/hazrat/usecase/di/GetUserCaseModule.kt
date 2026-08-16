@@ -118,7 +118,18 @@ fun getUserCaseModule(): Module = module {
 
     // Auth
     single { GoogleSignInUseCase(get()) }
-    single { SignOutUseCase(authRepository = get(), profileRepository = get()) }
+    single {
+        SignOutUseCase(
+            authRepository = get(),
+            profileRepository = get(),
+            syncRepository = get(),
+            quranRepository = get(),
+            khatamRepository = get(),
+            prayerLogRepository = get(),
+            prayerSettingRepository = get(),
+            syncDatastore = get()
+        )
+    }
     single { IsLoggedInUseCase(get()) }
     single { IsSubscribedUseCase(userDataStore = get()) }
     single { GetProfileDataUseCase(get()) }
@@ -129,9 +140,7 @@ fun getUserCaseModule(): Module = module {
     single { GetRecentTickersUseCase(get()) }
     single { SaveTickerUseCase(get()) }
 
-    single { SyncDataUseCase(get()) }
-
-
+    single { SyncDataUseCase(syncRepository = get(), appSyncScheduler = get()) }
 
 
 }

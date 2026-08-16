@@ -34,7 +34,7 @@ fun getPrayerDataModule(): Module = module {
 
     single<DispatcherProvider> { DefaultDispatcherProvider() }
 
-    single<PrayerSettingRepository> { PrayerSettingRepositoryImpl(userDataStore = get(), prayerSettingDao = get()) }
+    single<PrayerSettingRepository> { PrayerSettingRepositoryImpl(prayerSettingDao = get()) }
 
     single { PrayerLogMapper }
 

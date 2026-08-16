@@ -90,6 +90,9 @@ interface QuranDao {
     @Query("DELETE FROM recent_surah WHERE surahNumber IN (:surahNumbers)")
     suspend fun deleteRecentSurah(surahNumbers: List<Int>)
 
+    @Query("DELETE FROM recent_surah")
+    suspend fun deleteAllRecentSurah()
+
 
     // =========================================================================
     // 3. QURAN BOOKMARKS (Ayah Bookmarks & Sync)
@@ -131,6 +134,9 @@ interface QuranDao {
 
     @Query("DELETE FROM quran_bookmark WHERE id IN (:ids)")
     suspend fun hardDeleteBookmark(ids: List<String>)
+
+    @Query("DELETE FROM quran_bookmark")
+    suspend fun hardDeleteAllBookmark()
 
     @Query("UPDATE quran_bookmark SET isDeleted = :isDeleted, isSynced = 0 WHERE surahNumber = :surahNumber AND ayahNumber = :ayahNumber")
     suspend fun updateBookmarkState(surahNumber: Int, ayahNumber: Int, isDeleted: Boolean)

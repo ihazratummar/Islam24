@@ -125,4 +125,8 @@ class KhatamRepositoryImpl(
             updatedTimestamp = this.updatedTimestamp,
         )
     }
+
+    override suspend fun clearLocalQuranKhatam() {
+        khatamDao.deleteAllPlans()
+    }
 }

@@ -221,8 +221,8 @@ class ProfileViewModel(
                             }
                             is Result.Error -> {
                                 val errorMessage = when (result.error) {
-                                    AuthError.NO_INTERNET -> "No internet connection. Local session cleared."
-                                    else -> "Logout failed on server, local session cleared."
+                                    AuthError.NO_INTERNET -> "No internet connection. Please connect to the internet to back up and sign out."
+                                    else -> "Sign out failed. Please check your connection and try again."
                                 }
                                 _effect.emit(ProfileEffect.Error(errorMessage))
                             }

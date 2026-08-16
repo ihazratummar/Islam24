@@ -1,3 +1,6 @@
+## [4.3.2] - 2026-08-16
+- **FIX Quran & Khatam Cloud Sync**: Fixed Quran, Prayer Logs, User Setting Backup sync
+
 ## [4.3.1] - 2026-08-16
 - **Quran & Khatam Cloud Sync**: Full bidirectional sync across devices for Khatam reading plans, Ayah bookmarks, recent reads, prayer logs, and settings with conflict resolution.
 - **Harmonized Juz View**: Redesigned Juz reading mode with official Arabic SVG calligraphy vectors and Ayah range badges matching Surah cards.
