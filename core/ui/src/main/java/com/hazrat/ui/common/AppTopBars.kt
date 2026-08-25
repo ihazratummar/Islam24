@@ -20,6 +20,8 @@ import com.hazrat.ui.theme.customColors
 
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import com.hazrat.ui.theme.dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +39,8 @@ fun BasicTopBar(
             BackIcon(onBackClick = onBackClick)
         },
         actions = actions,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+        windowInsets = WindowInsets(top = dimens.space20)
     )
 }
 

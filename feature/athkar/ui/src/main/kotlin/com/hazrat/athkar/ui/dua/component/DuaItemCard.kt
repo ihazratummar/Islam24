@@ -243,7 +243,7 @@ fun DuaItemCard(
                         append("\n\nShared via Islam 24")
                     }
                     clipboard.setPrimaryClip(ClipData.newPlainText("Dua", textToCopy))
-                    Toast.makeText(context, context.getString(R.string.dua_copy_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Dua copied to clipboard",  Toast.LENGTH_SHORT).show()
                 },
                 onShareClick = onShareClick
             )

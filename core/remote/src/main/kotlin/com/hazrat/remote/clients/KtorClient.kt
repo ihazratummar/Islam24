@@ -1,5 +1,6 @@
 package com.hazrat.remote.clients
 
+import android.util.Log
 import com.hazrat.datastore.TokenStorage
 import com.hazrat.remote.dto.auth.AuthResponse
 import com.hazrat.remote.dto.auth.RefreshTokenRequest
@@ -16,20 +17,19 @@ import io.ktor.client.plugins.websocket.pingInterval
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.URLProtocol
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import kotlin.time.Duration.Companion.seconds
-
 import okhttp3.Protocol
+import kotlin.time.Duration.Companion.seconds
 
 object KtorClient {
 
     // Toggle between local and prod in this single location:
-     const val BASE_URL = "http://192.168.0.122:8080/api/v1/"
-//    const val BASE_URL = "https://api.islam24.app/api/v1/"
+//     const val BASE_URL = "http://192.168.0.122:8080/api/v1/"
+    const val BASE_URL = "https://api.islam24.app/api/v1/"
 
     val WS_BASE_URL: String
         get() = BASE_URL
@@ -77,19 +77,6 @@ object KtorClient {
 
     fun createHttpClient(tokenStorage: TokenStorage) : HttpClient {
         return HttpClient(OkHttp) {
-            engine {
-                addInterceptor { chain ->
-                    val requestBuilder = chain.request().newBuilder()
-                    val token = tokenStorage.getAccessToken()
-                    if (!token.isNullOrBlank()) {
-                        requestBuilder.header("Authorization", "Bearer $token")
-                    } else {
-                        requestBuilder.removeHeader("Authorization")
-                    }
-                    chain.proceed(requestBuilder.build())
-                }
-            }
-
             install(ContentNegotiation){
                 json(
                     Json{
@@ -102,7 +89,6 @@ object KtorClient {
             install(WebSockets){
                 pingInterval = 15_000.seconds
             }
-
 
             defaultRequest {
                 url.takeFrom(BASE_URL)
@@ -123,7 +109,6 @@ object KtorClient {
 
                     refreshTokens {
                         try {
-
                             val storageAccessToken = tokenStorage.getAccessToken()
                             val storageRefreshToken = tokenStorage.getRefreshToken()
 
@@ -136,12 +121,11 @@ object KtorClient {
                             // 2. Otherwise, use the storage refresh token or fallback to oldTokens
                             val refreshToken = storageRefreshToken ?: oldTokens?.refreshToken
                             if (refreshToken == null){
-                                tokenStorage.clearToken()
                                 return@refreshTokens null
                             }
 
                             val refreshClient = HttpClient(OkHttp){
-                                install(ContentNegotiation){json(Json { ignoreUnknownKeys = true })}
+                                install(ContentNegotiation){ json(Json { ignoreUnknownKeys = true }) }
                             }
 
                             val response = refreshClient.post("${BASE_URL}auth/refresh"){
@@ -149,19 +133,31 @@ object KtorClient {
                                 setBody(RefreshTokenRequest(refreshToken = refreshToken))
                             }
 
-                            if (response.status.value in 200..299){
-                                val authResponse = response.body<AuthResponse>()
-                                tokenStorage.saveTokens(
-                                    accessToken = authResponse.accessToken,
-                                    refreshToken = authResponse.refreshToken
-                                )
-                                BearerTokens(authResponse.accessToken, authResponse.refreshToken)
-                            }else{
-                                tokenStorage.clearToken()
-                                null
+                            when (response.status) {
+                                HttpStatusCode.OK, HttpStatusCode.Created, HttpStatusCode.Accepted -> {
+                                    val authResponse = response.body<AuthResponse>()
+                                    tokenStorage.saveTokens(
+                                        accessToken = authResponse.accessToken,
+                                        refreshToken = authResponse.refreshToken
+                                    )
+                                    BearerTokens(authResponse.accessToken, authResponse.refreshToken)
+                                }
+                                HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden -> {
+                                    // ONLY clear local session if backend explicitly rejects the refresh token
+                                    Log.w("KtorClient", "Refresh token revoked or invalid on backend (HTTP ${response.status.value}). Clearing session.")
+                                    tokenStorage.clearToken()
+                                    null
+                                }
+                                else -> {
+                                    // Server errors (500, 502, 503, etc.) or rate limit: DO NOT log out user!
+                                    Log.w("KtorClient", "Server error during token refresh (HTTP ${response.status.value}). Keeping tokens.")
+                                    null
+                                }
                             }
-                        }catch (e: Exception){
-                            tokenStorage.clearToken()
+                        } catch (e: Exception) {
+                            // Offline / DNS error / Socket timeout:
+                            // CRITICAL: NEVER clear tokens when internet is down or temporary network drop occurs!
+                            Log.w("KtorClient", "Network error during token refresh: ${e.message}. Keeping session intact.")
                             null
                         }
                     }
@@ -169,5 +165,4 @@ object KtorClient {
             }
         }
     }
-
 }

@@ -3,6 +3,7 @@ package com.hazrat.athkar.ui.dua.category
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
@@ -35,7 +36,7 @@ fun DuaCategoryDetailScreen(
         modifier = modifier
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.padding(paddingValues).fillMaxSize()
         ) {
             item {
                 DuaCategoryDetailHeader(

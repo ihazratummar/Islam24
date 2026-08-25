@@ -3,12 +3,10 @@ package com.hazrat.database.migration
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-
 /**
  * @author hazratummar
  * Created on 16/08/26
  */
-
 
 // Migration v4 -> v5: add khatam_plan table
 val QURAN_KHATAM_MIGRATION_4_5 = object : Migration(4, 5) {
@@ -29,12 +27,12 @@ val QURAN_KHATAM_MIGRATION_4_5 = object : Migration(4, 5) {
                     `updatedTimestamp` INTEGER NOT NULL,
                     PRIMARY KEY(`id`)
                 )
-                """.trimIndent()
+            """.trimIndent()
         )
     }
 }
 
-val QURAN_SURAH_MIGRATION_5_6 = object: Migration(5,6){
+val QURAN_SURAH_MIGRATION_5_6 = object : Migration(5, 6) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE `recent_surah` ADD COLUMN `isSynced` INTEGER NOT NULL DEFAULT 0")
         db.execSQL("ALTER TABLE `recent_surah` ADD COLUMN `isDeleted` INTEGER NOT NULL DEFAULT 0")
@@ -44,15 +42,15 @@ val QURAN_SURAH_MIGRATION_5_6 = object: Migration(5,6){
         db.execSQL(
             """
                 CREATE TABLE IF NOT EXISTS `quran_bookmark` (
-                `id` TEXT NOT NULL,
-                `surahNumber` INTEGER NOT NULL,
-                `ayahNumber` INTEGER NOT NULL,
-                `globalAyahNumber` INTEGER NOT NULL,
-                `isDeleted` INTEGER NOT NULL DEFAULT 0,
-                `isSynced` INTEGER NOT NULL DEFAULT 0,
-                `updatedAt` INTEGER NOT NULL DEFAULT 0,
-                PRIMARY KEY(`id`),
-                FOREIGN KEY(`globalAyahNumber`) REFERENCES `ayah`(`globalAyahNumber`) ON DELETE CASCADE
+                    `id` TEXT NOT NULL,
+                    `surahNumber` INTEGER NOT NULL,
+                    `ayahNumber` INTEGER NOT NULL,
+                    `globalAyahNumber` INTEGER NOT NULL,
+                    `isDeleted` INTEGER NOT NULL DEFAULT 0,
+                    `isSynced` INTEGER NOT NULL DEFAULT 0,
+                    `updatedAt` INTEGER NOT NULL DEFAULT 0,
+                    PRIMARY KEY(`id`),
+                    FOREIGN KEY(`globalAyahNumber`) REFERENCES `ayah`(`globalAyahNumber`) ON DELETE CASCADE
                 )
             """.trimIndent()
         )
