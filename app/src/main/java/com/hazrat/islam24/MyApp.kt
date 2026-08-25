@@ -33,6 +33,9 @@ class MyApp: Application() , ImageLoaderFactory {
         val appSync: AppSyncScheduler by inject()
         appSync.scheduleImmediateSync()
         appSync.schedulePeriodicSync()
+
+        val widgetObserver: com.hazrat.islam24.widget.PrayerWidgetDatabaseObserver by inject()
+        widgetObserver.startObserving()
     }
 
     private fun schedulePrayerJanitor() {

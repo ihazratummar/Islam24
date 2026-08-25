@@ -3,14 +3,14 @@
 # Kotlin & Core
 # ===========================
 kotlin = "2.4.10"
-agp = "9.3.1"
-ksp = "2.3.2"
+agp = "9.3.2"
+ksp = "2.3.6"
 coreKtx = "1.19.0"
 
 # ===========================
 # AndroidX Core
 # ===========================
-appcompat = "1.7.1"
+appcompat = "1.8.0"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
 media = "1.8.0"
@@ -18,8 +18,8 @@ media = "1.8.0"
 # ===========================
 # Compose & UI
 # ===========================
-composeBom = "2026.06.01"
-foundation = "1.11.4"
+composeBom = "2026.08.00"
+foundation = "1.12.0"
 material3 = "1.4.0"
 material3WindowClass = "1.4.0"
 
@@ -54,7 +54,7 @@ datastorePreferences = "1.2.1"
 # Networking
 # ===========================
 kotlinxSerializationJson = "1.11.0"
-okhttp = "5.4.0"
+okhttp = "5.5.0"
 
 # ===========================
 # Firebase
@@ -75,14 +75,14 @@ coilCompose = "2.7.0"
 # ===========================
 # Paging
 # ===========================
-pagingRuntimeKtx = "3.5.0"
+pagingRuntimeKtx = "3.5.1"
 
 # ===========================
 # App Update & Review (Play Core)
 # ===========================
 appUpdateKtx = "2.1.0"
 review = "2.0.2"
-revenuecat = "10.16.1"
+revenuecat = "10.18.1"
 billingKtx = "9.1.0"
 
 # ===========================
@@ -121,9 +121,9 @@ timber = "5.0.1"
 #
 # ===========================
 kotlinx-coroutines-play = "1.11.0"
-animationCore = "1.11.4"
-runtimeAnnotation = "1.11.4"
-foundationLayout = "1.11.4"
+animationCore = "1.12.0"
+runtimeAnnotation = "1.12.0"
+foundationLayout = "1.12.0"
 
 ktorClient = "3.5.2"
 

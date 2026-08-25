@@ -29,7 +29,7 @@ class PrayerAlarmScheduler(
         titleContent: String,
         requestCode: Int
     ) {
-        cancelAlarm(requestCode)
+        cancelAlarm(requestCode, prayer)
         val calendar = Calendar.getInstance().apply {
             timeInMillis = prayerTime
             set(Calendar.SECOND, 0)
@@ -78,24 +78,28 @@ class PrayerAlarmScheduler(
     }
 
     fun cancelAlarm(
-        requestCode: Int
+        requestCode: Int,
+        prayer: Prayer? = null
     ) {
-        val intent = Intent(context, PrayerTimeReceiver::class.java)
+        val intent = Intent(context, PrayerTimeReceiver::class.java).apply {
+            val key = prayer?.key ?: Prayer.entries.firstOrNull { it.notificationCode == requestCode }?.key
+            if (key != null) {
+                putExtra("prayer_key", key)
+            }
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             requestCode,
             intent,
-            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        if (pendingIntent != null) {
-            alarmManager.cancel(pendingIntent)
-            pendingIntent.cancel()
-            Log.d("PrayerAlarmStart", "Existing prayer alarm cancelled $requestCode")
-        }
+        alarmManager.cancel(pendingIntent)
+        pendingIntent.cancel()
+        Log.d("PrayerAlarmScheduler", "Existing prayer alarm cancelled $requestCode")
     }
 
     suspend fun setPrayerAlarm(prayerName: Prayer, prayerTime: Long, preAlertMinutes: Int? = null) {
-        val prayerSetting =  prayerSettingDao.getSettings()
+        val prayerSetting = prayerSettingDao.getSettings()
         val offset = preAlertMinutes ?: when(prayerName){
             Prayer.FAJR -> prayerSetting?.notificationSettingsJson?.fajr?.offsetMinutes ?: 0
             Prayer.DHUHR -> prayerSetting?.notificationSettingsJson?.dhuhr?.offsetMinutes ?: 0
@@ -140,7 +144,7 @@ class PrayerAlarmScheduler(
                     prayer = prayer
                 )
             } else {
-                cancelAlarm(prayer.notificationCode)
+                cancelAlarm(prayer.notificationCode, prayer)
             }
         }
     }

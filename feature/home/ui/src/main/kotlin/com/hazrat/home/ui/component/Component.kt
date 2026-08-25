@@ -835,22 +835,28 @@ fun DailyVerseCard(
 }
 
 /**
- * Clean 2x3 Quick Access Grid with tint = Color.Unspecified on icons.
+ * Clean Quick Access Section with Widgets Banner + 2x3 Grid.
  */
 @Composable
 fun CleanQuickAccessGrid(
-    onClick: (HomePageNavIcons) -> Unit
+    onClick: (HomePageNavIcons) -> Unit,
+    onWidgetsClick: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(dimens.space12)
     ) {
         Text(
-            text = "Quick Access",
+            text = stringResource(id = R.string.home_quick_access_label),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold
             ),
             color = MaterialTheme.colorScheme.onBackground
+        )
+
+        // Home Screen Widgets Promotional Banner
+        HomeScreenWidgetsBanner(
+            onClick = onWidgetsClick
         )
 
         val itemsRow1 = listOf<Triple<String, Int, HomePageNavIcons>>(
@@ -890,6 +896,126 @@ fun CleanQuickAccessGrid(
                     iconRes = iconRes,
                     onClick = { onClick(navIcon) }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeScreenWidgetsBanner(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(dimens.cornerXl))
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(dimens.cornerXl),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF0F5B4D),
+                            Color(0xFF0C705D),
+                            Color(0xFF098A70)
+                        )
+                    ),
+                    shape = RoundedCornerShape(dimens.cornerXl)
+                )
+                .padding(horizontal = dimens.space16, vertical = dimens.space12)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimens.space12)
+            ) {
+                // Glassmorphic Rounded Icon container with 4 Circular Widget Dots
+                Box(
+                    modifier = Modifier
+                        .size(dimens.space48)
+                        .background(
+                            color = Color(0x2EFFFFFF),
+                            shape = RoundedCornerShape(dimens.cornerLg)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_widget_grid),
+                        contentDescription = null,
+                        modifier = Modifier.size(dimens.iconMd),
+                        tint = Color.White
+                    )
+                }
+
+                // Title, NEW Badge, and Subtitle
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(dimens.space2)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.home_screen_widgets_title),
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            ),
+                            maxLines = 1
+                        )
+                        // Horizontal NEW badge
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = Color(0x2EFFFFFF),
+                                    shape = RoundedCornerShape(dimens.cornerFull)
+                                )
+                                .padding(horizontal = dimens.space8, vertical = dimens.space2)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.home_screen_widgets_badge_new),
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF6EE7B7)
+                                ),
+                                maxLines = 1
+                            )
+                        }
+                    }
+                    Text(
+                        text = stringResource(id = R.string.home_screen_widgets_subtitle),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = Color(0xD9FFFFFF)
+                        ),
+                        maxLines = 1
+                    )
+                }
+
+                // Right Forward Arrow Circle Button
+                Box(
+                    modifier = Modifier
+                        .size(dimens.space40)
+                        .background(
+                            color = Color(0x2EFFFFFF),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_right2),
+                        contentDescription = null,
+                        modifier = Modifier.size(dimens.iconSm),
+                        tint = Color.White
+                    )
+                }
             }
         }
     }

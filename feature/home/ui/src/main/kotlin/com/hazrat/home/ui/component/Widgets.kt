@@ -192,4 +192,7 @@ sealed class HomeRoutes {
 
     @Serializable
     data object Zakat : HomeRoutes()
+
+    @Serializable
+    data object HomeScreenWidgetsRoute : HomeRoutes()
 }

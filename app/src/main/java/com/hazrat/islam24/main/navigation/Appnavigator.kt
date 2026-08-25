@@ -3,6 +3,7 @@ package com.hazrat.islam24.main.navigation
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -61,6 +62,8 @@ import com.hazrat.calendar.CalendarScreen
 import com.hazrat.home.ui.HomeScreen
 import com.hazrat.home.ui.HomeViewModel
 import com.hazrat.home.ui.component.HomeRoutes
+import com.hazrat.home.ui.widgets.HomeScreenWidgetsScreen
+import com.hazrat.islam24.widget.nextprayer.NextPrayerWidgetReceiver
 import com.hazrat.islam24.main.navigation.nvgraph.PrayerTimeScreenRoute
 import com.hazrat.islam24.main.navigation.nvgraph.prayerNav
 import com.hazrat.islam24.main.navigation.nvgraph.zakatNavGraph
@@ -121,6 +124,12 @@ fun AppNavigator(
 
             is NavigationTarget.Zakat -> {
                 navController.navigate(HomeRoutes.Zakat) {
+                    launchSingleTop = true
+                }
+            }
+
+            is NavigationTarget.Calendar -> {
+                navController.navigate(HomeRoutes.Calendar) {
                     launchSingleTop = true
                 }
             }
@@ -219,6 +228,9 @@ fun AppNavigator(
                                 )
                             )
                         )
+                    },
+                    onHomeScreenWidgetsClick = {
+                        navController.navigate(HomeRoutes.HomeScreenWidgetsRoute)
                     }
                 )
             }
@@ -480,6 +492,32 @@ fun AppNavigator(
                     event = viewModel::event
                 )
 
+            }
+
+            composable<HomeRoutes.HomeScreenWidgetsRoute> {
+                val context = androidx.compose.ui.platform.LocalContext.current
+                HomeScreenWidgetsScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onPinWidget = { widgetId ->
+                        val receiverClass = when (widgetId) {
+                            "next_prayer" -> NextPrayerWidgetReceiver::class.java
+                            "hijri_date" -> com.hazrat.islam24.widget.hijridate.HijriDateWidgetReceiver::class.java
+                            "hijri_calendar" -> com.hazrat.islam24.widget.calendar.HijriCalendarWidgetReceiver::class.java
+                            else -> null
+                        }
+                        if (receiverClass != null) {
+                            val appWidgetManager = android.appwidget.AppWidgetManager.getInstance(context)
+                            val provider = android.content.ComponentName(context, receiverClass)
+                            if (appWidgetManager.isRequestPinAppWidgetSupported) {
+                                appWidgetManager.requestPinAppWidget(provider, null, null)
+                            } else {
+                                Toast.makeText(context, "Long-press your home screen to add widgets", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(context, "This widget will be available in the next step!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                )
             }
 
             authNavGraph(

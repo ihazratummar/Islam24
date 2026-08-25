@@ -24,6 +24,7 @@ sealed interface NavigationTarget {
     data class Ayah(val surahNumber: Int, val ayahNumber: Int) : NavigationTarget
     data object PrayerTime : NavigationTarget
     data object Zakat : NavigationTarget
+    data object Calendar : NavigationTarget
 }
 
 object NavigationCommandBus {

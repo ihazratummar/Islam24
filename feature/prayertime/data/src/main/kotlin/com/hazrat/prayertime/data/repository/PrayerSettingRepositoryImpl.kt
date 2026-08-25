@@ -3,6 +3,7 @@ package com.hazrat.prayertime.data.repository
 import com.hazrat.database.converter.NotificationSettingsMapEntity
 import com.hazrat.database.dao.prayer.PrayerSettingDao
 import com.hazrat.database.entity.prayer.UserPrayerSettingEntity
+import com.hazrat.domain.repository.PrayerAlarmRescheduler
 import com.hazrat.domain.repository.prayer.PrayerSettingRepository
 import com.hazrat.model.Prayer
 import com.hazrat.model.prayersettingmodel.UserPrayerSettingModel
@@ -19,7 +20,8 @@ import kotlin.time.Clock
  * @author Hazrat Ummar Shaikh
  */
 class PrayerSettingRepositoryImpl(
-    private val prayerSettingDao: PrayerSettingDao
+    private val prayerSettingDao: PrayerSettingDao,
+    private val prayerAlarmRescheduler: PrayerAlarmRescheduler? = null
 ) : PrayerSettingRepository {
 
     private suspend fun ensureSettingExists(): UserPrayerSettingEntity {
@@ -44,6 +46,7 @@ class PrayerSettingRepositoryImpl(
             ensureSettingExists()
             val updatedAtInstant = Clock.System.now()
             prayerSettingDao.updateCalculationMethod(method = method, updatedAt = updatedAtInstant)
+            prayerAlarmRescheduler?.rescheduleAlarms()
             Result.Success(true)
         } catch (e: Exception) {
             Result.Error(error = DatabaseError.UnknownError)
@@ -55,6 +58,7 @@ class PrayerSettingRepositoryImpl(
             ensureSettingExists()
             val updatedAtInstant = Clock.System.now()
             prayerSettingDao.updateJuristicMethod(method = method, updatedAt = updatedAtInstant)
+            prayerAlarmRescheduler?.rescheduleAlarms()
             Result.Success(true)
         } catch (e: Exception) {
             Result.Error(error = DatabaseError.UnknownError)
@@ -80,6 +84,7 @@ class PrayerSettingRepositoryImpl(
             settings = updatedMap,
             updatedAt = Clock.System.now()
         )
+        prayerAlarmRescheduler?.rescheduleAlarms()
     }
 
     override fun getUserPrayerSetting(): Flow<UserPrayerSettingModel> {
@@ -105,6 +110,7 @@ class PrayerSettingRepositoryImpl(
             Prayer.ISHA -> currentMap.copy(isha = currentMap.isha.copy(audio = audio))
         }
         prayerSettingDao.updateNotificationSettings(settings = updatedMap, updatedAt = updatedAt)
+        prayerAlarmRescheduler?.rescheduleAlarms()
     }
 
     override suspend fun updatePrayerOffset(
@@ -122,9 +128,11 @@ class PrayerSettingRepositoryImpl(
             Prayer.ISHA -> currentMap.copy(isha = currentMap.isha.copy(offsetMinutes = offset))
         }
         prayerSettingDao.updateNotificationSettings(settings = updatedMap, updatedAt = updatedAt)
+        prayerAlarmRescheduler?.rescheduleAlarms()
     }
 
     override suspend fun clearUserSetting() {
         prayerSettingDao.clearUserSetting()
+        prayerAlarmRescheduler?.rescheduleAlarms()
     }
 }

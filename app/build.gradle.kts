@@ -20,8 +20,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         this.targetSdk = 37
-        versionCode = 119
-        versionName = "4.3.3"
+        versionCode = 120
+        versionName = "4.3.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -151,8 +151,9 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.navigation)
 
-    //Kotlinx Serialization
+    //Kotlinx Serialization & Datetime
     implementation (libs.kotlinx.serialization.json)
+    implementation (libs.kotlinx.datetime)
 
     //Compose Foundation
     implementation (libs.androidx.foundation)

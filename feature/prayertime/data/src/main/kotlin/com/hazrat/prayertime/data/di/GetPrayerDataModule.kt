@@ -1,5 +1,7 @@
 package com.hazrat.prayertime.data.di
 
+import com.hazrat.domain.repository.PrayerAlarmRescheduler
+import com.hazrat.domain.repository.WidgetUpdater
 import com.hazrat.domain.repository.prayer.PrayerLogRepository
 import com.hazrat.domain.repository.prayer.PrayerSettingRepository
 import com.hazrat.domain.repository.prayer.PrayerTimeRepository
@@ -34,14 +36,21 @@ fun getPrayerDataModule(): Module = module {
 
     single<DispatcherProvider> { DefaultDispatcherProvider() }
 
-    single<PrayerSettingRepository> { PrayerSettingRepositoryImpl(prayerSettingDao = get()) }
+    single<PrayerSettingRepository> {
+        PrayerSettingRepositoryImpl(
+            prayerSettingDao = get(),
+            prayerAlarmRescheduler = getOrNull()
+        )
+    }
 
     single { PrayerLogMapper }
 
-    single <PrayerLogRepository>{
+    single<PrayerLogRepository> {
         PrayerLogsRepositoryImpl(
             prayerLogMapper = get(),
-            prayerLogDao = get()
+            prayerLogDao = get(),
+            context = get(),
+            widgetUpdater = getOrNull<WidgetUpdater>()
         )
     }
 }

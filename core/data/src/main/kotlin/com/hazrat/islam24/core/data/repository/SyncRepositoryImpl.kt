@@ -13,6 +13,8 @@ import com.hazrat.remote.api.sync.SyncApi
 import com.hazrat.remote.dto.sync.SyncRequestDto
 import timber.log.Timber
 
+import com.hazrat.domain.repository.PrayerAlarmRescheduler
+
 /**
  * Repository responsible for orchestrating bidirectional synchronization across
  * Prayer Logs, Prayer Settings, Khatam Plans, Quran Bookmarks, and Recent Surahs.
@@ -27,7 +29,8 @@ class SyncRepositoryImpl(
     private val prayerSettingDao: PrayerSettingDao,
     private val tokenStorage: TokenStorage,
     private val khatamDao: KhatamDao,
-    private val quranDao: QuranDao
+    private val quranDao: QuranDao,
+    private val prayerAlarmRescheduler: PrayerAlarmRescheduler? = null
 ) : SyncRepository {
 
     companion object {
@@ -109,9 +112,10 @@ class SyncRepositoryImpl(
             }
         }
 
-        // 6.2 Prayer settings
+        // 6.2 Prayer settings (reschedule alarms to reflect restored offsets)
         response.prayerSettings?.let { serverSetting ->
             prayerSettingDao.upsert(serverSetting.toEntity(isSynced = true))
+            prayerAlarmRescheduler?.rescheduleAlarms()
         }
 
         // 6.3 Khatam Plans (Max Global Ayah Wins)

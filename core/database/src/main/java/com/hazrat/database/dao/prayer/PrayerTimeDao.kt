@@ -55,6 +55,9 @@ interface PrayerTimeDao {
     )
     fun getPrayerTimeForToday(currentDate: String): Flow<PrayerTimeEntity?>
 
+    @Query("SELECT * FROM prayer_times WHERE gregorianDate == :currentDate LIMIT 1")
+    suspend fun getTodayPrayerTimeOneShot(currentDate: String): PrayerTimeEntity?
+
 
     /**
      * Deletes specific prayer times from the database.
@@ -82,6 +85,9 @@ interface PrayerTimeDao {
 
     @Query("SELECT holidays, gregorianDate, hijriDate, timestamp FROM prayer_times WHERE timestamp > :currentDateTimestamp AND holidays != '[]'")
     fun getAllHolidaysFromToday(currentDateTimestamp: Long ): Flow<List<HolidayInfoEntity>>
+
+    @Query("SELECT holidays, gregorianDate, hijriDate, timestamp FROM prayer_times WHERE timestamp >= :currentDateTimestamp AND holidays != '[]' ORDER BY timestamp ASC LIMIT 1")
+    suspend fun getNextUpcomingHoliday(currentDateTimestamp: Long): HolidayInfoEntity?
 
 
     @Query("""

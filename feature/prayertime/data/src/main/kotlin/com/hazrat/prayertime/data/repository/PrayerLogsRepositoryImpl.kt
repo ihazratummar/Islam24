@@ -21,8 +21,16 @@ import java.time.YearMonth
  */
 class PrayerLogsRepositoryImpl(
     private val prayerLogMapper: PrayerLogMapper,
-    private val prayerLogDao: PrayerLogDao
+    private val prayerLogDao: PrayerLogDao,
+    private val context: android.content.Context,
+    private val widgetUpdater: com.hazrat.domain.repository.WidgetUpdater? = null
 ) : PrayerLogRepository {
+
+    private suspend fun notifyWidgets() {
+        try {
+            widgetUpdater?.updateAllPrayerWidgets()
+        } catch (_: Exception) {}
+    }
 
     override suspend fun logPrayer(date: LocalDate, prayer: Prayer) =
         withContext(Dispatchers.IO) {
@@ -35,19 +43,23 @@ class PrayerLogsRepositoryImpl(
                 existing = existing
             )
             prayerLogDao.upsert(updated)
+            notifyWidgets()
         }
 
     override suspend fun unLogPrayer(date: LocalDate, prayer: Prayer) =
         withContext(Dispatchers.IO) {
             val kDate = kotlinx.datetime.LocalDate.parse(date.toString())
-            val existing = prayerLogDao.getLogByDate(kDate) ?: return@withContext
-            val updated = prayerLogMapper.toEntity(
-                date = kDate,
-                prayer = prayer,
-                isLogged = false,
-                existing = existing
-            )
-            prayerLogDao.upsert(updated)
+            val existing = prayerLogDao.getLogByDate(kDate)
+            if (existing != null) {
+                val updated = prayerLogMapper.toEntity(
+                    date = kDate,
+                    prayer = prayer,
+                    isLogged = false,
+                    existing = existing
+                )
+                prayerLogDao.upsert(updated)
+            }
+            notifyWidgets()
         }
 
     override fun observeDailyStatus(date: LocalDate): Flow<DailyPrayerStatus> {

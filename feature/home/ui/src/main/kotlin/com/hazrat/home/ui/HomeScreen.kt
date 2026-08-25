@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -53,7 +54,6 @@ import com.hazrat.permission.PermissionRationaleDialog
 import com.hazrat.permission.PermissionTypes
 import com.hazrat.permission.isPermissionGranted
 import com.hazrat.permission.rememberPermissionRequester
-import androidx.compose.foundation.lazy.items
 import com.hazrat.ui.R
 import com.hazrat.ui.common.IslamicGridBackground
 import com.hazrat.ui.theme.dimens
@@ -70,7 +70,8 @@ fun HomeScreen(
     refreshLocation: () -> Unit,
     dailyPrayerStatus: DailyPrayerStatus?,
     onSupportClick: (() -> Unit)? = null,
-    onDailyVerseClick: (DailyVerseData) -> Unit = {}
+    onDailyVerseClick: (DailyVerseData) -> Unit = {},
+    onHomeScreenWidgetsClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var showLocationRationale by remember { mutableStateOf(false) }
@@ -209,10 +210,11 @@ fun HomeScreen(
                     )
                 }
 
-                // 5. Clean Quick Access 2x3 Grid (Screenshot 2 Red Box)
+                // 5. Clean Quick Access 2x3 Grid with Widgets Banner (Screenshot 2 Red Box)
                 item {
                     CleanQuickAccessGrid(
-                        onClick = { onWidgetClick(it) }
+                        onClick = { onWidgetClick(it) },
+                        onWidgetsClick = onHomeScreenWidgetsClick
                     )
                 }
 

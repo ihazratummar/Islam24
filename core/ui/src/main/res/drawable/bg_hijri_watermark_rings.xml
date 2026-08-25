@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Concentric celestial / astrolabe rings watermark -->
+    <path
+        android:strokeColor="#30FBBF24"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:pathData="M 60, 60 m -50, 0 a 50,50 0 1,0 100,0 a 50,50 0 1,0 -100,0" />
+    <path
+        android:strokeColor="#25FBBF24"
+        android:strokeWidth="1"
+        android:fillColor="#00000000"
+        android:pathData="M 60, 60 m -38, 0 a 38,38 0 1,0 76,0 a 38,38 0 1,0 -76,0" />
+    <path
+        android:strokeColor="#20FBBF24"
+        android:strokeWidth="1"
+        android:fillColor="#00000000"
+        android:pathData="M 60, 60 m -24, 0 a 24,24 0 1,0 48,0 a 24,24 0 1,0 -48,0" />
+    <!-- Overlapping orbital ring -->
+    <path
+        android:strokeColor="#18FBBF24"
+        android:strokeWidth="1"
+        android:fillColor="#00000000"
+        android:pathData="M 70, 55 m -44, 0 a 44,44 0 1,0 88,0 a 44,44 0 1,0 -88,0" />
+</vector>

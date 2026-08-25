@@ -2,9 +2,11 @@ package com.hazrat.notification.di
 
 import androidx.core.app.NotificationManagerCompat
 import com.hazrat.domain.repository.AudioPlaybackRepository
+import com.hazrat.domain.repository.PrayerAlarmRescheduler
 import com.hazrat.notification.AudioPlaybackRepositoryImpl
 import com.hazrat.notification.MediaPlayerHelper
 import com.hazrat.notification.NotificationChannels
+import com.hazrat.notification.PrayerAlarmReschedulerImpl
 import com.hazrat.notification.PrayerAlarmScheduler
 import com.hazrat.notification.PrayerJanitorWorker
 import com.hazrat.notification.ZakatAlarmScheduler
@@ -25,6 +27,7 @@ fun getNotificationModule(): Module = module {
     single { NotificationChannels(context = get()) }
     single { MediaPlayerHelper(context = get()) }
     single<AudioPlaybackRepository> { AudioPlaybackRepositoryImpl(context = get()) }
+    single<PrayerAlarmRescheduler> { PrayerAlarmReschedulerImpl(context = get()) }
 
     worker { PrayerJanitorWorker(get(), get()) }
     worker { ZakatRescheduleWorker(get(), get()) }

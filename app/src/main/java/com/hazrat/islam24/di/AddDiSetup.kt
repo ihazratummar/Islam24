@@ -26,6 +26,7 @@ import com.hazrat.usecase.di.getUserCaseModule
 import com.hazrat.utils.di.getUtilsModule
 import com.hazrat.tasbih.di.tasbihModule
 import com.hazrat.zakat.di.getZakatModule
+import com.hazrat.islam24.widget.di.getWidgetModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
@@ -61,7 +62,8 @@ fun initKoin(app: Application) {
             getQiblaDataModule(),
             getPrayerUiModule(),
             getHomeUiModule(),
-            tasbihModule
+            tasbihModule,
+            getWidgetModule()
         )
     }
 }

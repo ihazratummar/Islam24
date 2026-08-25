@@ -114,6 +114,13 @@ class MainActivity : AppCompatActivity() {
         updateManager.onResume(this)
     }
 
+    override fun onStop() {
+        super.onStop()
+        try {
+            sendBroadcast(Intent("com.hazrat.islam24.ACTION_REFRESH_PRAYER_WIDGET").setPackage(packageName))
+        } catch (_: Exception) {}
+    }
+
     /**
      * Perform any final cleanup before an activity is destroyed.
      */
@@ -143,6 +150,7 @@ class MainActivity : AppCompatActivity() {
             when (navTarget) {
                 NAV_TARGET_PRAYER_TIME -> NavigationCommandBus.navigateTo(NavigationTarget.PrayerTime)
                 NAV_TARGET_ZAKAT -> NavigationCommandBus.navigateTo(NavigationTarget.Zakat)
+                NAV_TARGET_CALENDAR -> NavigationCommandBus.navigateTo(NavigationTarget.Calendar)
             }
             intent.removeExtra(EXTRA_NAV_TARGET)
             return
@@ -165,6 +173,7 @@ class MainActivity : AppCompatActivity() {
         const val EXTRA_NAV_TARGET = "extra_nav_target"
         const val NAV_TARGET_PRAYER_TIME = "prayertime"
         const val NAV_TARGET_ZAKAT = "zakat"
+        const val NAV_TARGET_CALENDAR = "calendar"
     }
 
 }

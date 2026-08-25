@@ -64,4 +64,29 @@
     <string name="dua_story_instagram">Instagram Stories</string>
     <string name="dua_story_facebook">Facebook Stories</string>
     <string name="dua_story_whatsapp">WhatsApp Status</string>
+
+    <!-- Widgets -->
+    <string name="home_screen_widgets_title">Home Screen Widgets</string>
+    <string name="home_screen_widgets_subtitle">Beautiful widgets for your home screen</string>
+    <string name="home_screen_widgets_badge_new">NEW</string>
+    <string name="home_screen_widgets_header_subtitle">Make your home screen feel like home</string>
+    <string name="home_screen_widgets_added_count">%1$d/7 added</string>
+    <string name="home_screen_widgets_intro_title">Bring Islam 24 to your home screen</string>
+    <string name="home_screen_widgets_intro_desc">Add prayer, Quran, hijri &amp; more as beautiful widgets. One tap to install.</string>
+    <string name="widget_add_to_home">Add to Home</string>
+    <string name="widget_added">Added</string>
+
+    <string name="widget_next_prayer_title">Next Prayer</string>
+    <string name="widget_next_prayer_desc">Live countdown to the next prayer</string>
+    <string name="widget_hijri_date_title">Hijri Date &amp; Event</string>
+    <string name="widget_hijri_date_desc">Today\'s Islamic date and upcoming event</string>
+    <string name="widget_hijri_calendar_title">Hijri Full Calendar</string>
+    <string name="widget_hijri_calendar_desc">The entire Hijri month at a glance</string>
+    <string name="widget_hijri_calendar_description">The entire Hijri month at a glance</string>
+    <string name="widget_todays_ayah_title">Today\'s Ayah</string>
+    <string name="widget_todays_ayah_desc">A verse of the Quran for today</string>
+    <string name="widget_todays_dua_title">Today\'s Dua</string>
+    <string name="widget_todays_dua_desc">A daily supplication to remember</string>
+    <string name="widget_continue_reading_title">Continue Reading</string>
+    <string name="widget_continue_reading_desc">Pick up where you left off in the Quran</string>
 </resources>

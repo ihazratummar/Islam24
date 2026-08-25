@@ -25,9 +25,9 @@ class LogPrayerUseCase(
         date: Long,
         prayer: Prayer
     ): Result<Unit> = runCatching {
-
-        require(date < System.currentTimeMillis()) {"Cannot log a future prayer"}
         val localDate = DateUtil.toLocalDate(date)
+        val today = java.time.LocalDate.now(clock)
+        require(!localDate.isAfter(today)) { "Cannot log a future prayer" }
         prayerLogRepository.logPrayer(date = localDate, prayer = prayer)
     }
 

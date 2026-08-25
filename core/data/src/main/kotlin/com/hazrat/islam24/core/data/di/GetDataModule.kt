@@ -19,7 +19,8 @@ fun getDataModule(): Module = module {
             prayerSettingDao = get(),
             tokenStorage = get(),
             khatamDao = get(),
-            quranDao = get()
+            quranDao = get(),
+            prayerAlarmRescheduler = getOrNull()
         )
     }
 }

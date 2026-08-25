@@ -1,3 +1,10 @@
+## [4.3.3] - 2026-08-25
+- **Launcher Widget Previews**: Added full layout previews (`android:previewLayout`) for Next Prayer, Hijri Date, and Hijri Calendar widgets in the Android system widget picker.
+- **Glance Layout Fix**: Resolved Glance 10-element constraint (`Column container cannot have more than 10 elements`) in `NextPrayerWidget` by restructuring into balanced sub-containers.
+- **Prayer Notification Accuracy**: Fixed double notification triggers (pre-alert vs prayer time) by ensuring exact `AlarmManager` Intent cancellation.
+- **Instant Login Reschedule**: Restoring prayer settings/offsets on login or cloud sync now automatically cancels stale device alarms and reschedules prayer notifications immediately.
+- **Battery Optimization**: Removed unused widget receivers and optimized background WorkManager jobs to guarantee zero idle battery drain.
+
 ## [4.3.2] - 2026-08-16
 - **FIX Quran & Khatam Cloud Sync**: Fixed Quran, Prayer Logs, User Setting Backup sync
 

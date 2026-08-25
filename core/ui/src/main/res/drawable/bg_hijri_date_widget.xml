@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base gradient background shape with 24dp rounded corners and golden-bronze border -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="24dp" />
+            <gradient
+                android:angle="270"
+                android:startColor="#261C0E"
+                android:centerColor="#1B1309"
+                android:endColor="#100B05"
+                android:type="linear" />
+            <stroke
+                android:width="1dp"
+                android:color="#4D3818" />
+        </shape>
+    </item>
+
+    <!-- Subtle celestial watermark rings positioned at the bottom right -->
+    <item
+        android:drawable="@drawable/bg_hijri_watermark_rings"
+        android:gravity="bottom|end"
+        android:width="100dp"
+        android:height="100dp"
+        android:bottom="-15dp"
+        android:right="-15dp" />
+</layer-list>
