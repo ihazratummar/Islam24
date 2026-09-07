@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.model.quran.KhatamPlanModel
 import com.hazrat.model.quran.KhatamStatus
@@ -81,7 +82,7 @@ fun KhatamScreenContent(
             if (khatamHistory.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Former Plans",
+                        text = stringResource(R.string.khatam_former_plans),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(top = dimens.space12, bottom = dimens.space4)
@@ -130,7 +131,7 @@ fun KhatamScreenContent(
                     )
                 ) {
                     Text(
-                        text = if (hasActiveProgress) "Continue Reading" else "Start New Reading Plan",
+                        text = if (hasActiveProgress) stringResource(R.string.khatam_continue_reading) else stringResource(R.string.khatam_start_new_plan),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -180,13 +181,13 @@ fun ActiveKhatamCard(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Khatam Quran",
+                            text = stringResource(R.string.khatam_quran_title),
                             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                             color = Color.White
                         )
                         Spacer(modifier = Modifier.height(dimens.space8))
                         Text(
-                            text = "No active reading plan. Start a plan to track your Quran completion.",
+                            text = stringResource(R.string.khatam_no_plan_desc),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White.copy(alpha = 0.8f)
                         )
@@ -316,7 +317,7 @@ fun ActiveKhatamCard(
                             color = Color(0xFF00E676)
                         )
                         Text(
-                            text = "Reading Progress",
+                            text = stringResource(R.string.khatam_reading_progress),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.White.copy(alpha = 0.8f)
                         )
@@ -357,7 +358,7 @@ fun ActiveKhatamCard(
                                 modifier = Modifier.size(dimens.iconSm)
                             )
                             LongText(
-                                text = "Current: Surah $surahName (${activePlan.lastReadSurahNumber}), Ayah ${activePlan.lastReadAyahNumber}",
+                                text = stringResource(R.string.khatam_current_position, surahName, activePlan.lastReadSurahNumber, activePlan.lastReadAyahNumber),
                                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold, color = Color.White)
                             )
                         }
@@ -414,7 +415,7 @@ fun FormerPlanCard(
                 ).coerceAtLeast(1)
 
                 Text(
-                    text = "$startDate – $endDate  •  $durationDays day",
+                    text = stringResource(R.string.khatam_history_duration, startDate, endDate, durationDays),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -423,10 +424,10 @@ fun FormerPlanCard(
             Spacer(modifier = Modifier.width(dimens.space12))
 
             val (statusLabel, statusBg, statusText) = when (plan.displayStatus) {
-                KhatamStatus.COMPLETED -> Triple("Completed", MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer)
-                KhatamStatus.EXPIRED -> Triple("Expired", MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer)
-                KhatamStatus.ENDED -> Triple("Ended", MaterialTheme.colorScheme.surfaceContainerHighest, MaterialTheme.colorScheme.onSurfaceVariant)
-                KhatamStatus.IN_PROGRESS -> Triple("In Progress", MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer)
+                KhatamStatus.COMPLETED -> Triple(stringResource(R.string.khatam_completed_status), MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer)
+                KhatamStatus.EXPIRED -> Triple(stringResource(R.string.khatam_expired_status), MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer)
+                KhatamStatus.ENDED -> Triple(stringResource(R.string.khatam_ended_status), MaterialTheme.colorScheme.surfaceContainerHighest, MaterialTheme.colorScheme.onSurfaceVariant)
+                KhatamStatus.IN_PROGRESS -> Triple(stringResource(R.string.khatam_in_progress_status), MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer)
             }
 
             Box(

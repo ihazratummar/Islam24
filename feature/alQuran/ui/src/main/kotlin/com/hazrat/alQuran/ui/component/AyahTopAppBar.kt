@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.alQuran.ui.ayah.AyahState
 import com.hazrat.alQuran.ui.ayah.AyahUiEvent
@@ -25,6 +27,8 @@ import com.hazrat.ui.common.IconWithBackground
 import com.hazrat.ui.common.SurahSvgImage
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+
+import com.hazrat.utils.toLocalizedDigits
 
 /**
  * Top App Bar with Navigation Back button, Surah Name/Verse count, SVG Emblem,
@@ -56,7 +60,7 @@ fun AyahTopAppBar(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = "Surah $surahNumber • $totalAyahsCount verses",
+                        text = stringResource(R.string.quran_surah_detail, surahNumber.toLocalizedDigits(), totalAyahsCount.toLocalizedDigits()),
                         style = MaterialTheme.typography.bodySmall,
                         color = customColors.secondaryText
                     )
@@ -93,9 +97,11 @@ fun AyahTopAppBar(
                 selectedFont = ayahState.selectedFont,
                 fontSize = ayahState.fontSize,
                 showTranslation = ayahState.showTranslation,
+                selectedTranslationSource = ayahState.selectedTranslationSource,
                 onFontSelect = { font -> onEvent(AyahUiEvent.OnFontSelected(font)) },
                 onFontSizeChange = { size -> onEvent(AyahUiEvent.OnFontSizeChanged(size)) },
-                onToggleTranslation = { show -> onEvent(AyahUiEvent.OnToggleTranslation(show)) }
+                onToggleTranslation = { show -> onEvent(AyahUiEvent.OnToggleTranslation(show)) },
+                onTranslationSourceSelect = { source -> onEvent(AyahUiEvent.OnTranslationSourceSelected(source)) }
             )
         }
     }

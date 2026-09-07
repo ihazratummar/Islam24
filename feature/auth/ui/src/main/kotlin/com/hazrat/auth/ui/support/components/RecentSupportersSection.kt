@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.model.profile.SupporterTickerModel
 import com.hazrat.ui.R
@@ -57,7 +59,7 @@ fun RecentSupportersSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "RECENT SUPPORTERS",
+                text = stringResource(R.string.support_recent_supporters_caps),
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -75,7 +77,7 @@ fun RecentSupportersSection(
                         .background(Color(0xFF4CAF50))
                 )
                 Text(
-                    text = "Live Activity",
+                    text = stringResource(R.string.support_live_activity),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary
                 )

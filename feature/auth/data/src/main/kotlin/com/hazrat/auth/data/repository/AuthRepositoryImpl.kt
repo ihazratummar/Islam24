@@ -1,12 +1,16 @@
 package com.hazrat.auth.data.repository
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.util.Log
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.hazrat.auth.data.BuildConfig
@@ -38,10 +42,39 @@ class AuthRepositoryImpl(
     private val profileRepository: ProfileRepository
 ) : AuthRepository {
 
-    override suspend fun googleCredentialSignIn(context: Context): Result<Unit, AuthError> = withContext(Dispatchers.IO) {
+    private fun Context.findActivity(): Activity? {
+        var current = this
+        while (current is ContextWrapper) {
+            if (current is Activity) return current
+            current = current.baseContext
+        }
+        return null
+    }
+
+    override suspend fun googleCredentialSignIn(context: Context): Result<Unit, AuthError> = withContext(Dispatchers.Main.immediate) {
+        val activityContext = context.findActivity() ?: context
         try {
-            val response = buildCredentialResponse(context = context)
-            handleSignIn(result = response)
+            val response = buildCredentialResponse(context = activityContext)
+            withContext(Dispatchers.IO) {
+                handleSignIn(result = response)
+            }
+        } catch (e: GetCredentialCancellationException) {
+            Log.d("AuthImpl", "User cancelled or dismissed Google Sign-In: ${e.message}")
+            Result.Error(AuthError.USER_CANCELLED)
+        } catch (e: GetCredentialException) {
+            Log.w("AuthImpl", "CredentialManager initial attempt failed (${e.javaClass.simpleName}): ${e.message}. Retrying...")
+            try {
+                val response = buildCredentialResponse(context = activityContext)
+                withContext(Dispatchers.IO) {
+                    handleSignIn(result = response)
+                }
+            } catch (retryE: GetCredentialCancellationException) {
+                Log.d("AuthImpl", "User cancelled Google Sign-In on retry: ${retryE.message}")
+                Result.Error(AuthError.USER_CANCELLED)
+            } catch (retryE: Exception) {
+                Log.e("AuthImpl", "Google Sign IN retry failed: $retryE")
+                Result.Error(AuthError.UNKNOWN_ERROR)
+            }
         } catch (e: Exception) {
             Log.e("AuthImpl", "Google Sign IN failed: $e")
             Result.Error(AuthError.UNKNOWN_ERROR)

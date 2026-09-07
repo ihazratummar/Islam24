@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 data class DuaChapterWithCountEntity(
     val id: Int,
     val title: String,
+    val bnTitle: String? = null,
     val audioUrl: String?,
     val duaCount: Int
 )
@@ -31,12 +32,12 @@ interface DuaDao {
 
     @Query("""
         SELECT * FROM dua_category
-        WHERE title LIKE '%' || :title || '%'
+        WHERE title LIKE '%' || :title || '%' OR (bnTitle IS NOT NULL AND bnTitle LIKE '%' || :title || '%')
     """)
     fun searchDuaCategory(title: String): Flow<List<DuaCategoryEntity>>
 
     @Query("""
-        SELECT c.id, c.title, c.audioUrl, COUNT(i.id) AS duaCount 
+        SELECT c.id, c.title, c.bnTitle, c.audioUrl, COUNT(i.id) AS duaCount 
         FROM dua_category c 
         LEFT JOIN dua_item i ON c.id = i.categoryId 
         WHERE c.id IN (:chapterIds)
@@ -46,7 +47,7 @@ interface DuaDao {
     fun getChaptersWithDuaCount(chapterIds: List<Int>): Flow<List<DuaChapterWithCountEntity>>
 
     @Query("""
-        SELECT c.id, c.title, c.audioUrl, COUNT(i.id) AS duaCount 
+        SELECT c.id, c.title, c.bnTitle, c.audioUrl, COUNT(i.id) AS duaCount 
         FROM dua_category c 
         LEFT JOIN dua_item i ON c.id = i.categoryId 
         GROUP BY c.id 
@@ -55,10 +56,10 @@ interface DuaDao {
     fun getAllChaptersWithDuaCount(): Flow<List<DuaChapterWithCountEntity>>
 
     @Query("""
-        SELECT c.id, c.title, c.audioUrl, COUNT(i.id) AS duaCount 
+        SELECT c.id, c.title, c.bnTitle, c.audioUrl, COUNT(i.id) AS duaCount 
         FROM dua_category c 
         LEFT JOIN dua_item i ON c.id = i.categoryId 
-        WHERE c.title LIKE '%' || :query || '%'
+        WHERE c.title LIKE '%' || :query || '%' OR (c.bnTitle IS NOT NULL AND c.bnTitle LIKE '%' || :query || '%')
         GROUP BY c.id 
         ORDER BY c.id ASC
     """)

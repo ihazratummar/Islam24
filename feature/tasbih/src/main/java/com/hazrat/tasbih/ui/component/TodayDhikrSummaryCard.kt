@@ -19,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.toLocalizedDigits
 
 /**
  * Summary card showing total Dhikrs recited today.
@@ -61,7 +63,7 @@ fun TodayDhikrSummaryCard(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.zikir),
-                        contentDescription = "Today Dhikr",
+                        contentDescription = stringResource(R.string.tasbih_total_today),
                         tint = customColors.accentColor,
                         modifier = Modifier.size(dimens.iconMd)
                     )
@@ -71,14 +73,14 @@ fun TodayDhikrSummaryCard(
                     verticalArrangement = Arrangement.spacedBy(dimens.space2)
                 ) {
                     Text(
-                        text = "Total Today",
+                        text = stringResource(R.string.tasbih_total_today),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "May Allah accept your dhikr",
+                        text = stringResource(R.string.tasbih_may_allah_accept),
                         style = MaterialTheme.typography.bodySmall,
                         color = customColors.secondaryText
                     )
@@ -86,7 +88,7 @@ fun TodayDhikrSummaryCard(
             }
 
             Text(
-                text = "$todayTotal",
+                text = todayTotal.toLocalizedDigits(),
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.ExtraBold
                 ),

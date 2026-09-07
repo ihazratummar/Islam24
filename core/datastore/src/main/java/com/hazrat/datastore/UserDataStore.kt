@@ -58,7 +58,7 @@ class UserDataStore(
         private val MAGHRIB_KEY = stringPreferencesKey(MAGHRIB)
         private val ISHA_KEY = stringPreferencesKey(ISHA)
 
-        // ---------------//
+        private val AppLanguageKey = stringPreferencesKey("APP_LANGUAGE_CODE")
         private val SELECTED_QIBLA_COMPASS_KEY = intPreferencesKey(SELECTED_QIBLA_COMPASS)
         private val MasterNotificationEnabledKey = booleanPreferencesKey("MASTER_NOTIFICATION_ENABLED")
         private val TotalSupportedAmountUSDKey = androidx.datastore.preferences.core.doublePreferencesKey("TOTAL_SUPPORTED_AMOUNT_USD")
@@ -66,6 +66,16 @@ class UserDataStore(
         private val LastKnownLatitudeKey = androidx.datastore.preferences.core.doublePreferencesKey("LAST_KNOWN_LATITUDE")
         private val LastKnownLongitudeKey = androidx.datastore.preferences.core.doublePreferencesKey("LAST_KNOWN_LONGITUDE")
 
+    }
+
+    val userLanguageCode: Flow<String> = userDataStore.data.map { pref ->
+        pref[AppLanguageKey] ?: "en"
+    }
+
+    suspend fun setAppLanguageCode(code: String) {
+        userDataStore.edit { pref ->
+            pref[AppLanguageKey] = code
+        }
     }
 
     val isSubscribed: Flow<Boolean> = userDataStore.data.map { pref ->

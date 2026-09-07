@@ -24,6 +24,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.appwidget.updateAll
 import androidx.glance.background
@@ -48,6 +49,7 @@ import com.hazrat.database.entity.prayer.PrayerLogEntity
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.main.navigation.NavigationCommandBus
 import com.hazrat.islam24.main.navigation.NavigationTarget
+import com.hazrat.model.Prayer
 import com.hazrat.ui.R
 import com.hazrat.utils.DateUtil
 import kotlinx.coroutines.Dispatchers
@@ -135,11 +137,18 @@ class NextPrayerWidget : GlanceAppWidget() {
             val isSlimWide = !isNarrow && isShort
             val isStandardWide = !isNarrow && !isShort && !isLarge
 
+            val prayerTimeIntent = Intent(context, MainActivity::class.java).apply {
+                action = Intent.ACTION_VIEW
+                putExtra(MainActivity.EXTRA_NAV_TARGET, MainActivity.NAV_TARGET_PRAYER_TIME)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val openPrayerAction = actionStartActivity(prayerTimeIntent)
+
             Box(
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .background(ImageProvider(R.drawable.bg_next_prayer_widget))
-                    .clickable(actionRunCallback<OpenPrayerScreenActionCallback>())
+                    .clickable(openPrayerAction)
                     .padding(
                         horizontal = if (isNarrow || isShort) 12.dp else 16.dp,
                         vertical = if (isNarrow || isShort) 10.dp else 14.dp

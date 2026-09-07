@@ -23,6 +23,11 @@ import com.hazrat.model.quran.SurahModel
 import com.hazrat.ui.common.SurahSvgImage
 import com.hazrat.ui.theme.dimens
 
+import androidx.compose.ui.res.stringResource
+import com.hazrat.ui.R
+import com.hazrat.ui.common.SurahNameProvider
+import com.hazrat.utils.toLocalizedDigits
+
 /**
  * Surah Card matching user's reference design with direct Coil SVG Calligraphy rendering.
  *
@@ -56,7 +61,7 @@ fun SurahCard(
                 horizontalArrangement = Arrangement.spacedBy(dimens.space16)
             ) {
                 Text(
-                    text = surah.surahNumber.toString(),
+                    text = surah.surahNumber.toLocalizedDigits(),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -74,20 +79,29 @@ fun SurahCard(
                 )
             }
 
-            // Right: Transliterated Name & English Meaning (Right aligned)
+            // Right: Surah Name & Meaning (Right aligned)
+            val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
             Column(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(dimens.space2)
             ) {
                 Text(
-                    text = surah.nameTransliterated,
+                    text = if (isBengali) {
+                        SurahNameProvider.getSurahNameBengali(surah.surahNumber)
+                    } else {
+                        surah.nameTransliterated
+                    },
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = surah.nameEnglish,
+                    text = if (isBengali) {
+                        SurahNameProvider.getSurahMeaningBengali(surah.surahNumber)
+                    } else {
+                        surah.nameEnglish
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
@@ -129,7 +143,7 @@ fun JuzSegmentCard(
                 horizontalArrangement = Arrangement.spacedBy(dimens.space16)
             ) {
                 Text(
-                    text = segment.surahNumber.toString(),
+                    text = segment.surahNumber.toLocalizedDigits(),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -147,20 +161,25 @@ fun JuzSegmentCard(
                 )
             }
 
-            // Right: Transliterated Name & Ayah Range (Right aligned)
+            // Right: Bengali Name & Ayah Range (Right aligned)
+            val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
             Column(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(dimens.space2)
             ) {
                 Text(
-                    text = segment.surahNameEnglish,
+                    text = if (isBengali) {
+                        SurahNameProvider.getSurahNameBengali(segment.surahNumber)
+                    } else {
+                        SurahNameProvider.getSurahNameEnglish(segment.surahNumber)
+                    },
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Aya ${segment.startAyah}-${segment.endAyah}",
+                    text = "${stringResource(R.string.quran_aya_short)} ${segment.startAyah.toLocalizedDigits()} - ${segment.endAyah.toLocalizedDigits()}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )

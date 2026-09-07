@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import com.hazrat.ui.R
@@ -80,7 +81,7 @@ fun ZakatCalculationScreen(
                     Column {
                         TopAppBarTitle(title = "Zakat Calculator")
                         Text(
-                            text = "2.5% of qualifying wealth",
+                            text = stringResource(R.string.zakat_qualifying_wealth),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -130,7 +131,7 @@ fun ZakatCalculationScreen(
                         )
                         Spacer(modifier = Modifier.width(dimens.space8))
                         Text(
-                            text = "Save Zakat Calculation",
+                            text = stringResource(R.string.zakat_save_calculation),
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -360,7 +361,7 @@ private fun HeroZakatCard(
             ) {
                 Column {
                     Text(
-                        text = "Zakat Payable",
+                        text = stringResource(R.string.zakat_payable),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                     )
@@ -405,7 +406,7 @@ private fun HeroZakatCard(
                 ) {
                     Column {
                         Text(
-                            text = "Net Assets",
+                            text = stringResource(R.string.zakat_net_assets),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -429,7 +430,7 @@ private fun HeroZakatCard(
                 ) {
                     Column {
                         Text(
-                            text = "Nisab Status",
+                            text = stringResource(R.string.zakat_nisab_status),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -517,14 +518,14 @@ private fun SilverPriceSettingsCard(
 
                 Column {
                     Text(
-                        text = "Silver Price Settings (Required)",
+                        text = stringResource(R.string.zakat_silver_price_settings),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "Price per gram in your local currency",
+                        text = stringResource(R.string.zakat_silver_price_desc),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
@@ -561,7 +562,7 @@ private fun SilverPriceSettingsCard(
                         decorationBox = { innerTextField ->
                             if (silverPrice.isEmpty()) {
                                 Text(
-                                    text = "Enter Today's Silver Price",
+                                    text = stringResource(R.string.zakat_silver_price_hint),
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.Bold
                                     ),
@@ -578,7 +579,7 @@ private fun SilverPriceSettingsCard(
             if (!isValid) {
                 Spacer(modifier = Modifier.height(dimens.space8))
                 Text(
-                    text = "⚠️ Enter silver price to unlock Zakat asset input fields",
+                    text = stringResource(R.string.zakat_silver_price_warning),
                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.tertiary
                 )
@@ -619,7 +620,7 @@ private fun SegmentedTabSwitcher(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Assets ($totalAssetsFormatted)",
+                    text = stringResource(R.string.zakat_assets_header, totalAssetsFormatted),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = if (isAssetsActive) FontWeight.Bold else FontWeight.Medium
                     ),
@@ -637,7 +638,7 @@ private fun SegmentedTabSwitcher(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Liabilities ($totalLiabilitiesFormatted)",
+                    text = stringResource(R.string.zakat_liabilities_header, totalLiabilitiesFormatted),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = if (!isAssetsActive) FontWeight.Bold else FontWeight.Medium
                     ),
@@ -803,14 +804,14 @@ private fun DueDateReminderCard(
 
                 Column {
                     Text(
-                        text = "Zakat Hawl / Due Date (Optional)",
+                        text = stringResource(R.string.zakat_hawl_title),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "Track your 1 lunar year (Hawl) completion date",
+                        text = stringResource(R.string.zakat_hawl_desc),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
@@ -858,14 +859,14 @@ private fun DueDateReminderCard(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Enable Annual Reminder Notification",
+                        text = stringResource(R.string.zakat_annual_reminder_title),
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.SemiBold
                         ),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "Get notified 3 days before your Zakat is due",
+                        text = stringResource(R.string.zakat_annual_reminder_desc),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
@@ -874,12 +875,10 @@ private fun DueDateReminderCard(
                 Switch(
                     checked = isReminderEnabled,
                     onCheckedChange = onReminderToggle,
-                    enabled = isEnabled,
+                    enabled = isEnabled && dueDate.isNotBlank(),
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                        checkedTrackColor = MaterialTheme.colorScheme.primary,
-                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.surface
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 )
             }
@@ -906,7 +905,7 @@ private fun NisabReferenceCard(
                 .padding(dimens.space16)
         ) {
             Text(
-                text = "Nisab Reference",
+                text = stringResource(R.string.zakat_nisab_reference),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -940,14 +939,14 @@ private fun NisabReferenceCard(
 
                     Column {
                         Text(
-                            text = "Silver Nisab",
+                            text = stringResource(R.string.zakat_silver_nisab),
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.Bold
                             ),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "612.36 grams @ $currencySymbol$silverPrice/g",
+                            text = stringResource(R.string.zakat_silver_nisab_desc, currencySymbol, silverPrice),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )

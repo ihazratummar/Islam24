@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.tasbih.domain.model.Tasbih
+import com.hazrat.tasbih.domain.util.getDisplayTransliteration
 import com.hazrat.ui.theme.dimens
 
 /**
@@ -50,7 +51,7 @@ fun DhikrSelectorRow(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = tasbih.transliteration,
+                    text = tasbih.getDisplayTransliteration(),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                     ),

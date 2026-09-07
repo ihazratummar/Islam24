@@ -98,14 +98,18 @@ fun DuaCategoryDetailHeader(
             Column(
                 verticalArrangement = Arrangement.spacedBy(dimens.space2)
             ) {
+                val isBengali = java.util.Locale.getDefault().language == "bn"
+                val titleText = if (isBengali && category.bnTitle.isNotBlank()) category.bnTitle else category.title
+                val subtitleText = if (isBengali && category.bnSubtitle.isNotBlank()) category.bnSubtitle else category.subtitle
+
                 Text(
-                    text = category.title,
+                    text = titleText,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = category.subtitle,
+                    text = subtitleText,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
                 )

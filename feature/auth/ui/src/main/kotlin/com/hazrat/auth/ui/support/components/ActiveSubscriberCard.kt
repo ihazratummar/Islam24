@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
@@ -89,7 +90,7 @@ fun ActiveSubscriberCard(
                         horizontalArrangement = Arrangement.spacedBy(dimens.space8)
                     ) {
                         Text(
-                            text = "Active Subscriber",
+                            text = stringResource(R.string.support_active_subscriber),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -104,7 +105,7 @@ fun ActiveSubscriberCard(
                                 .padding(horizontal = dimens.space8, vertical = dimens.space2)
                         ) {
                             Text(
-                                text = "ACTIVE",
+                                text = stringResource(R.string.support_active_status),
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
@@ -114,13 +115,13 @@ fun ActiveSubscriberCard(
                     }
 
                     Text(
-                        text = "Monthly Patron · $displayPrice",
+                        text = stringResource(R.string.support_monthly_patron, displayPrice),
                         style = MaterialTheme.typography.bodySmall,
                         color = customColors.secondaryText
                     )
 
                     Text(
-                        text = "Member since $memberSinceDate",
+                        text = stringResource(R.string.support_member_since, memberSinceDate),
                         style = MaterialTheme.typography.labelSmall,
                         color = customColors.secondaryText.copy(alpha = 0.7f)
                     )
@@ -140,7 +141,7 @@ fun ActiveSubscriberCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "💚 JazakAllah Khair for your support",
+                    text = stringResource(R.string.support_jazakallah_khair),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.Medium
                     ),
@@ -156,7 +157,7 @@ fun ActiveSubscriberCard(
                         .padding(horizontal = dimens.space12, vertical = dimens.space4)
                 ) {
                     Text(
-                        text = "Cancel Subscription",
+                        text = stringResource(R.string.support_cancel_subscription),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),

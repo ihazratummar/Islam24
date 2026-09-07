@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey
 data class DuaCategoryEntity(
     @PrimaryKey val id: Int,
     val title: String,
+    val bnTitle: String? = null,
     val audioUrl: String?
 )
 
@@ -30,7 +31,10 @@ data class DuaItemEntity(
     val arabicText: String,
     val translation: String,
     val transliteration: String,
+    val bnTranslation: String? = null,
+    val bnTransliteration: String? = null,
     val reference: String,
+    val bnReference: String? = null,
     val repeatCount: Int,
     val audioUrl: String?,
     val isBookmarked: Int
@@ -40,6 +44,7 @@ data class DuaItemEntity(
 data class RecentDuaEntity(
     @PrimaryKey val chapterId: Int,
     val title: String,
+    val bnTitle: String? = null,
     val duaCount: Int,
     val formattedDate: String,
     val timestamp: Long = System.currentTimeMillis()

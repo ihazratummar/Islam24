@@ -49,8 +49,8 @@ class NamesRepositoryImpl(
                 }
             } catch (e: Exception) {
                 Timber.tag("NamesRepositoryImpl").e("Error fetching names: ${e.message}")
-                // Handle exceptions and return an empty list
-                emptyList()
+                // Fallback to local prepopulated database names on network failure
+                nameDao.getAllNames().toDomainList()
             }
         }
     }

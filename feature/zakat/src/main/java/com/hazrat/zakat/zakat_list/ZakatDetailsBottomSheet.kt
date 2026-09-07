@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
@@ -62,14 +63,14 @@ fun ZakatDetailsBottomSheet(
 
             Column {
                 Text(
-                    text = "Zakat Calculation Details",
+                    text = stringResource(R.string.zakat_details_title),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "Breakdown of wealth and assets",
+                    text = stringResource(R.string.zakat_details_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -78,12 +79,12 @@ fun ZakatDetailsBottomSheet(
 
         Spacer(modifier = Modifier.height(dimens.space16))
 
-        DetailRow(label = "Cash & Bank", value = "$currencySymbol${uiState.money}")
-        DetailRow(label = "Gold & Jewelry", value = "$currencySymbol${uiState.gold}")
-        DetailRow(label = "Silver", value = "$currencySymbol${uiState.silver}")
-        DetailRow(label = "Business Assets", value = "$currencySymbol${uiState.tradeAmount}")
-        DetailRow(label = "Monthly Expenses", value = "$currencySymbol${uiState.monthCost}")
-        DetailRow(label = "Debts & Owed", value = "$currencySymbol${uiState.debt}")
+        DetailRow(label = stringResource(R.string.zakat_cash_savings_title), value = "$currencySymbol${uiState.money}")
+        DetailRow(label = stringResource(R.string.zakat_gold_value_title), value = "$currencySymbol${uiState.gold}")
+        DetailRow(label = stringResource(R.string.zakat_silver_value_title), value = "$currencySymbol${uiState.silver}")
+        DetailRow(label = stringResource(R.string.zakat_business_inventory_title), value = "$currencySymbol${uiState.tradeAmount}")
+        DetailRow(label = stringResource(R.string.zakat_monthly_expenses_title), value = "$currencySymbol${uiState.monthCost}")
+        DetailRow(label = stringResource(R.string.zakat_outstanding_debts_title), value = "$currencySymbol${uiState.debt}")
 
         Spacer(modifier = Modifier.height(dimens.space12))
         HorizontalDivider(
@@ -99,7 +100,7 @@ fun ZakatDetailsBottomSheet(
         ) {
             Column {
                 Text(
-                    text = "Net Assets",
+                    text = stringResource(R.string.zakat_net_assets),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -114,7 +115,7 @@ fun ZakatDetailsBottomSheet(
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "Zakat Payable",
+                    text = stringResource(R.string.zakat_payable),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

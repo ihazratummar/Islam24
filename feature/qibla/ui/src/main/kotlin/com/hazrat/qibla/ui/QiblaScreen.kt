@@ -63,6 +63,7 @@ import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.drawableToBitmap
 import com.hazrat.utils.hapticFeedbacks
+import com.hazrat.utils.toLocalizedDigits
 
 /**
  * Pure Compose Qibla Screen strictly following SOLID and Clean Architecture.
@@ -155,11 +156,11 @@ fun QiblaScreen(
                     StatusPillBadge(
                         iconText = if (state.isLocationEnabled) "📍" else "⚠️",
                         label = if (state.isLocationEnabled) {
-                            if (state.locationName.isNotBlank()) state.locationName else "Location"
+                            if (state.locationName.isNotBlank()) state.locationName else stringResource(R.string.qibla_location_badge)
                         } else {
-                            "Location Off"
+                            stringResource(R.string.qibla_location_off)
                         },
-                        iconColor = if (state.isLocationEnabled) Color.Unspecified else Color(0xFFFA716A),
+                        iconColor = if (state.isLocationEnabled) Color.Unspecified else MaterialTheme.colorScheme.error,
                         onClick = if (!state.isLocationEnabled) {
                             {
                                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -171,10 +172,10 @@ fun QiblaScreen(
                     // Accuracy Badge (ONLY shown when Location is Enabled to eliminate duplicate error badge!)
                     if (state.isLocationEnabled) {
                         val (accText, accColor, isAccClickable) = when (state.sensorAccuracy) {
-                            3 -> Triple("High accuracy", Color(0xFF4CAF50), false)
-                            2 -> Triple("Medium accuracy", Color(0xFFFFB752), false)
-                            1 -> Triple("Calibrate Compass", Color(0xFFFF8E00), true)
-                            else -> Triple("Calibrate Compass", Color(0xFFFA716A), true)
+                            3 -> Triple(stringResource(R.string.qibla_high_accuracy), customColors.accentColor, false)
+                            2 -> Triple(stringResource(R.string.qibla_medium_accuracy), MaterialTheme.colorScheme.secondary, false)
+                            1 -> Triple(stringResource(R.string.qibla_calibrate_compass), MaterialTheme.colorScheme.error, true)
+                            else -> Triple(stringResource(R.string.qibla_calibrate_compass), MaterialTheme.colorScheme.error, true)
                         }
 
                         StatusPillBadge(
@@ -190,7 +191,7 @@ fun QiblaScreen(
                     // Qibla Degree Badge
                     StatusPillBadge(
                         iconText = "🧭",
-                        label = if (!state.isLocationEnabled) "--" else if (state.isQiblaCalculated) "${state.qiblaDirection.toInt()}°" else "..."
+                        label = if (!state.isLocationEnabled) "--" else if (state.isQiblaCalculated) "${state.qiblaDirection.toInt().toLocalizedDigits()}°" else "..."
                     )
                 }
 
@@ -216,12 +217,12 @@ fun QiblaScreen(
                             Text(text = "⚠️", style = MaterialTheme.typography.titleMedium)
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "Location Services Disabled",
+                                    text = stringResource(R.string.qibla_location_services_disabled),
                                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                                     color = Color(0xFFFA716A)
                                 )
                                 Text(
-                                    text = "Turn on location services to compute accurate Qibla direction.",
+                                    text = stringResource(R.string.qibla_location_disabled_desc),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = customColors.secondaryText
                                 )
@@ -235,7 +236,7 @@ fun QiblaScreen(
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFA716A)),
                                 modifier = Modifier.height(dimens.space32)
                             ) {
-                                Text(text = "Enable", color = Color.White, style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold))
+                                Text(text = stringResource(R.string.qibla_enable), color = Color.White, style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold))
                             }
                         }
                     }
@@ -350,11 +351,11 @@ fun QiblaScreen(
 
                 // Guidance Status Text
                 val guidanceText = when {
-                    !state.isLocationEnabled -> "Enable location services"
-                    !state.isQiblaCalculated -> "Locating Qibla..."
-                    state.isFacingQibla -> "Facing Qibla"
-                    state.qiblaDegreeDifference > 0 -> "Turn to your right"
-                    else -> "Turn to your left"
+                    !state.isLocationEnabled -> stringResource(R.string.qibla_enable_location)
+                    !state.isQiblaCalculated -> stringResource(R.string.qibla_locating)
+                    state.isFacingQibla -> stringResource(R.string.qibla_facing)
+                    state.qiblaDegreeDifference > 0 -> stringResource(R.string.qibla_turn_right)
+                    else -> stringResource(R.string.qibla_turn_left)
                 }
 
                 Text(
@@ -362,7 +363,7 @@ fun QiblaScreen(
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
-                    color = if (state.isFacingQibla) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onBackground,
+                    color = if (state.isFacingQibla) customColors.accentColor else MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(vertical = dimens.space8)
                 )
 
@@ -387,20 +388,20 @@ fun QiblaScreen(
                     ) {
                         Image(
                             painter = painterResource(R.drawable.tasbih),
-                            contentDescription = "Tasbih",
+                            contentDescription = stringResource(R.string.nav_tasbih),
                             modifier = Modifier.size(dimens.avatarLg)
                         )
 
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Go to the Tasbih feature",
+                                text = stringResource(R.string.qibla_go_to_tasbih),
                                 style = MaterialTheme.typography.titleSmall.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                             Text(
-                                text = "Find solace in dhikr",
+                                text = stringResource(R.string.qibla_find_solace),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = customColors.secondaryText
                             )

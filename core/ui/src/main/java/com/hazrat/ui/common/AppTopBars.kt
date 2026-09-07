@@ -10,6 +10,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.theme.customColors
 
@@ -58,9 +59,9 @@ fun AsmaulHusnaTopAppBar(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                TopAppBarTitle(title = "99 Names")
+                TopAppBarTitle(title = stringResource(com.hazrat.ui.R.string.home_asmaul_husna))
                 Text(
-                    text = "Asmaul Husna",
+                    text = stringResource(com.hazrat.ui.R.string.allah_names_subtitle),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = customColors.secondaryText
                     )

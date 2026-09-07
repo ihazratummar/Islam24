@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,6 +54,13 @@ import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
+
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.hazrat.utils.formatLocalizedDigits
+import java.util.Locale
 
 /**
  * Premium Asmaul Husna (99 Names of Allah) Screen.
@@ -72,6 +80,9 @@ fun NamesOfAllahScreen(
     val favoriteNames by viewModel.favoriteNames.collectAsStateWithLifecycle()
     val filteredNamesFlow by viewModel.filteredNames.collectAsStateWithLifecycle()
 
+    var selectedDetailName by remember { mutableStateOf<NameOfAllahData?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     val displayedNames = if (filteredNamesFlow.isNotEmpty()) {
         filteredNamesFlow
     } else if (searchQuery.isEmpty() && selectedTab == NameTab.ALL) {
@@ -90,14 +101,14 @@ fun NamesOfAllahScreen(
         } else {
             NameOfAllahData(
                 number = 1,
-                enDesc = "The Most Compassionate",
-                enMeaning = "The Most Compassionate",
-                found = "",
+                enDesc = "He who wills goodness and mercy for all His creatures",
+                enMeaning = "The Beneficent",
+                found = "(1:3)(17:110)",
                 name = "الرَّحْمَنُ",
                 transliteration = "Ar-Rahman",
-                bnTransliteration = "",
-                bnMeaning = "",
-                bnDec = ""
+                bnTransliteration = "আর-রাহমান",
+                bnMeaning = "পরম করুণাময়",
+                bnDec = null
             )
         }
     }
@@ -112,9 +123,9 @@ fun NamesOfAllahScreen(
         containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
-        if (nameEntity.isEmpty()){
-            IslamicLoadingScreen(subtitle = "Loading names.....")
-        }else{
+        if (nameEntity.isEmpty() && displayedNames.isEmpty()) {
+            IslamicLoadingScreen(subtitle = stringResource(R.string.allah_names_loading))
+        } else {
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
@@ -136,7 +147,8 @@ fun NamesOfAllahScreen(
                     HeroNameBannerCard(
                         featuredName = featuredName,
                         isFavorite = favoriteNames.contains(featuredName.number),
-                        onFavoriteToggle = { viewModel.toggleFavorite(featuredName.number) }
+                        onFavoriteToggle = { viewModel.toggleFavorite(featuredName.number) },
+                        onCardClick = { selectedDetailName = featuredName }
                     )
                 }
 
@@ -161,6 +173,7 @@ fun NamesOfAllahScreen(
                                     name = data,
                                     isFavorite = favoriteNames.contains(data.number),
                                     onFavoriteToggle = { viewModel.toggleFavorite(data.number) },
+                                    onCardClick = { selectedDetailName = data },
                                     modifier = Modifier.weight(1f)
                                 )
                             }
@@ -181,7 +194,7 @@ fun NamesOfAllahScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "No names found",
+                                    text = stringResource(R.string.allah_names_no_names_found),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = customColors.secondaryText
                                 )
@@ -203,7 +216,7 @@ fun NamesOfAllahScreen(
                             horizontalArrangement = Arrangement.spacedBy(dimens.space4)
                         ) {
                             Text(
-                                text = "Free forever — support the mission",
+                                text = stringResource(R.string.allah_names_free_tagline),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = customColors.secondaryText.copy(alpha = 0.8f)
                             )
@@ -220,6 +233,20 @@ fun NamesOfAllahScreen(
                 item {
                     Spacer(modifier = Modifier.height(dimens.space32))
                 }
+            }
+        }
+
+        selectedDetailName?.let { detailName ->
+            ModalBottomSheet(
+                onDismissRequest = { selectedDetailName = null },
+                sheetState = sheetState,
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
+            ) {
+                NameDetailContent(
+                    name = detailName,
+                    isFavorite = favoriteNames.contains(detailName.number),
+                    onFavoriteToggle = { viewModel.toggleFavorite(detailName.number) }
+                )
             }
         }
     }
@@ -241,14 +268,14 @@ private fun AsmaulHusnaCustomTopBar(
         title = {
             Column {
                 Text(
-                    text = "Asmaul Husna",
+                    text = stringResource(R.string.home_asmaul_husna),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Reflect on the 99 Beautiful Names",
+                    text = stringResource(R.string.allah_names_subtitle),
                     style = MaterialTheme.typography.labelMedium,
                     color = customColors.secondaryText
                 )
@@ -274,7 +301,7 @@ private fun SearchBarInput(
         onValueChange = onQueryChange,
         placeholder = {
             Text(
-                text = "Search a name",
+                text = stringResource(R.string.allah_names_search_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = customColors.secondaryText
             )
@@ -319,8 +346,13 @@ private fun HeroNameBannerCard(
     featuredName: NameOfAllahData,
     isFavorite: Boolean,
     onFavoriteToggle: () -> Unit,
+    onCardClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isBengali = Locale.getDefault().language == "bn"
+    val transliterationText = if (isBengali && featuredName.bnTransliteration.isNotBlank()) featuredName.bnTransliteration else featuredName.transliteration
+    val meaningText = if (isBengali && featuredName.bnMeaning.isNotBlank()) featuredName.bnMeaning else featuredName.enMeaning
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -329,7 +361,8 @@ private fun HeroNameBannerCard(
                 width = dimens.divider,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(dimens.cornerLg)
-            ),
+            )
+            .clickable { onCardClick() },
         shape = RoundedCornerShape(dimens.cornerLg),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
@@ -354,7 +387,7 @@ private fun HeroNameBannerCard(
                 verticalArrangement = Arrangement.spacedBy(dimens.space4)
             ) {
                 Text(
-                    text = featuredName.transliteration,
+                    text = transliterationText,
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -371,7 +404,7 @@ private fun HeroNameBannerCard(
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = featuredName.enMeaning,
+                        text = meaningText,
                         style = MaterialTheme.typography.bodyMedium,
                         color = customColors.secondaryText,
                         maxLines = 1,
@@ -401,7 +434,7 @@ private fun HeroNameBannerCard(
                             modifier = Modifier.size(dimens.iconXs)
                         )
                         Text(
-                            text = if (isFavorite) "Reflected" else "Reflect",
+                            text = if (isFavorite) stringResource(R.string.allah_names_reflected) else stringResource(R.string.allah_names_reflect),
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -428,12 +461,12 @@ private fun TabFilterRow(
         horizontalArrangement = Arrangement.spacedBy(dimens.space12)
     ) {
         TabPillButton(
-            text = "All",
+            text = stringResource(R.string.allah_names_tab_all),
             isSelected = selectedTab == NameTab.ALL,
             onClick = { onTabSelected(NameTab.ALL) }
         )
         TabPillButton(
-            text = "Favorites",
+            text = stringResource(R.string.allah_names_tab_favorites),
             isSelected = selectedTab == NameTab.FAVORITES,
             onClick = { onTabSelected(NameTab.FAVORITES) }
         )
@@ -481,8 +514,14 @@ fun NameCardItem(
     name: NameOfAllahData,
     isFavorite: Boolean,
     onFavoriteToggle: () -> Unit,
+    onCardClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isBengali = Locale.getDefault().language == "bn"
+    val transliterationText = if (isBengali && name.bnTransliteration.isNotBlank()) name.bnTransliteration else name.transliteration
+    val meaningText = if (isBengali && name.bnMeaning.isNotBlank()) name.bnMeaning else name.enMeaning
+    val numberText = name.number.toString().padStart(2, '0').formatLocalizedDigits()
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -491,7 +530,8 @@ fun NameCardItem(
                 width = dimens.divider,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(dimens.cornerLg)
-            ),
+            )
+            .clickable { onCardClick() },
         shape = RoundedCornerShape(dimens.cornerLg),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
@@ -511,7 +551,7 @@ fun NameCardItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = name.number.toString().padStart(2, '0'),
+                    text = numberText,
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -525,7 +565,7 @@ fun NameCardItem(
                     Icon(
                         painter = painterResource(R.drawable.heart),
                         contentDescription = "Favorite",
-                        tint = if (isFavorite) Color(0xFFE53935) else customColors.secondaryText.copy(alpha = 0.5f),
+                        tint = if (isFavorite) MaterialTheme.colorScheme.error else customColors.secondaryText.copy(alpha = 0.5f),
                         modifier = Modifier.size(dimens.iconSm)
                     )
                 }
@@ -539,7 +579,7 @@ fun NameCardItem(
 
             // Transliteration & Meaning
             Text(
-                text = name.transliteration,
+                text = transliterationText,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -550,7 +590,7 @@ fun NameCardItem(
             )
 
             Text(
-                text = name.enMeaning,
+                text = meaningText,
                 style = MaterialTheme.typography.bodySmall,
                 color = customColors.secondaryText,
                 textAlign = TextAlign.Center,
@@ -558,6 +598,123 @@ fun NameCardItem(
                 overflow = TextOverflow.Ellipsis
             )
         }
+    }
+}
+
+/**
+ * Bottom sheet content showing complete details of selected Name of Allah.
+ */
+@Composable
+private fun NameDetailContent(
+    name: NameOfAllahData,
+    isFavorite: Boolean,
+    onFavoriteToggle: () -> Unit
+) {
+    val isBengali = Locale.getDefault().language == "bn"
+    val transliterationText = if (isBengali && name.bnTransliteration.isNotBlank()) name.bnTransliteration else name.transliteration
+    val meaningText = if (isBengali && name.bnMeaning.isNotBlank()) name.bnMeaning else name.enMeaning
+    val numberText = name.number.toString().padStart(2, '0').formatLocalizedDigits()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimens.space24),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Number badge & Calligraphy
+        Text(
+            text = "${stringResource(R.string.allah_names_detail_title)} #$numberText",
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.SemiBold
+            ),
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Spacer(modifier = Modifier.height(dimens.space16))
+
+        CalligraphyEmblemRing(
+            nameNumber = name.number,
+            isLarge = true
+        )
+
+        Spacer(modifier = Modifier.height(dimens.space12))
+
+        // Arabic text
+        Text(
+            text = name.name,
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(dimens.space4))
+
+        // Transliteration
+        Text(
+            text = transliterationText,
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(dimens.space4))
+
+        // Meaning
+        Text(
+            text = meaningText,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+
+        if (name.found.isNotBlank()) {
+            Spacer(modifier = Modifier.height(dimens.space8))
+            Text(
+                text = stringResource(R.string.allah_names_quran_reference, name.found),
+                style = MaterialTheme.typography.bodySmall,
+                color = customColors.secondaryText,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dimens.space24))
+
+        // Reflect button
+        Button(
+            onClick = onFavoriteToggle,
+            shape = RoundedCornerShape(dimens.cornerFull),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimens.space48)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.heart),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(dimens.iconSm)
+                )
+                Text(
+                    text = if (isFavorite) stringResource(R.string.allah_names_reflected) else stringResource(R.string.allah_names_reflect),
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = Color.White
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(dimens.space16))
     }
 }
 

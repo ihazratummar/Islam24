@@ -35,7 +35,11 @@ fun AyahWithBookmarkEntity.toModel(): AyahModel {
         transliteration = this.transliteration,
         isBookmarked = this.isBookmarked,
         ayahNumber = this.ayahNumber,
-        tajweedText = this.tajweedText
+        tajweedText = this.tajweedText,
+        bnMuhiuddin = this.bnMuhiuddin,
+        bnTaisirul = this.bnTaisirul,
+        bnMujibur = this.bnMujibur,
+        bnTransliteration = this.bnTransliteration
     )
 }
 

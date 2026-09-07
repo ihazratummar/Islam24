@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.tasbih.ui.component.AddCustomDhikrDialog
@@ -82,13 +83,13 @@ fun TasbihScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { TopAppBarTitle(title = "Tasbih") },
+                title = { TopAppBarTitle(title = stringResource(R.string.nav_tasbih)) },
                 navigationIcon = { BackIcon(onBackClick = onBackClick) },
                 actions = {
                     IconButton(onClick = { viewModel.processIntent(TasbihIntent.ToggleSound) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.volume),
-                            contentDescription = "Sound Toggle",
+                            contentDescription = stringResource(R.string.tasbih_sound_toggle),
                             tint = if (uiState.isSoundEnabled) customColors.accentColor else customColors.secondaryText,
                             modifier = Modifier.size(dimens.iconSm)
                         )
@@ -96,7 +97,7 @@ fun TasbihScreen(
                     IconButton(onClick = { viewModel.processIntent(TasbihIntent.ToggleVibration) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.vibrate),
-                            contentDescription = "Vibration Toggle",
+                            contentDescription = stringResource(R.string.tasbih_vibration_toggle),
                             tint = if (uiState.isVibrationEnabled) customColors.accentColor else customColors.secondaryText,
                             modifier = Modifier.size(dimens.iconSm)
                         )
@@ -153,7 +154,7 @@ fun TasbihScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "MORE DHIKR",
+                        text = stringResource(R.string.tasbih_more_dhikr),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -163,7 +164,7 @@ fun TasbihScreen(
                         viewModel.processIntent(TasbihIntent.SetAddCustomDialogVisible(true))
                     }) {
                         Text(
-                            text = "+ Add Custom",
+                            text = stringResource(R.string.tasbih_add_custom),
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),

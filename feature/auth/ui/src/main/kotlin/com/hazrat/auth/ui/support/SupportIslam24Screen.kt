@@ -153,7 +153,7 @@ fun SupportIslam24Screen(
                         onClick = { onEvent(SupportUiEvent.RestorePurchases) }
                     ) {
                         Text(
-                            text = "Restore",
+                            text = stringResource(R.string.support_restore),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -519,18 +519,18 @@ fun SupportIslam24Screen(
             // Custom Success Dialog Overlays
             if (uiState.showSubscriptionSuccessDialog) {
                 SupportSuccessDialog(
-                    title = "JazakAllah Khair!",
-                    description = "You are now a Monthly Patron. Your monthly gift sustains Islam 24 for the entire Ummah.",
-                    subtext = "May Allah accept it from you.",
+                    title = stringResource(R.string.support_dialog_title),
+                    description = stringResource(R.string.support_subscription_success_desc),
+                    subtext = stringResource(R.string.support_may_allah_accept),
                     onDismiss = { onEvent(SupportUiEvent.DismissSuccessDialog) }
                 )
             }
 
             if (uiState.showTipSuccessDialog) {
                 SupportSuccessDialog(
-                    title = "JazakAllah Khair!",
-                    description = "Thank you for your small tip. Your gift helps keep Islam 24 free for everyone.",
-                    subtext = "May Allah accept it from you.",
+                    title = stringResource(R.string.support_dialog_title),
+                    description = stringResource(R.string.support_tip_success_desc),
+                    subtext = stringResource(R.string.support_may_allah_accept),
                     onDismiss = { onEvent(SupportUiEvent.DismissSuccessDialog) }
                 )
             }

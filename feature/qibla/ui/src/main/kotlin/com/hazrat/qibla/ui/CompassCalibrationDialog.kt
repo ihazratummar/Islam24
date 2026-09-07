@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
@@ -61,10 +62,10 @@ fun CompassCalibrationDialog(
     )
 
     val accuracyText = when (sensorAccuracy) {
-        3 -> "High Accuracy 🟢"
-        2 -> "Medium Accuracy 🟡"
-        1 -> "Low Accuracy 🟠"
-        else -> "Unreliable 🔴"
+        3 -> stringResource(com.hazrat.ui.R.string.qibla_accuracy_high)
+        2 -> stringResource(com.hazrat.ui.R.string.qibla_accuracy_medium)
+        1 -> stringResource(com.hazrat.ui.R.string.qibla_accuracy_low)
+        else -> stringResource(com.hazrat.ui.R.string.qibla_accuracy_unreliable)
     }
 
     val accuracyColor = when (sensorAccuracy) {
@@ -89,7 +90,7 @@ fun CompassCalibrationDialog(
             ) {
                 // Top Title & Icon
                 Text(
-                    text = "Calibrate Compass",
+                    text = stringResource(com.hazrat.ui.R.string.qibla_calibrate_title),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -115,7 +116,7 @@ fun CompassCalibrationDialog(
 
                 // Instructions text
                 Text(
-                    text = "Wave your phone in a smooth Figure-8 motion in the air to calibrate the magnetic sensor for precise Qibla direction.",
+                    text = stringResource(com.hazrat.ui.R.string.qibla_calibrate_desc),
                     style = MaterialTheme.typography.bodyMedium,
                     color = customColors.secondaryText,
                     textAlign = TextAlign.Center
@@ -133,7 +134,7 @@ fun CompassCalibrationDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Status: $accuracyText",
+                            text = stringResource(com.hazrat.ui.R.string.qibla_status, accuracyText),
                             style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                             color = accuracyColor
                         )
@@ -152,7 +153,7 @@ fun CompassCalibrationDialog(
                     colors = ButtonDefaults.buttonColors(containerColor = GoldAccent)
                 ) {
                     Text(
-                        text = "Done",
+                        text = stringResource(com.hazrat.ui.R.string.prayer_done),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                         color = Color.Black
                     )

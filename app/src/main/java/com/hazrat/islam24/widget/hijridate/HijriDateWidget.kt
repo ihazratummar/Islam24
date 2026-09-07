@@ -17,6 +17,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -37,6 +38,8 @@ import androidx.glance.unit.ColorProvider
 import com.hazrat.database.dao.prayer.PrayerTimeDao
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.main.navigation.NavigationCommandBus
+import com.hazrat.utils.IslamicCalendarUtils
+import com.hazrat.utils.formatLocalizedDigits
 import com.hazrat.islam24.main.navigation.NavigationTarget
 import com.hazrat.ui.R
 import com.hazrat.utils.DateUtil
@@ -67,7 +70,12 @@ class HijriDateWidget : GlanceAppWidget() {
             val size = LocalSize.current
             val isCompact = size.width < 180.dp
 
-            val calendarAction = actionRunCallback<OpenCalendarActionCallback>()
+            val calendarIntent = Intent(context, MainActivity::class.java).apply {
+                action = Intent.ACTION_VIEW
+                putExtra(MainActivity.EXTRA_NAV_TARGET, MainActivity.NAV_TARGET_CALENDAR)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val calendarAction = actionStartActivity(calendarIntent)
 
             Box(
                 modifier = GlanceModifier
@@ -279,21 +287,21 @@ class HijriDateWidget : GlanceAppWidget() {
                 val holidayName = nextHoliday.holidays.firstOrNull { it.isNotBlank() } ?: ""
                 val hijriDateShort = nextHoliday.hijriDate
                 if (holidayName.isNotBlank() && !holidayName.contains("[]")) {
-                    holidayName
+                    IslamicCalendarUtils.getLocalizedEventName(holidayName)
                 } else if (hijriDateShort.isNotBlank()) {
-                    hijriDateShort
+                    hijriDateShort.formatLocalizedDigits()
                 } else {
-                    "12 Rabi' al-Awwal"
+                    "১২ রবিউল আউয়াল"
                 }
             } else if (entity != null && entity.holidays.isNotEmpty()) {
                 val todayHoliday = entity.holidays.firstOrNull { it.isNotBlank() } ?: ""
                 if (todayHoliday.isNotBlank() && !todayHoliday.contains("[]")) {
-                    todayHoliday
+                    IslamicCalendarUtils.getLocalizedEventName(todayHoliday)
                 } else {
-                    "12 Rabi' al-Awwal"
+                    "১২ রবিউল আউয়াল"
                 }
             } else {
-                "12 Rabi' al-Awwal"
+                "১২ রবিউল আউয়াল"
             }
 
             if (entity != null && entity.hijriDay > 0) {

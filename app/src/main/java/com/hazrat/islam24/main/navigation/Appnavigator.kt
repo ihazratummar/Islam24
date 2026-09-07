@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -29,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -568,11 +570,11 @@ private fun BottomBar(navController: NavHostController) {
                     icon = {
                         Icon(
                             painter = painterResource(id = screen.icon),
-                            contentDescription = screen.name,
+                            contentDescription = stringResource(id = screen.labelRes),
                             modifier = Modifier.size(dimens.iconMd)
                         )
                     },
-                    label = { Text(text = screen.name) },
+                    label = { Text(text = stringResource(id = screen.labelRes)) },
                     alwaysShowLabel = true,
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
@@ -641,7 +643,7 @@ val SurahDataType = object : NavType<SurahData>(isNullableAllowed = false) {
 
 @Serializable
 sealed class ContentDestination<T>(
-    val name: String,
+    @param:StringRes val labelRes: Int,
     @param:DrawableRes val icon: Int,
     val route: T
 ) {
@@ -649,7 +651,7 @@ sealed class ContentDestination<T>(
     @Serializable
     data object Home :
         ContentDestination<MainRoute.HomeScreen>(
-            "Home",
+            R.string.nav_home,
             R.drawable.naviconhome,
             MainRoute.HomeScreen
         )
@@ -657,21 +659,21 @@ sealed class ContentDestination<T>(
     @Serializable
     data object PrayerTime :
         ContentDestination<PrayerTimeScreenRoute>(
-            "Prayers",
+            R.string.nav_prayers,
             R.drawable.pray,
             PrayerTimeScreenRoute
         )
 
     @Serializable
     data object Quran : ContentDestination<MainRoute.QuranScreenRoute>(
-        "Quran",
+        R.string.nav_quran,
         R.drawable.quran,
         MainRoute.QuranScreenRoute
     )
 
     @Serializable
     data object Qibla : ContentDestination<HomeRoutes.Qibla>(
-        "Qibla",
+        R.string.nav_qibla,
         R.drawable.qibla_compass,
         HomeRoutes.Qibla
     )
@@ -679,7 +681,7 @@ sealed class ContentDestination<T>(
     @Serializable
     data object Profile :
         ContentDestination<MainRoute.ProfileScreen>(
-            "Profile",
+            R.string.nav_profile,
             R.drawable.profile,
             MainRoute.ProfileScreen
         )

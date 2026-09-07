@@ -55,6 +55,8 @@ import com.hazrat.ui.R
 import com.hazrat.ui.common.BasicTopBar
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.IslamicCalendarUtils
+import com.hazrat.utils.formatLocalizedDigits
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,7 +86,7 @@ fun CalendarScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BasicTopBar(
-                topBarTitle = "Islamic Calendar",
+                topBarTitle = stringResource(R.string.calendar_title),
                 onBackClick = onBackClick
             )
         }
@@ -195,6 +197,12 @@ private fun CalendarHeroCard(
     monthData: HijriMonthData,
     selectedDay: HijriCalendarDay?
 ) {
+    val localizedGregorianMonth = IslamicCalendarUtils.getLocalizedGregorianMonth(monthData.gregorianMonthName)
+    val localizedHijriMonth = IslamicCalendarUtils.getLocalizedHijriMonth(monthData.hijriMonthName)
+    val localizedGregorianYear = "${monthData.gregorianYear}".formatLocalizedDigits()
+    val localizedHijriYear = "${monthData.hijriYear}".formatLocalizedDigits()
+    val ahStr = stringResource(R.string.calendar_ah)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -210,13 +218,13 @@ private fun CalendarHeroCard(
             ) {
                 Column {
                     Text(
-                        text = "${monthData.gregorianMonthName} ${monthData.gregorianYear}",
+                        text = "$localizedGregorianMonth $localizedGregorianYear",
                         style = MaterialTheme.typography.labelMedium,
                         color = customColors.secondaryText
                     )
                     Spacer(modifier = Modifier.height(dimens.space4))
                     Text(
-                        text = monthData.hijriMonthName,
+                        text = localizedHijriMonth,
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -224,7 +232,7 @@ private fun CalendarHeroCard(
                     )
                     Spacer(modifier = Modifier.height(dimens.space2))
                     Text(
-                        text = "${monthData.hijriYear} AH",
+                        text = "$localizedHijriYear $ahStr",
                         style = MaterialTheme.typography.bodyMedium,
                         color = customColors.secondaryText
                     )
@@ -238,11 +246,12 @@ private fun CalendarHeroCard(
                 verticalArrangement = Arrangement.spacedBy(dimens.space8)
             ) {
                 if (selectedDay != null) {
-                    EventChip(text = "${selectedDay.hijriDay} ${monthData.hijriMonthName}")
+                    val dayNum = "${selectedDay.hijriDay}".formatLocalizedDigits()
+                    EventChip(text = "$dayNum $localizedHijriMonth")
                     if (selectedDay.eventTitle != null) {
-                        EventChip(text = selectedDay.eventTitle)
+                        EventChip(text = IslamicCalendarUtils.getLocalizedEventName(selectedDay.eventTitle))
                     } else if (selectedDay.isFriday) {
-                        EventChip(text = "Jummah Prayer")
+                        EventChip(text = stringResource(R.string.jummah_prayer))
                     }
                 }
             }
@@ -281,7 +290,7 @@ private fun MonthNavigationBar(
             )
             Spacer(modifier = Modifier.width(dimens.space4))
             Text(
-                text = "Prev",
+                text = stringResource(R.string.calendar_prev),
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Medium
                 ),
@@ -307,7 +316,7 @@ private fun MonthNavigationBar(
                 )
                 Spacer(modifier = Modifier.width(dimens.space8))
                 Text(
-                    text = "Today",
+                    text = stringResource(R.string.calendar_today),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -323,7 +332,7 @@ private fun MonthNavigationBar(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Current Month",
+                    text = stringResource(R.string.calendar_current_month),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Medium
                     ),
@@ -342,7 +351,7 @@ private fun MonthNavigationBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Next",
+                text = stringResource(R.string.calendar_next),
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Medium
                 ),
@@ -389,7 +398,15 @@ private fun EventChip(text: String) {
 
 @Composable
 private fun DaysOfWeekHeader() {
-    val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+    val daysOfWeek = listOf(
+        stringResource(R.string.calendar_weekday_sun),
+        stringResource(R.string.calendar_weekday_mon),
+        stringResource(R.string.calendar_weekday_tue),
+        stringResource(R.string.calendar_weekday_wed),
+        stringResource(R.string.calendar_weekday_thu),
+        stringResource(R.string.calendar_weekday_fri),
+        stringResource(R.string.calendar_weekday_sat)
+    )
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
@@ -482,7 +499,7 @@ private fun CalendarDayCard(
         ) {
             // Main Hijri Day Number
             Text(
-                text = "${day.hijriDay}",
+                text = "${day.hijriDay}".formatLocalizedDigits(),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -491,7 +508,7 @@ private fun CalendarDayCard(
 
             // Sub Gregorian Day Number
             Text(
-                text = "${day.gregorianDay}",
+                text = "${day.gregorianDay}".formatLocalizedDigits(),
                 style = MaterialTheme.typography.bodySmall,
                 color = subTextColor
             )
@@ -512,7 +529,7 @@ private fun CalendarDayCard(
                     )
                 } else if (day.isFriday) {
                     Text(
-                        text = "J",
+                        text = stringResource(R.string.calendar_friday_badge),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -538,6 +555,14 @@ private fun DateDetailContent(
 ) {
     if (day == null) return
 
+    val localizedGregorianMonth = IslamicCalendarUtils.getLocalizedGregorianMonth(monthData.gregorianMonthName)
+    val localizedHijriMonth = IslamicCalendarUtils.getLocalizedHijriMonth(monthData.hijriMonthName)
+    val localizedGregorianYear = "${monthData.gregorianYear}".formatLocalizedDigits()
+    val localizedHijriYear = "${monthData.hijriYear}".formatLocalizedDigits()
+    val localizedHijriDay = "${day.hijriDay}".formatLocalizedDigits()
+    val localizedGregorianDay = "${day.gregorianDay}".formatLocalizedDigits()
+    val ahStr = stringResource(R.string.calendar_ah)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -553,7 +578,7 @@ private fun DateDetailContent(
         Spacer(modifier = Modifier.height(dimens.space12))
 
         Text(
-            text = "${day.hijriDay} ${monthData.hijriMonthName} ${monthData.hijriYear} AH",
+            text = "$localizedHijriDay $localizedHijriMonth $localizedHijriYear $ahStr",
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.Bold
             ),
@@ -563,7 +588,7 @@ private fun DateDetailContent(
         Spacer(modifier = Modifier.height(dimens.space8))
 
         Text(
-            text = "Gregorian Day: ${day.gregorianDay} ${monthData.gregorianMonthName} ${monthData.gregorianYear}",
+            text = stringResource(R.string.calendar_gregorian_day, localizedGregorianDay, localizedGregorianMonth, localizedGregorianYear),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -586,7 +611,7 @@ private fun DateDetailContent(
                 )
                 Spacer(modifier = Modifier.width(dimens.space12))
                 Text(
-                    text = day.eventTitle,
+                    text = IslamicCalendarUtils.getLocalizedEventName(day.eventTitle),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.SemiBold
                     ),

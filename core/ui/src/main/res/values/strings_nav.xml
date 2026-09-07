@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="nav_home">Home</string>
+    <string name="nav_prayers">Prayers</string>
     <string name="nav_prayer_time">Prayer Time</string>
     <string name="nav_quran">Quran</string>
     <string name="nav_profile">Profile</string>

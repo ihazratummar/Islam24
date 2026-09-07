@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.imageLoader
@@ -67,7 +68,7 @@ fun BottomCompassPreview(
             ) {
                 Image(
                     painter = compassImage,
-                    contentDescription = compass.name,
+                    contentDescription = if (compass.id == 1) stringResource(R.string.qibla_cyan_compass) else stringResource(R.string.qibla_gold_compass),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(dimens.space4)

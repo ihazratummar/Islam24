@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.hazrat.database.entity.zakat.ZakatEntity
@@ -78,7 +79,7 @@ fun ZakatListScreen(
                     Column {
                         TopAppBarTitle(title = "Zakat History")
                         Text(
-                            text = "Saved Statements",
+                            text = stringResource(R.string.zakat_saved_statements),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -122,7 +123,7 @@ fun ZakatListScreen(
                 },
                 text = {
                     Text(
-                        text = "Calculate Zakat",
+                        text = stringResource(R.string.zakat_calculate_button),
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -166,7 +167,7 @@ fun ZakatListScreen(
                             ) {
                                 Column {
                                     Text(
-                                        text = "Total Zakat Tracked ($statementCount Statements)",
+                                        text = stringResource(R.string.zakat_total_tracked, statementCount),
                                         style = MaterialTheme.typography.labelMedium,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                                     )
@@ -222,7 +223,7 @@ fun ZakatListScreen(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 title = {
                     Text(
-                        text = "Delete Zakat Record?",
+                        text = stringResource(R.string.zakat_delete_title),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -231,7 +232,7 @@ fun ZakatListScreen(
                 },
                 text = {
                     Text(
-                        text = "Are you sure you want to delete the Zakat statement recorded on ${getDateFromLong(target.date)}? This action cannot be undone.",
+                        text = stringResource(R.string.zakat_delete_confirm, getDateFromLong(target.date)),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -248,13 +249,13 @@ fun ZakatListScreen(
                         ),
                         shape = RoundedCornerShape(dimens.cornerLg)
                     ) {
-                        Text(text = "Delete", fontWeight = FontWeight.Bold)
+                        Text(text = stringResource(R.string.common_delete), fontWeight = FontWeight.Bold)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { itemToDelete = null }) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(R.string.common_cancel),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -308,7 +309,7 @@ private fun EmptyZakatHistoryView() {
             Spacer(modifier = Modifier.height(dimens.space16))
 
             Text(
-                text = "No Zakat Records Yet",
+                text = stringResource(R.string.zakat_no_records_title),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -318,7 +319,7 @@ private fun EmptyZakatHistoryView() {
             Spacer(modifier = Modifier.height(dimens.space8))
 
             Text(
-                text = "Track your yearly Zakat obligations. Tap the + button to calculate and save your statement.",
+                text = stringResource(R.string.zakat_no_records_desc),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                 textAlign = TextAlign.Center,
@@ -431,7 +432,7 @@ private fun ZakatHistoryCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "Net Wealth",
+                            text = stringResource(R.string.zakat_net_wealth),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
@@ -447,7 +448,7 @@ private fun ZakatHistoryCard(
                         color = customColors.accentColor
                     )
                     Text(
-                        text = "Zakat Due",
+                        text = stringResource(R.string.zakat_due),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
@@ -462,7 +463,7 @@ private fun ZakatHistoryCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Tap to view breakdown ›",
+                    text = stringResource(R.string.zakat_view_breakdown),
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontWeight = FontWeight.SemiBold
                     ),

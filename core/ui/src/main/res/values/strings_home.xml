@@ -89,4 +89,49 @@
     <string name="widget_todays_dua_desc">A daily supplication to remember</string>
     <string name="widget_continue_reading_title">Continue Reading</string>
     <string name="widget_continue_reading_desc">Pick up where you left off in the Quran</string>
+
+    <!-- Additional Home UI Keys -->
+    <string name="home_free_and_ad_free">Islam 24 is free &amp; ad-free forever</string>
+    <string name="home_support_mission">Support our mission if you find it valuable</string>
+    <string name="home_view_full_schedule">View Full Schedule</string>
+    <string name="home_full_view">Full View</string>
+    <string name="home_streak_caps">STREAK</string>
+    <string name="home_count_today">%1$d/5 today</string>
+    <string name="home_daily_verse">Daily Verse</string>
+    <string name="home_verse_subtitle">%1$s · Verse %2$d</string>
+    <string name="home_this_week">This Week</string>
+    <string name="home_prayer_consistency">Prayer consistency</string>
+    <string name="home_all_5">All 5</string>
+    <string name="home_partial">Partial</string>
+    <string name="home_details">Details ›</string>
+    <string name="home_daily_dua">Daily Dua</string>
+    <string name="home_all_duas">All Duas</string>
+    <string name="home_recents">Recents</string>
+    <string name="home_aya_number">Verse %1$d</string>
+
+    <string name="widget_log_prayer">Log Prayer</string>
+    <string name="widget_view_calendar">View Calendar</string>
+    <string name="widget_full">Full</string>
+
+    <string name="home_time_remaining">TIME REMAINING</string>
+    <string name="home_time_remaining_until">TIME REMAINING UNTIL %1$s</string>
+    <string name="home_days_until">days until %1$s</string>
+
+    <!-- Days of Week -->
+    <string name="day_sun_short">Sun</string>
+    <string name="day_mon_short">Mon</string>
+    <string name="day_tue_short">Tue</string>
+    <string name="day_wed_short">Wed</string>
+    <string name="day_thu_short">Thu</string>
+    <string name="day_fri_short">Fri</string>
+    <string name="day_sat_short">Sat</string>
+
+    <!-- Event Types -->
+    <string name="event_special">Special</string>
+    <string name="event_night_prayer">Night Prayer</string>
+    <string name="event_urs">Urs</string>
+    <string name="event_birthday">Birthday</string>
+    <string name="event_hajj">Hajj</string>
+    <string name="event_weekly">Weekly</string>
+    <string name="event_jummah">Jummah</string>
 </resources>

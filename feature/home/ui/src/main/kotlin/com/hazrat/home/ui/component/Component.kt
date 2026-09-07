@@ -63,6 +63,8 @@ import com.hazrat.ui.theme.dimens
 import com.hazrat.usecase.UpcomingIslamicEvent
 import com.hazrat.utils.DateUtil
 import com.hazrat.utils.IslamicCalendarUtils
+import com.hazrat.utils.formatLocalizedDigits
+import com.hazrat.utils.toLocalizedDigits
 
 /**
  * Next Prayer Hero Card matching Screenshot 1 Top Red Box.
@@ -82,16 +84,22 @@ fun NextPrayerHeroCard(
     }
 
     val startTimeStr = if (isNow) {
-        "Started at " + DateUtil.dateLongToString(prayerState.currentPrayerTime, "hh:mm a")
+        stringResource(
+            R.string.home_started_at,
+            DateUtil.dateLongToString(prayerState.currentPrayerTime, "hh:mm a").formatLocalizedDigits()
+        )
     } else {
-        "Starts at " + DateUtil.dateLongToString(prayerState.nextPrayerTimeMillis, "hh:mm a")
+        stringResource(
+            R.string.home_starts_at,
+            DateUtil.dateLongToString(prayerState.nextPrayerTimeMillis, "hh:mm a").formatLocalizedDigits()
+        )
     }
 
     val nextPrayerName = prayerState.nextPrayer?.let { stringResource(it.nameRes) } ?: ""
     val remainingLabel = if (isNow && nextPrayerName.isNotBlank()) {
-        "TIME REMAINING UNTIL ${nextPrayerName.uppercase()}"
+        stringResource(R.string.home_time_remaining_until, nextPrayerName)
     } else {
-        "TIME REMAINING"
+        stringResource(R.string.home_time_remaining)
     }
 
     val remainingMillis = prayerState.nextPrayerTimeMillis - System.currentTimeMillis()
@@ -100,9 +108,9 @@ fun NextPrayerHeroCard(
     val minutes = ((totalSeconds % 3600) / 60)
     val seconds = (totalSeconds % 60)
 
-    val hoursStr = String.format("%02d", hours)
-    val minutesStr = String.format("%02d", minutes)
-    val secondsStr = String.format("%02d", seconds)
+    val hoursStr = String.format("%02d", hours).formatLocalizedDigits()
+    val minutesStr = String.format("%02d", minutes).formatLocalizedDigits()
+    val secondsStr = String.format("%02d", seconds).formatLocalizedDigits()
 
     val heroGradient = Brush.linearGradient(
         colors = listOf(
@@ -140,7 +148,7 @@ fun NextPrayerHeroCard(
                                 PulsingLiveDot()
                                 Spacer(modifier = Modifier.width(dimens.space8))
                                 Text(
-                                    text = "CURRENT PRAYER",
+                                    text = stringResource(R.string.prayer_current_prayer),
                                     style = MaterialTheme.typography.labelMedium.copy(
                                         fontWeight = FontWeight.Bold
                                     ),
@@ -149,7 +157,7 @@ fun NextPrayerHeroCard(
                             }
                         } else {
                             Text(
-                                text = "NEXT PRAYER",
+                                text = stringResource(R.string.prayer_next_caps),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
@@ -270,7 +278,7 @@ fun NextPrayerHeroCard(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "View Full Schedule",
+                            text = stringResource(R.string.home_view_full_schedule),
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -324,7 +332,7 @@ fun PrayerTimelineCard(
     onFullViewClick: () -> Unit
 ) {
     val hijriDate = IslamicCalendarUtils.getCurrentHijriDateInfo()
-    val hijriDateStr = "${hijriDate.day} ${hijriDate.monthName}"
+    val hijriDateStr = "${hijriDate.day.toLocalizedDigits()} ${hijriDate.monthName}"
 
     // Smooth Infinite Pulse Animation for Active/Upcoming Prayer Node
     val infiniteTransition = rememberInfiniteTransition(label = "PrayerPulseTransition")
@@ -385,7 +393,7 @@ fun PrayerTimelineCard(
 
                     Column {
                         Text(
-                            text = "Prayer Times",
+                            text = stringResource(R.string.prayer_times),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -407,7 +415,7 @@ fun PrayerTimelineCard(
                         .padding(horizontal = dimens.space12, vertical = dimens.space4)
                 ) {
                     Text(
-                        text = "Full View",
+                        text = stringResource(R.string.home_full_view),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.SemiBold
                         ),
@@ -427,21 +435,21 @@ fun PrayerTimelineCard(
             val maghribTime = prayerData.maghribTime
             val ishaTime = prayerData.ishaTime
 
-            val fajrStr = if (fajrTime > 0) DateUtil.dateLongToString(fajrTime, "hh:mm a") else "04:42 AM"
-            val dhuhrStr = if (dhuhrTime > 0) DateUtil.dateLongToString(dhuhrTime, "hh:mm a") else "12:34 PM"
-            val asrStr = if (asrTime > 0) DateUtil.dateLongToString(asrTime, "hh:mm a") else "04:15 PM"
-            val maghribStr = if (maghribTime > 0) DateUtil.dateLongToString(maghribTime, "hh:mm a") else "07:00 PM"
-            val ishaStr = if (ishaTime > 0) DateUtil.dateLongToString(ishaTime, "hh:mm a") else "08:30 PM"
+            val fajrStr = (if (fajrTime > 0) DateUtil.dateLongToString(fajrTime, "hh:mm a") else "04:42 AM").formatLocalizedDigits()
+            val dhuhrStr = (if (dhuhrTime > 0) DateUtil.dateLongToString(dhuhrTime, "hh:mm a") else "12:34 PM").formatLocalizedDigits()
+            val asrStr = (if (asrTime > 0) DateUtil.dateLongToString(asrTime, "hh:mm a") else "04:15 PM").formatLocalizedDigits()
+            val maghribStr = (if (maghribTime > 0) DateUtil.dateLongToString(maghribTime, "hh:mm a") else "07:00 PM").formatLocalizedDigits()
+            val ishaStr = (if (ishaTime > 0) DateUtil.dateLongToString(ishaTime, "hh:mm a") else "08:30 PM").formatLocalizedDigits()
 
             val sunriseTime = prayerData.sunriseTime
             val activeOrNextPrayer = prayerState.currentPrayer ?: prayerState.nextPrayer
 
             val prayers = listOf(
-                Triple("Fajr", fajrStr, (sunriseTime > 0 && now >= sunriseTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.FAJR)),
-                Triple("Dhu", dhuhrStr, (asrTime > 0 && now >= asrTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.DHUHR || (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.SUNRISE && now < dhuhrTime))),
-                Triple("Asr", asrStr, (maghribTime > 0 && now >= maghribTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.ASR)),
-                Triple("Mag", maghribStr, (ishaTime > 0 && now >= ishaTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.MAGHRIB)),
-                Triple("Ish", ishaStr, (ishaTime > 0 && now >= ishaTime + 7200000L) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.ISHA))
+                Triple(stringResource(R.string.prayer_fajr), fajrStr, (sunriseTime > 0 && now >= sunriseTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.FAJR)),
+                Triple(stringResource(R.string.prayer_dhuhr_short), dhuhrStr, (asrTime > 0 && now >= asrTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.DHUHR || (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.SUNRISE && now < dhuhrTime))),
+                Triple(stringResource(R.string.prayer_asr), asrStr, (maghribTime > 0 && now >= maghribTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.ASR)),
+                Triple(stringResource(R.string.prayer_maghrib_short), maghribStr, (ishaTime > 0 && now >= ishaTime) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.MAGHRIB)),
+                Triple(stringResource(R.string.prayer_isha_short), ishaStr, (ishaTime > 0 && now >= ishaTime + 7200000L) to (activeOrNextPrayer == com.hazrat.ui.common.PrayerType.ISHA))
             )
 
             Row(
@@ -604,7 +612,7 @@ fun StreakAndRamadanRow(
                     }
                     Spacer(modifier = Modifier.width(dimens.space8))
                     Text(
-                        text = "STREAK",
+                        text = stringResource(R.string.home_streak_caps),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -619,7 +627,7 @@ fun StreakAndRamadanRow(
 
                 Column {
                     Text(
-                        text = "$pct%",
+                        text = "$pct%".formatLocalizedDigits(),
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -629,7 +637,7 @@ fun StreakAndRamadanRow(
                     Spacer(modifier = Modifier.height(dimens.space4))
 
                     Text(
-                        text = "$count/5 today",
+                        text = stringResource(R.string.home_count_today, count),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
@@ -674,7 +682,7 @@ fun StreakAndRamadanRow(
                     }
                     Spacer(modifier = Modifier.width(dimens.space8))
                     Text(
-                        text = (upcomingEvent?.eventType?.name ?: "RAMADAN").uppercase(),
+                        text = stringResource(R.string.home_ramadan_label),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -686,14 +694,14 @@ fun StreakAndRamadanRow(
 
                 val daysRemaining = upcomingEvent?.daysRemaining ?: 287
                 val subtitleStr = if (upcomingEvent != null) {
-                    "days until ${upcomingEvent.hijriMonth}"
+                    stringResource(R.string.home_days_until, upcomingEvent.hijriMonth)
                 } else {
-                    "days until Ramadan 1448 AH"
+                    stringResource(R.string.home_days_until, stringResource(R.string.home_ramadan_label))
                 }
 
                 Column {
                     Text(
-                        text = "$daysRemaining",
+                        text = "$daysRemaining".formatLocalizedDigits(),
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -760,14 +768,14 @@ fun DailyVerseCard(
 
                     Column {
                         Text(
-                            text = "Daily Verse",
+                            text = stringResource(R.string.home_daily_verse),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "${dailyVerse.surahName} · Verse ${dailyVerse.verseNumber}",
+                            text = stringResource(R.string.home_verse_subtitle, dailyVerse.surahName, dailyVerse.verseNumber),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
@@ -860,15 +868,15 @@ fun CleanQuickAccessGrid(
         )
 
         val itemsRow1 = listOf<Triple<String, Int, HomePageNavIcons>>(
-            Triple("99 Names", R.drawable.allah, HomePageNavIcons.AsmaUlHusna),
-            Triple("Calendar", R.drawable.calendar, HomePageNavIcons.Calendar),
-            Triple("Dhikr", R.drawable.zikir, HomePageNavIcons.Athkar)
+            Triple(stringResource(R.string.home_asmaul_husna), R.drawable.allah, HomePageNavIcons.AsmaUlHusna),
+            Triple(stringResource(R.string.nav_calendar), R.drawable.calendar, HomePageNavIcons.Calendar),
+            Triple(stringResource(R.string.dua_daily_remembrances), R.drawable.zikir, HomePageNavIcons.Athkar)
         )
 
         val itemsRow2 = listOf<Triple<String, Int, HomePageNavIcons>>(
-            Triple("Zakat", R.drawable.zakat, HomePageNavIcons.Zakat),
-            Triple("Tasbih", R.drawable.tasbih, HomePageNavIcons.Tasbih),
-            Triple("Duas", R.drawable.dua, HomePageNavIcons.Dua)
+            Triple(stringResource(R.string.nav_zakat), R.drawable.zakat, HomePageNavIcons.Zakat),
+            Triple(stringResource(R.string.dua_tasbih), R.drawable.tasbih, HomePageNavIcons.Tasbih),
+            Triple(stringResource(R.string.home_duas), R.drawable.dua, HomePageNavIcons.Dua)
         )
 
         Row(
@@ -1081,7 +1089,15 @@ fun WeeklyPrayerConsistencyCard(
     weeklyStats: WeeklyPrayerStats,
     onDetailsClick: () -> Unit
 ) {
-    val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+    val dayNames = listOf(
+        stringResource(R.string.day_sun_short),
+        stringResource(R.string.day_mon_short),
+        stringResource(R.string.day_tue_short),
+        stringResource(R.string.day_wed_short),
+        stringResource(R.string.day_thu_short),
+        stringResource(R.string.day_fri_short),
+        stringResource(R.string.day_sat_short)
+    )
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -1120,14 +1136,14 @@ fun WeeklyPrayerConsistencyCard(
 
                     Column {
                         Text(
-                            text = "This Week",
+                            text = stringResource(R.string.home_this_week),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "Prayer consistency",
+                            text = stringResource(R.string.home_prayer_consistency),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
@@ -1141,7 +1157,7 @@ fun WeeklyPrayerConsistencyCard(
                         .padding(horizontal = dimens.space12, vertical = dimens.space4)
                 ) {
                     Text(
-                        text = "${weeklyStats.totalCompleted}/${weeklyStats.totalTarget}",
+                        text = "${weeklyStats.totalCompleted}/${weeklyStats.totalTarget}".formatLocalizedDigits(),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -1185,7 +1201,7 @@ fun WeeklyPrayerConsistencyCard(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "$count",
+                                text = count.toLocalizedDigits(),
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
@@ -1226,7 +1242,7 @@ fun WeeklyPrayerConsistencyCard(
                         )
                         Spacer(modifier = Modifier.width(dimens.space4))
                         Text(
-                            text = "All 5",
+                            text = stringResource(R.string.home_all_5),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -1241,7 +1257,7 @@ fun WeeklyPrayerConsistencyCard(
                         )
                         Spacer(modifier = Modifier.width(dimens.space4))
                         Text(
-                            text = "Partial",
+                            text = stringResource(R.string.home_partial),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -1250,7 +1266,7 @@ fun WeeklyPrayerConsistencyCard(
 
                 TextButton(onClick = onDetailsClick) {
                     Text(
-                        text = "Details ›",
+                        text = stringResource(R.string.home_details),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -1263,24 +1279,31 @@ fun WeeklyPrayerConsistencyCard(
 }
 
 /**
- * Daily Dua Card with tint = Color.Unspecified on dua icon.
+ * Clean Daily Dua Card showing category, transliteration/translation, reference & quick share/copy actions.
  */
 @Composable
 fun DailyDuaCard(
     dailyDua: DailyDuaData,
-    onAllDuasClick: () -> Unit
+    onDuaClick: () -> Unit,
+    onAllDuasClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onCopyClick: () -> Unit,
+    onBookmarkClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(dimens.cornerXl),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onDuaClick() }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimens.space20)
+                .padding(dimens.space16)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -1290,15 +1313,15 @@ fun DailyDuaCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
-                            .size(dimens.space40)
-                            .clip(RoundedCornerShape(dimens.cornerMd))
-                            .background(MaterialTheme.colorScheme.primaryContainer),
+                            .size(dimens.avatarMd)
+                            .clip(CircleShape)
+                            .background(customColors.accentColor.copy(alpha = 0.15f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.dua),
+                            painter = painterResource(com.hazrat.ui.R.drawable.dua),
                             contentDescription = null,
-                            tint = Color.Unspecified,
+                            tint = customColors.accentColor,
                             modifier = Modifier.size(dimens.iconSm)
                         )
                     }
@@ -1307,7 +1330,7 @@ fun DailyDuaCard(
 
                     Column {
                         Text(
-                            text = "Daily Dua",
+                            text = stringResource(R.string.home_daily_dua),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -1323,7 +1346,7 @@ fun DailyDuaCard(
 
                 TextButton(onClick = onAllDuasClick) {
                     Text(
-                        text = "All Duas",
+                        text = stringResource(R.string.home_all_duas),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -1440,6 +1463,16 @@ fun HomeScreenEventCard(
                 )
             }
 
+            val eventTypeLabel = when (eventType) {
+                com.hazrat.model.EventType.SPECIAL -> stringResource(R.string.event_special)
+                com.hazrat.model.EventType.NIGHT_PRAYER -> stringResource(R.string.event_night_prayer)
+                com.hazrat.model.EventType.URS -> stringResource(R.string.event_urs)
+                com.hazrat.model.EventType.BIRTHDAY -> stringResource(R.string.event_birthday)
+                com.hazrat.model.EventType.HAJJ -> stringResource(R.string.event_hajj)
+                com.hazrat.model.EventType.WEEKLY -> stringResource(R.string.event_weekly)
+                com.hazrat.model.EventType.JUMMA -> stringResource(R.string.event_jummah)
+            }
+
             Box(
                 modifier = Modifier
                     .background(
@@ -1449,7 +1482,7 @@ fun HomeScreenEventCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = eventType.toString(),
+                    text = eventTypeLabel,
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = eventType.color()
                     ),
@@ -1477,7 +1510,7 @@ fun HomeRecentsSection(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "Recents",
+                text = stringResource(R.string.home_recents),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -1551,13 +1584,13 @@ private fun HomeRecentSurahCard(
         )
 
         Text(
-            text = "Aya ${recent.ayahNumber}",
+            text = stringResource(R.string.home_aya_number, recent.ayahNumber),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         val displayDate = remember(recent.formattedDate) {
-            DateFormatter.formatHumanReadableDate(recent.formattedDate)
+            DateFormatter.formatHumanReadableDate(recent.formattedDate).formatLocalizedDigits()
         }
         Text(
             text = displayDate,

@@ -82,14 +82,14 @@ fun TargetDatePickerSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Target End Date",
+                    text = stringResource(R.string.khatam_target_end_date),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 IconButton(onClick = onDismissRequest) {
                     Icon(
                         painter = painterResource(id = R.drawable.cross),
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.common_dismiss),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -98,7 +98,7 @@ fun TargetDatePickerSheet(
             Spacer(modifier = Modifier.height(dimens.space16))
 
             Text(
-                text = "Target Date: ${targetLocalDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))}",
+                text = stringResource(R.string.khatam_target_date_format, targetLocalDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = MaterialTheme.colorScheme.primary
             )
@@ -106,7 +106,7 @@ fun TargetDatePickerSheet(
             Spacer(modifier = Modifier.height(dimens.space20))
 
             Text(
-                text = "Select Target Reading Duration:",
+                text = stringResource(R.string.khatam_select_duration),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.align(Alignment.Start)
@@ -139,7 +139,7 @@ fun TargetDatePickerSheet(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "$days Days",
+                                    text = stringResource(R.string.khatam_days, days),
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                                     ),
@@ -162,7 +162,7 @@ fun TargetDatePickerSheet(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(
-                    text = "Continue",
+                    text = stringResource(R.string.khatam_continue),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -196,14 +196,14 @@ fun SettingCompletedSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Setting Completed",
+                    text = stringResource(R.string.khatam_setting_completed),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 IconButton(onClick = onDismissRequest) {
                     Icon(
                         painter = painterResource(id = R.drawable.cross),
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.common_dismiss),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -229,7 +229,7 @@ fun SettingCompletedSheet(
             Spacer(modifier = Modifier.height(dimens.space16))
 
             Text(
-                text = "Go and read Quran!",
+                text = stringResource(R.string.khatam_go_read_quran),
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
@@ -238,7 +238,7 @@ fun SettingCompletedSheet(
             Spacer(modifier = Modifier.height(dimens.space8))
 
             Text(
-                text = "Asking Allah for your steadfastness!",
+                text = stringResource(R.string.khatam_blessing),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
@@ -255,7 +255,7 @@ fun SettingCompletedSheet(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(
-                    text = "Start Now",
+                    text = stringResource(R.string.khatam_start_now),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -291,14 +291,14 @@ fun EditReadingPlanSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Edit Reading Plan",
+                    text = stringResource(R.string.khatam_edit_plan),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 IconButton(onClick = onDismissRequest) {
                     Icon(
                         painter = painterResource(id = R.drawable.cross),
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.common_dismiss),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -317,7 +317,7 @@ fun EditReadingPlanSheet(
                 shape = RoundedCornerShape(dimens.cornerLg)
             ) {
                 Text(
-                    text = "Edit End Date",
+                    text = stringResource(R.string.khatam_edit_end_date),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -337,7 +337,7 @@ fun EditReadingPlanSheet(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(
-                    text = "Reset the Reading Plan",
+                    text = stringResource(R.string.khatam_reset_plan),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -346,7 +346,7 @@ fun EditReadingPlanSheet(
             Spacer(modifier = Modifier.height(dimens.space16))
 
             Text(
-                text = "End Current Reading Plan",
+                text = stringResource(R.string.khatam_end_plan),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier

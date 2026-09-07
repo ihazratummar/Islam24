@@ -58,3 +58,17 @@ val QURAN_SURAH_MIGRATION_5_6 = object : Migration(5, 6) {
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_quran_bookmark_surahNumber_ayahNumber` ON `quran_bookmark` (`surahNumber`, `ayahNumber`)")
     }
 }
+
+val QURAN_TRANSLATIONS_MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE `ayah` ADD COLUMN `bnMuhiuddin` TEXT NOT NULL DEFAULT ''")
+        db.execSQL("ALTER TABLE `ayah` ADD COLUMN `bnTaisirul` TEXT NOT NULL DEFAULT ''")
+        db.execSQL("ALTER TABLE `ayah` ADD COLUMN `bnMujibur` TEXT NOT NULL DEFAULT ''")
+    }
+}
+
+val QURAN_BN_TRANSLITERATION_MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE `ayah` ADD COLUMN `bnTransliteration` TEXT NOT NULL DEFAULT ''")
+    }
+}

@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.theme.dimens
 
@@ -36,7 +37,7 @@ fun AddCustomDhikrDialog(
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         title = {
             Text(
-                text = "Add Custom Dhikr",
+                text = stringResource(com.hazrat.ui.R.string.tasbih_add_custom_dialog_title),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -46,19 +47,19 @@ fun AddCustomDhikrDialog(
                 OutlinedTextField(
                     value = transliteration,
                     onValueChange = { transliteration = it },
-                    label = { Text("Name / Transliteration (e.g. Astaghfirullah)") },
+                    label = { Text(stringResource(com.hazrat.ui.R.string.tasbih_input_name_label)) },
                     singleLine = true
                 )
                 OutlinedTextField(
                     value = arabic,
                     onValueChange = { arabic = it },
-                    label = { Text("Arabic Text (Optional)") },
+                    label = { Text(stringResource(com.hazrat.ui.R.string.tasbih_input_arabic_label)) },
                     singleLine = true
                 )
                 OutlinedTextField(
                     value = target,
                     onValueChange = { target = it },
-                    label = { Text("Target Count (e.g. 33, 100)") },
+                    label = { Text(stringResource(com.hazrat.ui.R.string.tasbih_input_target_label)) },
                     singleLine = true
                 )
             }
@@ -76,12 +77,12 @@ fun AddCustomDhikrDialog(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text("Add")
+                Text(stringResource(com.hazrat.ui.R.string.common_add))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(com.hazrat.ui.R.string.common_cancel), color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     )

@@ -3,6 +3,7 @@ package com.hazrat.islam24.di
 import android.content.Context
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.domain.repository.AppSyncScheduler
 import com.hazrat.islam24.main.mainActivity.MainViewModel
 import com.hazrat.islam24.service.UpdateManager
@@ -27,6 +28,7 @@ fun getAppModule(): Module = module {
         MainViewModel(
             locationRepository = get(),
             appDataStore = get(),
+            userDataStore = get(),
             changelogRepository = get(),
             isLoggedInUseCase = get(),
             isSubscribedUseCase = get()

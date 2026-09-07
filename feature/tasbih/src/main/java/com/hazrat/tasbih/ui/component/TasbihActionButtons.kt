@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
@@ -50,13 +51,13 @@ fun TasbihActionButtons(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.tap),
-                contentDescription = "Tap to Count",
+                contentDescription = stringResource(R.string.tasbih_tap_to_count),
                 tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(dimens.iconSm)
             )
             Spacer(modifier = Modifier.width(dimens.space8))
             Text(
-                text = "Tap to Count",
+                text = stringResource(R.string.tasbih_tap_to_count),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -82,13 +83,13 @@ fun TasbihActionButtons(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.refresh),
-                    contentDescription = "Reset",
+                    contentDescription = stringResource(R.string.tasbih_reset),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(dimens.iconSm)
                 )
                 Spacer(modifier = Modifier.width(dimens.space8))
                 Text(
-                    text = "Reset",
+                    text = stringResource(R.string.tasbih_reset),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.SemiBold
                     ),
@@ -109,13 +110,13 @@ fun TasbihActionButtons(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.undo),
-                    contentDescription = "Undo",
+                    contentDescription = stringResource(R.string.tasbih_undo),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(dimens.iconSm)
                 )
                 Spacer(modifier = Modifier.width(dimens.space8))
                 Text(
-                    text = "Undo",
+                    text = stringResource(R.string.tasbih_undo),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.SemiBold
                     ),

@@ -12,7 +12,8 @@ import com.hazrat.model.RecentReadDua
 fun DuaCategoryEntity.toCategoryModel(): DuaCategoryModel {
     return DuaCategoryModel(
         id = id,
-        title = title
+        title = title,
+        bnTitle = bnTitle
     )
 }
 
@@ -24,6 +25,7 @@ fun DuaChapterWithCountEntity.toChapterWithCountModel(): DuaChapterWithCountMode
     return DuaChapterWithCountModel(
         id = id,
         title = title,
+        bnTitle = bnTitle,
         audioUrl = audioUrl,
         duaCount = duaCount
     )
@@ -40,7 +42,10 @@ fun DuaItemEntity.toItemModel(): DuaItemModel {
         arabicText = arabicText,
         translation = translation,
         transliteration = transliteration,
+        bnTranslation = bnTranslation,
+        bnTransliteration = bnTransliteration,
         reference = reference,
+        bnReference = bnReference,
         repeatCount = repeatCount,
         audioUrl = audioUrl,
         isBookmarked = isBookmarked == 1
@@ -55,6 +60,7 @@ fun RecentDuaEntity.toRecentReadDua(): RecentReadDua {
     return RecentReadDua(
         chapterId = chapterId,
         title = title,
+        bnTitle = bnTitle,
         duaCount = duaCount,
         formattedDate = formattedDate,
         timestamp = timestamp

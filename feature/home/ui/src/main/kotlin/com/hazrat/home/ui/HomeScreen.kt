@@ -59,6 +59,8 @@ import com.hazrat.ui.common.IslamicGridBackground
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
 import com.hazrat.utils.IslamicCalendarUtils
+import com.hazrat.utils.formatLocalizedDigits
+import com.hazrat.utils.toLocalizedDigits
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -101,7 +103,7 @@ fun HomeScreen(
     }
 
     val hijriDate = IslamicCalendarUtils.getCurrentHijriDateInfo()
-    val hijriPillStr = "${hijriDate.day} ${hijriDate.monthName}"
+    val hijriPillStr = "${hijriDate.day.toLocalizedDigits()} ${hijriDate.monthName}"
 
     Scaffold(
         contentWindowInsets = WindowInsets(top = dimens.space20),
@@ -248,7 +250,11 @@ fun HomeScreen(
                 item {
                     DailyDuaCard(
                         dailyDua = homeState.dailyDua,
-                        onAllDuasClick = { onWidgetClick(HomePageNavIcons.Dua) }
+                        onDuaClick = { onWidgetClick(HomePageNavIcons.Dua) },
+                        onAllDuasClick = { onWidgetClick(HomePageNavIcons.Dua) },
+                        onShareClick = { },
+                        onCopyClick = { },
+                        onBookmarkClick = { }
                     )
                 }
 
@@ -296,14 +302,14 @@ fun HomeScreen(
                                 verticalArrangement = Arrangement.spacedBy(dimens.space2)
                             ) {
                                 Text(
-                                    text = "Islam 24 is free & ad-free forever",
+                                    text = stringResource(R.string.home_free_and_ad_free),
                                     style = MaterialTheme.typography.titleSmall.copy(
                                         fontWeight = FontWeight.Bold
                                     ),
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
                                 Text(
-                                    text = "Support our mission if you find it valuable",
+                                    text = stringResource(R.string.home_support_mission),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = com.hazrat.ui.theme.customColors.secondaryText
                                 )
@@ -343,21 +349,23 @@ fun HomeScreen(
                                 eventDate = DateUtil.dateLongToString(
                                     dateLong = time,
                                     format = "EEEE, dd MMMM yyyy • hh:mm a"
-                                ),
+                                ).formatLocalizedDigits(),
                                 eventType = com.hazrat.model.EventType.JUMMA
                             )
                         }
                     }
                     items(homeState.islamicEventsInfoModel.take(2)) { model ->
                         model?.let {
+                            val gregDate = DateUtil.dateLongToString(
+                                dateLong = (it.timestamp?.times(1000)) ?: 0L,
+                                format = "EEEE, dd MMMM yyyy"
+                            ).formatLocalizedDigits()
+                            val hijriStr = it.hijriDate.formatLocalizedDigits()
+                            val ahStr = stringResource(R.string.calendar_ah)
+                            val localizedEventName = IslamicCalendarUtils.getLocalizedEventName(it.holidays)
                             HomeScreenEventCard(
-                                eventName = it.holidays,
-                                eventDate = "${it.hijriDate} AH • ${
-                                    DateUtil.dateLongToString(
-                                        dateLong = (it.timestamp?.times(1000)) ?: 0L,
-                                        format = "EEEE, dd MMMM yyyy"
-                                    )
-                                }",
+                                eventName = localizedEventName,
+                                eventDate = "$hijriStr $ahStr • $gregDate",
                                 eventType = it.type
                             )
                         }

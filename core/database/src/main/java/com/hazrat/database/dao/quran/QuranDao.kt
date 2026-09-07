@@ -43,6 +43,10 @@ interface QuranDao {
             a.englishTranslation,
             a.transliteration,
             a.tajweedText,
+            a.bnMuhiuddin,
+            a.bnTaisirul,
+            a.bnMujibur,
+            a.bnTransliteration,
             CASE WHEN b.id IS NOT NULL AND b.isDeleted = 0 THEN 1 ELSE 0 END AS isBookmarked
         FROM ayah AS a
         LEFT JOIN quran_bookmark AS b
@@ -111,6 +115,10 @@ interface QuranDao {
             a.englishTranslation,
             a.transliteration,
             a.tajweedText,
+            a.bnMuhiuddin,
+            a.bnTaisirul,
+            a.bnMujibur,
+            a.bnTransliteration,
             1 AS isBookmarked
         FROM ayah AS a
         INNER JOIN quran_bookmark AS b

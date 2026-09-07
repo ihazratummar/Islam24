@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="check_internet">Check Internet connection</string>
-    <string name="invalid_name">Invalid name</string>
-    <string name="invalid_bio">Invalid user bio</string>
-    <string name="user_id">Invalid user id</string>
-    <string name="unknown_error">Cause of this error not found</string>
-    <string name="error_unexpected">An unexpected error occurred: %1$s</string>
-    <string name="error_firestore_sync">Error synchronizing data with Firestore: %1$s</string>
-    <string name="error_network">Network error. Please check your connection and try again.</string>
-    <string name="error_location_permission">Location permission is needed for prayer times</string>
-    <string name="error_notification_permission">Notification permission is needed for Prayer Notification.</string>
-    <string name="error_location_required_title">Location Required</string>
-    <string name="error_location_access_required_title">Location Access Required</string>
-    <string name="error_notification_access_title">Notification Access</string>
+    <string name="check_internet">ইন্টারনেট সংযোগ পরীক্ষা করুন</string>
+    <string name="invalid_name">ভুল নাম প্রদান করা হয়েছে</string>
+    <string name="invalid_bio">ভুল বায়ো প্রদান করা হয়েছে</string>
+    <string name="user_id">ভুল ব্যবহারকারী আইডি</string>
+    <string name="unknown_error">অপ্রত্যাশিত সমস্যা দেখা দিয়েছে</string>
+    <string name="error_unexpected">একটি অপ্রত্যাশিত ত্রুটি ঘটেছে: %1$s</string>
+    <string name="error_firestore_sync">ডাটা সিঙ্ক করতে ত্রুটি হয়েছে: %1$s</string>
+    <string name="error_network">নেটওয়ার্ক ত্রুটি। ইন্টারনেট সংযোগ পরীক্ষা করে পুনরায় চেষ্টা করুন।</string>
+    <string name="error_location_permission">নামাজের সময়সূচির জন্য লোকেশন পারমিশন প্রয়োজন</string>
+    <string name="error_notification_permission">নামাজের বিজ্ঞপ্তির জন্য নোটিফিকেশন পারমিশন প্রয়োজন।</string>
+    <string name="error_location_required_title">লোকেশন প্রয়োজন</string>
+    <string name="error_location_access_required_title">লোকেশন অ্যাক্সেস প্রয়োজন</string>
+    <string name="error_notification_access_title">নোটিফিকেশন অ্যাক্সেস</string>
 </resources>

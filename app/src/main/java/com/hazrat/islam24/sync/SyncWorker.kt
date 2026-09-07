@@ -35,15 +35,19 @@ class SyncWorker(
         return try {
             val success = syncRepository.performFullSync()
             if (success) {
-                Timber.tag("SyncWorker").d( "Background sync completed successfully.")
+                Timber.tag("SyncWorker").d("Background sync completed successfully.")
                 Result.success()
             } else {
-                Timber.tag("SyncWorker").w( "Sync returned false, retrying...")
+                Timber.tag("SyncWorker").w("Sync returned false, retrying...")
                 Result.retry()
             }
+        } catch (e: java.io.IOException) {
+            // Network issue: retry when internet is restored
+            Timber.tag("SyncWorker").e("Sync failed with network error: ${e.message}. Retrying...")
+            Result.retry()
         } catch (e: Exception) {
             Timber.tag("SyncWorker").e("Sync failed with exception: ${e.message}")
-            if (runAttemptCount < 3) Result.retry() else Result.failure()
+            Result.retry()
         }
     }
 }

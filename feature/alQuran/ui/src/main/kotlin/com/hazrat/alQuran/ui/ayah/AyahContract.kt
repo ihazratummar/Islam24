@@ -14,6 +14,7 @@ data class AyahState(
     val ayahs: List<AyahModel> = emptyList(),
     val surahDetails: SurahModel? = null,
     val selectedAyahForMenu: AyahModel? = null,
+    val selectedAyahForShare: AyahModel? = null,
     val playingSurahNumber: Int? = null,
     val playingAyahNumber: Int? = null,
     val playingAudioPath: String? = null,
@@ -26,6 +27,7 @@ data class AyahState(
     val selectedFont: String = "SCHEHERAZADE",
     val fontSize: Int = 30,
     val showTranslation: Boolean = true,
+    val selectedTranslationSource: String = "MUHIUDDIN",
     val isSettingsMenuOpen: Boolean = false
 )
 
@@ -38,6 +40,8 @@ enum class AudioPlaybackMode {
 sealed interface AyahUiEvent {
     data class OnAyahClick(val ayah: AyahModel) : AyahUiEvent
     data object OnDismissMenu : AyahUiEvent
+    data class OnSelectAyahForShare(val ayah: AyahModel) : AyahUiEvent
+    data object OnDismissShareDialog : AyahUiEvent
     data class OnPlayAyah(val ayahNumber: Int) : AyahUiEvent
     data class OnPlaySurahFrom(val ayahNumber: Int) : AyahUiEvent
     data class OnPlayJuzFrom(val ayahNumber: Int) : AyahUiEvent
@@ -54,4 +58,5 @@ sealed interface AyahUiEvent {
     data class OnFontSelected(val fontName: String) : AyahUiEvent
     data class OnFontSizeChanged(val size: Int) : AyahUiEvent
     data class OnToggleTranslation(val show: Boolean) : AyahUiEvent
+    data class OnTranslationSourceSelected(val source: String) : AyahUiEvent
 }

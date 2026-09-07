@@ -26,7 +26,11 @@ data class AyahEntity(
     val arabicText: String,
     val englishTranslation: String,
     val transliteration: String,
-    val tajweedText: String = ""
+    val tajweedText: String = "",
+    val bnMuhiuddin: String = "",
+    val bnTaisirul: String = "",
+    val bnMujibur: String = "",
+    val bnTransliteration: String = ""
 )
 
 @Entity(tableName = "recent_surah")

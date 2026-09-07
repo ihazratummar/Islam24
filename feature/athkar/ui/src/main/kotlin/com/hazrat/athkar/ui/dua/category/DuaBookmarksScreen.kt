@@ -68,7 +68,7 @@ fun DuaBookmarksScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "No bookmarked duas yet",
+                    text = stringResource(R.string.dua_no_bookmarks),
                     style = MaterialTheme.typography.bodyLarge,
                     color = customColors.secondaryText
                 )

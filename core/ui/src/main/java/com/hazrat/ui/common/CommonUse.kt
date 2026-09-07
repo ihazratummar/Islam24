@@ -4,6 +4,8 @@ package com.hazrat.ui.common
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.ViewGroup
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -179,14 +181,27 @@ fun WebViewScreen(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT,
                 )
+                settings.apply {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    databaseEnabled = true
+                    loadWithOverviewMode = true
+                    useWideViewPort = true
+                    allowContentAccess = true
+                    allowFileAccess = false
+                    mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+                    cacheMode = WebSettings.LOAD_DEFAULT
+                }
+                webChromeClient = WebChromeClient()
                 webViewClient = object : WebViewClient() {
                     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                        backEnable = view!!.canGoBack()
+                        backEnable = view?.canGoBack() == true
                         loaderDialogScreen.value = true
                     }
 
                     override fun onPageFinished(view: WebView?, url: String?) {
                         loaderDialogScreen.value = false
+                        backEnable = view?.canGoBack() == true
                         // Inject JavaScript to hide footer and nav
                         if (hideHeaderFooter) {
                             val script = """
@@ -212,7 +227,6 @@ fun WebViewScreen(
                         }
                     }
                 }
-                settings.javaScriptEnabled = true
                 loadUrl(url)
                 webView = this
             }

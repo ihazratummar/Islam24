@@ -13,7 +13,7 @@ import com.hazrat.database.entity.RecentDuaEntity
  */
 @Database(
     entities = [DuaCategoryEntity::class, DuaItemEntity::class, RecentDuaEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class DuaDatabase : RoomDatabase() {

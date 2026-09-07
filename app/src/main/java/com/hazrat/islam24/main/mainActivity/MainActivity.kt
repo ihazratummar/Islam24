@@ -8,7 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hazrat.common.ChangelogDialog
@@ -18,6 +22,7 @@ import com.hazrat.islam24.main.navigation.nvgraph.NavGraph
 import com.hazrat.islam24.service.UpdateManager
 import com.hazrat.notification.NotificationChannels
 import com.hazrat.notification.PrayerRescheduleWorker
+import com.hazrat.ui.common.LocaleManager
 import com.hazrat.ui.common.rememberImageLoader
 import com.hazrat.ui.theme.Islam24Theme
 import org.koin.android.ext.android.inject
@@ -81,6 +86,23 @@ class MainActivity : AppCompatActivity() {
             val showChangelog by mainViewModel.showChangelog.collectAsStateWithLifecycle()
             val isLoggedInState by mainViewModel.isLoggedIn.collectAsStateWithLifecycle()
             val isSubscribedState by mainViewModel.isSubscribed.collectAsStateWithLifecycle()
+            val currentLanguageCode by mainViewModel.userLanguageCode.collectAsStateWithLifecycle()
+
+            var isInitialLanguageSyncDone by remember { mutableStateOf(false) }
+
+            LaunchedEffect(currentLanguageCode) {
+                val systemLocaleCode = LocaleManager.getAppLocale()
+                if (!isInitialLanguageSyncDone) {
+                    isInitialLanguageSyncDone = true
+                    if (systemLocaleCode != currentLanguageCode) {
+                        mainViewModel.setAppLanguageCode(systemLocaleCode)
+                    }
+                } else {
+                    if (systemLocaleCode != currentLanguageCode) {
+                        LocaleManager.setAppLocale(currentLanguageCode)
+                    }
+                }
+            }
 
             Islam24Theme(
                 darkTheme = isDarkModeEnabled,

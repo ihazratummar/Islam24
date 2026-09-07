@@ -60,6 +60,9 @@ import com.hazrat.ui.common.rememberPrayerState
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
+import com.hazrat.utils.IslamicCalendarUtils
+import com.hazrat.utils.formatLocalizedDigits
+import com.hazrat.utils.toLocalizedDigits
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
@@ -210,17 +213,21 @@ fun PrayerTimeScreen(
                 val isNow = prayerState.isNow
 
                 val activePrayer = if (isNow) prayerState.currentPrayer else prayerState.nextPrayer
-                val prayerName = activePrayer?.name?.lowercase()
-                    ?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } ?: "Dhuhr"
+                val prayerName = activePrayer?.let { stringResource(it.nameRes) } ?: stringResource(R.string.prayer_dhuhr)
 
                 val scheduledTimeStr = if (isNow) {
-                    "Started at " + DateUtil.dateLongToString(prayerState.currentPrayerTime, "hh:mm a")
+                    stringResource(
+                        R.string.home_started_at,
+                        DateUtil.dateLongToString(prayerState.currentPrayerTime, "hh:mm a").formatLocalizedDigits()
+                    )
                 } else {
-                    "at " + DateUtil.dateLongToString(prayerState.nextPrayerTimeMillis, "hh:mm a")
+                    stringResource(
+                        R.string.home_starts_at,
+                        DateUtil.dateLongToString(prayerState.nextPrayerTimeMillis, "hh:mm a").formatLocalizedDigits()
+                    )
                 }
 
-                val nextPrayerName = prayerState.nextPrayer?.name?.lowercase()
-                    ?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                val nextPrayerName = prayerState.nextPrayer?.let { stringResource(it.nameRes) }
 
                 val countdownText = prayerState.countdownText
 
@@ -231,13 +238,14 @@ fun PrayerTimeScreen(
                 val todayDate = LocalDate.now()
 
                 val dateTitleStr = when (pageDate) {
-                    todayDate -> "Today"
-                    todayDate.minusDays(1) -> "Yesterday"
-                    todayDate.plusDays(1) -> "Tomorrow"
-                    else -> DateUtil.dateLongToString(prayerTimeData.timeStamp * 1000, "EEEE, MMM dd")
+                    todayDate -> stringResource(R.string.calendar_today)
+                    todayDate.minusDays(1) -> stringResource(R.string.date_yesterday)
+                    todayDate.plusDays(1) -> stringResource(R.string.date_tomorrow)
+                    else -> DateUtil.dateLongToString(prayerTimeData.timeStamp * 1000, "EEEE, MMM dd").formatLocalizedDigits()
                 }
 
-                val hijriSubtitleStr = "${prayerTimeData.hijriDay} ${prayerTimeData.hijriMonthEn} ${prayerTimeData.hijriYear} AH"
+                val localizedHijriMonth = IslamicCalendarUtils.getLocalizedHijriMonth(prayerTimeData.hijriMonthEn)
+                val hijriSubtitleStr = "${prayerTimeData.hijriDay.toLocalizedDigits()} $localizedHijriMonth ${prayerTimeData.hijriYear.toLocalizedDigits()} ${stringResource(R.string.calendar_ah)}"
 
                 val selectedChipIndex = when (pageDate) {
                     todayDate.minusDays(1) -> 0

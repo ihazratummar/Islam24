@@ -196,3 +196,15 @@
 -keep class com.hazrat.domain.model.** { *; }
 -keep class com.hazrat.auth.ui.support.** { *; }
 -keep class com.hazrat.islam24.main.navigation.** { *; }
+
+# Jetpack Glance Widgets & Action Callbacks
+-keep class androidx.glance.** { *; }
+-keep class androidx.glance.appwidget.** { *; }
+-keep class androidx.glance.appwidget.action.** { *; }
+-keep class * implements androidx.glance.appwidget.action.ActionCallback { *; }
+-keepclassmembers class * implements androidx.glance.appwidget.action.ActionCallback {
+    public <init>();
+    public *;
+}
+-keep class com.hazrat.islam24.widget.** { *; }
+-keepclassmembers class com.hazrat.islam24.widget.** { *; }

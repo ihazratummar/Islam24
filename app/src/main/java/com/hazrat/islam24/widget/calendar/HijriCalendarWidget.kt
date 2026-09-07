@@ -17,6 +17,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -79,7 +80,12 @@ class HijriCalendarWidget : GlanceAppWidget() {
             val is2x2Minimal = isNarrow && !is2x3Vertical && !is1x1
             // Any standard or wide size (4x2, 4x3, 4x4) renders the FULL CALENDAR MONTH
 
-            val calendarAction = actionRunCallback<OpenCalendarScreenActionCallback>()
+            val calendarIntent = Intent(context, MainActivity::class.java).apply {
+                action = Intent.ACTION_VIEW
+                putExtra(MainActivity.EXTRA_NAV_TARGET, MainActivity.NAV_TARGET_CALENDAR)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val calendarAction = actionStartActivity(calendarIntent)
 
             Box(
                 modifier = GlanceModifier

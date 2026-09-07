@@ -28,6 +28,9 @@ echo "======================================"
 echo "Uploading new source strings to Crowdin..."
 crowdin upload sources
 
+echo "Uploading local Bengali translations to Crowdin..."
+crowdin upload translations
+
 echo "Downloading translated strings from Crowdin..."
 crowdin download
 

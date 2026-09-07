@@ -64,6 +64,7 @@ import com.hazrat.ui.common.BackIcon
 import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.toLocalizedDigits
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,14 +113,14 @@ fun AthkarScreen(
                                 )
                                 Icon(
                                     painter = painterResource(id = R.drawable.down_arrow),
-                                    contentDescription = "Select Category",
+                                    contentDescription = stringResource(R.string.athkar_select_category),
                                     tint = customColors.secondaryText,
                                     modifier = Modifier.size(dimens.iconXs)
                                 )
                             }
                             if (activeAthkarList.isNotEmpty()) {
                                 Text(
-                                    text = "${pagerState.currentPage + 1} of ${activeAthkarList.size}",
+                                    text = "${(pagerState.currentPage + 1).toLocalizedDigits()} / ${activeAthkarList.size.toLocalizedDigits()}",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = customColors.secondaryText
                                 )
@@ -241,7 +242,7 @@ fun AthkarScreen(
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.arrow_left),
-                                        contentDescription = "Previous",
+                                        contentDescription = stringResource(R.string.common_previous),
                                         tint = if (pagerState.currentPage > 0) MaterialTheme.colorScheme.onSurface else customColors.secondaryText.copy(alpha = 0.3f),
                                         modifier = Modifier.size(dimens.iconSm)
                                     )
@@ -262,7 +263,7 @@ fun AthkarScreen(
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.refresh),
-                                        contentDescription = "Reset Current",
+                                        contentDescription = stringResource(R.string.athkar_reset_current),
                                         tint = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier.size(dimens.iconSm)
                                     )
@@ -286,7 +287,7 @@ fun AthkarScreen(
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.arrowright),
-                                        contentDescription = "Next",
+                                        contentDescription = stringResource(R.string.common_next),
                                         tint = if (pagerState.currentPage < activeAthkarList.size - 1) MaterialTheme.colorScheme.onSurface else customColors.secondaryText.copy(alpha = 0.3f),
                                         modifier = Modifier.size(dimens.iconSm)
                                     )
@@ -316,7 +317,7 @@ fun AthkarScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "No Azkar Available",
+                    text = stringResource(R.string.athkar_no_azkar),
                     style = MaterialTheme.typography.titleMedium,
                     color = customColors.secondaryText
                 )
@@ -366,10 +367,15 @@ fun AthkarScreen(
 
                         Spacer(modifier = Modifier.height(dimens.space24))
 
+                        val isBengali = java.util.Locale.getDefault().language == "bn"
+                        val translitText = if (isBengali && !item.bnTransliteration.isNullOrBlank()) item.bnTransliteration!! else item.transliteration
+                        val translationText = if (isBengali && !item.bnTranslation.isNullOrBlank()) item.bnTranslation!! else item.translation
+                        val referenceText = if (isBengali && !item.bnReference.isNullOrBlank()) item.bnReference!! else item.reference
+
                         // Transliteration
-                        if (item.transliteration.isNotBlank()) {
+                        if (!translitText.isNullOrBlank()) {
                             Text(
-                                text = item.transliteration,
+                                text = translitText,
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.88f),
                                 textAlign = TextAlign.Start,
@@ -379,9 +385,9 @@ fun AthkarScreen(
                         }
 
                         // Translation
-                        if (item.translation.isNotBlank()) {
+                        if (!translationText.isNullOrBlank()) {
                             Text(
-                                text = item.translation,
+                                text = translationText,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = customColors.secondaryText,
                                 textAlign = TextAlign.Start,
@@ -391,9 +397,9 @@ fun AthkarScreen(
                         }
 
                         // Source Reference
-                        if (item.reference.isNotBlank()) {
+                        if (!referenceText.isNullOrBlank()) {
                             Text(
-                                text = "From: ${item.reference}",
+                                text = if (isBengali) "উৎস: $referenceText" else "From: $referenceText",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = customColors.secondaryText.copy(alpha = 0.7f),
                                 textAlign = TextAlign.Start,

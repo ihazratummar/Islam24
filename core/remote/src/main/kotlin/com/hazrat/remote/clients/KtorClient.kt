@@ -21,11 +21,25 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
 import okhttp3.Protocol
 import kotlin.time.Duration.Companion.seconds
 
 object KtorClient {
+
+    // Dedicated Mutex to serialize all token refresh operations across parallel coroutines
+    private val refreshMutex = Mutex()
+
+    // Persistent lightweight client for refresh operations to avoid leaking OkHttpClient instances
+    private val refreshClient by lazy {
+        HttpClient(OkHttp) {
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true })
+            }
+        }
+    }
 
     // Toggle between local and prod in this single location:
 //     const val BASE_URL = "http://192.168.0.122:8080/api/v1/"
@@ -95,70 +109,78 @@ object KtorClient {
                 contentType(ContentType.Application.Json)
             }
 
-            install(Auth){
+            install(Auth) {
                 bearer {
+                    // Proactively attach Authorization header on all requests to avoid unnecessary 401 rounds
+                    sendWithoutRequest { true }
+
                     loadTokens {
                         val accessToken = tokenStorage.getAccessToken()
                         val refreshToken = tokenStorage.getRefreshToken()
-                        if (accessToken != null && refreshToken != null){
+                        if (!accessToken.isNullOrBlank() && !refreshToken.isNullOrBlank()) {
                             BearerTokens(accessToken, refreshToken)
-                        }else{
+                        } else {
                             null
                         }
                     }
 
                     refreshTokens {
-                        try {
+                        // Serialize all refresh calls through Mutex so parallel 401s queue up
+                        refreshMutex.withLock {
                             val storageAccessToken = tokenStorage.getAccessToken()
                             val storageRefreshToken = tokenStorage.getRefreshToken()
 
-                            // 1. If storage has new tokens that differ from the failed request, use them directly
-                            if (storageAccessToken != null && storageRefreshToken != null
-                                && (oldTokens == null || storageAccessToken != oldTokens?.accessToken)){
-                                return@refreshTokens BearerTokens(storageAccessToken, storageRefreshToken)
+                            // 1. Double-Check: If another thread already refreshed the tokens while this thread
+                            // was waiting for the lock, storage already has a NEW access token that differs from oldTokens.
+                            if (!storageAccessToken.isNullOrBlank() && !storageRefreshToken.isNullOrBlank()
+                                && (oldTokens == null || storageAccessToken != oldTokens?.accessToken)) {
+                                Log.d("KtorClient", "Tokens were already refreshed by another concurrent request. Reusing new tokens.")
+                                return@withLock BearerTokens(storageAccessToken, storageRefreshToken)
                             }
 
-                            // 2. Otherwise, use the storage refresh token or fallback to oldTokens
-                            val refreshToken = storageRefreshToken ?: oldTokens?.refreshToken
-                            if (refreshToken == null){
-                                return@refreshTokens null
-                            }
+                            // 2. Always use the most up-to-date refreshToken from storage, falling back to oldTokens
+                            val tokenToRefreshWith = storageRefreshToken?.takeIf { it.isNotBlank() }
+                                ?: oldTokens?.refreshToken
+                                ?: return@withLock null
 
-                            val refreshClient = HttpClient(OkHttp){
-                                install(ContentNegotiation){ json(Json { ignoreUnknownKeys = true }) }
-                            }
-
-                            val response = refreshClient.post("${BASE_URL}auth/refresh"){
-                                contentType(ContentType.Application.Json)
-                                setBody(RefreshTokenRequest(refreshToken = refreshToken))
-                            }
-
-                            when (response.status) {
-                                HttpStatusCode.OK, HttpStatusCode.Created, HttpStatusCode.Accepted -> {
-                                    val authResponse = response.body<AuthResponse>()
-                                    tokenStorage.saveTokens(
-                                        accessToken = authResponse.accessToken,
-                                        refreshToken = authResponse.refreshToken
-                                    )
-                                    BearerTokens(authResponse.accessToken, authResponse.refreshToken)
+                            try {
+                                Log.d("KtorClient", "Initiating single serialized token refresh with backend...")
+                                val response = refreshClient.post("${BASE_URL}auth/refresh") {
+                                    contentType(ContentType.Application.Json)
+                                    setBody(RefreshTokenRequest(refreshToken = tokenToRefreshWith))
                                 }
-                                HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden -> {
-                                    // ONLY clear local session if backend explicitly rejects the refresh token
-                                    Log.w("KtorClient", "Refresh token revoked or invalid on backend (HTTP ${response.status.value}). Clearing session.")
-                                    tokenStorage.clearToken()
-                                    null
+
+                                when (response.status) {
+                                    HttpStatusCode.OK, HttpStatusCode.Created, HttpStatusCode.Accepted -> {
+                                        val authResponse = response.body<AuthResponse>()
+                                        tokenStorage.saveTokens(
+                                            accessToken = authResponse.accessToken,
+                                            refreshToken = authResponse.refreshToken
+                                        )
+                                        Log.d("KtorClient", "Token refresh successful. New tokens saved to disk.")
+                                        BearerTokens(authResponse.accessToken, authResponse.refreshToken)
+                                    }
+                                    HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden -> {
+                                        // ONLY clear local session if backend explicitly rejects the refresh token with 401/403
+                                        Log.w("KtorClient", "Refresh token explicitly rejected by backend (HTTP ${response.status.value}). Clearing session.")
+                                        tokenStorage.clearToken()
+                                        null
+                                    }
+                                    else -> {
+                                        // For 400 Bad Request, 500, 502, 503, 429, etc.:
+                                        // DO NOT log out user! Return existing tokens so user remains logged in.
+                                        Log.w("KtorClient", "Non-auth error during token refresh (HTTP ${response.status.value}). Keeping tokens.")
+                                        oldTokens
+                                    }
                                 }
-                                else -> {
-                                    // Server errors (500, 502, 503, etc.) or rate limit: DO NOT log out user!
-                                    Log.w("KtorClient", "Server error during token refresh (HTTP ${response.status.value}). Keeping tokens.")
-                                    null
-                                }
+                            } catch (e: java.io.IOException) {
+                                // Network error (offline, timeout, airplane mode): DO NOT log out user!
+                                Log.w("KtorClient", "Network error during token refresh: ${e.message}. Keeping session intact.")
+                                oldTokens
+                            } catch (e: Exception) {
+                                Log.w("KtorClient", "Unexpected error during token refresh: ${e.message}. Keeping session intact.")
+                                oldTokens
                             }
-                        } catch (e: Exception) {
-                            // Offline / DNS error / Socket timeout:
-                            // CRITICAL: NEVER clear tokens when internet is down or temporary network drop occurs!
-                            Log.w("KtorClient", "Network error during token refresh: ${e.message}. Keeping session intact.")
-                            null
                         }
                     }
                 }

@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.model.Prayer
 import com.hazrat.prayer.ui.component.GoldAccent
@@ -160,14 +161,14 @@ fun AzanSoundBottomSheet(
             // Header Title & Subtitle
             Column(verticalArrangement = Arrangement.spacedBy(dimens.space4)) {
                 Text(
-                    text = "Azan Sound",
+                    text = stringResource(R.string.prayer_azan_sound),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Select reciter for ${prayer.name}",
+                    text = stringResource(R.string.prayer_select_reciter, prayer.name),
                     style = MaterialTheme.typography.bodyMedium,
                     color = customColors.secondaryText
                 )
@@ -256,7 +257,7 @@ fun AzanSoundBottomSheet(
                 colors = ButtonDefaults.buttonColors(containerColor = GoldAccent)
             ) {
                 Text(
-                    text = "Done",
+                    text = stringResource(R.string.prayer_done),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),

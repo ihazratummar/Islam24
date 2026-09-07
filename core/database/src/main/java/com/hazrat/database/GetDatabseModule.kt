@@ -23,6 +23,8 @@ import com.hazrat.database.database.QuranDatabase
 import com.hazrat.database.database.ZakatDatabase
 import com.hazrat.database.migration.QURAN_KHATAM_MIGRATION_4_5
 import com.hazrat.database.migration.QURAN_SURAH_MIGRATION_5_6
+import com.hazrat.database.migration.QURAN_TRANSLATIONS_MIGRATION_6_7
+import com.hazrat.database.migration.QURAN_BN_TRANSLITERATION_MIGRATION_7_8
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -42,6 +44,7 @@ fun getDatabaseModule(): Module = module {
             NamesDataBase::class.java,
             "names_database"
         )
+            .createFromAsset("databases/allah_names.db")
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
@@ -229,13 +232,51 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
                 MIGRATION_2_3,
                 MIGRATION_3_4,
                 QURAN_KHATAM_MIGRATION_4_5,
-                QURAN_SURAH_MIGRATION_5_6
+                QURAN_SURAH_MIGRATION_5_6,
+                QURAN_TRANSLATIONS_MIGRATION_6_7,
+                QURAN_BN_TRANSLITERATION_MIGRATION_7_8
             )
+            .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                override fun onOpen(db: SupportSQLiteDatabase) {
+                    super.onOpen(db)
+                    try {
+                        val cursor = db.query("SELECT COUNT(*) FROM ayah WHERE bnTransliteration != ''")
+                        var populatedCount = 0
+                        if (cursor.moveToFirst()) {
+                            populatedCount = cursor.getInt(0)
+                        }
+                        cursor.close()
+
+                        if (populatedCount < 6236) {
+                            val context = androidContext()
+                            val tempFile = java.io.File(context.cacheDir, "quran_sync_temp.db")
+                            context.assets.open("databases/quran_prepopulated.db").use { input ->
+                                tempFile.outputStream().use { output ->
+                                    input.copyTo(output)
+                                }
+                            }
+                            db.execSQL("ATTACH DATABASE '${tempFile.absolutePath}' AS asset_quran_db")
+                            db.execSQL("DELETE FROM ayah")
+                            db.execSQL("INSERT OR REPLACE INTO ayah SELECT * FROM asset_quran_db.ayah")
+                            db.execSQL("DETACH DATABASE asset_quran_db")
+                            tempFile.delete()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            })
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
     single<QuranDao> { get<QuranDatabase>().quranDao() }
     single<KhatamDao> { get<QuranDatabase>().khatamDao() }
+
+val MIGRATION_0_1_DUA = object : Migration(0, 1) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // No schema changes between 0 and 1
+    }
+}
 
 val MIGRATION_0_2_DUA = object : Migration(0, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
@@ -251,12 +292,6 @@ val MIGRATION_0_2_DUA = object : Migration(0, 2) {
             )
             """.trimIndent()
         )
-    }
-}
-
-val MIGRATION_0_1_DUA = object : Migration(0, 1) {
-    override fun migrate(db: SupportSQLiteDatabase) {
-        // No schema changes between 0 and 1
     }
 }
 
@@ -277,6 +312,26 @@ val MIGRATION_1_2_DUA = object : Migration(1, 2) {
     }
 }
 
+val MIGRATION_2_3_DUA = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        com.hazrat.database.util.HisnulMuslimDataPopulator.populate(db)
+    }
+}
+
+val MIGRATION_1_3_DUA = object : Migration(1, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        MIGRATION_1_2_DUA.migrate(db)
+        com.hazrat.database.util.HisnulMuslimDataPopulator.populate(db)
+    }
+}
+
+val MIGRATION_0_3_DUA = object : Migration(0, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        MIGRATION_0_2_DUA.migrate(db)
+        com.hazrat.database.util.HisnulMuslimDataPopulator.populate(db)
+    }
+}
+
     // Dua Hisnul Muslim Database
     single {
         Room.databaseBuilder(
@@ -285,7 +340,32 @@ val MIGRATION_1_2_DUA = object : Migration(1, 2) {
             "dua_db"
         )
             .createFromAsset("databases/hisnul_muslim.db")
-            .addMigrations(MIGRATION_0_1_DUA, MIGRATION_1_2_DUA, MIGRATION_0_2_DUA)
+            .addMigrations(
+                MIGRATION_0_1_DUA,
+                MIGRATION_1_2_DUA,
+                MIGRATION_0_2_DUA,
+                MIGRATION_2_3_DUA,
+                MIGRATION_1_3_DUA,
+                MIGRATION_0_3_DUA
+            )
+            .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                override fun onOpen(db: SupportSQLiteDatabase) {
+                    super.onOpen(db)
+                    try {
+                        val cursor = db.query("SELECT COUNT(*) FROM dua_category WHERE bnTitle IS NOT NULL AND bnTitle != ''")
+                        var hasBengali = false
+                        if (cursor.moveToFirst()) {
+                            hasBengali = cursor.getInt(0) > 0
+                        }
+                        cursor.close()
+                        if (!hasBengali) {
+                            com.hazrat.database.util.HisnulMuslimDataPopulator.populate(db)
+                        }
+                    } catch (_: Exception) {
+                        com.hazrat.database.util.HisnulMuslimDataPopulator.populate(db)
+                    }
+                }
+            })
             .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }

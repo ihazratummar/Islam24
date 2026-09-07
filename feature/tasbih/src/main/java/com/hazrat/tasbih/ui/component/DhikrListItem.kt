@@ -24,12 +24,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
-import androidx.compose.ui.unit.sp
 import com.hazrat.tasbih.domain.model.Tasbih
+import com.hazrat.tasbih.domain.util.getDisplayMeaning
+import com.hazrat.tasbih.domain.util.getDisplayTransliteration
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.toLocalizedDigits
 
 private fun String.cleanUthmanic(): String {
     return this
@@ -80,16 +82,17 @@ fun DhikrListItem(
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontFamily = ScheherazadeFontFamily,
                         fontFeatureSettings = "cv62",
-                        fontSize = 22.sp,
-                        lineHeight = 36.sp,
                         textDirection = TextDirection.Rtl
                     ),
                     color = if (isSelected) customColors.accentColor else MaterialTheme.colorScheme.onSurface
                 )
 
                 // Transliteration
+                val displayTransliteration = tasbih.getDisplayTransliteration()
+                val displayMeaning = tasbih.getDisplayMeaning()
+
                 Text(
-                    text = tasbih.transliteration,
+                    text = displayTransliteration,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold
                     ),
@@ -97,9 +100,9 @@ fun DhikrListItem(
                 )
 
                 // Translated Meaning
-                if (tasbih.translatedName.isNotBlank() && tasbih.translatedName != tasbih.transliteration) {
+                if (displayMeaning.isNotBlank() && displayMeaning != displayTransliteration) {
                     Text(
-                        text = tasbih.translatedName,
+                        text = displayMeaning,
                         style = MaterialTheme.typography.bodySmall,
                         color = customColors.secondaryText
                     )
@@ -118,7 +121,7 @@ fun DhikrListItem(
                         .padding(horizontal = dimens.space12, vertical = dimens.space4)
                 ) {
                     Text(
-                        text = "${tasbih.currentCount}",
+                        text = tasbih.currentCount.toLocalizedDigits(),
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),

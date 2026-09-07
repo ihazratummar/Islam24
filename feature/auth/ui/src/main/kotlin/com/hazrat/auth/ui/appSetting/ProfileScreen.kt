@@ -36,9 +36,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.hazrat.auth.ui.profileScreen.component.LanguageSelectionBottomSheet
+import com.hazrat.model.AppLanguage
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -62,6 +67,7 @@ import com.hazrat.ui.theme.dimens
 import com.hazrat.ui.theme.isUserLoggedIn
 import com.hazrat.utils.DateUtil.toReadableLocale
 import com.hazrat.utils.hapticFeedbacks
+import com.hazrat.utils.toLocalizedDigits
 import kotlinx.coroutines.flow.SharedFlow
 
 /**
@@ -85,6 +91,7 @@ fun AppSettingScreen(
 
     val snackBarHostState = remember { SnackbarHostState() }
     val hapticFeedback = LocalHapticFeedback.current
+    var showLanguageBottomSheet by remember { mutableStateOf(false) }
 
     val user = state.userModel
 
@@ -136,8 +143,8 @@ fun AppSettingScreen(
 
         val toggleSettingsTab = listOf(
             ToggleSettingData(
-                label = "Dark Mode",
-                statusText = if (state.toggleTheme) "On" else "Off",
+                label = stringResource(R.string.profile_dark_mode),
+                statusText = if (state.toggleTheme) stringResource(R.string.profile_status_on) else stringResource(R.string.profile_status_off),
                 icon = R.drawable.isha,
                 onClick = {
                     hapticFeedbacks(
@@ -149,8 +156,8 @@ fun AppSettingScreen(
                 isEnable = state.toggleTheme
             ),
             ToggleSettingData(
-                label = "Notifications",
-                statusText = if (state.isMasterNotificationEnabled) "Enabled" else "Disabled",
+                label = stringResource(R.string.profile_notifications),
+                statusText = if (state.isMasterNotificationEnabled) stringResource(R.string.profile_status_enabled) else stringResource(R.string.profile_status_disabled),
                 icon = R.drawable.notification,
                 onClick = {
                     hapticFeedbacks(
@@ -162,8 +169,8 @@ fun AppSettingScreen(
                 isEnable = state.isMasterNotificationEnabled
             ),
             ToggleSettingData(
-                label = "Haptic Feedback",
-                statusText = if (state.isHapticFeedbackEnabled) "Enabled" else "Disabled",
+                label = stringResource(R.string.profile_haptic_feedback),
+                statusText = if (state.isHapticFeedbackEnabled) stringResource(R.string.profile_status_enabled) else stringResource(R.string.profile_status_disabled),
                 icon = R.drawable.vibrate,
                 onClick = {
                     hapticFeedbacks(
@@ -179,19 +186,19 @@ fun AppSettingScreen(
         val appMetaSettings = listOf(
             AppMetaDataSettings(
                 icon = R.drawable.outlinstar,
-                settingName = "About Islam 24",
+                settingName = stringResource(R.string.profile_about_app),
                 trailingIcon = R.drawable.arrowright,
                 onClick = {
                     hapticFeedbacks(
                         isEnable = isHapticFeedback,
                         hapticFeedback = hapticFeedback
                     )
-                    onAboutUsClick("https://islam24.app/about-us", "About Islam 24")
+                    onAboutUsClick("https://islam24.app/about-us", context.getString(R.string.profile_about_app))
                 }
             ),
             AppMetaDataSettings(
                 icon = R.drawable.share,
-                settingName = "Share App",
+                settingName = stringResource(R.string.profile_share_app),
                 trailingIcon = R.drawable.arrowright,
                 onClick = {
                     hapticFeedbacks(
@@ -203,9 +210,9 @@ fun AppSettingScreen(
             ),
             AppMetaDataSettings(
                 icon = R.drawable.star,
-                settingName = "Rate Us",
+                settingName = stringResource(R.string.common_rate_us),
                 trailingIcon = R.drawable.arrowright,
-                label = "Share Your Valuable Feedback",
+                label = stringResource(R.string.profile_rate_desc),
                 onClick = {
                     hapticFeedbacks(
                         isEnable = isHapticFeedback,
@@ -218,8 +225,8 @@ fun AppSettingScreen(
             ),
             AppMetaDataSettings(
                 icon = R.drawable.heart,
-                settingName = "Support Islam 24",
-                label = "Keep us free",
+                settingName = stringResource(R.string.profile_support_title),
+                label = stringResource(R.string.profile_support_desc),
                 trailingIcon = R.drawable.arrowright,
                 onClick = {
                     hapticFeedbacks(
@@ -359,17 +366,17 @@ fun AppSettingScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             MetricItem(
-                                count = state.totalPrayersLogged.toString(),
-                                label = "Prayers"
+                                count = state.totalPrayersLogged.toLocalizedDigits(),
+                                label = stringResource(R.string.profile_prayers_metric)
                             )
                             MetricItem(
-                                count = state.prayerStreak.toString(),
-                                label = "• Streak",
-                                labelColor = Color(0xFFFF8E00)
+                                count = state.prayerStreak.toLocalizedDigits(),
+                                label = stringResource(R.string.profile_streak_metric),
+                                labelColor = customColors.accentColor
                             )
                             MetricItem(
-                                count = state.totalBookmarkedAyahs.toString(),
-                                label = "Bookmarks"
+                                count = state.totalBookmarkedAyahs.toLocalizedDigits(),
+                                label = stringResource(R.string.profile_bookmarks_metric)
                             )
                         }
                     }
@@ -379,7 +386,7 @@ fun AppSettingScreen(
             // PREFERENCES Section
             item {
                 AppSection(
-                    sectionTitle = "PREFERENCES"
+                    sectionTitle = stringResource(R.string.profile_section_preferences)
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -390,21 +397,38 @@ fun AppSettingScreen(
                             width = dimens.divider, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
                         )
                     ) {
-                        toggleSettingsTab.forEachIndexed { index, toggles ->
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(dimens.space8)
-                            ) {
-                                ToggleSettings(
-                                    icon = toggles.icon,
-                                    label = toggles.label,
-                                    statusText = toggles.statusText,
-                                    isEnabled = toggles.isEnable,
-                                    onClick = toggles.onClick
-                                )
-                                if (index != toggleSettingsTab.size - 1)
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(dimens.space8)
+                        ) {
+                            toggleSettingsTab.forEach { toggles ->
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(dimens.space8)
+                                ) {
+                                    ToggleSettings(
+                                        icon = toggles.icon,
+                                        label = toggles.label,
+                                        statusText = toggles.statusText,
+                                        isEnabled = toggles.isEnable,
+                                        onClick = toggles.onClick
+                                    )
                                     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                                }
                             }
+                            SettingItemCard(
+                                leadingIcon = R.drawable.ic_language,
+                                label = AppLanguage.fromCode(state.selectedLanguageCode).nativeName,
+                                settingText = stringResource(R.string.common_language),
+                                trailingIcon = R.drawable.arrowright,
+                                onClick = {
+                                    hapticFeedbacks(
+                                        isEnable = isHapticFeedback,
+                                        hapticFeedback = hapticFeedback
+                                    )
+                                    showLanguageBottomSheet = true
+                                }
+                            )
                         }
                     }
                 }
@@ -413,7 +437,7 @@ fun AppSettingScreen(
             // APP Section
             item {
                 AppSection(
-                    sectionTitle = "APP"
+                    sectionTitle = stringResource(R.string.profile_section_app)
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -447,7 +471,7 @@ fun AppSettingScreen(
             // LEGAL Section
             item {
                 AppSection(
-                    sectionTitle = "LEGAL"
+                    sectionTitle = stringResource(R.string.profile_section_legal)
                 ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -460,7 +484,7 @@ fun AppSettingScreen(
                     ) {
                         SettingItemCard(
                             leadingIcon = R.drawable.privacy_policy,
-                            settingText = "Legal Docs",
+                            settingText = stringResource(R.string.profile_legal_docs),
                             trailingIcon = R.drawable.arrowright,
                             onClick = onPolicyClick,
                         )
@@ -471,7 +495,7 @@ fun AppSettingScreen(
             if (state.isLoggedIn){
                 item {
                     AppSection(
-                        sectionTitle = "ACCOUNT"
+                        sectionTitle = stringResource(R.string.profile_section_account)
                     ) {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
@@ -484,7 +508,7 @@ fun AppSettingScreen(
                         ) {
                             SettingItemCard(
                                 leadingIcon = R.drawable.logout,
-                                settingText = "Sign Out",
+                                settingText = stringResource(R.string.profile_sign_out),
                                 onClick = { appSettingEvent(AppSettingEvent.LogOut) },
                                 textColor = MaterialTheme.colorScheme.error,
                                 iconColor = MaterialTheme.colorScheme.error
@@ -514,7 +538,7 @@ fun AppSettingScreen(
                         )
                     )
                     Text(
-                        text = "Made with love ❤️ for the Ummah",
+                        text = stringResource(R.string.profile_made_with_love),
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = customColors.secondaryText.copy(alpha = 0.7f)
                         )
@@ -528,7 +552,7 @@ fun AppSettingScreen(
         }
 
         if (state.isLoading) {
-            IslamicLoadingScreen(subtitle = "Signing out...")
+            IslamicLoadingScreen(subtitle = stringResource(R.string.profile_signing_out))
         }
 
         if (state.isRatingDialogOpen) {
@@ -537,6 +561,16 @@ fun AppSettingScreen(
                 hapticFeedback = {
                     hapticFeedbacks(isEnable = isHapticFeedback, hapticFeedback = hapticFeedback)
                 }
+            )
+        }
+
+        if (showLanguageBottomSheet) {
+            LanguageSelectionBottomSheet(
+                selectedLanguageCode = state.selectedLanguageCode,
+                onLanguageSelected = { code ->
+                    appSettingEvent(AppSettingEvent.UpdateLanguage(code))
+                },
+                onDismissRequest = { showLanguageBottomSheet = false }
             )
         }
     }

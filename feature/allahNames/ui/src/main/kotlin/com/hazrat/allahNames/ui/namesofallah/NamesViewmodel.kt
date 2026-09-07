@@ -51,6 +51,8 @@ class NamesViewmodel(
             val matchesQuery = query.isBlank() ||
                     name.transliteration.contains(query, ignoreCase = true) ||
                     name.enMeaning.contains(query, ignoreCase = true) ||
+                    name.bnMeaning.contains(query, ignoreCase = true) ||
+                    name.bnTransliteration.contains(query, ignoreCase = true) ||
                     name.name.contains(query, ignoreCase = true) ||
                     name.number.toString() == query.trim()
             matchesTab && matchesQuery

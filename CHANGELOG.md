@@ -1,3 +1,14 @@
+## [4.4.1] - 2026-09-04
+- **Security Compliance (Google Play Policy)**: Removed unsafe WebView SSL error bypass (`SslErrorHandler.proceed()`) to strictly adhere to Google Play Device and Network Abuse security policy and ensure secure TLS/SSL network communication.
+
+## [4.4.0] - 2026-08-31
+
+### Compact Summary
+- **Multi-Translation Engine**: Switch instantly between Maulana Muhiuddin Khan, Taisirul Quran, Dr. Mujibur Rahman, and Mufti Taqi Usmani (English).
+- **Bengali Pronunciation (বাংলা উচ্চারণ)**: Full 6,236 Ayah Bengali transliteration preloaded offline.
+- **Deep Bengali Localization**: 114 Surah names/meanings, Bengali numerals, and localized relative dates.
+- **Auth Token Rotation**: Seamless auto-refresh and persistent session protection.
+
 ## [4.3.3] - 2026-08-25
 - **Launcher Widget Previews**: Added full layout previews (`android:previewLayout`) for Next Prayer, Hijri Date, and Hijri Calendar widgets in the Android system widget picker.
 - **Glance Layout Fix**: Resolved Glance 10-element constraint (`Column container cannot have more than 10 elements`) in `NextPrayerWidget` by restructuring into balanced sub-containers.

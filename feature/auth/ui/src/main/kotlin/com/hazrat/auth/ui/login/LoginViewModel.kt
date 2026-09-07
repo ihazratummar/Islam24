@@ -44,6 +44,10 @@ class LoginViewModel(
                                 _effect.emit(LoginEffect.NavigateBack)
                             }
                             is Result.Error -> {
+                                if (result.error == AuthError.USER_CANCELLED) {
+                                    // User dismissed or cancelled the Google sheet, no error message needed
+                                    return@launch
+                                }
                                 val errorMessage = when (result.error) {
                                     AuthError.NO_INTERNET -> "No internet connection. Please check your network."
                                     AuthError.INVALID_CREDENTIALS -> "Invalid credentials. Please try again."

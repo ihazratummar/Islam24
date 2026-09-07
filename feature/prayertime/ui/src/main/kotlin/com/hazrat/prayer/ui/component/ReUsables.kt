@@ -57,6 +57,8 @@ import com.hazrat.ui.theme.Success
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.DateUtil
+import com.hazrat.utils.formatLocalizedDigits
+import com.hazrat.utils.toLocalizedDigits
 
 val GoldAccent = Color(0xFFE5A93C)
 
@@ -122,7 +124,7 @@ fun NextPrayerHeroCard(
                             PulsingLiveDot()
                             Spacer(modifier = Modifier.width(dimens.space8))
                             Text(
-                                text = "CURRENT PRAYER",
+                                text = stringResource(R.string.prayer_current_prayer),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
@@ -131,7 +133,7 @@ fun NextPrayerHeroCard(
                         }
                     } else {
                         Text(
-                            text = "NEXT PRAYER",
+                            text = stringResource(R.string.prayer_next_prayer_uppercase),
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -163,11 +165,11 @@ fun NextPrayerHeroCard(
                 Spacer(modifier = Modifier.height(dimens.space20))
 
                 val timerLabel = if (isNow && !nextPrayerName.isNullOrEmpty()) {
-                    "TIME REMAINING UNTIL ${nextPrayerName.uppercase()}"
+                    stringResource(R.string.home_time_remaining_until, nextPrayerName)
                 } else if (!nextPrayerName.isNullOrEmpty()) {
-                    "TIME REMAINING UNTIL ${nextPrayerName.uppercase()}"
+                    stringResource(R.string.home_time_remaining_until, nextPrayerName)
                 } else {
-                    "TIME REMAINING"
+                    stringResource(R.string.home_time_remaining)
                 }
 
                 // Countdown Timer Section
@@ -190,19 +192,19 @@ fun NextPrayerHeroCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(dimens.space8)
                 ) {
-                    TimerPill(value = hoursStr)
+                    TimerPill(value = hoursStr.formatLocalizedDigits())
                     Text(
                         text = ":",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = Color.White.copy(alpha = 0.6f)
                     )
-                    TimerPill(value = minutesStr)
+                    TimerPill(value = minutesStr.formatLocalizedDigits())
                     Text(
                         text = ":",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = Color.White.copy(alpha = 0.6f)
                     )
-                    TimerPill(value = secondsStr)
+                    TimerPill(value = secondsStr.formatLocalizedDigits())
                 }
             }
         }
@@ -267,7 +269,7 @@ fun PrayerDatePaginationHeader(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrow_left),
-                    contentDescription = "Previous Day",
+                    contentDescription = stringResource(R.string.prayer_previous_day),
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(dimens.iconSm)
                 )
@@ -298,7 +300,7 @@ fun PrayerDatePaginationHeader(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrowright),
-                    contentDescription = "Next Day",
+                    contentDescription = stringResource(R.string.prayer_next_day),
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(dimens.iconSm)
                 )
@@ -320,7 +322,11 @@ fun PrayerDatePaginationHeader(
                     modifier = Modifier.padding(dimens.space4),
                     horizontalArrangement = Arrangement.spacedBy(dimens.space4)
                 ) {
-                    val chips = listOf("Yesterday", "Today", "Tomorrow")
+                    val chips = listOf(
+                        stringResource(R.string.date_yesterday),
+                        stringResource(R.string.calendar_today),
+                        stringResource(R.string.date_tomorrow)
+                    )
                     chips.forEachIndexed { idx, label ->
                         val isSelected = (selectedChipIndex == idx)
                         Box(
@@ -408,7 +414,7 @@ fun PrayerProgressCard(
                 }
 
                 Text(
-                    text = "$completePrayerCount of 5 completed",
+                    text = stringResource(R.string.prayer_completed_count, completePrayerCount),
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
@@ -418,7 +424,7 @@ fun PrayerProgressCard(
                 Spacer(Modifier.weight(1f))
 
                 Text(
-                    text = "$animatedPercentage%",
+                    text = "$animatedPercentage%".formatLocalizedDigits(),
                     style = MaterialTheme.typography.headlineSmall.copy(
                         color = GoldAccent,
                         fontWeight = FontWeight.ExtraBold
@@ -457,15 +463,6 @@ fun PrayerTimeCard(
     onNotificationClick: (PrayerType) -> Unit = {},
     onLogPrayerClick: (PrayerType) -> Unit = {}
 ) {
-    val periodLabel = when (prayerType) {
-        PrayerType.FAJR -> "Dawn"
-        PrayerType.SUNRISE -> "Sunrise"
-        PrayerType.DHUHR -> "Noon"
-        PrayerType.ASR -> "Afternoon"
-        PrayerType.MAGHRIB -> "Sunset"
-        PrayerType.ISHA -> "Night"
-    }
-
     val isFuturePrayer = prayerTime > System.currentTimeMillis()
 
     Card(
@@ -489,7 +486,7 @@ fun PrayerTimeCard(
                 containerColor = prayerType.gradient
             )
 
-            // Center Info Column (Name, Badges, Time, Period)
+            // Center Info Column (Name, Badges, Time)
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(dimens.space4),
@@ -497,7 +494,7 @@ fun PrayerTimeCard(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(dimens.space4)
+                    horizontalArrangement = Arrangement.spacedBy(dimens.space8)
                 ) {
                     Text(
                         text = stringResource(prayerType.nameRes),
@@ -511,12 +508,12 @@ fun PrayerTimeCard(
                     if (isLogged && prayerType != PrayerType.SUNRISE) {
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(dimens.cornerXs))
+                                .clip(RoundedCornerShape(dimens.cornerSm))
                                 .background(Success.copy(alpha = 0.2f))
-                                .padding(horizontal = dimens.space4, vertical = dimens.space2)
+                                .padding(horizontal = dimens.space8, vertical = dimens.space2)
                         ) {
                             Text(
-                                text = "DONE",
+                                text = stringResource(R.string.prayer_done_caps),
                                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                                 color = Success
                             )
@@ -524,12 +521,12 @@ fun PrayerTimeCard(
                     } else if (isNextPrayer) {
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(dimens.cornerXs))
+                                .clip(RoundedCornerShape(dimens.cornerSm))
                                 .background(GoldAccent.copy(alpha = 0.25f))
-                                .padding(horizontal = dimens.space4, vertical = dimens.space2)
+                                .padding(horizontal = dimens.space8, vertical = dimens.space2)
                         ) {
                             Text(
-                                text = "NEXT",
+                                text = stringResource(R.string.prayer_next_caps),
                                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                                 color = GoldAccent
                             )
@@ -537,28 +534,16 @@ fun PrayerTimeCard(
                     }
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(dimens.space8)
-                ) {
-                    Text(
-                        text = DateUtil.dateLongToString(prayerTime, "hh:mm a"),
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                Text(
+                    text = DateUtil.dateLongToString(prayerTime, "hh:mm a").formatLocalizedDigits(),
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.SemiBold
                     )
-
-                    Text(
-                        text = periodLabel,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = customColors.secondaryText
-                        )
-                    )
-                }
+                )
             }
 
-            // Right Action Section: Notification Bell & Log/Done Toggle Button
+            // Right Action Section: Notification Bell & Circular Radio / Log Toggle
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimens.space8)
@@ -576,39 +561,48 @@ fun PrayerTimeCard(
                     ) {
                         Icon(
                             painter = painterResource(if (isNotificationEnabled) R.drawable.notificationonn else R.drawable.notificationoff),
-                            contentDescription = "Prayer Notification Toggle",
+                            contentDescription = stringResource(R.string.prayer_notification_toggle),
                             tint = notificationColor,
                             modifier = Modifier.size(dimens.iconSm)
                         )
                     }
 
-                    // Action Button: [ Log ] or [ Done ] (Hidden for future prayers!)
+                    // Radio Button / Circular Log Toggle
                     if (isLogged) {
-                        Surface(
-                            shape = RoundedCornerShape(dimens.cornerMd),
-                            color = Success,
-                            modifier = Modifier.clickable { onLogPrayerClick(prayerType) }
+                        Box(
+                            modifier = Modifier
+                                .size(dimens.avatarMd)
+                                .clip(CircleShape)
+                                .background(Success)
+                                .clickable { onLogPrayerClick(prayerType) },
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "Done",
-                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                                color = Color.White,
-                                modifier = Modifier.padding(horizontal = dimens.space16, vertical = dimens.space8)
+                            Icon(
+                                painter = painterResource(R.drawable.check),
+                                contentDescription = stringResource(R.string.prayer_logged),
+                                tint = Color.White,
+                                modifier = Modifier.size(dimens.iconSx)
                             )
                         }
                     } else if (!isFuturePrayer) {
-                        // Past or Current Active Prayer: Allow Logging!
-                        Surface(
-                            shape = RoundedCornerShape(dimens.cornerMd),
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
-                            border = BorderStroke(dimens.divider, GoldAccent),
-                            modifier = Modifier.clickable { onLogPrayerClick(prayerType) }
+                        // Past or Current Active Prayer: Clickable Radio Button
+                        Box(
+                            modifier = Modifier
+                                .size(dimens.avatarMd)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+                                .border(
+                                    BorderStroke(dimens.space2, GoldAccent),
+                                    shape = CircleShape
+                                )
+                                .clickable { onLogPrayerClick(prayerType) },
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "Log",
-                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                                color = GoldAccent,
-                                modifier = Modifier.padding(horizontal = dimens.space16, vertical = dimens.space8)
+                            Box(
+                                modifier = Modifier
+                                    .size(dimens.space8)
+                                    .clip(CircleShape)
+                                    .background(GoldAccent.copy(alpha = 0.2f))
                             )
                         }
                     }
@@ -682,14 +676,14 @@ fun NotificationSettingCard(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Notifications",
+                    text = stringResource(R.string.prayer_notifications),
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
                 )
                 Text(
-                    text = "Manage prayer alerts ($totalNotificationOn enabled)",
+                    text = stringResource(R.string.prayer_manage_alerts, totalNotificationOn),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = customColors.secondaryText
                     )
@@ -754,7 +748,7 @@ fun LocationDisplayCard(
                     )
                 )
                 Text(
-                    text = "Automatic location detection",
+                    text = stringResource(R.string.prayer_auto_location),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = customColors.secondaryText
                     )

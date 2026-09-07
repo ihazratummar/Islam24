@@ -42,7 +42,8 @@ class DuaItemViewModel(
         viewModelScope.launch {
             val chaptersResult = getAllChaptersUseCase().firstOrNull()
             val chapter = (chaptersResult as? Result.Success)?.data?.firstOrNull { it.id == duaCategoryId }
-            val title = chapter?.title ?: "Chapter $duaCategoryId"
+            val isBengali = Locale.getDefault().language == "bn"
+            val title = if (isBengali && !chapter?.bnTitle.isNullOrBlank()) chapter.bnTitle!! else (chapter?.title ?: "Chapter $duaCategoryId")
             val count = chapter?.duaCount ?: 0
 
             _state.update {

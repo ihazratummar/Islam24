@@ -52,6 +52,14 @@ import com.hazrat.model.DuaItemModel
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.dimens
 
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
+import com.hazrat.utils.ImageShareUtils
+import kotlinx.coroutines.launch
+
 /**
  * Branded Islamic Dua Share Dialog with customizable themes, dedicated platform icons, and multi-channel sharing.
  * @author hazratummar
@@ -65,11 +73,30 @@ fun DuaShareDialog(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val graphicsLayer = rememberGraphicsLayer()
     var selectedTheme by remember { mutableStateOf(DuaShareTheme.EMERALD) }
     var showStorySelectionSheet by remember { mutableStateOf(false) }
 
     val shareText = remember(dua, chapterTitle) {
         DuaShareUtils.buildShareText(dua, chapterTitle)
+    }
+
+    fun captureAndShare(action: (android.net.Uri) -> Unit) {
+        coroutineScope.launch {
+            try {
+                val bitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
+                val uri = ImageShareUtils.saveBitmapToCache(
+                    context = context,
+                    bitmap = bitmap,
+                    filename = "dua_${dua.id}_${selectedTheme.name.lowercase()}.png"
+                )
+                action(uri)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                DuaShareUtils.shareText(context, shareText)
+            }
+        }
     }
 
     Dialog(
@@ -137,7 +164,9 @@ fun DuaShareDialog(
                             containerColor = Color(0xFF25D366),
                             label = stringResource(R.string.dua_share_whatsapp),
                             onClick = {
-                                DuaShareUtils.shareToWhatsApp(context, shareText)
+                                captureAndShare { uri ->
+                                    ImageShareUtils.shareToWhatsApp(context, uri, shareText)
+                                }
                             },
                             modifier = Modifier.weight(1f)
                         )
@@ -157,7 +186,9 @@ fun DuaShareDialog(
                             containerColor = Color(0xFF0084FF),
                             label = stringResource(R.string.dua_share_messages),
                             onClick = {
-                                DuaShareUtils.shareToMessages(context, shareText)
+                                captureAndShare { uri ->
+                                    ImageShareUtils.shareToMessages(context, uri, shareText)
+                                }
                             },
                             modifier = Modifier.weight(1f)
                         )
@@ -167,7 +198,9 @@ fun DuaShareDialog(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                             label = stringResource(R.string.dua_share_more),
                             onClick = {
-                                DuaShareUtils.shareText(context, shareText, targetPackage = null)
+                                captureAndShare { uri ->
+                                    ImageShareUtils.shareImage(context, uri, shareText)
+                                }
                             },
                             modifier = Modifier.weight(1f)
                         )
@@ -184,11 +217,17 @@ fun DuaShareDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Visual Share Card Preview
+                // Visual Share Card Preview with exact bitmap recording
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = dimens.space8),
+                        .padding(vertical = dimens.space8)
+                        .drawWithContent {
+                            graphicsLayer.record {
+                                this@drawWithContent.drawContent()
+                            }
+                            drawLayer(graphicsLayer)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     DuaShareCard(
@@ -234,7 +273,9 @@ fun DuaShareDialog(
                         title = stringResource(R.string.dua_story_instagram),
                         onClick = {
                             showStorySelectionSheet = false
-                            DuaShareUtils.shareToInstagram(context, shareText)
+                            captureAndShare { uri ->
+                                ImageShareUtils.shareToInstagram(context, uri)
+                            }
                         }
                     )
 
@@ -244,7 +285,9 @@ fun DuaShareDialog(
                         title = stringResource(R.string.dua_story_facebook),
                         onClick = {
                             showStorySelectionSheet = false
-                            DuaShareUtils.shareToFacebook(context, shareText)
+                            captureAndShare { uri ->
+                                ImageShareUtils.shareToFacebookStory(context, uri)
+                            }
                         }
                     )
 

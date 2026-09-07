@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
@@ -65,11 +66,12 @@ import com.hazrat.model.quran.SurahModel
 import com.hazrat.ui.R
 import com.hazrat.ui.common.DateFormatter
 import com.hazrat.ui.common.IslamicGridBackground
+import com.hazrat.ui.common.SurahNameProvider
 import com.hazrat.ui.common.SurahSvgImage
 import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
-
+import com.hazrat.utils.toLocalizedDigits
 import com.hazrat.alQuran.ui.ayah.cleanUthmanic
 
 data class SurahScreenData(
@@ -123,7 +125,7 @@ fun QuranScreen(
                                 tint = Color.Unspecified
                             )
                             Text(
-                                text = "Al-Quran",
+                                text = stringResource(R.string.common_al_quran),
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onBackground
@@ -136,7 +138,7 @@ fun QuranScreen(
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.search),
-                                contentDescription = "Search",
+                                contentDescription = stringResource(R.string.common_search),
                                 tint = if (surahState.isSearchActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.size(dimens.iconMd)
                             )
@@ -182,7 +184,7 @@ fun QuranScreen(
                             Box(modifier = Modifier.weight(1f)) {
                                 if (surahState.searchQuery.isEmpty()) {
                                     Text(
-                                        text = "Search Surah name or number...",
+                                        text = stringResource(R.string.quran_search_hint),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
                                             alpha = 0.6f
@@ -218,9 +220,9 @@ fun QuranScreen(
 
                 // 1. Navigation Tabs Row (Read | Khatam | Bookmark)
                 val tabs = listOf(
-                    QuranTab.READ to "Read",
-                    QuranTab.KHATAM to "Khatam",
-                    QuranTab.BOOKMARK to "Bookmark"
+                    QuranTab.READ to stringResource(R.string.quran_tab_read),
+                    QuranTab.KHATAM to stringResource(R.string.quran_tab_khatam),
+                    QuranTab.BOOKMARK to stringResource(R.string.quran_tab_bookmark)
                 )
                 val selectedTabIndex =
                     tabs.indexOfFirst { it.first == surahState.selectedTab }.coerceAtLeast(0)
@@ -298,7 +300,7 @@ fun QuranScreen(
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(
-                                            text = "Recents",
+                                            text = stringResource(R.string.quran_recents),
                                             style = MaterialTheme.typography.titleMedium.copy(
                                                 fontWeight = FontWeight.Bold
                                             ),
@@ -357,7 +359,7 @@ fun QuranScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = if (surahState.selectedViewMode == QuranViewMode.SURA) "Sura list" else "Juz list",
+                                    text = if (surahState.selectedViewMode == QuranViewMode.SURA) stringResource(R.string.quran_surah_list) else stringResource(R.string.quran_juz_list),
                                     style = MaterialTheme.typography.headlineSmall.copy(
                                         fontWeight = FontWeight.Bold
                                     ),
@@ -391,7 +393,10 @@ fun QuranScreen(
                                             )
                                             Spacer(modifier = Modifier.width(dimens.space8))
                                             Text(
-                                                text = "View: ${if (surahState.selectedViewMode == QuranViewMode.SURA) "Sura" else "Juz"}",
+                                                text = stringResource(
+                                                    R.string.quran_view_mode,
+                                                    if (surahState.selectedViewMode == QuranViewMode.SURA) stringResource(R.string.quran_surah) else stringResource(R.string.quran_juz)
+                                                ),
                                                 style = MaterialTheme.typography.labelMedium.copy(
                                                     fontWeight = FontWeight.Bold
                                                 ),
@@ -422,7 +427,7 @@ fun QuranScreen(
                                             },
                                             text = {
                                                 Text(
-                                                    text = "Sura",
+                                                    text = stringResource(R.string.quran_surah),
                                                     style = MaterialTheme.typography.titleMedium.copy(
                                                         fontWeight = if (surahState.selectedViewMode == QuranViewMode.SURA) FontWeight.Bold else FontWeight.Normal
                                                     ),
@@ -445,7 +450,7 @@ fun QuranScreen(
                                             },
                                             text = {
                                                 Text(
-                                                    text = "Juz",
+                                                    text = stringResource(R.string.quran_juz),
                                                     style = MaterialTheme.typography.titleMedium.copy(
                                                         fontWeight = if (surahState.selectedViewMode == QuranViewMode.JUZ) FontWeight.Bold else FontWeight.Normal
                                                     ),
@@ -489,7 +494,7 @@ fun QuranScreen(
                                     verticalArrangement = Arrangement.spacedBy(dimens.space8)
                                 ) {
                                     Text(
-                                        text = "Juz ${juz.juzNumber}",
+                                        text = stringResource(R.string.quran_juz_number, juz.juzNumber.toLocalizedDigits()),
                                         style = MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold
                                         ),
@@ -577,14 +582,14 @@ fun QuranScreen(
                                     )
                                 }
                                 Text(
-                                    text = "No Bookmarked Ayahs",
+                                    text = stringResource(R.string.quran_no_bookmarks_title),
                                     style = MaterialTheme.typography.titleLarge.copy(
                                         fontWeight = FontWeight.Bold
                                     ),
                                     color = MaterialTheme.colorScheme.onBackground
                                 )
                                 Text(
-                                    text = "Tap the context menu on any Ayah while reading to add it to your Bookmarks.",
+                                    text = stringResource(R.string.quran_no_bookmarks_desc),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center
@@ -601,7 +606,7 @@ fun QuranScreen(
                             item {
                                 Spacer(modifier = Modifier.height(dimens.space8))
                                 Text(
-                                    text = "Bookmarked Ayahs (${surahState.bookmarkedAyahs.size})",
+                                    text = stringResource(R.string.quran_bookmarked_ayahs, surahState.bookmarkedAyahs.size),
                                     style = MaterialTheme.typography.headlineSmall.copy(
                                         fontWeight = FontWeight.Bold
                                     ),
@@ -671,7 +676,7 @@ fun QuranScreen(
                                                     color = MaterialTheme.colorScheme.onBackground
                                                 )
                                                 Text(
-                                                    text = "$surahMeaning • ${ayahs.size} saved",
+                                                    text = stringResource(R.string.quran_saved_count, surahMeaning, ayahs.size),
                                                     style = MaterialTheme.typography.bodySmall,
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
@@ -731,7 +736,7 @@ fun QuranScreen(
                                                         )
                                                     ) {
                                                         Text(
-                                                            text = "Aya ${ayah.surahNumber}:${ayah.ayahNumber}",
+                                                            text = "${stringResource(R.string.quran_aya_short)} ${ayah.surahNumber}:${ayah.ayahNumber}",
                                                             style = MaterialTheme.typography.labelMedium,
                                                             color = MaterialTheme.colorScheme.onPrimaryContainer
                                                         )
@@ -818,7 +823,12 @@ fun QuranScreen(
 }
 
 private fun recentTitle(recent: RecentReadSurah, matchedSurah: SurahModel?): String {
-    return matchedSurah?.nameTransliterated ?: recent.surahName
+    val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
+    return if (isBengali) {
+        SurahNameProvider.getSurahNameBengali(recent.surahNumber)
+    } else {
+        matchedSurah?.nameTransliterated ?: recent.surahName
+    }
 }
 
 @Composable
@@ -827,7 +837,12 @@ private fun ResumeReadingHeroCard(
     matchedSurah: SurahModel?,
     onClick: () -> Unit
 ) {
-    val surahTitle = matchedSurah?.nameTransliterated ?: recent.surahName
+    val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
+    val surahTitle = if (isBengali) {
+        SurahNameProvider.getSurahNameBengali(recent.surahNumber)
+    } else {
+        matchedSurah?.nameTransliterated ?: recent.surahName
+    }
     val heroGradient = Brush.linearGradient(
         colors = listOf(
             Color(0xFF0E7A6E),
@@ -869,7 +884,7 @@ private fun ResumeReadingHeroCard(
                         )
                         Spacer(modifier = Modifier.width(dimens.space8))
                         Text(
-                            text = "LAST READ",
+                            text = stringResource(R.string.quran_last_read),
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.Bold
                             ),
@@ -893,7 +908,7 @@ private fun ResumeReadingHeroCard(
                         DateFormatter.formatHumanReadableDate(recent.formattedDate)
                     }
                     Text(
-                        text = "Verse ${recent.ayahNumber} • $displayDate",
+                        text = stringResource(R.string.quran_verse_date, recent.ayahNumber.toLocalizedDigits(), displayDate),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.8f)
                     )
@@ -912,7 +927,7 @@ private fun ResumeReadingHeroCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Resume ›",
+                        text = stringResource(R.string.quran_resume),
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -930,7 +945,12 @@ private fun RecentSurahCard(
     matchedSurah: SurahModel?,
     onClick: () -> Unit
 ) {
-    val surahTitle = matchedSurah?.nameTransliterated ?: recent.surahName
+    val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
+    val surahTitle = if (isBengali) {
+        SurahNameProvider.getSurahNameBengali(recent.surahNumber)
+    } else {
+        matchedSurah?.nameTransliterated ?: recent.surahName
+    }
 
     Column(
         modifier = Modifier
@@ -965,7 +985,7 @@ private fun RecentSurahCard(
 
         Spacer(modifier = Modifier.height(dimens.space4))
 
-        // 1. Surah Name (e.g. Maryam)
+        // 1. Surah Name (e.g. Maryam / মারইয়াম)
         Text(
             text = surahTitle,
             style = MaterialTheme.typography.titleMedium.copy(
@@ -977,12 +997,12 @@ private fun RecentSurahCard(
 
         // 2. Aya Number (e.g. Aya 27)
         Text(
-            text = "Aya ${recent.ayahNumber}",
+            text = "${stringResource(R.string.quran_aya_short)} ${recent.ayahNumber.toLocalizedDigits()}",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // 3. Date (e.g. Today, Yesterday, Friday 15th Jul, 15 Jul 2025)
+        // 3. Date (e.g. আজ, গতকাল, শুক্রবার, ১৫ জুলাই)
         val displayDate = remember(recent.formattedDate) {
             DateFormatter.formatHumanReadableDate(recent.formattedDate)
         }

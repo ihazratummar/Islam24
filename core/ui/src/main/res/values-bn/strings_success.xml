@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="success_name_update">Name update successfully</string>
-    <string name="success_bio_update">Bio update successfully</string>
+    <string name="success_name_update">নাম সফলভাবে পরিবর্তন করা হয়েছে</string>
+    <string name="success_bio_update">বায়ো সফলভাবে আপডেট করা হয়েছে</string>
 </resources>

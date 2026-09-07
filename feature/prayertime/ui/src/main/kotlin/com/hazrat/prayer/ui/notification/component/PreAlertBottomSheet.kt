@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.model.Prayer
 import com.hazrat.prayer.ui.component.GoldAccent
@@ -91,14 +92,14 @@ fun PreAlertBottomSheet(
             // Header Title & Subtitle
             Column(verticalArrangement = Arrangement.spacedBy(dimens.space4)) {
                 Text(
-                    text = "Pre-Alert Time",
+                    text = stringResource(com.hazrat.ui.R.string.prayer_pre_alert_time),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "When to notify you before ${prayer.name}",
+                    text = stringResource(com.hazrat.ui.R.string.prayer_pre_alert_desc, prayer.name),
                     style = MaterialTheme.typography.bodyMedium,
                     color = customColors.secondaryText
                 )
@@ -107,7 +108,14 @@ fun PreAlertBottomSheet(
             Spacer(modifier = Modifier.height(dimens.space4))
 
             // 2-Column Options Grid
-            val chunkedOptions = defaultPreAlertOptions.chunked(2)
+            val options = listOf(
+                PreAlertOption(stringResource(com.hazrat.ui.R.string.prayer_at_prayer_time), 0),
+                PreAlertOption(stringResource(com.hazrat.ui.R.string.prayer_min_before, 5), 5),
+                PreAlertOption(stringResource(com.hazrat.ui.R.string.prayer_min_before, 10), 10),
+                PreAlertOption(stringResource(com.hazrat.ui.R.string.prayer_min_before, 15), 15),
+                PreAlertOption(stringResource(com.hazrat.ui.R.string.prayer_min_before, 30), 30)
+            )
+            val chunkedOptions = options.chunked(2)
             chunkedOptions.forEach { rowOptions ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -160,7 +168,7 @@ fun PreAlertBottomSheet(
                 colors = ButtonDefaults.buttonColors(containerColor = GoldAccent)
             ) {
                 Text(
-                    text = "Done",
+                    text = stringResource(com.hazrat.ui.R.string.prayer_done),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),

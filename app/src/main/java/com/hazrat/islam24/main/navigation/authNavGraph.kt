@@ -60,13 +60,14 @@ fun NavGraphBuilder.authNavGraph(
             val viewModel = koinViewModel<LoginViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
             LoginScreen(
+                state = state,
                 onBackClick = {
                     navController.popBackStack()
                 },
                 onTermsClick = {
                     navController.navigate(
                         LegalScreenRoute(
-                            link = "https://islam24.app/terms",
+                            link = "https://islam24.app/terms-of-service",
                             title = "Terms of Service"
                         )
                     )

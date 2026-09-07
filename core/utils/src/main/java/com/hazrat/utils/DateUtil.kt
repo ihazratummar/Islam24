@@ -90,10 +90,10 @@ object DateUtil {
         return localDate.format(formatter)
     }
 
-    fun dateLongToString(dateLong: Long, format: String = "hh:mm a"): String {
+    fun dateLongToString(dateLong: Long, format: String = "hh:mm a", locale: Locale = Locale.getDefault()): String {
         if (dateLong <= 0L) return ""
         return try {
-            val formatter = DateTimeFormatter.ofPattern(format, Locale.ENGLISH)
+            val formatter = DateTimeFormatter.ofPattern(format, locale)
             val localDateTime = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDateTime()
             localDateTime.format(formatter)
         } catch (e: Exception) {

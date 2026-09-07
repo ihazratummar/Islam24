@@ -11,5 +11,6 @@ enum class AuthError : Error {
     WRONG_PASSWORD,
     WEAK_PASSWORD,
     NO_INTERNET,
+    USER_CANCELLED,
     UNKNOWN_ERROR
 }

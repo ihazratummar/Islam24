@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:utils"))
     implementation(project(":feature:common"))
 
     implementation(libs.androidx.core.ktx)

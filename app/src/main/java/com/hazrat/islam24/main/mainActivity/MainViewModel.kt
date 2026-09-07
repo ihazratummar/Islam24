@@ -3,6 +3,7 @@ package com.hazrat.islam24.main.mainActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hazrat.datastore.AppDataStore
+import com.hazrat.datastore.UserDataStore
 import com.hazrat.location.repository.LocationRepository
 import com.hazrat.model.ReleaseNote
 import com.hazrat.usecase.profile.IsLoggedInUseCase
@@ -20,10 +21,24 @@ import kotlinx.coroutines.runBlocking
 class MainViewModel(
     private val locationRepository: LocationRepository,
     private val appDataStore: AppDataStore,
+    private val userDataStore: UserDataStore,
     private val changelogRepository: ChangelogRepository,
     private val isLoggedInUseCase: IsLoggedInUseCase,
     private val isSubscribedUseCase: IsSubscribedUseCase
 ) : ViewModel() {
+
+    val userLanguageCode: StateFlow<String> = userDataStore.userLanguageCode
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = "en"
+        )
+
+    fun setAppLanguageCode(code: String) {
+        viewModelScope.launch {
+            userDataStore.setAppLanguageCode(code)
+        }
+    }
 
     val isDarkMode: StateFlow<Boolean>
     val isHapticFeedback: StateFlow<Boolean>

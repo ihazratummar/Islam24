@@ -79,8 +79,11 @@ fun DuaHeroBannerCard(
                     .padding(dimens.space12),
                 verticalArrangement = Arrangement.spacedBy(dimens.space2)
             ) {
+                val isBengali = java.util.Locale.getDefault().language == "bn"
+                val titleText = if (isBengali && category.bnTitle.isNotBlank()) category.bnTitle else category.title
+
                 Text(
-                    text = category.title,
+                    text = titleText,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,

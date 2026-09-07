@@ -30,6 +30,7 @@ class AppDataStore(
         const val QURAN_FONT_CONST = "QURAN_FONT_KEY"
         const val QURAN_FONT_SIZE_CONST = "QURAN_FONT_SIZE_KEY"
         const val QURAN_SHOW_TRANSLATION_CONST = "QURAN_SHOW_TRANSLATION_KEY"
+        const val QURAN_TRANSLATION_SOURCE_CONST = "QURAN_TRANSLATION_SOURCE_KEY"
 
         /*
        ******************--------------------------*************************
@@ -42,6 +43,7 @@ class AppDataStore(
         val quranFontKey = stringPreferencesKey(QURAN_FONT_CONST)
         val quranFontSizeKey = intPreferencesKey(QURAN_FONT_SIZE_CONST)
         val quranShowTranslationKey = booleanPreferencesKey(QURAN_SHOW_TRANSLATION_CONST)
+        val quranTranslationSourceKey = stringPreferencesKey(QURAN_TRANSLATION_SOURCE_CONST)
     }
 
     private val systemTheme =
@@ -141,5 +143,15 @@ class AppDataStore(
 
     val quranShowTranslation: Flow<Boolean> = appDataStore.data.map { preference ->
         preference[DataStoreKeys.quranShowTranslationKey] ?: true
+    }
+
+    suspend fun saveQuranTranslationSource(source: String) {
+        appDataStore.edit { preference ->
+            preference[DataStoreKeys.quranTranslationSourceKey] = source
+        }
+    }
+
+    val quranTranslationSource: Flow<String> = appDataStore.data.map { preference ->
+        preference[DataStoreKeys.quranTranslationSourceKey] ?: "MUHIUDDIN"
     }
 }

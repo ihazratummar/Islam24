@@ -78,7 +78,7 @@ fun DuaRecentsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "No recently read duas yet",
+                    text = stringResource(R.string.dua_no_recents),
                     style = MaterialTheme.typography.bodyLarge,
                     color = customColors.secondaryText
                 )

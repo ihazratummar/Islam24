@@ -68,6 +68,11 @@ class AyahViewModel(
                 _state.update { it.copy(showTranslation = show) }
             }
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            prefs.quranTranslationSource.collectLatest { source ->
+                _state.update { it.copy(selectedTranslationSource = source) }
+            }
+        }
     }
 
     private fun loadAyah(targetSurahNumber: Int = currentSurahNumber) {
@@ -123,6 +128,17 @@ class AyahViewModel(
         when (event) {
             is AyahUiEvent.OnAyahClick -> onAyahClick(event.ayah)
             is AyahUiEvent.OnDismissMenu -> dismissAyahMenu()
+            is AyahUiEvent.OnSelectAyahForShare -> {
+                _state.update {
+                    it.copy(
+                        selectedAyahForMenu = null,
+                        selectedAyahForShare = event.ayah
+                    )
+                }
+            }
+            is AyahUiEvent.OnDismissShareDialog -> {
+                _state.update { it.copy(selectedAyahForShare = null) }
+            }
             is AyahUiEvent.OnPlayAyah -> playAyahWithMode(event.ayahNumber, "PLAY_SURAH")
             is AyahUiEvent.OnPlaySurahFrom -> playAyahWithMode(event.ayahNumber, "PLAY_SURAH")
             is AyahUiEvent.OnPlayJuzFrom -> playAyahWithMode(event.ayahNumber, "PLAY_JUZ")
@@ -141,6 +157,18 @@ class AyahViewModel(
             is AyahUiEvent.OnFontSelected -> setQuranFont(event.fontName)
             is AyahUiEvent.OnFontSizeChanged -> setQuranFontSize(event.size)
             is AyahUiEvent.OnToggleTranslation -> setQuranShowTranslation(event.show)
+            is AyahUiEvent.OnTranslationSourceSelected -> setQuranTranslationSource(event.source)
+        }
+    }
+
+    private fun setQuranTranslationSource(source: String) {
+        // 1. Instant real-time UI update (0ms lag)
+        _state.update { it.copy(selectedTranslationSource = source) }
+        // 2. Asynchronous DataStore save
+        appDataStore?.let { prefs ->
+            viewModelScope.launch(Dispatchers.IO) {
+                prefs.saveQuranTranslationSource(source)
+            }
         }
     }
 

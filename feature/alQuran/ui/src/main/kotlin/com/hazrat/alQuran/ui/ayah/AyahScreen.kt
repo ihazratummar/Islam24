@@ -372,5 +372,17 @@ fun AyahScreen(
                 }
             }
         }
+
+        // Ayah Visual Share Dialog
+        ayahState.selectedAyahForShare?.let { ayahToShare ->
+            com.hazrat.alQuran.ui.component.AyahShareDialog(
+                ayah = ayahToShare,
+                surahName = currentSurahName,
+                translationSource = ayahState.selectedTranslationSource,
+                onDismissRequest = {
+                    onEvent(AyahUiEvent.OnDismissShareDialog)
+                }
+            )
+        }
     }
 }

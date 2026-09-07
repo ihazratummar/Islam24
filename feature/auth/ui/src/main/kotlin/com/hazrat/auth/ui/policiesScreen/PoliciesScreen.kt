@@ -17,8 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.hazrat.auth.ui.component.SettingItemCard
 import com.hazrat.ui.R
 import com.hazrat.ui.common.BackIcon
@@ -36,6 +37,7 @@ fun PoliciesScreen(
     onBackClick:() -> Unit,
     onPolicyClick:(String, String) -> Unit
 ) {
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -54,23 +56,23 @@ fun PoliciesScreen(
         val listOfTabs = listOf(
             PoliciesTabs(
                 leadingIcon = R.drawable.privacy_policy,
-                tabName = "Privacy Policy",
+                tabName = stringResource(R.string.login_privacy_policy),
                 onClick = {
-                    onPolicyClick("https://islam24.app/privacy-policy", "Privacy Policy")
+                    onPolicyClick("https://islam24.app/privacy-policy", context.getString(R.string.login_privacy_policy))
                 }
             ),
             PoliciesTabs(
                 leadingIcon = R.drawable.privacy_policy,
-                tabName = "Terms of Service",
+                tabName = stringResource(R.string.login_terms_of_service),
                 onClick = {
-                    onPolicyClick("https://islam24.app/terms-of-service", "Terms of Service")
+                    onPolicyClick("https://islam24.app/terms-of-service", context.getString(R.string.login_terms_of_service))
                 }
             ),
             PoliciesTabs(
                 leadingIcon = R.drawable.privacy_policy,
-                tabName = "Acknowledgement",
+                tabName = stringResource(R.string.legal_acknowledgement),
                 onClick = {
-                    onPolicyClick("https://islam24.app/acknowledgements", "Acknowledgement")
+                    onPolicyClick("https://islam24.app/acknowledgements", context.getString(R.string.legal_acknowledgement))
                 }
             )
         )

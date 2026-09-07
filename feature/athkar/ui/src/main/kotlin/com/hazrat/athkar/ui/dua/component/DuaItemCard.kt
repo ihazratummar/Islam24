@@ -161,10 +161,15 @@ fun DuaItemCard(
                 )
             )
 
+            val isBengali = java.util.Locale.getDefault().language == "bn"
+            val transliterationText = if (isBengali && !dua.bnTransliteration.isNullOrBlank()) dua.bnTransliteration!! else dua.transliteration
+            val translationText = if (isBengali && !dua.bnTranslation.isNullOrBlank()) dua.bnTranslation!! else dua.translation
+            val referenceText = if (isBengali && !dua.bnReference.isNullOrBlank()) dua.bnReference!! else dua.reference
+
             // Transliteration if available
-            if (dua.transliteration.isNotBlank()) {
+            if (!transliterationText.isNullOrBlank()) {
                 Text(
-                    text = dua.transliteration,
+                    text = transliterationText,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = customColors.secondaryText
@@ -174,7 +179,7 @@ fun DuaItemCard(
 
             // Translation
             Text(
-                text = dua.translation,
+                text = translationText,
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.SemiBold,
@@ -183,7 +188,7 @@ fun DuaItemCard(
             )
 
             // Reference at bottom
-            if (dua.reference.isNotBlank()) {
+            if (!referenceText.isNullOrBlank()) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(dimens.space8),
@@ -196,7 +201,7 @@ fun DuaItemCard(
                         tint = customColors.secondaryText
                     )
                     Text(
-                        text = dua.reference,
+                        text = referenceText,
                         style = MaterialTheme.typography.bodySmall,
                         color = customColors.secondaryText
                     )

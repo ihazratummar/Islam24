@@ -25,7 +25,7 @@ import com.hazrat.database.entity.quran.SurahEntity
         KhatamPlanEntity::class,
         QuranBookmarkEntity::class
     ],
-    version = 6,
+    version = 8,
     exportSchema = false
 )
 abstract class QuranDatabase : RoomDatabase() {

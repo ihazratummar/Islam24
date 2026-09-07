@@ -53,6 +53,8 @@ import com.hazrat.ui.common.IslamicGridBackground
 import com.hazrat.ui.common.PrayerType
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.formatLocalizedDigits
+import com.hazrat.utils.toLocalizedDigits
 
 /**
  * Prayer Notifications Screen matching reference layout & pre-alert requirements.
@@ -73,14 +75,14 @@ fun PrayerNotificationScreen(
                     title = {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = "Prayer Notifications",
+                                text = stringResource(R.string.prayer_notifications_title),
                                 style = MaterialTheme.typography.titleLarge.copy(
                                     color = MaterialTheme.colorScheme.onBackground,
                                     fontWeight = FontWeight.Bold
                                 )
                             )
                             Text(
-                                text = "${state.enabledCount} of 5 prayers enabled",
+                                text = stringResource(R.string.prayer_enabled_count, state.enabledCount),
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     color = customColors.secondaryText
                                 )
@@ -223,14 +225,14 @@ private fun MasterNotificationCard(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if (isAllActive) "All Notifications Active" else "All Notifications Muted",
+                        text = if (isAllActive) stringResource(R.string.prayer_all_notifications_active) else stringResource(R.string.prayer_all_notifications_muted),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = if (isAllActive) "Quick mute toggle for all prayers" else "Tap to unmute all prayers",
+                        text = if (isAllActive) stringResource(R.string.prayer_quick_mute_toggle) else stringResource(R.string.prayer_tap_unmute),
                         style = MaterialTheme.typography.bodySmall,
                         color = customColors.secondaryText
                     )
@@ -264,7 +266,7 @@ private fun MasterNotificationCard(
                     border = BorderStroke(dimens.divider, GoldAccent)
                 ) {
                     Text(
-                        text = "Enable All",
+                        text = stringResource(R.string.prayer_enable_all),
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
                     )
                 }
@@ -281,7 +283,7 @@ private fun MasterNotificationCard(
                     )
                 ) {
                     Text(
-                        text = "Disable All",
+                        text = stringResource(R.string.prayer_disable_all),
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Medium)
                     )
                 }
@@ -307,11 +309,15 @@ private fun PrayerNotificationAccordionCard(
     onOpenPreAlertSheet: () -> Unit,
     onOpenAzanSheet: () -> Unit
 ) {
+    val offsetText = if (preAlertOffset > 0) {
+        stringResource(R.string.prayer_min_before, preAlertOffset)
+    } else {
+        stringResource(R.string.prayer_at_prayer_time)
+    }
     val summaryText = if (isEnabled) {
-        val offsetText = if (preAlertOffset > 0) "$preAlertOffset min before" else "At prayer time"
         "$reciterName · $offsetText"
     } else {
-        "Notifications off"
+        stringResource(R.string.prayer_notifications_off)
     }
 
     Card(
@@ -406,7 +412,7 @@ private fun PrayerNotificationAccordionCard(
                     // Azan Sound Selection Row
                     AccordionSubItem(
                         iconRes = R.drawable.quran,
-                        title = "Azan Sound",
+                        title = stringResource(R.string.prayer_azan_sound),
                         subtitle = reciterName,
                         onClick = onOpenAzanSheet
                     )
@@ -433,7 +439,7 @@ private fun PrayerNotificationAccordionCard(
                                 modifier = Modifier.size(dimens.iconSm)
                             )
                             Text(
-                                text = "Vibration",
+                                text = stringResource(R.string.prayer_vibration),
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
                                 color = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.weight(1f)
@@ -452,8 +458,8 @@ private fun PrayerNotificationAccordionCard(
                     // Pre-Alert Offset Selection Row
                     AccordionSubItem(
                         iconRes = R.drawable.calendar1,
-                        title = "Pre-Alert",
-                        subtitle = if (preAlertOffset > 0) "$preAlertOffset min before" else "At prayer time",
+                        title = stringResource(R.string.prayer_pre_alert_time),
+                        subtitle = offsetText,
                         onClick = onOpenPreAlertSheet
                     )
                 }

@@ -48,6 +48,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import com.hazrat.ui.R
 import com.hazrat.ui.common.IconWithBackground
+import com.hazrat.ui.common.IslamicLoadingIndicator
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import kotlinx.coroutines.flow.SharedFlow
@@ -63,7 +64,8 @@ fun LoginScreen(
     onTermsClick: () -> Unit = {},
     onPrivacyClick: () -> Unit = {},
     effect: SharedFlow<LoginEffect>?,
-    event: (LoginEvent) -> Unit
+    event: (LoginEvent) -> Unit,
+    state: LoginState
 
 ) {
     val context = LocalContext.current
@@ -309,6 +311,17 @@ fun LoginScreen(
                         }
                     )
                 }
+            }
+        }
+
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .padding(top = dimens.space32)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                IslamicLoadingIndicator()
             }
         }
     }

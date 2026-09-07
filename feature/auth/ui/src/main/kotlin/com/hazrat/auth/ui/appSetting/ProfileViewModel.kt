@@ -50,12 +50,14 @@ class ProfileViewModel(
         _state,
         appDataStore.isDarkModeEnabled,
         appDataStore.isHapticEnabled,
-        userDataStore.isMasterNotificationEnabled
-    ) { state, isDarkModeEnabled, isHapticEnabled, isMasterNotif ->
+        userDataStore.isMasterNotificationEnabled,
+        userDataStore.userLanguageCode
+    ) { state, isDarkModeEnabled, isHapticEnabled, isMasterNotif, langCode ->
         state.copy(
             toggleTheme = isDarkModeEnabled,
             isHapticFeedbackEnabled = isHapticEnabled,
-            isMasterNotificationEnabled = isMasterNotif
+            isMasterNotificationEnabled = isMasterNotif,
+            selectedLanguageCode = langCode
         )
     }.stateIn(
         viewModelScope,
@@ -156,6 +158,12 @@ class ProfileViewModel(
                 _state.update { it.copy(isMasterNotificationEnabled = newStatus) }
                 viewModelScope.launch {
                     userDataStore.setMasterNotificationEnabled(newStatus)
+                }
+            }
+
+            is AppSettingEvent.UpdateLanguage -> {
+                viewModelScope.launch {
+                    userDataStore.setAppLanguageCode(event.languageCode)
                 }
             }
 

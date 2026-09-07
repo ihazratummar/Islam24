@@ -18,8 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
-import androidx.compose.ui.unit.sp
 import com.hazrat.tasbih.domain.model.Tasbih
+import com.hazrat.tasbih.domain.util.getDisplayMeaning
+import com.hazrat.tasbih.domain.util.getDisplayTransliteration
 import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
@@ -71,8 +72,6 @@ fun RoyalTasbihCard(
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontFamily = ScheherazadeFontFamily,
                     fontFeatureSettings = "cv62",
-                    fontSize = 32.sp,
-                    lineHeight = 56.sp,
                     textDirection = TextDirection.Rtl
                 ),
                 color = customColors.accentColor,
@@ -83,8 +82,11 @@ fun RoyalTasbihCard(
             Spacer(modifier = Modifier.height(dimens.space4))
 
             // Transliteration Subtitle
+            val displayTransliteration = tasbih.getDisplayTransliteration()
+            val displayMeaning = tasbih.getDisplayMeaning()
+
             Text(
-                text = tasbih.transliteration,
+                text = displayTransliteration,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
@@ -93,10 +95,10 @@ fun RoyalTasbihCard(
             )
 
             // Meaning Subtitle
-            if (tasbih.translatedName.isNotBlank() && tasbih.translatedName != tasbih.transliteration) {
+            if (displayMeaning.isNotBlank() && displayMeaning != displayTransliteration) {
                 Spacer(modifier = Modifier.height(dimens.space2))
                 Text(
-                    text = tasbih.translatedName,
+                    text = displayMeaning,
                     style = MaterialTheme.typography.bodySmall,
                     color = customColors.secondaryText,
                     textAlign = TextAlign.Center

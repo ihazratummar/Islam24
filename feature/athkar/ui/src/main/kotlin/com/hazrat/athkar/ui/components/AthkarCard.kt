@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.hazrat.athkar.ui.azkar.AthkarItemState
@@ -43,6 +44,7 @@ import com.hazrat.ui.theme.ScheherazadeFontFamily
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.getSystemLanguage
+import com.hazrat.utils.toLocalizedDigits
 
 @Composable
 fun AthkarCard(
@@ -117,7 +119,7 @@ fun AthkarCard(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.refresh),
-                            contentDescription = "Reset Count",
+                            contentDescription = stringResource(R.string.athkar_reset_count),
                             tint = if (currentCount > 0) customColors.accentColor else customColors.secondaryText.copy(alpha = 0.5f),
                             modifier = Modifier
                                 .size(dimens.iconSm)
@@ -158,9 +160,13 @@ fun AthkarCard(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
+            val isBengali = java.util.Locale.getDefault().language == "bn"
+            val translitText = if (isBengali && !item.bnTransliteration.isNullOrBlank()) item.bnTransliteration!! else item.transliteration
+            val translationText = if (isBengali && !item.bnTranslation.isNullOrBlank()) item.bnTranslation!! else item.translation
+            val referenceText = if (isBengali && !item.bnReference.isNullOrBlank()) item.bnReference!! else item.reference
+
             // Translateration in Default View
-            val translitText = item.transliteration
-            if (translitText.isNotBlank()) {
+            if (!translitText.isNullOrBlank()) {
                 Text(
                     text = translitText,
                     style = MaterialTheme.typography.bodyMedium,
@@ -183,16 +189,16 @@ fun AthkarCard(
                     )
                     Spacer(modifier = Modifier.height(dimens.space12))
                     Text(
-                        text = item.translation,
+                        text = translationText,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    if (item.reference.isNotBlank()) {
+                    if (!referenceText.isNullOrBlank()) {
                         Spacer(modifier = Modifier.height(dimens.space8))
                         Text(
-                            text = "Reference: ${item.reference}",
+                            text = stringResource(R.string.athkar_reference, referenceText),
                             style = MaterialTheme.typography.labelSmall,
                             color = customColors.secondaryText,
                             modifier = Modifier.fillMaxWidth()
@@ -251,20 +257,20 @@ fun AthkarCard(
                         if (isCompleted) {
                             Icon(
                                 painter = painterResource(id = R.drawable.check),
-                                contentDescription = "Completed",
-                                tint = Color(0xFF4CAF50),
+                                contentDescription = stringResource(R.string.athkar_completed),
+                                tint = customColors.accentColor,
                                 modifier = Modifier.size(dimens.iconLg)
                             )
                         } else {
                             Text(
-                                text = "$currentCount",
+                                text = currentCount.toLocalizedDigits(),
                                 style = MaterialTheme.typography.titleLarge.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                             Text(
-                                text = "/ $targetCount",
+                                text = "/ ${targetCount.toLocalizedDigits()}",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = customColors.secondaryText
                             )

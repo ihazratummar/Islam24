@@ -62,8 +62,11 @@ fun DuaCategoryCard(
                 contentScale = ContentScale.Crop
             )
 
+            val isBengali = java.util.Locale.getDefault().language == "bn"
+            val titleText = if (isBengali && category.bnTitle.isNotBlank()) category.bnTitle else category.title
+
             Text(
-                text = category.title,
+                text = titleText,
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,

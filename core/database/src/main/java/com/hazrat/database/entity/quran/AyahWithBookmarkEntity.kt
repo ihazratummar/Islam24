@@ -15,5 +15,9 @@ data class AyahWithBookmarkEntity(
     val englishTranslation: String,
     val transliteration: String,
     val isBookmarked: Boolean = false,
-    val tajweedText: String = ""
+    val tajweedText: String = "",
+    val bnMuhiuddin: String = "",
+    val bnTaisirul: String = "",
+    val bnMujibur: String = "",
+    val bnTransliteration: String = ""
 )

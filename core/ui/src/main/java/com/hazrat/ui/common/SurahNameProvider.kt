@@ -1,12 +1,247 @@
 package com.hazrat.ui.common
 
 /**
- * Utility mapping Surah Numbers (1..114) to their standard transliterated names.
+ * Utility mapping Surah Numbers (1..114) to their standard Bengali & transliterated names and meanings.
  *
  * @author hazratummar
  */
 object SurahNameProvider {
-    private val surahNames = mapOf(
+
+    private val surahNamesBengali = mapOf(
+        1 to "আল-ফাতিহা",
+        2 to "আল-বাক্বারাহ",
+        3 to "আলে ইমরান",
+        4 to "আন-নিসা",
+        5 to "আল-মায়িদাহ",
+        6 to "আল-আন'আম",
+        7 to "আল-আ'রাফ",
+        8 to "আল-আনফাল",
+        9 to "আত-তাওবাহ",
+        10 to "ইউনুস",
+        11 to "হুদ",
+        12 to "ইউসুফ",
+        13 to "আর-রা'দ",
+        14 to "ইব্রাহিম",
+        15 to "আল-হিজর",
+        16 to "আন-নাহল",
+        17 to "আল-ইসরা",
+        18 to "আল-কাহফ",
+        19 to "মারইয়াম",
+        20 to "ত্ব-হা",
+        21 to "আল-আম্বিয়া",
+        22 to "আল-হাজ্জ",
+        23 to "আল-মু'মিনুন",
+        24 to "আন-নূর",
+        25 to "আল-ফুরকান",
+        26 to "আশ-শু'আরা",
+        27 to "আন-নামল",
+        28 to "আল-ক্বাসাস",
+        29 to "আল-আনকাবুত",
+        30 to "আর-রূম",
+        31 to "লুকমান",
+        32 to "আস-সাজদাহ",
+        33 to "আল-আহযাব",
+        34 to "সাবা",
+        35 to "ফাতির",
+        36 to "ইয়া-সীন",
+        37 to "আস-সাফফাত",
+        38 to "সোয়াদ",
+        39 to "আয-যুমার",
+        40 to "গাফির",
+        41 to "ফুসসিলাত",
+        42 to "আশ-শূরা",
+        43 to "আয-যুখরুফ",
+        44 to "আদ-দুখান",
+        45 to "আল-জাসিয়াহ",
+        46 to "আল-আহক্বাফ",
+        47 to "মুহাম্মদ",
+        48 to "আল-ফাতহ",
+        49 to "আল-হুজুরাত",
+        50 to "ক্বাফ",
+        51 to "আয-যারিয়াত",
+        52 to "আত-তূর",
+        53 to "আন-নাজম",
+        54 to "আল-ক্বামার",
+        55 to "আর-রাহমান",
+        56 to "আল-ওয়াক্বিয়াহ",
+        57 to "আল-হাদীদ",
+        58 to "আল-মুজাদালাহ",
+        59 to "আল-হাশর",
+        60 to "আল-মুমতাহানাহ",
+        61 to "আস-সাফ",
+        62 to "আল-জুমু'আহ",
+        63 to "আল-মুনাফিক্বুন",
+        64 to "আত-তাগাবুন",
+        65 to "আত-ত্বালাক্ব",
+        66 to "আত-তাহরীম",
+        67 to "আল-মুলক",
+        68 to "আল-ক্বলম",
+        69 to "আল-হাক্কাহ",
+        70 to "আল-মা'আরিজ",
+        71 to "নূহ",
+        72 to "আল-জ্বিন",
+        73 to "আল-মুযযাম্মিল",
+        74 to "আল-মুদ্দাচ্ছির",
+        75 to "আল-ক্বিয়ামাহ",
+        76 to "আল-ইনসান",
+        77 to "আল-মুরসালাত",
+        78 to "আন-নাবা",
+        79 to "আন-নাযি'আত",
+        80 to "আবাসা",
+        81 to "আত-তাকবীর",
+        82 to "আল-ইনফিতার",
+        83 to "আল-মুতাফফিফীন",
+        84 to "আল-ইনশিক্বাক্ব",
+        85 to "আল-বুরুজ",
+        86 to "আত-ত্বারিক্ব",
+        87 to "আল-আ'লা",
+        88 to "আল-গাশিয়াহ",
+        89 to "আল-ফাজর",
+        90 to "আল-বালাদ",
+        91 to "আশ-শামস",
+        92 to "আল-লাইল",
+        93 to "আদ-দুহা",
+        94 to "আল-ইনশিরাহ",
+        95 to "আত-তীন",
+        96 to "আল-আলাক্ব",
+        97 to "আল-ক্বদর",
+        98 to "আল-বায়্যিনাহ",
+        99 to "আয-যালযালাহ",
+        100 to "আল-আদিয়াত",
+        101 to "আল-ক্বারিয়াহ",
+        102 to "আত-তাকাসুর",
+        103 to "আল-আসর",
+        104 to "আল-হুমাযাহ",
+        105 to "আল-ফীল",
+        106 to "কুরাইশ",
+        107 to "আল-মা'উন",
+        108 to "আল-কাউসার",
+        109 to "আল-কাফিরুন",
+        110 to "আন-নাসর",
+        111 to "আল-লাহাব",
+        112 to "আল-ইখলাস",
+        113 to "আল-ফালাক্ব",
+        114 to "আন-নাস"
+    )
+
+    private val surahMeaningsBengali = mapOf(
+        1 to "সূচনা",
+        2 to "গাভী",
+        3 to "ইমরানের পরিবার",
+        4 to "নারী",
+        5 to "খাদ্য পরিবেশিত পাত্র",
+        6 to "গৃহপালিত পশু",
+        7 to "উঁচু স্থানসমূহ",
+        8 to "যুদ্ধলব্ধ সম্পদ",
+        9 to "অনুশোচনা",
+        10 to "ইউনুস",
+        11 to "হুদ",
+        12 to "ইউসুফ",
+        13 to "বজ্রপাত",
+        14 to "ইব্রাহিম",
+        15 to "পাথুরে অঞ্চল",
+        16 to "মৌমাছি",
+        17 to "রাত্রিকালীন ভ্রমণ",
+        18 to "গুহা",
+        19 to "মারইয়াম",
+        20 to "ত্ব-হা",
+        21 to "নবীগণ",
+        22 to "হজ",
+        23 to "মুমিনগণ",
+        24 to "আলো",
+        25 to "সত্য-মিথ্যার মানদণ্ড",
+        26 to "কবিগণ",
+        27 to "পিঁপড়া",
+        28 to "কাহিনী",
+        29 to "মাকড়শা",
+        30 to "রোমান জাতি",
+        31 to "লুকমান",
+        32 to "সিজদাহ",
+        33 to "মিত্রবাহিনী",
+        34 to "সাবা জাতি",
+        35 to "সৃষ্টিকর্তা",
+        36 to "ইয়া-সীন",
+        37 to "সারিবদ্ধ দলসমূহ",
+        38 to "সোয়াদ",
+        39 to "দলবদ্ধ জনতা",
+        40 to "ক্ষমাশীল",
+        41 to "সুস্পষ্ট বিবরণ",
+        42 to "পরামর্শ",
+        43 to "সোনার অলঙ্কার",
+        44 to "ধোঁয়া",
+        45 to "নতজানু দল",
+        46 to "বালুকাময় পাহাড়",
+        47 to "মুহাম্মদ",
+        48 to "মহাবিজয়",
+        49 to "আবাসস্থলসমূহ",
+        50 to "ক্বাফ",
+        51 to "বিক্ষিপ্তকারী বাতাস",
+        52 to "তূর পাহাড়",
+        53 to "নক্ষত্র",
+        54 to "চাঁদ",
+        55 to "পরম দয়ালু",
+        56 to "মহাবিপদ",
+        57 to "লোহা",
+        58 to "অনুযোগকারিণী",
+        59 to "সমাবেশ",
+        60 to "পরীক্ষার্থিনী নারী",
+        61 to "সারিবদ্ধ সৈন্যদল",
+        62 to "জুমার দিন",
+        63 to "কপট বিশ্বাসীগণ",
+        64 to "লাভ-ক্ষতির দিন",
+        65 to "তালাক",
+        66 to "নিষিদ্ধকরণ",
+        67 to "সার্বভৌম কর্তৃত্ব",
+        68 to "কলম",
+        69 to "অনিবার্য সত্য",
+        70 to "উন্নয়নের সিঁড়ি",
+        71 to "নূহ",
+        72 to "জ্বিন জাতি",
+        73 to "বস্ত্রাবৃত",
+        74 to "পোশাক পরিহিত",
+        75 to "পুনরুত্থান",
+        76 to "মানবজাতি",
+        77 to "প্রেরিত বাতাসসমূহ",
+        78 to "মহাসংবাদ",
+        79 to "উন্মূলনকারী ফেরেশতা",
+        80 to "তিনি ভ্রুকুটি করলেন",
+        81 to "অন্ধকারাচ্ছন্নকরণ",
+        82 to "বিদীর্ণ হওয়া",
+        83 to "পরিমাপে কম প্রদানকারী",
+        84 to "খন্ড-বিখন্ড হওয়া",
+        85 to "নক্ষত্রপুঞ্জ",
+        86 to "রাতের আগন্তুক",
+        87 to "সর্বোচ্চ সত্ত্বা",
+        88 to "আচ্ছন্নকারী সংকট",
+        89 to "ভোরবেলা",
+        90 to "নগরী",
+        91 to "সূর্য",
+        92 to "রাত",
+        93 to "পূর্বাহ্ণ",
+        94 to "বক্ষ প্রশস্তকরণ",
+        95 to "ডুমুর ফল",
+        96 to "রক্তপিণ্ড",
+        97 to "মহিমান্বিত রাত",
+        98 to "সুস্পষ্ট প্রমাণ",
+        99 to "মহাকম্পন",
+        100 to "অভিযানকারী অশ্ব",
+        101 to "মহা বিপর্যয়",
+        102 to "প্রাচুর্যের প্রতিযোগিতা",
+        103 to "সময় / কাল",
+        104 to "পরনিন্দাকারী",
+        105 to "হাতি",
+        106 to "কুরাইশ বংশ",
+        107 to "সাহায্য সামগ্রী",
+        108 to "কাউসার ঝর্ণা",
+        109 to "অবিশ্বাসীগণ",
+        110 to "সাহায্য ও বিজয়",
+        111 to "অগ্নিশিখা",
+        112 to "একনিষ্ঠতা",
+        113 to "ভোরবেলা",
+        114 to "মানবজাতি"
+    )
+
+    private val surahNamesEnglish = mapOf(
         1 to "Al-Fatihah",
         2 to "Al-Baqarah",
         3 to "Ali 'Imran",
@@ -123,8 +358,34 @@ object SurahNameProvider {
         114 to "An-Nas"
     )
 
-    fun getSurahName(surahNumber: Int): String {
-        return surahNames[surahNumber] ?: "Surah $surahNumber"
+    fun getSurahName(surahNumber: Int, locale: java.util.Locale = java.util.Locale.getDefault()): String {
+        val isBengali = locale.language.equals("bn", ignoreCase = true)
+        return if (isBengali) {
+            getSurahNameBengali(surahNumber)
+        } else {
+            getSurahNameEnglish(surahNumber)
+        }
+    }
+
+    fun getSurahMeaning(surahNumber: Int, defaultEnglishMeaning: String = "", locale: java.util.Locale = java.util.Locale.getDefault()): String {
+        val isBengali = locale.language.equals("bn", ignoreCase = true)
+        return if (isBengali) {
+            getSurahMeaningBengali(surahNumber)
+        } else {
+            defaultEnglishMeaning
+        }
+    }
+
+    fun getSurahNameBengali(surahNumber: Int): String {
+        return surahNamesBengali[surahNumber] ?: (surahNamesEnglish[surahNumber] ?: "সূরা ")
+    }
+
+    fun getSurahMeaningBengali(surahNumber: Int): String {
+        return surahMeaningsBengali[surahNumber] ?: ""
+    }
+
+    fun getSurahNameEnglish(surahNumber: Int): String {
+        return surahNamesEnglish[surahNumber] ?: "Surah "
     }
 
     private val surahAyahCounts = intArrayOf(

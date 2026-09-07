@@ -50,6 +50,10 @@ fun DuaShareCard(
     theme: DuaShareTheme,
     modifier: Modifier = Modifier
 ) {
+    val isBengali = java.util.Locale.getDefault().language == "bn"
+    val translationText = if (isBengali && !dua.bnTranslation.isNullOrBlank()) dua.bnTranslation!! else dua.translation
+    val referenceText = if (isBengali && !dua.bnReference.isNullOrBlank()) dua.bnReference!! else dua.reference
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -110,9 +114,9 @@ fun DuaShareCard(
                         )
                     )
 
-                    // English Translation
+                    // Translation
                     Text(
-                        text = dua.translation,
+                        text = translationText,
                         modifier = Modifier.fillMaxWidth(),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.SemiBold,
@@ -149,9 +153,9 @@ fun DuaShareCard(
                 }
 
                 // Reference text properly constrained so it never collides
-                if (dua.reference.isNotBlank()) {
+                if (referenceText.isNotBlank()) {
                     Text(
-                        text = dua.reference,
+                        text = referenceText,
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White.copy(alpha = 0.7f),
                         maxLines = 2,

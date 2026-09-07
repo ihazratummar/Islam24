@@ -333,7 +333,7 @@ fun NextPrayerWidgetPreview() {
                 )
                 Spacer(modifier = Modifier.width(dimens.space8))
                 Text(
-                    text = "NEXT PRAYER",
+                    text = stringResource(R.string.prayer_next_caps),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF5EEAD4)
@@ -389,34 +389,32 @@ fun NextPrayerWidgetPreview() {
                 }
             }
 
+            Spacer(modifier = Modifier.height(dimens.space12))
+
+            // Action Button inside Widget
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(dimens.compButton)
+                    .height(dimens.space32)
                     .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF059669),
-                                Color(0xFF10B981),
-                                Color(0xFF059669)
-                            )
-                        ),
-                        shape = RoundedCornerShape(dimens.cornerFull)
-                    ),
+                        color = Color(0xFF14B8A6),
+                        shape = RoundedCornerShape(dimens.cornerLg)
+                    )
+                    .clip(RoundedCornerShape(dimens.cornerLg)),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                    horizontalArrangement = Arrangement.spacedBy(dimens.space4)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_prayer_log),
+                        painter = painterResource(id = R.drawable.circle_check),
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.size(dimens.iconSm)
                     )
                     Text(
-                        text = "Log Prayer",
+                        text = stringResource(R.string.widget_log_prayer),
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -488,7 +486,7 @@ fun HijriDateWidgetPreview() {
                             modifier = Modifier.size(dimens.iconXs)
                         )
                         Text(
-                            text = "HIJRI DATE",
+                            text = stringResource(R.string.home_hijri_date_label),
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFFFCD34D)
@@ -581,7 +579,7 @@ fun HijriDateWidgetPreview() {
                     horizontalArrangement = Arrangement.spacedBy(dimens.space2)
                 ) {
                     Text(
-                        text = "View Calendar",
+                        text = stringResource(R.string.widget_view_calendar),
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFFFBBF24)
@@ -673,7 +671,7 @@ fun HijriFullCalendarWidgetPreview() {
                     }
 
                     Text(
-                        text = "Full",
+                        text = stringResource(R.string.widget_full),
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF38BDF8)

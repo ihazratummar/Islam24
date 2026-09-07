@@ -12,5 +12,6 @@ data class ProfileState(
     val prayerStreak: Int = 0,
     val totalBookmarkedAyahs: Int = 0,
     val isMasterNotificationEnabled: Boolean = true,
+    val selectedLanguageCode: String = "en",
     val userModel: UserModel? = null
 )

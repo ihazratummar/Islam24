@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.toLocalizedDigits
 
 /**
  * Target count selector chips (33, 99, 100, 500, 1000).
@@ -47,7 +48,7 @@ fun TasbihTargetSelector(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "$limit",
+                    text = limit.toLocalizedDigits(),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                     ),

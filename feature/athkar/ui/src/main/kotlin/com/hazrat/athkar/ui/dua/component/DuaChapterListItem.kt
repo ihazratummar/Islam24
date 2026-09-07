@@ -57,8 +57,11 @@ fun DuaChapterListItem(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(dimens.space4)
             ) {
+                val isBengali = java.util.Locale.getDefault().language == "bn"
+                val titleText = if (isBengali && !chapter.bnTitle.isNullOrBlank()) chapter.bnTitle!! else chapter.title
+
                 Text(
-                    text = chapter.title,
+                    text = titleText,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,

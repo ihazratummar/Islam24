@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.model.quran.AyahModel
 import com.hazrat.ui.R
@@ -70,7 +71,7 @@ fun AyahActionBottomSheet(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Aya ${ayah.surahNumber}:${ayah.ayahNumber}",
+                        text = "${stringResource(R.string.quran_aya_short)} ${ayah.surahNumber}:${ayah.ayahNumber}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -102,13 +103,13 @@ fun AyahActionBottomSheet(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.play),
-                    contentDescription = "Play",
+                    contentDescription = stringResource(R.string.quran_play),
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(dimens.iconMd)
                 )
                 Spacer(modifier = Modifier.width(dimens.space16))
                 Text(
-                    text = "Play",
+                    text = stringResource(R.string.quran_play),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -131,13 +132,13 @@ fun AyahActionBottomSheet(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.share),
-                    contentDescription = "Share",
+                    contentDescription = stringResource(R.string.quran_share),
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(dimens.iconMd)
                 )
                 Spacer(modifier = Modifier.width(dimens.space16))
                 Text(
-                    text = "Share",
+                    text = stringResource(R.string.quran_share),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),

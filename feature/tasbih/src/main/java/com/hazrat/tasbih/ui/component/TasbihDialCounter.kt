@@ -31,9 +31,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.toLocalizedDigits
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -196,14 +198,14 @@ fun TasbihDialCounter(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "$currentCount",
+                text = currentCount.toLocalizedDigits(),
                 style = MaterialTheme.typography.displayMedium.copy(
                     fontWeight = FontWeight.ExtraBold
                 ),
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "/ $targetLimit",
+                text = "/ ${targetLimit.toLocalizedDigits()}",
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
@@ -211,7 +213,7 @@ fun TasbihDialCounter(
             )
             Spacer(modifier = Modifier.height(dimens.space4))
             Text(
-                text = "tap to count",
+                text = stringResource(com.hazrat.ui.R.string.tasbih_tap_to_count_lower),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f)
             )

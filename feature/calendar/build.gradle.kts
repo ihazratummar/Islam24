@@ -48,6 +48,7 @@ android {
 
 dependencies {
     implementation(project(":core:ui"))
+    implementation(project(":core:utils"))
     implementation(project(":feature:common"))
 
     implementation(libs.androidx.core.ktx)

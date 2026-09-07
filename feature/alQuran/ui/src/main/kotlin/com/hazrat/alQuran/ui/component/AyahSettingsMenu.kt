@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -30,9 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
@@ -53,8 +56,24 @@ val AvailableQuranFonts = listOf(
 )
 
 /**
+ * Data model for Quranic translation choices in the settings menu.
+ */
+data class QuranTranslationOption(
+    val id: String,
+    val nameRes: Int,
+    val subtitleRes: Int
+)
+
+val AvailableQuranTranslations = listOf(
+    QuranTranslationOption("MUHIUDDIN", R.string.quran_translation_muhiuddin_name, R.string.quran_translation_muhiuddin_desc),
+    QuranTranslationOption("TAISIRUL", R.string.quran_translation_taisirul_name, R.string.quran_translation_taisirul_desc),
+    QuranTranslationOption("MUJIBUR", R.string.quran_translation_mujibur_name, R.string.quran_translation_mujibur_desc),
+    QuranTranslationOption("ENGLISH", R.string.quran_translation_english_name, R.string.quran_translation_english_desc)
+)
+
+/**
  * Premium Industry-Grade Top Dropdown Settings Card for Ayah Screen.
- * Provides real-time font selection, font size adjustment, and translation toggle.
+ * Provides real-time font selection, font size adjustment, translation toggle, and translation source selection.
  *
  * @author hazratummar
  */
@@ -63,9 +82,11 @@ fun AyahSettingsMenu(
     selectedFont: String,
     fontSize: Int,
     showTranslation: Boolean,
+    selectedTranslationSource: String,
     onFontSelect: (String) -> Unit,
     onFontSizeChange: (Int) -> Unit,
     onToggleTranslation: (Boolean) -> Unit,
+    onTranslationSourceSelect: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isDark = isSystemInDarkTheme()
@@ -80,9 +101,9 @@ fun AyahSettingsMenu(
             .padding(horizontal = dimens.space16, vertical = dimens.space8),
         shape = RoundedCornerShape(dimens.cornerXl),
         color = cardBg,
-        tonalElevation = 6.dp,
-        shadowElevation = 8.dp,
-        border = androidx.compose.foundation.BorderStroke(1.dp, cardBorder)
+        tonalElevation = dimens.space4,
+        shadowElevation = dimens.space8,
+        border = androidx.compose.foundation.BorderStroke(dimens.divider, cardBorder)
     ) {
         Column(
             modifier = Modifier
@@ -93,7 +114,7 @@ fun AyahSettingsMenu(
             // Section 1: Font Selector Header & Segmented Chips
             Column(verticalArrangement = Arrangement.spacedBy(dimens.space12)) {
                 Text(
-                    text = "Arabic Font",
+                    text = stringResource(R.string.quran_arabic_font),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground
@@ -134,7 +155,7 @@ fun AyahSettingsMenu(
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                                verticalArrangement = Arrangement.spacedBy(dimens.space2)
                             ) {
                                 Text(
                                     text = fontOption.name,
@@ -161,7 +182,7 @@ fun AyahSettingsMenu(
 
             HorizontalDivider(
                 color = if (isDark) Color(0xFF26373F) else Color(0xFFE0ECE8),
-                thickness = 1.dp
+                thickness = dimens.divider
             )
 
             // Section 2: Font Size Adjuster (- [ 36 sp ] +)
@@ -171,7 +192,7 @@ fun AyahSettingsMenu(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Font Size",
+                    text = stringResource(R.string.quran_font_size),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onBackground
@@ -184,11 +205,11 @@ fun AyahSettingsMenu(
                 ) {
                     val btnBg = if (isDark) Color(0xFF253740) else Color(0xFFE0ECE8)
 
-                    // Minus Decrement Button (Uses ic_minus)
+                    // Minus Decrement Button
                     IconButton(
                         onClick = { if (fontSize > 20) onFontSizeChange(fontSize - 2) },
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(dimens.space32)
                             .clip(CircleShape)
                             .background(btnBg)
                     ) {
@@ -196,7 +217,7 @@ fun AyahSettingsMenu(
                             painter = painterResource(id = R.drawable.ic_minus),
                             contentDescription = "Decrease Font Size",
                             tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(dimens.iconXs)
                         )
                     }
 
@@ -209,11 +230,11 @@ fun AyahSettingsMenu(
                         )
                     )
 
-                    // Plus Increment Button (Uses ic_add)
+                    // Plus Increment Button
                     IconButton(
                         onClick = { if (fontSize < 44) onFontSizeChange(fontSize + 2) },
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(dimens.space32)
                             .clip(CircleShape)
                             .background(btnBg)
                     ) {
@@ -221,7 +242,7 @@ fun AyahSettingsMenu(
                             painter = painterResource(id = R.drawable.ic_add),
                             contentDescription = "Increase Font Size",
                             tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(dimens.iconXs)
                         )
                     }
                 }
@@ -229,7 +250,7 @@ fun AyahSettingsMenu(
 
             HorizontalDivider(
                 color = if (isDark) Color(0xFF26373F) else Color(0xFFE0ECE8),
-                thickness = 1.dp
+                thickness = dimens.divider
             )
 
             // Section 3: Translation Toggle Switch
@@ -239,7 +260,7 @@ fun AyahSettingsMenu(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Translation",
+                    text = stringResource(R.string.quran_translation),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onBackground
@@ -256,6 +277,84 @@ fun AyahSettingsMenu(
                         uncheckedTrackColor = if (isDark) Color(0xFF253740) else Color(0xFFE0ECE8)
                     )
                 )
+            }
+
+            // Section 4: Translation Source Horizontal Slider (when translation is enabled)
+            if (showTranslation) {
+                HorizontalDivider(
+                    color = if (isDark) Color(0xFF26373F) else Color(0xFFE0ECE8),
+                    thickness = dimens.divider
+                )
+
+                Column(verticalArrangement = Arrangement.spacedBy(dimens.space8)) {
+                    Text(
+                        text = stringResource(R.string.quran_translation_source),
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(dimens.space8)
+                    ) {
+                        AvailableQuranTranslations.forEach { transOption ->
+                            val isSelected = (selectedTranslationSource == transOption.id)
+
+                            val animatedBg by animateColorAsState(
+                                targetValue = if (isSelected) primaryColor else (if (isDark) Color(0xFF22323A) else Color(0xFFE2EBE8)),
+                                animationSpec = tween(durationMillis = 200),
+                                label = "transBg"
+                            )
+                            val animatedTitleColor by animateColorAsState(
+                                targetValue = if (isSelected) Color.White else MaterialTheme.colorScheme.onBackground,
+                                animationSpec = tween(durationMillis = 200),
+                                label = "transTitleColor"
+                            )
+                            val animatedSubtitleColor by animateColorAsState(
+                                targetValue = if (isSelected) Color.White.copy(alpha = 0.85f) else customColors.secondaryText,
+                                animationSpec = tween(durationMillis = 200),
+                                label = "transSubtitleColor"
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .widthIn(min = dimens.layoutMd)
+                                    .clip(RoundedCornerShape(dimens.cornerLg))
+                                    .background(animatedBg)
+                                    .clickable { onTranslationSourceSelect(transOption.id) }
+                                    .padding(vertical = dimens.space8, horizontal = dimens.space12),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(dimens.space2)
+                                ) {
+                                    Text(
+                                        text = stringResource(transOption.nameRes),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.labelMedium.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            color = animatedTitleColor
+                                        )
+                                    )
+                                    Text(
+                                        text = stringResource(transOption.subtitleRes),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            color = animatedSubtitleColor
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

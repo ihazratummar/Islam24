@@ -195,7 +195,7 @@ fun TipTierCard(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "one-time",
+                    text = stringResource(R.string.support_one_time),
                     style = MaterialTheme.typography.labelSmall,
                     color = customColors.secondaryText.copy(alpha = 0.7f)
                 )
@@ -300,7 +300,7 @@ fun SubscriptionTierCard(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = "/ month",
+                        text = stringResource(R.string.support_per_month),
                         style = MaterialTheme.typography.labelSmall,
                         color = customColors.secondaryText.copy(alpha = 0.7f)
                     )

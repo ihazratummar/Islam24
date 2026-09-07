@@ -29,22 +29,30 @@ class TokenStorage(context: Context) {
     )
 
     fun saveTokens(accessToken: String, refreshToken: String) {
-        sharedPreferences.edit {
+        sharedPreferences.edit(commit = true) {
             putString("access_token", accessToken)
-                .putString("refresh_token", refreshToken)
+            putString("refresh_token", refreshToken)
         }
     }
 
     fun getAccessToken(): String? {
-        return sharedPreferences.getString("access_token", null)
+        return try {
+            sharedPreferences.getString("access_token", null)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun getRefreshToken(): String? {
-        return sharedPreferences.getString("refresh_token", null)
+        return try {
+            sharedPreferences.getString("refresh_token", null)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun clearToken() {
-        sharedPreferences.edit {
+        sharedPreferences.edit(commit = true) {
             remove("access_token")
             remove("refresh_token")
             clear()

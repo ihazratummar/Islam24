@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
@@ -41,6 +42,7 @@ import com.hazrat.model.quran.AyahModel
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
+import com.hazrat.utils.toLocalizedDigits
 
 /**
  * Individual Ayah Card composable.
@@ -95,21 +97,17 @@ fun AyahItemCard(
                 onRepeatAyahClick = { onEvent(AyahUiEvent.OnRepeatAyah(ayah.ayahNumber)) },
                 onBookmarkClick = { onEvent(AyahUiEvent.OnToggleBookmark(ayah)) },
                 onCopyClick = {
+                    val activeTranslation = ayah.getTranslation(ayahState.selectedTranslationSource)
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText(
                         "Ayah Text",
-                        "${ayah.arabicText}\n\n${ayah.transliteration}\n\n${ayah.englishTranslation}"
+                        "${ayah.arabicText}\n\n${ayah.transliteration}\n\n$activeTranslation"
                     )
                     clipboard.setPrimaryClip(clip)
                     Toast.makeText(context, "Copied Ayah", Toast.LENGTH_SHORT).show()
                 },
                 onShareClick = {
-                    val shareText = "${ayah.arabicText}\n\n${ayah.transliteration}\n\n${ayah.englishTranslation}\n\n- [$surahName, Aya ${ayah.surahNumber}:${ayah.ayahNumber}]"
-                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, shareText)
-                    }
-                    context.startActivity(Intent.createChooser(shareIntent, "Share Ayah"))
+                    onEvent(AyahUiEvent.OnSelectAyahForShare(ayah))
                 }
             )
         }
@@ -137,7 +135,7 @@ fun AyahItemCard(
                     horizontalArrangement = Arrangement.spacedBy(dimens.space4)
                 ) {
                     Text(
-                        text = "Aya ${ayah.surahNumber}:${ayah.ayahNumber}",
+                        text = "${stringResource(R.string.quran_aya_short)} ${ayah.surahNumber.toLocalizedDigits()}:${ayah.ayahNumber.toLocalizedDigits()}",
                         style = MaterialTheme.typography.labelMedium.copy(
                             color = when {
                                 isCurrentPlaying && isDarkMode -> Color.White
@@ -201,7 +199,7 @@ fun AyahItemCard(
             if (ayahState.showTranslation) {
                 // Transliteration
                 Text(
-                    text = ayah.transliteration,
+                    text = ayah.getActiveTransliteration(),
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = playingSubTextColor,
@@ -211,12 +209,12 @@ fun AyahItemCard(
 
                 // Translation (Bengali / English)
                 Text(
-                    text = ayah.englishTranslation,
+                    text = ayah.getTranslation(ayahState.selectedTranslationSource),
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Medium,
                         color = playingTextColor,
-                        textAlign = TextAlign.End,
+                        textAlign = TextAlign.Start,
                         fontSize = 16.sp,
                         lineHeight = 26.sp
                     )
