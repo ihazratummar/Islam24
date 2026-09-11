@@ -66,9 +66,9 @@ import kotlinx.coroutines.launch
 fun AyahShareDialog(
     ayah: AyahModel,
     surahName: String,
-    translationSource: String = "MUHIUDDIN",
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    translationSource: String = "MUHIUDDIN"
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

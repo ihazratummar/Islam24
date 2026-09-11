@@ -49,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -102,6 +103,7 @@ fun QuranScreen(
     onDismissSheets: () -> Unit = {}
 ) {
     var isViewModeDropdownExpanded by remember { mutableStateOf(false) }
+    val isBengali = LocalLocale.current.platformLocale.language.equals("bn", ignoreCase = true)
 
     IslamicGridBackground {
         Scaffold(
@@ -280,7 +282,7 @@ fun QuranScreen(
                                         onSurahClick(
                                             SurahScreenData(
                                                 name = matchedSurah?.nameTransliterated
-                                                    ?: recentTitle(latestRecent, matchedSurah),
+                                                    ?: recentTitle(latestRecent, matchedSurah, isBengali),
                                                 totalAyah = matchedSurah?.totalAyahs ?: 0,
                                                 meaning = matchedSurah?.nameEnglish ?: "",
                                                 number = latestRecent.surahNumber,
@@ -331,7 +333,8 @@ fun QuranScreen(
                                                             name = matchedSurah?.nameTransliterated
                                                                 ?: recentTitle(
                                                                     recent,
-                                                                    matchedSurah
+                                                                    matchedSurah,
+                                                                    isBengali
                                                                 ),
                                                             totalAyah = matchedSurah?.totalAyahs
                                                                 ?: 0,
@@ -822,8 +825,7 @@ fun QuranScreen(
     }
 }
 
-private fun recentTitle(recent: RecentReadSurah, matchedSurah: SurahModel?): String {
-    val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
+private fun recentTitle(recent: RecentReadSurah, matchedSurah: SurahModel?, isBengali: Boolean): String {
     return if (isBengali) {
         SurahNameProvider.getSurahNameBengali(recent.surahNumber)
     } else {
@@ -837,7 +839,7 @@ private fun ResumeReadingHeroCard(
     matchedSurah: SurahModel?,
     onClick: () -> Unit
 ) {
-    val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
+    val isBengali = LocalLocale.current.platformLocale.language.equals("bn", ignoreCase = true)
     val surahTitle = if (isBengali) {
         SurahNameProvider.getSurahNameBengali(recent.surahNumber)
     } else {
@@ -945,7 +947,7 @@ private fun RecentSurahCard(
     matchedSurah: SurahModel?,
     onClick: () -> Unit
 ) {
-    val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
+    val isBengali = LocalLocale.current.platformLocale.language.equals("bn", ignoreCase = true)
     val surahTitle = if (isBengali) {
         SurahNameProvider.getSurahNameBengali(recent.surahNumber)
     } else {

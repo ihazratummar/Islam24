@@ -312,7 +312,7 @@ fun ActiveKhatamCard(
                         verticalAlignment = Alignment.Bottom
                     ) {
                         Text(
-                            text = String.format("%.1f%%", activePlan.progressPercentage),
+                            text = String.format(java.util.Locale.US, "%.1f%%", activePlan.progressPercentage),
                             style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                             color = Color(0xFF00E676)
                         )

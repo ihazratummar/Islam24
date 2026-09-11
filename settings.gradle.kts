@@ -1,3 +1,6 @@
+rootProject.name = "Islam-24"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google()
@@ -16,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Islam-24"
+
 include(":app")
 
 include(":core:ui")

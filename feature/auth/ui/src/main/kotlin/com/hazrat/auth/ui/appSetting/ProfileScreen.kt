@@ -183,17 +183,18 @@ fun AppSettingScreen(
             )
         )
 
+        val aboutAppTitle = stringResource(R.string.profile_about_app)
         val appMetaSettings = listOf(
             AppMetaDataSettings(
                 icon = R.drawable.outlinstar,
-                settingName = stringResource(R.string.profile_about_app),
+                settingName = aboutAppTitle,
                 trailingIcon = R.drawable.arrowright,
                 onClick = {
                     hapticFeedbacks(
                         isEnable = isHapticFeedback,
                         hapticFeedback = hapticFeedback
                     )
-                    onAboutUsClick("https://islam24.app/about-us", context.getString(R.string.profile_about_app))
+                    onAboutUsClick("https://islam24.app/about-us", aboutAppTitle)
                 }
             ),
             AppMetaDataSettings(

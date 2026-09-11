@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,8 +32,8 @@ import com.hazrat.ui.theme.dimens
 fun DuaChapterListItem(
     chapter: DuaChapterWithCountModel,
     onClick: () -> Unit,
-    showDivider: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showDivider: Boolean = true
 ) {
     Column(
         modifier = modifier
@@ -57,7 +58,7 @@ fun DuaChapterListItem(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(dimens.space4)
             ) {
-                val isBengali = java.util.Locale.getDefault().language == "bn"
+                val isBengali = LocalLocale.current.platformLocale.language == "bn"
                 val titleText = if (isBengali && !chapter.bnTitle.isNullOrBlank()) chapter.bnTitle!! else chapter.title
 
                 Text(

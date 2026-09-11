@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import android.widget.Toast
 import com.hazrat.model.DuaItemModel
 
@@ -92,7 +93,7 @@ object DuaShareUtils {
     fun shareToMessages(context: Context, text: String) {
         try {
             val sendIntent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("sms:")
+                data = "sms:".toUri()
                 putExtra("sms_body", text)
             }
             context.startActivity(sendIntent)

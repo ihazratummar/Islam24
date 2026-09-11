@@ -34,7 +34,7 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
+import com.hazrat.islam24.widget.glanceColor
 import com.hazrat.database.dao.prayer.PrayerTimeDao
 import com.hazrat.islam24.main.mainActivity.MainActivity
 import com.hazrat.islam24.main.navigation.NavigationCommandBus
@@ -109,7 +109,7 @@ class HijriDateWidget : GlanceAppWidget() {
                                 text = "HIJRI DATE",
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
-                                    color = ColorProvider(Color(0xFFFCD34D)),
+                                    color = glanceColor(Color(0xFFFCD34D)),
                                     fontSize = 9.sp
                                 )
                             )
@@ -122,7 +122,7 @@ class HijriDateWidget : GlanceAppWidget() {
                             text = hijriInfo.hijriDay,
                             style = TextStyle(
                                 fontWeight = FontWeight.Bold,
-                                color = ColorProvider(Color(0xFFFEF3C7)),
+                                color = glanceColor(Color(0xFFFEF3C7)),
                                 fontSize = 54.sp
                             )
                         )
@@ -134,7 +134,7 @@ class HijriDateWidget : GlanceAppWidget() {
                             text = "${hijriInfo.hijriMonth} ${hijriInfo.hijriYear} AH",
                             style = TextStyle(
                                 fontWeight = FontWeight.Medium,
-                                color = ColorProvider(Color(0xFFFBBF24)),
+                                color = glanceColor(Color(0xFFFBBF24)),
                                 fontSize = 12.sp
                             ),
                             maxLines = 1
@@ -168,7 +168,7 @@ class HijriDateWidget : GlanceAppWidget() {
                                     text = "HIJRI DATE",
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
-                                        color = ColorProvider(Color(0xFFFCD34D)),
+                                        color = glanceColor(Color(0xFFFCD34D)),
                                         fontSize = 10.sp
                                     )
                                 )
@@ -187,7 +187,7 @@ class HijriDateWidget : GlanceAppWidget() {
                                     text = hijriInfo.gregorianFormatted,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Medium,
-                                        color = ColorProvider(Color(0xFFFDE68A)),
+                                        color = glanceColor(Color(0xFFFDE68A)),
                                         fontSize = 10.sp
                                     ),
                                     maxLines = 1
@@ -203,7 +203,7 @@ class HijriDateWidget : GlanceAppWidget() {
                                 text = hijriInfo.hijriDay,
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
-                                    color = ColorProvider(Color(0xFFFEF3C7)),
+                                    color = glanceColor(Color(0xFFFEF3C7)),
                                     fontSize = 40.sp
                                 )
                             )
@@ -212,7 +212,7 @@ class HijriDateWidget : GlanceAppWidget() {
                                 text = "${hijriInfo.hijriMonth} ${hijriInfo.hijriYear} AH",
                                 style = TextStyle(
                                     fontWeight = FontWeight.Medium,
-                                    color = ColorProvider(Color(0xFFFBBF24)),
+                                    color = glanceColor(Color(0xFFFBBF24)),
                                     fontSize = 16.sp
                                 ),
                                 maxLines = 1
@@ -226,7 +226,7 @@ class HijriDateWidget : GlanceAppWidget() {
                             modifier = GlanceModifier
                                 .fillMaxWidth()
                                 .height(1.dp)
-                                .background(ColorProvider(Color(0xFF382A14)))
+                                .background(Color(0xFF382A14))
                         ) {}
 
                         Spacer(modifier = GlanceModifier.height(8.dp))
@@ -250,7 +250,7 @@ class HijriDateWidget : GlanceAppWidget() {
                                     text = hijriInfo.upcomingEvent,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Normal,
-                                        color = ColorProvider(Color(0xFFF3EDE2)),
+                                        color = glanceColor(Color(0xFFF3EDE2)),
                                         fontSize = 13.sp
                                     ),
                                     maxLines = 1
@@ -261,7 +261,7 @@ class HijriDateWidget : GlanceAppWidget() {
                                 text = "View Calendar ›",
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
-                                    color = ColorProvider(Color(0xFFFBBF24)),
+                                    color = glanceColor(Color(0xFFFBBF24)),
                                     fontSize = 13.sp
                                 )
                             )

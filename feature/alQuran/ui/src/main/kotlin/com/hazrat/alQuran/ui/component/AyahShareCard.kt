@@ -40,8 +40,8 @@ fun AyahShareCard(
     ayah: AyahModel,
     surahName: String,
     theme: QuranShareTheme,
-    translationSource: String = "MUHIUDDIN",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    translationSource: String = "MUHIUDDIN"
 ) {
     Box(
         modifier = modifier

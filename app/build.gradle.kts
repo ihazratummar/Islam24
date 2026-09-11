@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 
@@ -20,8 +21,8 @@ android {
         applicationId = "com.hazrat.islam24"
         minSdk = 26
         this.targetSdk = 37
-        versionCode = 124
-        versionName = "4.4.2"
+        versionCode = 125
+        versionName = "4.4.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -64,6 +65,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/*.kotlin_module"
+            excludes += "**/*.kotlin_module"
         }
     }
     ndkVersion = "29.0.14033849 rc4"
@@ -77,17 +80,17 @@ kotlin {
 
 dependencies {
 
-    implementation(project(":core:ui"))
-    implementation(project(":core:data"))
-    implementation(project(":core:utils"))
-    implementation(project(":core:sensor"))
-    implementation(project(":core:remote"))
-    implementation(project(":core:location"))
-    implementation(project(":core:database"))
-    implementation(project(":core:datastore"))
-    implementation(project(":core:downloader"))
-    implementation(project(":core:permission"))
-    implementation(project(":core:notification"))
+    implementation(projects.core.ui)
+    implementation(projects.core.data)
+    implementation(projects.core.utils)
+    implementation(projects.core.sensor)
+    implementation(projects.core.remote)
+    implementation(projects.core.location)
+    implementation(projects.core.database)
+    implementation(projects.core.datastore)
+    implementation(projects.core.downloader)
+    implementation(projects.core.permission)
+    implementation(projects.core.notification)
 
     implementation(project(":domain:model"))
     implementation(project(":domain:usecase"))
@@ -178,4 +181,6 @@ dependencies {
     implementation (libs.androidx.glance.appwidget)
 
     implementation(libs.timber)
+
+    implementation(libs.firebase.crashlytics)
 }

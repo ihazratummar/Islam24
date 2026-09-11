@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -62,7 +63,7 @@ fun DuaCategoryCard(
                 contentScale = ContentScale.Crop
             )
 
-            val isBengali = java.util.Locale.getDefault().language == "bn"
+            val isBengali = LocalLocale.current.platformLocale.language == "bn"
             val titleText = if (isBengali && category.bnTitle.isNotBlank()) category.bnTitle else category.title
 
             Text(

@@ -32,11 +32,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 import com.hazrat.model.DuaItemModel
 import com.hazrat.ui.R
 import com.hazrat.ui.theme.ScheherazadeFontFamily
@@ -161,7 +164,7 @@ fun DuaItemCard(
                 )
             )
 
-            val isBengali = java.util.Locale.getDefault().language == "bn"
+            val isBengali = LocalLocale.current.platformLocale.language == "bn"
             val transliterationText = if (isBengali && !dua.bnTransliteration.isNullOrBlank()) dua.bnTransliteration!! else dua.transliteration
             val translationText = if (isBengali && !dua.bnTranslation.isNullOrBlank()) dua.bnTranslation!! else dua.translation
             val referenceText = if (isBengali && !dua.bnReference.isNullOrBlank()) dua.bnReference!! else dua.reference
@@ -218,10 +221,9 @@ fun DuaItemCard(
         // Invisible precise anchor box positioned exactly at tap coordinate
         Box(
             modifier = Modifier
-                .offset(
-                    x = with(density) { pressOffset.x.toDp() },
-                    y = with(density) { pressOffset.y.toDp() }
-                )
+                .offset {
+                    IntOffset(pressOffset.x.roundToInt(), pressOffset.y.roundToInt())
+                }
                 .size(dimens.space2)
         ) {
             DuaContextMenu(

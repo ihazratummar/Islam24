@@ -89,7 +89,7 @@
     <string name="zakat_details_desc">সম্পদ ও সামগ্রীর বিশদ বিবরণ</string>
     <string name="zakat_saved_statements">সংরক্ষিত হিসাবসমূহ</string>
     <string name="zakat_calculate_button">যাকাত হিসাব করুন</string>
-    <string name="zakat_total_tracked">মোট সংরক্ষিত যাকাত (%1$sটি হিসাব)</string>
+    <string name="zakat_total_tracked">মোট সংরক্ষিত যাকাত (%1$dটি হিসাব)</string>
     <string name="zakat_delete_title">যাকাত রেকর্ড মুছে ফেলবেন?</string>
     <string name="zakat_delete_confirm">আপনি কি নিশ্চিত যে %1$s তারিখে সংরক্ষিত যাকাতের হিসাবটি মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না।</string>
     <string name="zakat_no_records_title">কোনো যাকাত রেকর্ড নেই</string>

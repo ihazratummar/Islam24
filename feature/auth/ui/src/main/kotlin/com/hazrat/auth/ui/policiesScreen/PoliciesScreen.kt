@@ -1,6 +1,5 @@
 package com.hazrat.auth.ui.policiesScreen
 
-import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -17,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.hazrat.auth.ui.component.SettingItemCard
@@ -37,8 +35,6 @@ fun PoliciesScreen(
     onBackClick:() -> Unit,
     onPolicyClick:(String, String) -> Unit
 ) {
-    val context = LocalContext.current
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,26 +49,30 @@ fun PoliciesScreen(
         }
     ) { paddingValues ->
 
+        val privacyPolicyTitle = stringResource(R.string.login_privacy_policy)
+        val termsOfServiceTitle = stringResource(R.string.login_terms_of_service)
+        val legalAcknowledgementTitle = stringResource(R.string.legal_acknowledgement)
+
         val listOfTabs = listOf(
             PoliciesTabs(
                 leadingIcon = R.drawable.privacy_policy,
-                tabName = stringResource(R.string.login_privacy_policy),
+                tabName = privacyPolicyTitle,
                 onClick = {
-                    onPolicyClick("https://islam24.app/privacy-policy", context.getString(R.string.login_privacy_policy))
+                    onPolicyClick("https://islam24.app/privacy-policy", privacyPolicyTitle)
                 }
             ),
             PoliciesTabs(
                 leadingIcon = R.drawable.privacy_policy,
-                tabName = stringResource(R.string.login_terms_of_service),
+                tabName = termsOfServiceTitle,
                 onClick = {
-                    onPolicyClick("https://islam24.app/terms-of-service", context.getString(R.string.login_terms_of_service))
+                    onPolicyClick("https://islam24.app/terms-of-service", termsOfServiceTitle)
                 }
             ),
             PoliciesTabs(
                 leadingIcon = R.drawable.privacy_policy,
-                tabName = stringResource(R.string.legal_acknowledgement),
+                tabName = legalAcknowledgementTitle,
                 onClick = {
-                    onPolicyClick("https://islam24.app/acknowledgements", context.getString(R.string.legal_acknowledgement))
+                    onPolicyClick("https://islam24.app/acknowledgements", legalAcknowledgementTitle)
                 }
             )
         )

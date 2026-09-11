@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -50,7 +51,7 @@ fun DuaShareCard(
     theme: DuaShareTheme,
     modifier: Modifier = Modifier
 ) {
-    val isBengali = java.util.Locale.getDefault().language == "bn"
+    val isBengali = LocalLocale.current.platformLocale.language == "bn"
     val translationText = if (isBengali && !dua.bnTranslation.isNullOrBlank()) dua.bnTranslation!! else dua.translation
     val referenceText = if (isBengali && !dua.bnReference.isNullOrBlank()) dua.bnReference!! else dua.reference
 

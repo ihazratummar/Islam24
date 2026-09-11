@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.hazrat.common.ChangelogDialog
 import com.hazrat.islam24.main.navigation.NavigationCommandBus
 import com.hazrat.islam24.main.navigation.NavigationTarget

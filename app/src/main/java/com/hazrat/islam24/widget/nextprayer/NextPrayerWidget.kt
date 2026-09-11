@@ -42,7 +42,7 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
+import com.hazrat.islam24.widget.glanceColor
 import com.hazrat.database.dao.prayer.PrayerLogDao
 import com.hazrat.database.dao.prayer.PrayerTimeDao
 import com.hazrat.database.entity.prayer.PrayerLogEntity
@@ -174,7 +174,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                 text = prayerInfo.prayerName,
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
-                                    color = ColorProvider(Color.White),
+                                    color = glanceColor(Color.White),
                                     fontSize = 17.sp
                                 ),
                                 maxLines = 1
@@ -184,7 +184,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                 text = prayerInfo.rawTimeStr,
                                 style = TextStyle(
                                     fontWeight = FontWeight.Medium,
-                                    color = ColorProvider(Color(0xFF99E6DB)),
+                                    color = glanceColor(Color(0xFF99E6DB)),
                                     fontSize = 12.sp
                                 ),
                                 maxLines = 1
@@ -196,7 +196,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = "NOW",
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
-                                        color = ColorProvider(Color(0xFF5EEAD4)),
+                                        color = glanceColor(Color(0xFF5EEAD4)),
                                         fontSize = 16.sp
                                     )
                                 )
@@ -205,7 +205,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = "IN",
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
-                                        color = ColorProvider(Color(0xFF80CBC4)),
+                                        color = glanceColor(Color(0xFF80CBC4)),
                                         fontSize = 9.sp
                                     )
                                 )
@@ -249,7 +249,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = prayerInfo.headerLabel,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
-                                        color = ColorProvider(Color(0xFF5EEAD4)),
+                                        color = glanceColor(Color(0xFF5EEAD4)),
                                         fontSize = 9.sp
                                     )
                                 )
@@ -269,7 +269,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = prayerInfo.prayerName,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
-                                        color = ColorProvider(Color.White),
+                                        color = glanceColor(Color.White),
                                         fontSize = 24.sp
                                     ),
                                     maxLines = 1
@@ -279,7 +279,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = prayerInfo.prayerTimeFormatted,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Medium,
-                                        color = ColorProvider(Color(0xFF99E6DB)),
+                                        color = glanceColor(Color(0xFF99E6DB)),
                                         fontSize = 11.sp
                                     ),
                                     maxLines = 1
@@ -300,7 +300,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = "IN",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
-                                            color = ColorProvider(Color(0xFF80CBC4)),
+                                            color = glanceColor(Color(0xFF80CBC4)),
                                             fontSize = 9.sp
                                         )
                                     )
@@ -337,7 +337,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = prayerInfo.headerLabel,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
-                                        color = ColorProvider(Color(0xFF5EEAD4)),
+                                        color = glanceColor(Color(0xFF5EEAD4)),
                                         fontSize = 9.sp
                                     )
                                 )
@@ -357,7 +357,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = prayerInfo.prayerName,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
-                                        color = ColorProvider(Color.White),
+                                        color = glanceColor(Color.White),
                                         fontSize = 24.sp
                                     ),
                                     maxLines = 1
@@ -366,7 +366,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = prayerInfo.prayerTimeFormatted,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Medium,
-                                        color = ColorProvider(Color(0xFF99E6DB)),
+                                        color = glanceColor(Color(0xFF99E6DB)),
                                         fontSize = 11.sp
                                     ),
                                     maxLines = 1
@@ -386,7 +386,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = "IN",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
-                                            color = ColorProvider(Color(0xFF80CBC4)),
+                                            color = glanceColor(Color(0xFF80CBC4)),
                                             fontSize = 9.sp
                                         )
                                     )
@@ -405,7 +405,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                 modifier = GlanceModifier
                                     .fillMaxWidth()
                                     .height(1.dp)
-                                    .background(ColorProvider(Color(0x305EEAD4)))
+                                    .background(Color(0x305EEAD4))
                             ) {}
 
                             Spacer(modifier = GlanceModifier.height(4.dp))
@@ -424,7 +424,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                             text = if (item.isLogged) "✓ ${item.name}" else item.name,
                                             style = TextStyle(
                                                 fontWeight = if (item.isCurrentOrNext) FontWeight.Bold else FontWeight.Normal,
-                                                color = ColorProvider(if (item.isCurrentOrNext) Color(0xFF5EEAD4) else Color.White),
+                                                color = glanceColor(if (item.isCurrentOrNext) Color(0xFF5EEAD4) else Color.White),
                                                 fontSize = 10.sp
                                             ),
                                             maxLines = 1
@@ -434,7 +434,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                             text = item.shortTime,
                                             style = TextStyle(
                                                 fontWeight = if (item.isCurrentOrNext) FontWeight.Bold else FontWeight.Normal,
-                                                color = ColorProvider(if (item.isCurrentOrNext) Color(0xFF5EEAD4) else Color(0xFF99E6DB)),
+                                                color = glanceColor(if (item.isCurrentOrNext) Color(0xFF5EEAD4) else Color(0xFF99E6DB)),
                                                 fontSize = 10.sp
                                             ),
                                             maxLines = 1
@@ -471,7 +471,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = prayerInfo.headerLabel,
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
-                                            color = ColorProvider(Color(0xFF5EEAD4)),
+                                            color = glanceColor(Color(0xFF5EEAD4)),
                                             fontSize = 11.sp
                                         )
                                     )
@@ -480,7 +480,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = "${prayerInfo.gregorianDateFormatted} • ${prayerInfo.hijriDateFormatted}",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Medium,
-                                            color = ColorProvider(Color(0xFF99E6DB)),
+                                            color = glanceColor(Color(0xFF99E6DB)),
                                             fontSize = 10.sp
                                         )
                                     )
@@ -504,7 +504,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                             text = prayerInfo.prayerName,
                                             style = TextStyle(
                                                 fontWeight = FontWeight.Bold,
-                                                color = ColorProvider(Color.White),
+                                                color = glanceColor(Color.White),
                                                 fontSize = 32.sp
                                             ),
                                             maxLines = 1
@@ -514,7 +514,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                             text = prayerInfo.prayerTimeFormatted,
                                             style = TextStyle(
                                                 fontWeight = FontWeight.Medium,
-                                                color = ColorProvider(Color(0xFF99E6DB)),
+                                                color = glanceColor(Color(0xFF99E6DB)),
                                                 fontSize = 13.sp
                                             ),
                                             maxLines = 1
@@ -526,7 +526,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                             text = "NOW",
                                             style = TextStyle(
                                                 fontWeight = FontWeight.Bold,
-                                                color = ColorProvider(Color(0xFF5EEAD4)),
+                                                color = glanceColor(Color(0xFF5EEAD4)),
                                                 fontSize = 32.sp
                                             )
                                         )
@@ -539,7 +539,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                                 text = "IN",
                                                 style = TextStyle(
                                                     fontWeight = FontWeight.Bold,
-                                                    color = ColorProvider(Color(0xFF80CBC4)),
+                                                    color = glanceColor(Color(0xFF80CBC4)),
                                                     fontSize = 10.sp
                                                 )
                                             )
@@ -565,7 +565,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                 modifier = GlanceModifier
                                     .fillMaxWidth()
                                     .height(1.dp)
-                                    .background(ColorProvider(Color(0x305EEAD4)))
+                                    .background(Color(0x305EEAD4))
                             ) {}
 
                             Spacer(modifier = GlanceModifier.defaultWeight())
@@ -599,7 +599,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = "Prayers Logged: ${prayerInfo.completedCount} of 5",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Medium,
-                                            color = ColorProvider(Color(0xFF5EEAD4)),
+                                            color = glanceColor(Color(0xFF5EEAD4)),
                                             fontSize = 10.sp
                                         )
                                     )
@@ -608,7 +608,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = "View Schedule ›",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
-                                            color = ColorProvider(Color.White),
+                                            color = glanceColor(Color.White),
                                             fontSize = 10.sp
                                         )
                                     )
@@ -640,7 +640,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                     text = prayerInfo.headerLabel,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
-                                        color = ColorProvider(Color(0xFF5EEAD4)),
+                                        color = glanceColor(Color(0xFF5EEAD4)),
                                         fontSize = 10.sp
                                     )
                                 )
@@ -664,7 +664,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = prayerInfo.prayerName,
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
-                                            color = ColorProvider(Color.White),
+                                            color = glanceColor(Color.White),
                                             fontSize = 28.sp
                                         ),
                                         maxLines = 1
@@ -674,7 +674,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = prayerInfo.prayerTimeFormatted,
                                         style = TextStyle(
                                             fontWeight = FontWeight.Medium,
-                                            color = ColorProvider(Color(0xFF99E6DB)),
+                                            color = glanceColor(Color(0xFF99E6DB)),
                                             fontSize = 12.sp
                                         ),
                                         maxLines = 1
@@ -686,7 +686,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                         text = "NOW",
                                         style = TextStyle(
                                             fontWeight = FontWeight.Bold,
-                                            color = ColorProvider(Color(0xFF5EEAD4)),
+                                            color = glanceColor(Color(0xFF5EEAD4)),
                                             fontSize = 30.sp
                                         )
                                     )
@@ -699,7 +699,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                             text = "IN",
                                             style = TextStyle(
                                                 fontWeight = FontWeight.Bold,
-                                                color = ColorProvider(Color(0xFF80CBC4)),
+                                                color = glanceColor(Color(0xFF80CBC4)),
                                                 fontSize = 9.sp
                                             )
                                         )
@@ -741,7 +741,7 @@ class NextPrayerWidget : GlanceAppWidget() {
                                                 text = if (item.isLogged) "✓ ${item.name}" else "${item.name} ${item.shortTime}",
                                                 style = TextStyle(
                                                     fontWeight = if (item.isCurrentOrNext) FontWeight.Bold else FontWeight.Normal,
-                                                    color = ColorProvider(if (item.isCurrentOrNext) Color.White else Color(0xFF99E6DB)),
+                                                    color = glanceColor(if (item.isCurrentOrNext) Color.White else Color(0xFF99E6DB)),
                                                     fontSize = 8.sp
                                                 ),
                                                 maxLines = 1
@@ -975,7 +975,7 @@ private fun ButtonRow(prayerInfo: NextPrayerDisplayInfo, isCompact: Boolean) {
             text = prayerInfo.buttonLabel,
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
-                color = ColorProvider(Color.White),
+                color = glanceColor(Color.White),
                 fontSize = if (isCompact) 11.sp else 13.sp
             ),
             maxLines = 1
@@ -1005,7 +1005,7 @@ private fun PrayerGridItem(item: PrayerScheduleItem, modifier: GlanceModifier = 
                 text = if (item.isLogged) "✓ ${item.name}" else item.name,
                 style = TextStyle(
                     fontWeight = if (item.isCurrentOrNext) FontWeight.Bold else FontWeight.Medium,
-                    color = ColorProvider(if (item.isCurrentOrNext) Color.White else Color(0xFF99E6DB)),
+                    color = glanceColor(if (item.isCurrentOrNext) Color.White else Color(0xFF99E6DB)),
                     fontSize = 10.sp
                 ),
                 maxLines = 1
@@ -1015,7 +1015,7 @@ private fun PrayerGridItem(item: PrayerScheduleItem, modifier: GlanceModifier = 
                 text = item.shortTime,
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
-                    color = ColorProvider(if (item.isCurrentOrNext) Color(0xFF5EEAD4) else Color(0xFF70B8AC)),
+                    color = glanceColor(if (item.isCurrentOrNext) Color(0xFF5EEAD4) else Color(0xFF70B8AC)),
                     fontSize = 9.sp
                 ),
                 maxLines = 1

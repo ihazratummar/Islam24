@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import com.hazrat.ui.R
 import com.hazrat.ui.common.SurahNameProvider
 import com.hazrat.utils.toLocalizedDigits
+import androidx.compose.ui.platform.LocalLocale
 
 /**
  * Surah Card matching user's reference design with direct Coil SVG Calligraphy rendering.
@@ -80,7 +81,7 @@ fun SurahCard(
             }
 
             // Right: Surah Name & Meaning (Right aligned)
-            val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
+            val isBengali = LocalLocale.current.platformLocale.language.equals("bn", ignoreCase = true)
             Column(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(dimens.space2)
@@ -162,7 +163,7 @@ fun JuzSegmentCard(
             }
 
             // Right: Bengali Name & Ayah Range (Right aligned)
-            val isBengali = java.util.Locale.getDefault().language.equals("bn", ignoreCase = true)
+            val isBengali = LocalLocale.current.platformLocale.language.equals("bn", ignoreCase = true)
             Column(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(dimens.space2)

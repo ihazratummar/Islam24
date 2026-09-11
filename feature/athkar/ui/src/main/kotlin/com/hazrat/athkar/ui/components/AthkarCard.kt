@@ -45,6 +45,7 @@ import com.hazrat.ui.theme.customColors
 import com.hazrat.ui.theme.dimens
 import com.hazrat.utils.getSystemLanguage
 import com.hazrat.utils.toLocalizedDigits
+import androidx.compose.ui.platform.LocalLocale
 
 @Composable
 fun AthkarCard(
@@ -160,13 +161,13 @@ fun AthkarCard(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            val isBengali = java.util.Locale.getDefault().language == "bn"
+            val isBengali = LocalLocale.current.platformLocale.language == "bn"
             val translitText = if (isBengali && !item.bnTransliteration.isNullOrBlank()) item.bnTransliteration!! else item.transliteration
             val translationText = if (isBengali && !item.bnTranslation.isNullOrBlank()) item.bnTranslation!! else item.translation
             val referenceText = if (isBengali && !item.bnReference.isNullOrBlank()) item.bnReference!! else item.reference
 
             // Translateration in Default View
-            if (!translitText.isNullOrBlank()) {
+            if (translitText.isNotBlank()) {
                 Text(
                     text = translitText,
                     style = MaterialTheme.typography.bodyMedium,
@@ -195,7 +196,7 @@ fun AthkarCard(
                         textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    if (!referenceText.isNullOrBlank()) {
+                    if (referenceText.isNotBlank()) {
                         Spacer(modifier = Modifier.height(dimens.space8))
                         Text(
                             text = stringResource(R.string.athkar_reference, referenceText),

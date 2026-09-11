@@ -2,7 +2,7 @@
 # ===========================
 # Kotlin & Core
 # ===========================
-kotlin = "2.4.10"
+kotlin = "2.4.20"
 agp = "9.4.0"
 ksp = "2.3.6"
 coreKtx = "1.19.0"
@@ -18,7 +18,7 @@ media = "1.8.0"
 # ===========================
 # Compose & UI
 # ===========================
-composeBom = "2026.08.00"
+composeBom = "2026.09.00"
 foundation = "1.12.0"
 material3 = "1.4.0"
 material3WindowClass = "1.4.0"
@@ -32,7 +32,7 @@ lifecycleRuntimeKtx = "2.11.0"
 # ===========================
 # Navigation
 # ===========================
-navigationCompose = "2.9.8"
+navigationCompose = "2.10.1"
 
 # ===========================
 # Dependency Injection (Hilt)
@@ -42,8 +42,8 @@ koin = "4.2.2"
 # ===========================
 # Database (Room)
 # ===========================
-roomCompiler = "2.8.4"
-sqlite = "2.7.0"
+roomCompiler = "2.8.5"
+sqlite = "2.7.1"
 
 # ===========================
 # Data Storage
@@ -82,13 +82,13 @@ pagingRuntimeKtx = "3.5.1"
 # ===========================
 appUpdateKtx = "2.1.0"
 review = "2.0.2"
-revenuecat = "10.18.1"
+revenuecat = "10.21.0"
 billingKtx = "9.1.0"
 
 # ===========================
 # Widgets (Glance)
 # ===========================
-glanceAppwidget = "1.1.1"
+glanceAppwidget = "1.2.0"
 
 # ===========================
 # WorkManager
@@ -121,14 +121,17 @@ timber = "5.0.1"
 #
 # ===========================
 kotlinx-coroutines-play = "1.11.0"
-animationCore = "1.12.0"
-runtimeAnnotation = "1.12.0"
-foundationLayout = "1.12.0"
+animationCore = "1.12.1"
+runtimeAnnotation = "1.12.1"
+foundationLayout = "1.12.1"
 
 ktorClient = "3.5.2"
 
 credentialsPlayServicesAuth = "1.6.0"
 googleid = "1.2.0"
+
+firebase_crashlytics_plugin = "3.0.8"
+firebase_crashlytics = "20.1.1"
 
 [libraries]
 # ===========================
@@ -290,6 +293,8 @@ androidx-compose-foundation-layout = { group = "androidx.compose.foundation", na
 ## Security Crypto
 androidx-security-crypto = { module = "androidx.security:security-crypto-ktx", version = "1.1.0" }
 
+## Firebase
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebase_crashlytics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -300,3 +305,5 @@ google-gms-google-services = { id = "com.google.gms.google-services", version.re
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase_crashlytics_plugin" }

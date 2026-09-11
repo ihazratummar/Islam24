@@ -61,6 +61,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.hazrat.utils.formatLocalizedDigits
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 /**
  * Premium Asmaul Husna (99 Names of Allah) Screen.
@@ -349,7 +350,7 @@ private fun HeroNameBannerCard(
     onCardClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isBengali = Locale.getDefault().language == "bn"
+    val isBengali = LocalLocale.current.platformLocale.language == "bn"
     val transliterationText = if (isBengali && featuredName.bnTransliteration.isNotBlank()) featuredName.bnTransliteration else featuredName.transliteration
     val meaningText = if (isBengali && featuredName.bnMeaning.isNotBlank()) featuredName.bnMeaning else featuredName.enMeaning
 
@@ -517,7 +518,7 @@ fun NameCardItem(
     onCardClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isBengali = Locale.getDefault().language == "bn"
+    val isBengali = LocalLocale.current.platformLocale.language == "bn"
     val transliterationText = if (isBengali && name.bnTransliteration.isNotBlank()) name.bnTransliteration else name.transliteration
     val meaningText = if (isBengali && name.bnMeaning.isNotBlank()) name.bnMeaning else name.enMeaning
     val numberText = name.number.toString().padStart(2, '0').formatLocalizedDigits()
@@ -610,7 +611,7 @@ private fun NameDetailContent(
     isFavorite: Boolean,
     onFavoriteToggle: () -> Unit
 ) {
-    val isBengali = Locale.getDefault().language == "bn"
+    val isBengali = LocalLocale.current.platformLocale.language == "bn"
     val transliterationText = if (isBengali && name.bnTransliteration.isNotBlank()) name.bnTransliteration else name.transliteration
     val meaningText = if (isBengali && name.bnMeaning.isNotBlank()) name.bnMeaning else name.enMeaning
     val numberText = name.number.toString().padStart(2, '0').formatLocalizedDigits()
